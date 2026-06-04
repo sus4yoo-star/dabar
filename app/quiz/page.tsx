@@ -27,7 +27,10 @@ function QuizInner() {
     const level = params.get("level") || "전체";
     const testament = params.get("testament") || "전체";
     const count = params.get("count") || "10";
-    fetch(`/api/questions?level=${level}&testament=${testament}&count=${count}`)
+    const books = params.get("books") || "";
+    const qs = new URLSearchParams({ level, testament, count });
+    if (books) qs.set("books", books);
+    fetch(`/api/questions?${qs.toString()}`)
       .then(r => r.json()).then(data => { setQuestions(data); setLoading(false); });
   }, []);
 

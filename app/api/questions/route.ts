@@ -11,10 +11,16 @@ export async function GET(req: NextRequest) {
   const level     = searchParams.get("level");
   const testament = searchParams.get("testament");
   const count     = parseInt(searchParams.get("count") || "10");
+  const booksRaw  = searchParams.get("books"); // 선택한 권 (쉼표 구분)
+
+  const books = booksRaw
+    ? booksRaw.split(",").map(b => b.trim()).filter(Boolean)
+    : [];
 
   let query = supabase.from("questions").select("*").limit(count * 5);
   if (level     && level     !== "전체") query = query.eq("level", level);
   if (testament && testament !== "전체") query = query.eq("testament", testament);
+  if (books.length) query = query.in("book", books); // 특정 권 선택 시 필터
 
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

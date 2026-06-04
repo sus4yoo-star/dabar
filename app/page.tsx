@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { theme } from "@/lib/theme";
+import { BIBLE_BOOKS } from "@/lib/bible";
 
 const TESTAMENTS = [
   { value: "전체", label: "전체" },
@@ -21,9 +22,24 @@ export default function Home() {
   const [testament, setTestament] = useState("전체");
   const [level, setLevel]         = useState("전체");
   const [count, setCount]         = useState(10);
+  const [books, setBooks]         = useState<string[]>([]);
+
+  // 성경 구분을 바꾸면, 그 구분에 없는 권 선택은 초기화
+  function changeTestament(v: string) {
+    setTestament(v);
+    setBooks([]);
+  }
+
+  function toggleBook(book: string) {
+    setBooks(prev =>
+      prev.includes(book) ? prev.filter(b => b !== book) : [...prev, book]
+    );
+  }
 
   function start() {
-    router.push(`/quiz?level=${level}&testament=${testament}&count=${count}`);
+    const q = new URLSearchParams({ level, testament, count: String(count) });
+    if (books.length) q.set("books", books.join(","));
+    router.push(`/quiz?${q.toString()}`);
   }
 
   return (
@@ -34,7 +50,10 @@ export default function Home() {
         <p style={{ fontSize: 14, color: theme.textMuted, margin: 0 }}>성경 퀴즈 — 남녀노소 누구나!</p>
       </div>
 
-      <Section title="성경 구분"><ChipGroup items={TESTAMENTS} value={testament} onChange={setTestament} /></Section>
+      <Section title="성경 구분"><ChipGroup items={TESTAMENTS} value={testament} onChange={changeTestament} /></Section>
+
+      <BookPicker testament={testament} selected={books} onToggle={toggleBook} onClear={() => setBooks([])} />
+
       <Section title="난이도"><ChipGroup items={LEVELS} value={level} onChange={setLevel} /></Section>
       <Section title="문제 수">
         <ChipGroup items={COUNTS.map(n => ({ value: String(n), label: `${n}문제` }))} value={String(count)} onChange={v => setCount(Number(v))} />
@@ -71,6 +90,60 @@ function ChipGroup({ items, value, onChange }: { items: { value: string; label: 
       {items.map(item => (
         <button key={item.value} onClick={() => onChange(item.value)} style={{ padding: "8px 18px", borderRadius: 24, fontSize: 14, cursor: "pointer", border: "none", background: value === item.value ? theme.primary : "#fff", color: value === item.value ? "#fff" : theme.text, fontWeight: value === item.value ? 700 : 400, boxShadow: value === item.value ? "none" : `0 0 0 1px ${theme.border}` }}>{item.label}</button>
       ))}
+    </div>
+  );
+}
+
+// 성경 권(책) 다중 선택
+function BookPicker({ testament, selected, onToggle, onClear }: {
+  testament: string;
+  selected: string[];
+  onToggle: (book: string) => void;
+  onClear: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  // 전체일 때는 구약/신약 묶어서 보여주고, 특정 구분이면 그 권만
+  const groups: { label: string | null; books: string[] }[] =
+    testament === "old" ? [{ label: null, books: BIBLE_BOOKS.old }]
+    : testament === "new" ? [{ label: null, books: BIBLE_BOOKS.new }]
+    : [{ label: "구약", books: BIBLE_BOOKS.old }, { label: "신약", books: BIBLE_BOOKS.new }];
+
+  const summary = selected.length === 0 ? "전체 권" : `${selected.length}권 선택됨`;
+
+  return (
+    <div style={{ marginBottom: "1.25rem" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0 0 8px" }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: "#aaa", letterSpacing: 1, textTransform: "uppercase", margin: 0 }}>성경 권 (선택)</p>
+        <button onClick={() => setOpen(o => !o)} style={{ fontSize: 12, color: theme.primary, background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+          {summary} {open ? "▲" : "▼"}
+        </button>
+      </div>
+
+      {open && (
+        <div style={{ border: `1px solid ${theme.border}`, borderRadius: 12, padding: "12px", maxHeight: 220, overflowY: "auto", background: "#fff" }}>
+          {selected.length > 0 && (
+            <button onClick={onClear} style={{ fontSize: 12, color: theme.textMuted, background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 10, textDecoration: "underline" }}>
+              선택 해제 (전체로)
+            </button>
+          )}
+          {groups.map(group => (
+            <div key={group.label ?? "single"} style={{ marginBottom: 4 }}>
+              {group.label && (
+                <p style={{ fontSize: 11, fontWeight: 700, color: theme.gold, margin: "6px 0 6px", letterSpacing: 0.5 }}>{group.label}</p>
+              )}
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
+                {group.books.map(book => {
+                  const on = selected.includes(book);
+                  return (
+                    <button key={book} onClick={() => onToggle(book)} style={{ padding: "6px 12px", borderRadius: 18, fontSize: 13, cursor: "pointer", border: "none", background: on ? theme.primary : "#fff", color: on ? "#fff" : theme.text, fontWeight: on ? 700 : 400, boxShadow: on ? "none" : `0 0 0 1px ${theme.border}` }}>{book}</button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
