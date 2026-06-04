@@ -15,7 +15,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22   # Supabase 클라이언트가 Node 22+ 의 기본 WebSocket 을 필요로 함
           cache: npm
 
       - name: Install dependencies
