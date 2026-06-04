@@ -1,6 +1,5 @@
 "use client";
-export const dynamic = "force-dynamic";
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Question } from "@/lib/types";
 import { theme } from "@/lib/theme";
@@ -8,7 +7,11 @@ import { theme } from "@/lib/theme";
 const LEVEL_KO: Record<string, string> = { easy: "쉬움", medium: "보통", hard: "어려움" };
 const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: "#ba7517", hard: theme.wrong };
 
-export default function QuizPage() {
+function Center({ children }: { children: React.ReactNode }) {
+  return <div style={{ textAlign: "center", padding: "4rem", color: "#aaa" }}>{children}</div>;
+}
+
+function QuizInner() {
   const router = useRouter();
   const params = useSearchParams();
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -106,6 +109,10 @@ export default function QuizPage() {
   );
 }
 
-function Center({ children }: { children: React.ReactNode }) {
-  return <div style={{ textAlign: "center", padding: "4rem", color: "#aaa" }}>{children}</div>;
+export default function QuizPage() {
+  return (
+    <Suspense fallback={<Center>로딩 중...</Center>}>
+      <QuizInner />
+    </Suspense>
+  );
 }
