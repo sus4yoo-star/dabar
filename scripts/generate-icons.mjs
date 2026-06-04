@@ -29,40 +29,30 @@ function buildSvg(size) {
   <rect width="512" height="512" rx="108" fill="url(#bg)"/>
 
   <!-- 별빛 장식 (상단 중앙) -->
-  <circle cx="256" cy="82" r="10" fill="url(#gold)" opacity="0.9"/>
-  <line x1="256" y1="60" x2="256" y2="104" stroke="#c9a84c" stroke-width="4" opacity="0.5" stroke-linecap="round"/>
-  <line x1="234" y1="82" x2="278" y2="82" stroke="#c9a84c" stroke-width="4" opacity="0.5" stroke-linecap="round"/>
+  <circle cx="256" cy="92" r="13" fill="url(#gold)" opacity="0.95"/>
+  <line x1="256" y1="62" x2="256" y2="122" stroke="#c9a84c" stroke-width="5" opacity="0.5" stroke-linecap="round"/>
+  <line x1="226" y1="92" x2="286" y2="92" stroke="#c9a84c" stroke-width="5" opacity="0.5" stroke-linecap="round"/>
 
   <!-- 펼친 책 — 왼쪽 페이지 -->
-  <path d="M88 168 Q86 152 108 156 L248 172 L248 352 L108 362 Q86 366 88 348 Z"
-        fill="#2d1654" stroke="url(#gold)" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M64 196 Q62 178 88 182 L250 200 L250 408 L88 420 Q62 424 64 404 Z"
+        fill="#2d1654" stroke="url(#gold)" stroke-width="11" stroke-linejoin="round"/>
   <!-- 왼쪽 페이지 텍스트 줄 -->
-  <line x1="118" y1="208" x2="228" y2="203" stroke="#c9a84c" stroke-width="6.5" opacity="0.45" stroke-linecap="round"/>
-  <line x1="118" y1="237" x2="228" y2="232" stroke="#c9a84c" stroke-width="6.5" opacity="0.45" stroke-linecap="round"/>
-  <line x1="118" y1="266" x2="228" y2="261" stroke="#c9a84c" stroke-width="6.5" opacity="0.45" stroke-linecap="round"/>
-  <line x1="118" y1="295" x2="198" y2="291" stroke="#c9a84c" stroke-width="6.5" opacity="0.45" stroke-linecap="round"/>
+  <line x1="98" y1="244" x2="226" y2="238" stroke="#c9a84c" stroke-width="7.5" opacity="0.45" stroke-linecap="round"/>
+  <line x1="98" y1="278" x2="226" y2="272" stroke="#c9a84c" stroke-width="7.5" opacity="0.45" stroke-linecap="round"/>
+  <line x1="98" y1="312" x2="226" y2="306" stroke="#c9a84c" stroke-width="7.5" opacity="0.45" stroke-linecap="round"/>
+  <line x1="98" y1="346" x2="190" y2="341" stroke="#c9a84c" stroke-width="7.5" opacity="0.45" stroke-linecap="round"/>
 
   <!-- 책등 -->
-  <rect x="247" y="155" width="18" height="208" rx="5" fill="url(#gold)"/>
+  <rect x="249" y="183" width="20" height="240" rx="6" fill="url(#gold)"/>
 
   <!-- 펼친 책 — 오른쪽 페이지 -->
-  <path d="M424 168 Q426 152 404 156 L264 172 L264 352 L404 362 Q426 366 424 348 Z"
-        fill="#2d1654" stroke="url(#gold)" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M448 196 Q450 178 424 182 L262 200 L262 408 L424 420 Q450 424 448 404 Z"
+        fill="#2d1654" stroke="url(#gold)" stroke-width="11" stroke-linejoin="round"/>
   <!-- 오른쪽 페이지 텍스트 줄 -->
-  <line x1="284" y1="203" x2="394" y2="208" stroke="#c9a84c" stroke-width="6.5" opacity="0.45" stroke-linecap="round"/>
-  <line x1="284" y1="232" x2="394" y2="237" stroke="#c9a84c" stroke-width="6.5" opacity="0.45" stroke-linecap="round"/>
-  <line x1="284" y1="261" x2="394" y2="266" stroke="#c9a84c" stroke-width="6.5" opacity="0.45" stroke-linecap="round"/>
-  <line x1="284" y1="291" x2="354" y2="295" stroke="#c9a84c" stroke-width="6.5" opacity="0.45" stroke-linecap="round"/>
-
-  <!-- 하단 텍스트 -->
-  <text x="256" y="432"
-        font-family="Georgia, 'Times New Roman', serif"
-        font-size="58" font-weight="bold" fill="url(#gold)"
-        text-anchor="middle" letter-spacing="8">DABAR</text>
-  <text x="256" y="472"
-        font-family="Arial, sans-serif"
-        font-size="28" fill="#c9a84c"
-        text-anchor="middle" opacity="0.65" letter-spacing="3">다바르 · 말씀</text>
+  <line x1="286" y1="238" x2="414" y2="244" stroke="#c9a84c" stroke-width="7.5" opacity="0.45" stroke-linecap="round"/>
+  <line x1="286" y1="272" x2="414" y2="278" stroke="#c9a84c" stroke-width="7.5" opacity="0.45" stroke-linecap="round"/>
+  <line x1="286" y1="306" x2="414" y2="312" stroke="#c9a84c" stroke-width="7.5" opacity="0.45" stroke-linecap="round"/>
+  <line x1="322" y1="341" x2="414" y2="346" stroke="#c9a84c" stroke-width="7.5" opacity="0.45" stroke-linecap="round"/>
 </svg>`;
 }
 
