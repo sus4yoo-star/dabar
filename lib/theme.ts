@@ -1,0 +1,16 @@
+export const theme = {
+  primary:   "#3b1f6b",
+  primary2:  "#534ab7",
+  primary3:  "#7f77dd",
+  primaryBg: "#eeedfe",
+  gold:      "#c9a84c",
+  goldLight: "#f5e6a3",
+  correct:   "#0f6e56",
+  correctBg: "#e1f5ee",
+  wrong:     "#a32d2d",
+  wrongBg:   "#fcebeb",
+  text:      "#1a1a1a",
+  textMuted: "#666666",
+  border:    "#e0e0e0",
+  bg:        "#f7f5fc",
+};
