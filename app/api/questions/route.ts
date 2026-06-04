@@ -1,31 +1,37 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
+import { BIBLE_BOOKS } from "@/lib/bible";
 import { NextRequest, NextResponse } from "next/server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const VALID_BOOKS = new Set([...BIBLE_BOOKS.old, ...BIBLE_BOOKS.new]);
+const VALID_LEVELS = new Set(["easy", "medium", "hard"]);
+const VALID_TESTAMENTS = new Set(["old", "new"]);
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const level     = searchParams.get("level");
   const testament = searchParams.get("testament");
-  const count     = parseInt(searchParams.get("count") || "10");
-  const booksRaw  = searchParams.get("books"); // 선택한 권 (쉼표 구분)
+  const rawCount  = parseInt(searchParams.get("count") || "10");
+  const count     = Math.max(1, Math.min(30, isNaN(rawCount) ? 10 : rawCount));
+  const booksRaw  = searchParams.get("books");
 
   const books = booksRaw
-    ? booksRaw.split(",").map(b => b.trim()).filter(Boolean)
+    ? booksRaw.split(",").map(b => b.trim()).filter(b => VALID_BOOKS.has(b))
     : [];
 
   let query = supabase.from("questions").select("*").limit(count * 5);
-  if (level     && level     !== "전체") query = query.eq("level", level);
-  if (testament && testament !== "전체") query = query.eq("testament", testament);
-  if (books.length) query = query.in("book", books); // 특정 권 선택 시 필터
+  if (level     && VALID_LEVELS.has(level))     query = query.eq("level", level);
+  if (testament && VALID_TESTAMENTS.has(testament)) query = query.eq("testament", testament);
+  if (books.length) query = query.in("book", books);
 
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data?.length) return NextResponse.json([], { status: 200 });
 
-  const shuffled = [...data].sort(() => Math.random() - 0.5).slice(0, count);
-  return NextResponse.json(shuffled);
+  // Fisher-Yates 셔플
+  const arr = [...data];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return NextResponse.json(arr.slice(0, count));
 }

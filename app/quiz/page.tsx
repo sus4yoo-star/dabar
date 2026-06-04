@@ -22,6 +22,7 @@ function QuizInner() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [showHint, setShowHint] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     const level = params.get("level") || "전체";
@@ -31,7 +32,13 @@ function QuizInner() {
     const qs = new URLSearchParams({ level, testament, count });
     if (books) qs.set("books", books);
     fetch(`/api/questions?${qs.toString()}`)
-      .then(r => r.json()).then(data => { setQuestions(data); setLoading(false); });
+      .then(r => r.json())
+      .then(data => {
+        if (data?.error) { setFetchError("문제를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요."); setLoading(false); return; }
+        setQuestions(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => { setFetchError("네트워크 오류가 발생했습니다. 인터넷 연결을 확인해 주세요."); setLoading(false); });
   }, []);
 
   const goNext = useCallback((currentScore: number, currentAnswers: typeof answers) => {
@@ -64,7 +71,8 @@ function QuizInner() {
   }
 
   if (loading) return <Center>문제를 불러오는 중...</Center>;
-  if (!questions.length) return <Center>문제가 없습니다.</Center>;
+  if (fetchError) return <Center>{fetchError}</Center>;
+  if (!questions.length) return <Center>조건에 맞는 문제가 없습니다. 설정을 바꿔 다시 시도해 주세요.</Center>;
   const q = questions[idx];
 
   return (

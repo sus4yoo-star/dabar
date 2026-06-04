@@ -18,8 +18,12 @@ export default function ResultPage() {
   const router = useRouter();
   const [result, setResult] = useState<Result | null>(null);
 
-  useEffect(() => { const raw = sessionStorage.getItem("quizResult"); if (raw) setResult(JSON.parse(raw)); }, []);
-  if (!result) return <div style={{ textAlign: "center", padding: "4rem", color: "#aaa" }}>로딩 중...</div>;
+  useEffect(() => {
+    const raw = sessionStorage.getItem("quizResult");
+    if (!raw) { router.replace("/"); return; }
+    try { setResult(JSON.parse(raw)); } catch { router.replace("/"); }
+  }, [router]);
+  if (!result) return null;
 
   const pct = Math.round((result.score / result.total) * 100);
   const grade = GRADES.find(g => pct >= g.min)!;
