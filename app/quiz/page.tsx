@@ -31,17 +31,25 @@ function QuizInner() {
     const qs = new URLSearchParams({ level, testament, count });
     if (books) qs.set("books", books);
     fetch(`/api/questions?${qs.toString()}`)
-      .then(r => r.json()).then(data => { setQuestions(data); setLoading(false); });
+      .then(r => r.json())
+      .then(data => { setQuestions(Array.isArray(data) ? data : []); setLoading(false); })
+      .catch(() => { setQuestions([]); setLoading(false); });
   }, []);
 
   const goNext = useCallback((currentScore: number, currentAnswers: typeof answers) => {
     if (idx + 1 >= questions.length) {
-      sessionStorage.setItem("quizResult", JSON.stringify({ score: currentScore, total: questions.length, answers: currentAnswers, questions }));
+      const meta = {
+        testament: params.get("testament") || "전체",
+        level: params.get("level") || "전체",
+        bookCount: (params.get("books") || "").split(",").filter(Boolean).length,
+      };
+      sessionStorage.setItem("quizResult", JSON.stringify({ score: currentScore, total: questions.length, answers: currentAnswers, questions, meta }));
+      sessionStorage.removeItem("quizResultSaved");
       router.push("/result");
     } else {
       setIdx(i => i + 1); setSelected(null); setShowHint(false); setTimeLeft(30);
     }
-  }, [idx, questions, router]);
+  }, [idx, questions, router, params]);
 
   useEffect(() => {
     if (selected !== null || loading || !questions.length) return;
