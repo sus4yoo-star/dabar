@@ -1,8 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { theme } from "@/lib/theme";
 import { BIBLE_BOOKS } from "@/lib/bible";
+import { loadHistory, getStats, clearHistory, HistoryStats } from "@/lib/history";
 
 const TESTAMENTS = [
   { value: "전체", label: "전체" },
@@ -23,6 +24,12 @@ export default function Home() {
   const [level, setLevel]         = useState("전체");
   const [count, setCount]         = useState(10);
   const [books, setBooks]         = useState<string[]>([]);
+  const [stats, setStats]         = useState<HistoryStats | null>(null);
+
+  useEffect(() => {
+    const h = loadHistory();
+    if (h.length) setStats(getStats(h));
+  }, []);
 
   // 성경 구분을 바꾸면, 그 구분에 없는 권 선택은 초기화
   function changeTestament(v: string) {
@@ -49,6 +56,23 @@ export default function Home() {
         <p style={{ fontSize: 13, color: theme.gold, fontWeight: 600, letterSpacing: 1, margin: "0 0 4px" }}>다바르 · 말씀</p>
         <p style={{ fontSize: 14, color: theme.textMuted, margin: 0 }}>성경 퀴즈 — 남녀노소 누구나!</p>
       </div>
+
+      {stats && (
+        <div style={{ background: theme.primaryBg, borderRadius: 12, padding: "14px 16px", marginBottom: "1.5rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: theme.primary, letterSpacing: 1, margin: 0 }}>📊 내 기록</p>
+            <button onClick={() => { clearHistory(); setStats(null); }} style={{ fontSize: 11, color: theme.textMuted, background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>기록 지우기</button>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+            {[["푼 횟수", `${stats.plays}회`], ["평균 정답률", `${stats.avgPct}%`], ["최고 정답률", `${stats.bestPct}%`]].map(([label, val]) => (
+              <div key={label} style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: theme.primary }}>{val}</div>
+                <div style={{ fontSize: 11, color: theme.textMuted }}>{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <Section title="성경 구분"><ChipGroup items={TESTAMENTS} value={testament} onChange={changeTestament} /></Section>
 

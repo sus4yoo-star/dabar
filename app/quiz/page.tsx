@@ -3,6 +3,7 @@ import { Suspense, useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Question } from "@/lib/types";
 import { theme } from "@/lib/theme";
+import { addHistory } from "@/lib/history";
 
 const LEVEL_KO: Record<string, string> = { easy: "쉬움", medium: "보통", hard: "어려움" };
 const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: "#ba7517", hard: theme.wrong };
@@ -44,6 +45,7 @@ function QuizInner() {
   const goNext = useCallback((currentScore: number, currentAnswers: typeof answers) => {
     if (idx + 1 >= questions.length) {
       sessionStorage.setItem("quizResult", JSON.stringify({ score: currentScore, total: questions.length, answers: currentAnswers, questions }));
+      addHistory(currentScore, questions.length);
       router.push("/result");
     } else {
       setIdx(i => i + 1); setSelected(null); setShowHint(false); setTimeLeft(30);
