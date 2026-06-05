@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 import { BIBLE_BOOKS } from "@/lib/bible";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     ? booksRaw.split(",").map(b => b.trim()).filter(b => VALID_BOOKS.has(b))
     : [];
 
-  let query = supabase.from("questions").select("*").limit(count * 5);
+  let query = getSupabase().from("questions").select("*").limit(count * 5);
   if (level     && VALID_LEVELS.has(level))     query = query.eq("level", level);
   if (testament && VALID_TESTAMENTS.has(testament)) query = query.eq("testament", testament);
   if (books.length) query = query.in("book", books);
