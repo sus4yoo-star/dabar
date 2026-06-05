@@ -15,3 +15,38 @@ export interface Question {
   explanation: string;
   created_at: string;
 }
+
+// 로그인한 사용자 프로필
+export interface Profile {
+  id: string;
+  nickname: string;
+  avatar_url: string | null;
+  provider: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// 한 판의 퀴즈 점수 기록
+export interface Score {
+  id: string;
+  user_id: string;
+  score: number;
+  total: number;
+  percentage: number;
+  testament: string | null;
+  level: string | null;
+  book_count: number | null;
+  created_at: string;
+}
+
+// 랭킹(사용자별 집계) — DB의 leaderboard 뷰와 동일한 형태
+export interface LeaderboardRow {
+  user_id: string;
+  nickname: string;
+  avatar_url: string | null;
+  plays: number;
+  total_score: number;
+  best_percentage: number;
+  avg_percentage: number;
+  last_played: string | null;
+}

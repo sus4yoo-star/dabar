@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { theme } from "@/lib/theme";
 import { BIBLE_BOOKS } from "@/lib/bible";
+import { useAuth } from "@/lib/auth";
 
 const TESTAMENTS = [
   { value: "전체", label: "전체" },
@@ -19,6 +20,7 @@ const COUNTS = [5, 10, 20, 30];
 
 export default function Home() {
   const router = useRouter();
+  const { user, nickname, loading, signOut } = useAuth();
   const [testament, setTestament] = useState("전체");
   const [level, setLevel]         = useState("전체");
   const [count, setCount]         = useState(10);
@@ -43,7 +45,19 @@ export default function Home() {
   }
 
   return (
-    <main style={{ maxWidth: 480, margin: "0 auto", padding: "3rem 1.25rem 2rem" }}>
+    <main style={{ maxWidth: 480, margin: "0 auto", padding: "1.25rem 1.25rem 2rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.75rem" }}>
+        <button onClick={() => router.push("/ranking")} style={{ fontSize: 13, fontWeight: 700, color: theme.primary, background: theme.primaryBg, border: "none", borderRadius: 20, padding: "7px 14px", cursor: "pointer" }}>🏆 랭킹</button>
+        {!loading && (user ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 13, color: theme.text, fontWeight: 600, maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nickname}</span>
+            <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "none", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "5px 12px", cursor: "pointer" }}>로그아웃</button>
+          </div>
+        ) : (
+          <button onClick={() => router.push("/login")} style={{ fontSize: 13, fontWeight: 700, color: "#fff", background: theme.primary, border: "none", borderRadius: 20, padding: "7px 16px", cursor: "pointer" }}>로그인</button>
+        ))}
+      </div>
+
       <div style={{ marginBottom: "2.5rem" }}>
         <h1 style={{ fontSize: 32, fontWeight: 800, color: theme.primary, letterSpacing: 4, margin: "0 0 4px" }}>DABAR</h1>
         <p style={{ fontSize: 13, color: theme.gold, fontWeight: 600, letterSpacing: 1, margin: "0 0 4px" }}>다바르 · 말씀</p>
