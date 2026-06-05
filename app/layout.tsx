@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { AuthProvider } from "@/lib/auth";
+import { AuthProvider, AuthGate } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "DABAR · 다바르",
@@ -21,7 +21,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <head><link rel="apple-touch-icon" href="/icons/icon-192.png" /></head>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <AuthGate>{children}</AuthGate>
+        </AuthProvider>
       </body>
     </html>
   );

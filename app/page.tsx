@@ -48,14 +48,12 @@ export default function Home() {
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1.25rem 1.25rem 2rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.75rem" }}>
         <button onClick={() => router.push("/ranking")} style={{ fontSize: 13, fontWeight: 700, color: theme.primary, background: theme.primaryBg, border: "none", borderRadius: 20, padding: "7px 14px", cursor: "pointer" }}>🏆 랭킹</button>
-        {!loading && (user ? (
+        {!loading && user && (
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ fontSize: 13, color: theme.text, fontWeight: 600, maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nickname}</span>
             <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "none", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "5px 12px", cursor: "pointer" }}>로그아웃</button>
           </div>
-        ) : (
-          <button onClick={() => router.push("/login")} style={{ fontSize: 13, fontWeight: 700, color: "#fff", background: theme.primary, border: "none", borderRadius: 20, padding: "7px 16px", cursor: "pointer" }}>로그인</button>
-        ))}
+        )}
       </div>
 
       <div style={{ marginBottom: "2.5rem" }}>

@@ -1,7 +1,9 @@
 "use client";
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { theme } from "@/lib/theme";
 
 export type Provider = "google" | "kakao";
 
@@ -108,4 +110,47 @@ export function useAuth(): AuthState {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within <AuthProvider>");
   return ctx;
+}
+
+// 로그인하지 않으면 다바르를 시작할 수 없도록 막는 관문.
+// 로그인 흐름 자체(로그인 화면·OAuth 콜백)는 통과시킨다.
+const PUBLIC_PATHS = ["/login", "/auth/callback"];
+
+export function AuthGate({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+  const isPublic = PUBLIC_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(p + "/")
+  );
+
+  // 비로그인 사용자가 보호된 화면에 들어오면 로그인 화면으로 보낸다.
+  useEffect(() => {
+    if (!loading && !user && !isPublic) {
+      router.replace("/login");
+    }
+  }, [loading, user, isPublic, router]);
+
+  // 로그인 화면 등 공개 경로는 그대로 보여준다.
+  if (isPublic) return <>{children}</>;
+
+  // 세션 확인 중이거나, 로그인 화면으로 보내는 도중에는 로딩만 표시.
+  if (loading || !user) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: theme.textMuted,
+          fontSize: 14,
+        }}
+      >
+        불러오는 중...
+      </div>
+    );
+  }
+
+  return <>{children}</>;
 }
