@@ -89,7 +89,7 @@ function QuizInner() {
       <p style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.65, color: theme.text, marginBottom: "1.5rem" }}>{q.question}</p>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: "1.25rem" }}>
         {q.options.map((opt, i) => {
-          let bg = "rgba(255,255,255,0.05)", border = `1px solid ${theme.border}`, color = theme.text;
+          let bg = theme.card, border = `1px solid ${theme.border}`, color = theme.text;
           if (selected !== null) {
             if (i === q.answer) { bg = theme.correctBg; border = `2px solid ${theme.correct}`; color = theme.correct; }
             else if (i === selected) { bg = theme.wrongBg; border = `2px solid ${theme.wrong}`; color = theme.wrong; }

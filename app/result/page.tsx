@@ -64,11 +64,8 @@ export default function ResultPage() {
   const wrongs = result.questions.map((q, i) => ({ q, i })).filter(({ i }) => !result.answers[i]?.correct);
   const shownWrongs = wrongs.slice(0, MAX_WRONG);
 
-  // 공유 이미지에 넣을 짧은 복습 줄
-  const wrongByBook: Record<string, number> = {};
-  wrongs.forEach(({ q }) => { wrongByBook[q.book] = (wrongByBook[q.book] || 0) + 1; });
-  const reviewBooks = Object.entries(wrongByBook).sort((a, b) => b[1] - a[1]).map(([b]) => b);
-  const imageTip = reviewBooks.length ? `복습: ${reviewBooks.slice(0, 3).join(", ")}` : "";
+  // 공유 이미지에 넣을 오답노트 (문제 + 정답)
+  const imageWrongs = wrongs.map(({ q }) => ({ q: q.question, a: q.options[q.answer] }));
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
@@ -94,7 +91,7 @@ export default function ResultPage() {
 
       <div style={{ display: "flex", gap: 10, marginBottom: "1.5rem" }}>
         <button
-          onClick={() => downloadResultImage({ score: result.score, total: result.total, percentage: pct, message: grade.msg, color: grade.color, studyTip: imageTip })}
+          onClick={() => downloadResultImage({ score: result.score, total: result.total, percentage: pct, message: grade.msg, color: grade.color, wrongList: imageWrongs })}
           style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: "transparent", color: theme.gold, border: `1.5px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}
         >🖼️ 이미지 저장</button>
         <button
