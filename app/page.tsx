@@ -109,7 +109,7 @@ function ChipGroup({ items, value, onChange }: { items: { value: string; label: 
       {items.map(item => {
         const on = value === item.value;
         return (
-          <button key={item.value} onClick={() => onChange(item.value)} style={{ padding: "9px 18px", borderRadius: 24, fontSize: 14, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : "rgba(255,255,255,0.05)", color: on ? "#fff" : theme.text, fontWeight: on ? 700 : 500 }}>{item.label}</button>
+          <button key={item.value} onClick={() => onChange(item.value)} style={{ padding: "9px 18px", borderRadius: 24, fontSize: 14, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 700 : 500 }}>{item.label}</button>
         );
       })}
     </div>
@@ -136,7 +136,7 @@ function BookPicker({ testament, selected, onToggle, onClear }: {
         </button>
       </div>
       {open && (
-        <div style={{ border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "12px", maxHeight: 220, overflowY: "auto", background: "rgba(255,255,255,0.04)" }}>
+        <div style={{ border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "12px", maxHeight: 220, overflowY: "auto", background: theme.card }}>
           {selected.length > 0 && (
             <button onClick={onClear} style={{ fontSize: 12, color: theme.textMuted, background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 10, textDecoration: "underline" }}>선택 해제 (전체로)</button>
           )}
@@ -147,7 +147,7 @@ function BookPicker({ testament, selected, onToggle, onClear }: {
                 {group.books.map(book => {
                   const on = selected.includes(book);
                   return (
-                    <button key={book} onClick={() => onToggle(book)} style={{ padding: "6px 12px", borderRadius: 18, fontSize: 13, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : "rgba(255,255,255,0.05)", color: on ? "#fff" : theme.text, fontWeight: on ? 700 : 500 }}>{book}</button>
+                    <button key={book} onClick={() => onToggle(book)} style={{ padding: "6px 12px", borderRadius: 18, fontSize: 13, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 700 : 500 }}>{book}</button>
                   );
                 })}
               </div>
