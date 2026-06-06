@@ -95,8 +95,12 @@ create policy "본인 오답 저장" on wrong_answers for insert with check (aut
 create index if not exists idx_wrong_user on wrong_answers(user_id, created_at desc);
 
 
+-- 뷰는 컬럼 순서 변경 충돌을 피하려고 먼저 삭제 후 재생성
+drop view if exists leaderboard;
+drop view if exists leaderboard_weekly;
+
 -- 전체 랭킹 뷰 (누적 포인트 기준)
-create or replace view leaderboard as
+create view leaderboard as
 select
   p.id                                   as user_id,
   p.nickname,
@@ -112,7 +116,7 @@ left join scores s on s.user_id = p.id
 group by p.id, p.nickname, p.avatar_url;
 
 -- 주간 랭킹 뷰 (최근 7일 점수만)
-create or replace view leaderboard_weekly as
+create view leaderboard_weekly as
 select
   p.id                                   as user_id,
   p.nickname,
