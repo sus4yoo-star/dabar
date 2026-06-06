@@ -22,6 +22,7 @@ function QuizInner() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [showHint, setShowHint] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [streak, setStreak] = useState(0); // 연속 정답(콤보)
 
   useEffect(() => {
     const level = params.get("level") || "전체";
@@ -56,7 +57,7 @@ function QuizInner() {
     setTimeLeft(30);
     const t = setInterval(() => {
       setTimeLeft(prev => {
-        if (prev <= 1) { clearInterval(t); setAnswers(a => { const next = [...a, { selected: -1, correct: false }]; goNext(score, next); return next; }); return 0; }
+        if (prev <= 1) { clearInterval(t); setStreak(0); setAnswers(a => { const next = [...a, { selected: -1, correct: false }]; goNext(score, next); return next; }); return 0; }
         return prev - 1;
       });
     }, 1000);
@@ -67,7 +68,7 @@ function QuizInner() {
     if (selected !== null) return;
     setSelected(i);
     const correct = i === questions[idx].answer;
-    if (correct) setScore(s => s + 1);
+    if (correct) { setScore(s => s + 1); setStreak(s => s + 1); } else { setStreak(0); }
     setAnswers(prev => [...prev, { selected: i, correct }]);
   }
 
@@ -77,16 +78,25 @@ function QuizInner() {
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>
+      {/* 전체 진행바 */}
+      <div style={{ height: 6, background: "rgba(0,0,0,0.20)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
+        <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
+      </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-        <span style={{ fontSize: 13, color: theme.textMuted }}>{idx + 1} / {questions.length}</span>
-        <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, color: LEVEL_COLOR[q.level], fontWeight: 700 }}>{LEVEL_KO[q.level]}</span>
+        <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>{idx + 1} / {questions.length}</span>
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, color: LEVEL_COLOR[q.level], fontWeight: 700 }}>{LEVEL_KO[q.level]}</span>
+          {streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, color: theme.gold, fontWeight: 800 }}>🔥 {streak}연속</span>}
+        </div>
         <span style={{ fontSize: 14, fontWeight: 700, color: timeLeft <= 10 ? theme.wrong : theme.textMuted }}>⏱ {timeLeft}초</span>
       </div>
-      <div style={{ height: 5, background: "rgba(255,255,255,0.10)", borderRadius: 3, marginBottom: 20 }}>
-        <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 30) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
+      <div style={{ height: 5, background: "rgba(0,0,0,0.20)", borderRadius: 3, marginBottom: 20 }}>
+        <div style={{ height: "100%", background: timeLeft <= 10 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 30) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
       </div>
-      <p style={{ fontSize: 12, color: theme.gold, fontWeight: 700, margin: "0 0 8px", letterSpacing: 0.5 }}>{q.book} · {q.category}</p>
-      <p style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.65, color: theme.text, marginBottom: "1.5rem" }}>{q.question}</p>
+      <div key={idx} className="fade-in">
+        <p style={{ fontSize: 12, color: theme.gold, fontWeight: 700, margin: "0 0 8px", letterSpacing: 0.5 }}>{q.book} · {q.category}</p>
+        <p style={{ fontSize: 19, fontWeight: 600, lineHeight: 1.65, color: theme.text, marginBottom: "1.5rem" }}>{q.question}</p>
+      </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: "1.25rem" }}>
         {q.options.map((opt, i) => {
           let bg = theme.card, border = `1px solid ${theme.border}`, color = theme.text;
@@ -94,16 +104,17 @@ function QuizInner() {
             if (i === q.answer) { bg = theme.correctBg; border = `2px solid ${theme.correct}`; color = theme.correct; }
             else if (i === selected) { bg = theme.wrongBg; border = `2px solid ${theme.wrong}`; color = theme.wrong; }
           }
+          const anim = selected === null ? "" : i === q.answer ? "anim-pop" : i === selected ? "anim-shake" : "";
           return (
-            <button key={i} onClick={() => handleSelect(i)} style={{ padding: "13px 16px", textAlign: "left", fontSize: 15, borderRadius: 12, background: bg, border, color, cursor: selected !== null ? "default" : "pointer", transition: "all 0.12s" }}>
-              <span style={{ fontWeight: 700, marginRight: 10, color: theme.gold }}>{"①②③④"[i]}</span>{opt}
+            <button key={i} className={anim} onClick={() => handleSelect(i)} style={{ padding: "14px 16px", textAlign: "left", fontSize: 15, borderRadius: 12, background: bg, border, color, cursor: selected !== null ? "default" : "pointer", transition: "background .15s, border-color .15s, color .15s" }}>
+              <span style={{ fontWeight: 700, marginRight: 10, color: i === q.answer && selected !== null ? theme.correct : theme.gold }}>{"①②③④"[i]}</span>{opt}
             </button>
           );
         })}
       </div>
       {selected !== null && (
-        <div style={{ padding: "12px 16px", borderRadius: 12, marginBottom: 12, background: selected === q.answer ? theme.correctBg : theme.wrongBg, border: `1px solid ${selected === q.answer ? theme.correct : theme.wrong}` }}>
-          <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? "🎉 정답!" : `💡 정답: ${q.options[q.answer]}`}</p>
+        <div className="fade-in" style={{ padding: "12px 16px", borderRadius: 12, marginBottom: 12, background: selected === q.answer ? theme.correctBg : theme.wrongBg, border: `1px solid ${selected === q.answer ? theme.correct : theme.wrong}` }}>
+          <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? `🎉 정답!${streak >= 2 ? `  🔥 ${streak}연속!` : ""}` : `💡 정답: ${q.options[q.answer]}`}</p>
           <p style={{ fontSize: 13, color: theme.textMuted, margin: 0, lineHeight: 1.6 }}>{q.explanation}</p>
         </div>
       )}

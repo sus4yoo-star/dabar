@@ -51,24 +51,28 @@ export default function Home() {
         ))}
       </div>
 
-      {/* 환영 + 브랜드 */}
-      <div style={{ marginBottom: "1.5rem" }}>
+      {/* 환영 + 브랜드 (히어로) */}
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
         {user && (
-          <p style={{ fontSize: 14, color: theme.primarySoft, fontWeight: 600, margin: "0 0 10px" }}>
+          <p style={{ fontSize: 14, color: theme.primarySoft, fontWeight: 600, margin: "0 0 16px" }}>
             {nickname}님, 오늘도 말씀과 함께해요 👋
           </p>
         )}
-        <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 38, fontWeight: 700, color: theme.gold, letterSpacing: 5, margin: "0 0 4px" }}>DABAR</h1>
-        <p style={{ fontSize: 13, color: theme.goldSoft, fontWeight: 600, letterSpacing: 1.5, margin: "0 0 4px" }}>다바르 · 말씀 퀴즈</p>
+        <div style={{ position: "relative", display: "inline-block", marginBottom: 14 }}>
+          <div aria-hidden style={{ position: "absolute", inset: -22, borderRadius: "50%", background: "radial-gradient(circle, rgba(230,200,120,0.28) 0%, rgba(230,200,120,0) 70%)" }} />
+          <img src="/icons/icon-192.png" alt="DABAR" width={78} height={78} style={{ position: "relative", borderRadius: 20, boxShadow: "0 10px 34px rgba(0,0,0,0.4)" }} />
+        </div>
+        <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 46, fontWeight: 700, color: theme.gold, letterSpacing: 7, margin: "0 0 6px" }}>DABAR</h1>
+        <p style={{ fontSize: 13, color: theme.goldSoft, fontWeight: 600, letterSpacing: 2, margin: "0 0 6px" }}>다바르 · 말씀 퀴즈</p>
         <p style={{ fontSize: 14, color: theme.textMuted, margin: 0 }}>성경 퀴즈 — 남녀노소 누구나!</p>
       </div>
 
       {/* 말씀 카드 */}
-      <div style={{ background: theme.card, border: `1px solid ${theme.goldBorder}`, borderLeft: `3px solid ${theme.goldSoft}`, borderRadius: 14, padding: "14px 16px", marginBottom: "1.75rem" }}>
-        <p style={{ fontSize: 14, lineHeight: 1.7, color: "#efe9fb", fontStyle: "italic", margin: "0 0 6px" }}>
-          “주의 말씀의 맛이 내게 어찌 그리 단지요 내 입에 꿀보다 더 다니이다”
+      <div className="fade-in-2" style={{ background: theme.card, border: `1px solid ${theme.goldBorder}`, borderLeft: `3px solid ${theme.goldSoft}`, borderRadius: 14, padding: "16px 18px", marginBottom: "2rem" }}>
+        <p style={{ fontSize: 14.5, lineHeight: 1.75, color: "#f4f0ff", fontStyle: "italic", margin: "0 0 7px", textAlign: "center" }}>
+          “주의 말씀의 맛이 내게 어찌 그리 단지요<br />내 입에 꿀보다 더 다니이다”
         </p>
-        <p style={{ fontSize: 12, color: theme.gold, margin: 0 }}>— 시편 119:103</p>
+        <p style={{ fontSize: 12, color: theme.gold, margin: 0, textAlign: "center" }}>— 시편 119:103</p>
       </div>
 
       <Section title="성경 구분"><ChipGroup items={TESTAMENTS} value={testament} onChange={changeTestament} /></Section>

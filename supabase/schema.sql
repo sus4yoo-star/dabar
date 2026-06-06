@@ -90,3 +90,11 @@ group by p.id, p.nickname, p.avatar_url;
 
 -- PostgREST(API) 로 뷰를 읽을 수 있도록 권한 부여
 grant select on leaderboard to anon, authenticated;
+
+-- 테이블 접근 권한(GRANT) — RLS 와 별개로 역할에 부여해야 함
+-- (없으면 "permission denied for table ..." 오류가 난다)
+grant usage on schema public to anon, authenticated;
+grant select on profiles to anon, authenticated;
+grant insert, update on profiles to authenticated;
+grant select on scores to anon, authenticated;
+grant insert on scores to authenticated;

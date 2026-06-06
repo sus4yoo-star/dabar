@@ -78,8 +78,8 @@ export default function ResultPage() {
   const imageWrongs = wrongs.map(({ q }) => ({ q: q.question, a: q.options[q.answer] }));
 
   return (
-    <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: theme.gold, letterSpacing: 3, margin: "0 0 1.5rem" }}>DABAR</p>
+    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
+      <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: theme.gold, letterSpacing: 3, margin: "0 0 1.5rem", textAlign: "center" }}>DABAR</p>
 
       <div style={{ background: grade.bg, border: `1px solid ${theme.cardBorder}`, borderRadius: 18, padding: "2rem", textAlign: "center", marginBottom: "1rem" }}>
         <p style={{ fontSize: 58, fontWeight: 800, color: grade.color, margin: "0 0 4px" }}>{result.score}<span style={{ fontSize: 22, fontWeight: 400, color: theme.textMuted }}> / {result.total}</span></p>
