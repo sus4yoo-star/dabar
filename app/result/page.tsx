@@ -11,7 +11,7 @@ import { isKakaoConfigured, shareResultToKakao } from "@/lib/kakao";
 
 interface ResultMeta { testament?: string; level?: string; bookCount?: number; }
 interface Result {
-  score: number; total: number;
+  score: number; total: number; points?: number;
   answers: { selected: number; correct: boolean }[];
   questions: Question[];
   meta?: ResultMeta;
@@ -44,7 +44,7 @@ export default function ResultPage() {
     setSaveState("saving"); setErrMsg("");
     const pct = Math.round((r.score / r.total) * 100);
     const { error } = await supabase.from("scores").insert({
-      user_id: uid, score: r.score, total: r.total, percentage: pct,
+      user_id: uid, score: r.score, total: r.total, points: r.points ?? 0, percentage: pct,
       testament: r.meta?.testament ?? null, level: r.meta?.level ?? null, book_count: r.meta?.bookCount ?? null,
     });
     if (error) {
@@ -55,6 +55,17 @@ export default function ResultPage() {
     }
     sessionStorage.setItem("quizResultSaved", "1");
     setSaveState("saved");
+
+    // 오답 히스토리 저장 (한 번만)
+    if (!sessionStorage.getItem("wrongsSaved")) {
+      const rows = r.questions
+        .filter((q, i) => !r.answers[i]?.correct)
+        .map(q => ({ user_id: uid, question_id: q.id, book: q.book, category: q.category, question: q.question, correct_answer: q.options[q.answer] }));
+      if (rows.length === 0) { sessionStorage.setItem("wrongsSaved", "1"); return; }
+      const { error: we } = await supabase.from("wrong_answers").insert(rows);
+      if (!we) sessionStorage.setItem("wrongsSaved", "1");
+      else console.error("[DABAR] wrong save error:", we);
+    }
   }, []);
 
   useEffect(() => {
@@ -85,6 +96,7 @@ export default function ResultPage() {
         <p style={{ fontSize: 58, fontWeight: 800, color: grade.color, margin: "0 0 4px" }}>{result.score}<span style={{ fontSize: 22, fontWeight: 400, color: theme.textMuted }}> / {result.total}</span></p>
         <p style={{ fontSize: 16, color: grade.color, margin: "0 0 4px", fontWeight: 700 }}>{grade.msg}</p>
         <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>정답률 {pct}%</p>
+        {!!result.points && <p style={{ fontSize: 15, color: theme.gold, fontWeight: 800, margin: "8px 0 0" }}>⭐ {result.points}점 획득</p>}
       </div>
 
       <div style={{ textAlign: "center", marginBottom: "1.25rem", minHeight: 22 }}>
@@ -141,7 +153,10 @@ export default function ResultPage() {
         </div>
       )}
 
-      <button onClick={() => router.push("/ranking")} style={{ width: "100%", padding: 13, fontSize: 14, fontWeight: 700, background: theme.goldLight, color: theme.gold, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer", marginBottom: 12 }}>🏆 랭킹 보기</button>
+      <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
+        <button onClick={() => router.push("/ranking")} style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: theme.goldLight, color: theme.gold, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}>🏆 랭킹</button>
+        {user && <button onClick={() => router.push("/history")} style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, cursor: "pointer" }}>📒 내 오답노트</button>}
+      </div>
       <div style={{ display: "flex", gap: 10 }}>
         <button onClick={() => router.push("/")} style={{ flex: 1, padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>홈으로</button>
         <button onClick={() => { sessionStorage.removeItem("quizResult"); sessionStorage.removeItem("quizResultSaved"); router.back(); }} style={{ flex: 1, padding: 14, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>다시 도전 →</button>

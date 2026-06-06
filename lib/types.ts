@@ -32,6 +32,7 @@ export interface Score {
   user_id: string;
   score: number;
   total: number;
+  points: number;
   percentage: number;
   testament: string | null;
   level: string | null;
@@ -39,14 +40,27 @@ export interface Score {
   created_at: string;
 }
 
-// 랭킹(사용자별 집계) — DB의 leaderboard 뷰와 동일한 형태
+// 랭킹(사용자별 집계) — DB의 leaderboard / leaderboard_weekly 뷰와 동일한 형태
 export interface LeaderboardRow {
   user_id: string;
   nickname: string;
   avatar_url: string | null;
   plays: number;
   total_score: number;
+  total_points: number;
   best_percentage: number;
   avg_percentage: number;
   last_played: string | null;
+}
+
+// 개인 오답 히스토리
+export interface WrongAnswer {
+  id: string;
+  user_id: string;
+  question_id: string | null;
+  book: string | null;
+  category: string | null;
+  question: string;
+  correct_answer: string;
+  created_at: string;
 }
