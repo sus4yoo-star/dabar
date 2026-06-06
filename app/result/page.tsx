@@ -58,6 +58,14 @@ export default function ResultPage() {
   const pct = Math.round((result.score / result.total) * 100);
   const grade = GRADES.find(g => pct >= g.min)!;
 
+  // 오답이 많은 책 → 복습 추천
+  const wrongByBook: Record<string, number> = {};
+  result.questions.forEach((q, i) => { if (!result.answers[i]?.correct) wrongByBook[q.book] = (wrongByBook[q.book] || 0) + 1; });
+  const studyBooks = Object.entries(wrongByBook).sort((a, b) => b[1] - a[1]).map(([b]) => b);
+  const studyTip = studyBooks.length === 0
+    ? "전부 맞혔어요! 다음 권에도 도전해보세요 🎉"
+    : `복습하면 좋아요 — ${studyBooks.slice(0, 3).join(", ")}`;
+
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
       <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: theme.gold, letterSpacing: 3, margin: "0 0 1.5rem" }}>DABAR</p>
@@ -80,9 +88,18 @@ export default function ResultPage() {
         {user && saveState === "error" && <span style={{ fontSize: 13, color: theme.wrong }}>점수 저장에 실패했어요</span>}
       </div>
 
+      {/* 복습 추천 */}
+      <div style={{ background: theme.card, border: `1px solid ${theme.goldBorder}`, borderLeft: `3px solid ${theme.gold}`, borderRadius: 14, padding: "14px 16px", marginBottom: "1.25rem" }}>
+        <p style={{ fontSize: 12, fontWeight: 700, color: theme.gold, letterSpacing: 0.5, margin: "0 0 6px" }}>📖 오늘의 복습 추천</p>
+        <p style={{ fontSize: 14, color: theme.text, margin: 0, lineHeight: 1.6 }}>{studyTip}</p>
+        {studyBooks.length > 0 && (
+          <p style={{ fontSize: 12, color: theme.textMuted, margin: "6px 0 0" }}>틀린 문제의 성경 권을 다시 펴서 읽어보면 다음엔 더 잘 맞힐 수 있어요.</p>
+        )}
+      </div>
+
       <div style={{ display: "flex", gap: 10, marginBottom: "1.5rem" }}>
         <button
-          onClick={() => downloadResultImage({ score: result.score, total: result.total, percentage: pct, message: grade.msg, color: grade.color })}
+          onClick={() => downloadResultImage({ score: result.score, total: result.total, percentage: pct, message: grade.msg, color: grade.color, studyTip })}
           style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: "transparent", color: theme.gold, border: `1.5px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}
         >🖼️ 이미지 저장</button>
         <button
