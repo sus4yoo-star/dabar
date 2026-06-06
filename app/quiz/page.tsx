@@ -19,7 +19,7 @@ function QuizInner() {
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState<{ selected: number; correct: boolean }[]>([]);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(15);
   const [showHint, setShowHint] = useState(false);
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0); // 연속 정답(콤보)
@@ -48,13 +48,13 @@ function QuizInner() {
       sessionStorage.removeItem("quizResultSaved");
       router.push("/result");
     } else {
-      setIdx(i => i + 1); setSelected(null); setShowHint(false); setTimeLeft(30);
+      setIdx(i => i + 1); setSelected(null); setShowHint(false); setTimeLeft(15);
     }
   }, [idx, questions, router, params]);
 
   useEffect(() => {
     if (selected !== null || loading || !questions.length) return;
-    setTimeLeft(30);
+    setTimeLeft(15);
     const t = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) { clearInterval(t); setStreak(0); setAnswers(a => { const next = [...a, { selected: -1, correct: false }]; goNext(score, next); return next; }); return 0; }
@@ -88,10 +88,10 @@ function QuizInner() {
           <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, color: LEVEL_COLOR[q.level], fontWeight: 700 }}>{LEVEL_KO[q.level]}</span>
           {streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, color: theme.gold, fontWeight: 800 }}>🔥 {streak}연속</span>}
         </div>
-        <span style={{ fontSize: 14, fontWeight: 700, color: timeLeft <= 10 ? theme.wrong : theme.textMuted }}>⏱ {timeLeft}초</span>
+        <span style={{ fontSize: 14, fontWeight: 700, color: timeLeft <= 5 ? theme.wrong : theme.textMuted }}>⏱ {timeLeft}초</span>
       </div>
       <div style={{ height: 5, background: "rgba(0,0,0,0.20)", borderRadius: 3, marginBottom: 20 }}>
-        <div style={{ height: "100%", background: timeLeft <= 10 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 30) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
+        <div style={{ height: "100%", background: timeLeft <= 5 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 15) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
       </div>
       <div key={idx} className="fade-in">
         <p style={{ fontSize: 12, color: theme.gold, fontWeight: 700, margin: "0 0 8px", letterSpacing: 0.5 }}>{q.book} · {q.category}</p>
