@@ -3,8 +3,8 @@ html, body { min-height: 100%; }
 body {
   margin: 0;
   padding: 0;
-  background-color: #2d1c66;
-  background-image: radial-gradient(135% 95% at 50% -8%, #6f4ad0 0%, #4a2fa0 42%, #2d1c66 100%);
+  background-color: #43298f;
+  background-image: radial-gradient(135% 100% at 50% -5%, #8a5fe6 0%, #6040c4 45%, #43298f 100%);
   background-attachment: fixed;
   color: #efe9fb;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

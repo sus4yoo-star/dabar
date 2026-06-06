@@ -37,7 +37,7 @@ export default function LoginPage() {
         justifyContent: "center",
         padding: "3rem 1.5rem",
         background:
-          "radial-gradient(135% 95% at 50% -8%, #6f4ad0 0%, #4a2fa0 42%, #2d1c66 100%)",
+          "radial-gradient(135% 100% at 50% -5%, #8a5fe6 0%, #6040c4 45%, #43298f 100%)",
       }}
     >
       <div style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
