@@ -1,3 +1,9 @@
+-- DABAR 스키마 — 여러 번 실행해도 안전(idempotent)하게 작성.
+-- (정책은 drop policy if exists 후 재생성하므로 "already exists" 오류가 나지 않음)
+
+-- =========================================================================
+-- 문제(questions)
+-- =========================================================================
 create table if not exists questions (
   id          uuid    default gen_random_uuid() primary key,
   book        text    not null,
@@ -17,6 +23,7 @@ create index if not exists idx_questions_level     on questions(level);
 create index if not exists idx_questions_book      on questions(book);
 
 alter table questions enable row level security;
+drop policy if exists "누구나 읽기 가능" on questions;
 create policy "누구나 읽기 가능" on questions for select using (true);
 
 
@@ -35,10 +42,11 @@ create table if not exists profiles (
 );
 
 alter table profiles enable row level security;
--- 랭킹에 닉네임을 보여줘야 하므로 읽기는 모두 허용
+drop policy if exists "프로필 누구나 읽기" on profiles;
 create policy "프로필 누구나 읽기" on profiles for select using (true);
--- 단, 본인 것만 만들고 수정할 수 있음
+drop policy if exists "본인 프로필 생성" on profiles;
 create policy "본인 프로필 생성" on profiles for insert with check (auth.uid() = id);
+drop policy if exists "본인 프로필 수정" on profiles;
 create policy "본인 프로필 수정" on profiles for update using (auth.uid() = id);
 
 
@@ -56,9 +64,9 @@ create table if not exists scores (
 );
 
 alter table scores enable row level security;
--- 랭킹 집계를 위해 읽기는 모두 허용
+drop policy if exists "점수 누구나 읽기" on scores;
 create policy "점수 누구나 읽기" on scores for select using (true);
--- 저장은 본인(로그인한 사용자)만, 그리고 본인 user_id 로만
+drop policy if exists "본인 점수 저장" on scores;
 create policy "본인 점수 저장" on scores for insert with check (auth.uid() = user_id);
 
 create index if not exists idx_scores_user    on scores(user_id);

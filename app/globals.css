@@ -1,9 +1,13 @@
 * { box-sizing: border-box; }
+html, body { min-height: 100%; }
 body {
   margin: 0;
   padding: 0;
-  background: #f7f5fc;
+  background-color: #190d33;
+  background-image: radial-gradient(130% 80% at 50% -10%, #4b2e8f 0%, #311a5e 42%, #190d33 100%);
+  background-attachment: fixed;
+  color: #efe9fb;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #1a1a1a;
 }
 button { font-family: inherit; }
+::placeholder { color: #7a6fa3; }

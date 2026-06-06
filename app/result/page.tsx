@@ -18,10 +18,10 @@ interface Result {
 }
 
 const GRADES = [
-  { min: 90, msg: "🏆 말씀의 달인!", color: theme.correct,  bg: "#e1f5ee" },
-  { min: 70, msg: "😊 훌륭해요!",    color: "#854f0b",      bg: "#faeeda" },
-  { min: 50, msg: "📖 조금 더!",     color: theme.primary,  bg: theme.primaryBg },
-  { min: 0,  msg: "🌱 다시 도전!",   color: theme.wrong,    bg: theme.wrongBg },
+  { min: 90, msg: "🏆 말씀의 달인!", color: theme.correct,     bg: "rgba(74,214,166,0.14)" },
+  { min: 70, msg: "😊 훌륭해요!",    color: theme.gold,        bg: theme.goldLight },
+  { min: 50, msg: "📖 조금 더!",     color: theme.primarySoft, bg: theme.primaryBg },
+  { min: 0,  msg: "🌱 다시 도전!",   color: theme.wrong,       bg: theme.wrongBg },
 ];
 
 export default function ResultPage() {
@@ -37,7 +37,6 @@ export default function ResultPage() {
     try { setResult(JSON.parse(raw)); } catch { sessionStorage.removeItem("quizResult"); }
   }, []);
 
-  // 로그인한 사용자라면 점수를 한 번만 DB 에 기록한다.
   useEffect(() => {
     if (!result || authLoading || !user) return;
     if (savedOnce.current || sessionStorage.getItem("quizResultSaved")) { setSaveState("saved"); return; }
@@ -45,13 +44,8 @@ export default function ResultPage() {
     setSaveState("saving");
     const pct = Math.round((result.score / result.total) * 100);
     supabase.from("scores").insert({
-      user_id: user.id,
-      score: result.score,
-      total: result.total,
-      percentage: pct,
-      testament: result.meta?.testament ?? null,
-      level: result.meta?.level ?? null,
-      book_count: result.meta?.bookCount ?? null,
+      user_id: user.id, score: result.score, total: result.total, percentage: pct,
+      testament: result.meta?.testament ?? null, level: result.meta?.level ?? null, book_count: result.meta?.bookCount ?? null,
     }).then(({ error }) => {
       if (error) { setSaveState("error"); return; }
       sessionStorage.setItem("quizResultSaved", "1");
@@ -59,25 +53,25 @@ export default function ResultPage() {
     });
   }, [result, user, authLoading]);
 
-  if (!result) return <div style={{ textAlign: "center", padding: "4rem", color: "#aaa" }}>로딩 중...</div>;
+  if (!result) return <div style={{ textAlign: "center", padding: "4rem", color: theme.textMuted }}>로딩 중...</div>;
 
   const pct = Math.round((result.score / result.total) * 100);
   const grade = GRADES.find(g => pct >= g.min)!;
 
   return (
-    <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem" }}>
-      <p style={{ fontSize: 14, fontWeight: 800, color: theme.primary, letterSpacing: 3, margin: "0 0 1.5rem" }}>DABAR</p>
-      <div style={{ background: grade.bg, borderRadius: 16, padding: "2rem", textAlign: "center", marginBottom: "1rem" }}>
-        <p style={{ fontSize: 56, fontWeight: 800, color: grade.color, margin: "0 0 4px" }}>{result.score}<span style={{ fontSize: 22, fontWeight: 400 }}> / {result.total}</span></p>
-        <p style={{ fontSize: 16, color: grade.color, margin: "0 0 4px" }}>{grade.msg}</p>
-        <p style={{ fontSize: 13, color: grade.color, opacity: 0.7, margin: 0 }}>정답률 {pct}%</p>
+    <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
+      <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: theme.gold, letterSpacing: 3, margin: "0 0 1.5rem" }}>DABAR</p>
+
+      <div style={{ background: grade.bg, border: `1px solid ${theme.cardBorder}`, borderRadius: 18, padding: "2rem", textAlign: "center", marginBottom: "1rem" }}>
+        <p style={{ fontSize: 58, fontWeight: 800, color: grade.color, margin: "0 0 4px" }}>{result.score}<span style={{ fontSize: 22, fontWeight: 400, color: theme.textMuted }}> / {result.total}</span></p>
+        <p style={{ fontSize: 16, color: grade.color, margin: "0 0 4px", fontWeight: 700 }}>{grade.msg}</p>
+        <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>정답률 {pct}%</p>
       </div>
 
-      {/* 점수 저장 상태 / 로그인 유도 */}
       <div style={{ textAlign: "center", marginBottom: "1.25rem", minHeight: 22 }}>
         {!authLoading && !user && (
           <span style={{ fontSize: 13, color: theme.textMuted }}>
-            <button onClick={() => router.push("/login")} style={{ color: theme.primary, fontWeight: 700, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", padding: 0 }}>로그인</button>
+            <button onClick={() => router.push("/login")} style={{ color: theme.gold, fontWeight: 700, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", padding: 0 }}>로그인</button>
             {" "}하면 점수가 저장되고 랭킹에 올라가요
           </span>
         )}
@@ -86,11 +80,10 @@ export default function ResultPage() {
         {user && saveState === "error" && <span style={{ fontSize: 13, color: theme.wrong }}>점수 저장에 실패했어요</span>}
       </div>
 
-      {/* 공유 / 이미지 저장 */}
       <div style={{ display: "flex", gap: 10, marginBottom: "1.5rem" }}>
         <button
           onClick={() => downloadResultImage({ score: result.score, total: result.total, percentage: pct, message: grade.msg, color: grade.color })}
-          style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: "#fff", color: theme.primary, border: `2px solid ${theme.primary}`, borderRadius: 12, cursor: "pointer" }}
+          style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: "transparent", color: theme.gold, border: `1.5px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}
         >🖼️ 이미지 저장</button>
         <button
           onClick={async () => {
@@ -102,25 +95,25 @@ export default function ResultPage() {
         >💬 카카오 공유</button>
       </div>
 
-      <p style={{ fontSize: 11, fontWeight: 700, color: "#aaa", letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>문제별 결과</p>
-      <div style={{ borderRadius: 12, overflow: "hidden", border: `1px solid ${theme.border}`, marginBottom: "1.5rem" }}>
+      <p style={{ fontSize: 11, fontWeight: 700, color: theme.textFaint, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>문제별 결과</p>
+      <div style={{ borderRadius: 14, overflow: "hidden", border: `1px solid ${theme.cardBorder}`, marginBottom: "1.5rem", background: theme.card }}>
         {result.questions.map((q, i) => (
-          <div key={i} style={{ display: "flex", gap: 12, padding: "12px 16px", borderBottom: i < result.questions.length - 1 ? `1px solid #f0f0f0` : "none", background: "#fff" }}>
+          <div key={i} style={{ display: "flex", gap: 12, padding: "12px 16px", borderBottom: i < result.questions.length - 1 ? `1px solid ${theme.cardBorder}` : "none" }}>
             <span style={{ fontSize: 16, minWidth: 20 }}>{result.answers[i]?.correct ? "✅" : "❌"}</span>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 13, color: theme.text, margin: "0 0 2px" }}>{q.question}</p>
-              {!result.answers[i]?.correct && (<p style={{ fontSize: 12, color: theme.primary, margin: 0, fontWeight: 600 }}>정답: {q.options[q.answer]}</p>)}
+              <p style={{ fontSize: 13, color: theme.text, margin: "0 0 2px", lineHeight: 1.5 }}>{q.question}</p>
+              {!result.answers[i]?.correct && (<p style={{ fontSize: 12, color: theme.gold, margin: 0, fontWeight: 600 }}>정답: {q.options[q.answer]}</p>)}
             </div>
           </div>
         ))}
       </div>
 
-      <button onClick={() => router.push("/ranking")} style={{ width: "100%", padding: 13, fontSize: 14, fontWeight: 700, background: theme.primaryBg, color: theme.primary, border: "none", borderRadius: 12, cursor: "pointer", marginBottom: 12 }}>🏆 랭킹 보기</button>
+      <button onClick={() => router.push("/ranking")} style={{ width: "100%", padding: 13, fontSize: 14, fontWeight: 700, background: theme.goldLight, color: theme.gold, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer", marginBottom: 12 }}>🏆 랭킹 보기</button>
       <div style={{ display: "flex", gap: 10 }}>
-        <button onClick={() => router.push("/")} style={{ flex: 1, padding: 14, fontSize: 15, fontWeight: 700, background: "#fff", color: theme.primary, border: `2px solid ${theme.primary}`, borderRadius: 12, cursor: "pointer" }}>홈으로</button>
+        <button onClick={() => router.push("/")} style={{ flex: 1, padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>홈으로</button>
         <button onClick={() => { sessionStorage.removeItem("quizResult"); sessionStorage.removeItem("quizResultSaved"); router.back(); }} style={{ flex: 1, padding: 14, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>다시 도전 →</button>
       </div>
-      <p style={{ textAlign: "center", fontSize: 11, color: "#ccc", marginTop: "2rem", letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
+      <p style={{ textAlign: "center", fontSize: 11, color: theme.textFaint, marginTop: "2rem", letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
     </main>
   );
 }
