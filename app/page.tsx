@@ -4,6 +4,7 @@ import { useState } from "react";
 import { theme } from "@/lib/theme";
 import { BIBLE_BOOKS, booksForTestament } from "@/lib/bible";
 import { useAuth } from "@/lib/auth";
+import { shareInvite } from "@/lib/share";
 
 const TESTAMENTS = [
   { value: "전체", label: "전체" },
@@ -20,7 +21,9 @@ const COUNTS = [5, 10, 20, 30];
 
 export default function Home() {
   const router = useRouter();
-  const { user, nickname, loading, signOut } = useAuth();
+  const { user, nickname, loading, signOut, updateNickname } = useAuth();
+  const [editingNick, setEditingNick] = useState(false);
+  const [nickDraft, setNickDraft] = useState("");
   const [testament, setTestament] = useState("전체");
   const [level, setLevel]         = useState("전체");
   const [count, setCount]         = useState(10);
@@ -45,10 +48,21 @@ export default function Home() {
           {user && <button onClick={() => router.push("/history")} style={{ fontSize: 13, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer" }}>📒 오답</button>}
         </div>
         {!loading && (user ? (
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 13, color: theme.text, fontWeight: 600, maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nickname}</span>
-            <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "5px 12px", cursor: "pointer" }}>로그아웃</button>
-          </div>
+          editingNick ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <input value={nickDraft} onChange={e => setNickDraft(e.target.value)} maxLength={20} autoFocus
+                style={{ width: 110, fontSize: 13, padding: "6px 10px", borderRadius: 14, border: `1px solid ${theme.gold}`, background: theme.card, color: theme.text, outline: "none" }} />
+              <button onClick={async () => { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else alert("닉네임을 바꾸지 못했어요."); }}
+                style={{ fontSize: 12, fontWeight: 700, color: "#241246", background: theme.gold, border: "none", borderRadius: 14, padding: "6px 12px", cursor: "pointer" }}>저장</button>
+              <button onClick={() => setEditingNick(false)} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>✕</button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <button onClick={() => { setNickDraft(nickname); setEditingNick(true); }} title="닉네임 바꾸기"
+                style={{ fontSize: 13, color: theme.text, fontWeight: 600, maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>{nickname} ✏️</button>
+              <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "5px 12px", cursor: "pointer" }}>로그아웃</button>
+            </div>
+          )
         ) : (
           <button onClick={() => router.push("/login")} style={{ fontSize: 13, fontWeight: 700, color: "#fff", background: theme.primary, border: "none", borderRadius: 20, padding: "7px 16px", cursor: "pointer" }}>로그인</button>
         ))}
@@ -79,6 +93,9 @@ export default function Home() {
       <div style={{ height: "1.1rem" }} />
 
       <button onClick={start} style={{ width: "100%", padding: "15px", fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", letterSpacing: 1, boxShadow: "0 8px 24px rgba(216,190,110,0.25)" }}>퀴즈 시작 →</button>
+      {user && (
+        <button onClick={shareInvite} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: "transparent", color: theme.text, border: `1px solid ${theme.border}`, borderRadius: 12, cursor: "pointer", marginTop: 10 }}>👋 친구 초대하고 같이 경쟁하기</button>
+      )}
       <p style={{ textAlign: "center", fontSize: 11, color: theme.textFaint, marginTop: "1.1rem", letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
     </main>
   );

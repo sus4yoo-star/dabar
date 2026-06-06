@@ -47,31 +47,26 @@ async function ensureKakao(): Promise<any> {
   return Kakao;
 }
 
-interface ShareArgs {
-  score: number;
-  total: number;
-  percentage: number;
-  message: string; // 등급 문구 등
+export interface KakaoFeed {
+  title: string;
+  description: string;
+  link: string;
+  buttonTitle?: string;
+  imageUrl?: string;
 }
 
-// 결과를 카카오톡으로 공유한다. 공유 카드에는 앱 링크가 함께 담겨,
-// 친구가 누르면 DABAR 로 들어와 바로 퀴즈를 풀 수 있다.
-export async function shareResultToKakao({ score, total, percentage, message }: ShareArgs) {
+// 카카오톡 피드 카드 공유 (키가 설정돼 있을 때만 동작)
+export async function kakaoShareFeed({ title, description, link, buttonTitle, imageUrl }: KakaoFeed) {
   const Kakao = await ensureKakao();
-  const link =
-    (process.env.NEXT_PUBLIC_SITE_URL || window.location.origin) || "https://dabar.app";
-  const imageUrl = link.replace(/\/$/, "") + "/icons/icon-512.png";
-
+  const img = imageUrl || link.replace(/\/$/, "") + "/icons/icon-512.png";
   Kakao.Share.sendDefault({
     objectType: "feed",
     content: {
-      title: `DABAR 성경 퀴즈 결과 — ${score}/${total} (${percentage}%)`,
-      description: `${message}\n나도 말씀 퀴즈에 도전해보기!`,
-      imageUrl,
+      title,
+      description,
+      imageUrl: img,
       link: { mobileWebUrl: link, webUrl: link },
     },
-    buttons: [
-      { title: "퀴즈 풀러 가기", link: { mobileWebUrl: link, webUrl: link } },
-    ],
+    buttons: [{ title: buttonTitle || "DABAR 열기", link: { mobileWebUrl: link, webUrl: link } }],
   });
 }

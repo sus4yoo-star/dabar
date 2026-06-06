@@ -7,7 +7,7 @@ import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { downloadResultImage } from "@/lib/resultImage";
-import { isKakaoConfigured, shareResultToKakao } from "@/lib/kakao";
+import { shareResult } from "@/lib/share";
 
 interface ResultMeta { testament?: string; level?: string; bookCount?: number; }
 interface Result {
@@ -122,13 +122,9 @@ export default function ResultPage() {
           style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: "transparent", color: theme.gold, border: `1.5px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}
         >🖼️ 이미지 저장</button>
         <button
-          onClick={async () => {
-            if (!isKakaoConfigured()) { alert("카카오 공유가 아직 설정되지 않았어요."); return; }
-            try { await shareResultToKakao({ score: result.score, total: result.total, percentage: pct, message: grade.msg }); }
-            catch { alert("공유에 실패했어요. 잠시 후 다시 시도해 주세요."); }
-          }}
+          onClick={() => shareResult({ score: result.score, total: result.total, percentage: pct, message: grade.msg })}
           style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: "#FEE500", color: "#191600", border: "none", borderRadius: 12, cursor: "pointer" }}
-        >💬 카카오 공유</button>
+        >💬 공유하기</button>
       </div>
 
       {/* 오답노트 */}

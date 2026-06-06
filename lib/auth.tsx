@@ -13,6 +13,7 @@ interface AuthState {
   avatarUrl: string | null;
   signIn: (provider: Provider) => Promise<void>;
   signOut: () => Promise<void>;
+  updateNickname: (name: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -37,57 +38,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [nickname, setNickname] = useState<string>("");
 
-  // 로그인 직후 프로필 테이블에 닉네임/사진을 저장(있으면 갱신)해서
-  // 랭킹 화면이 최신 이름을 보여줄 수 있게 한다.
-  const upsertProfile = useCallback(async (u: User) => {
+  // 프로필 보장: 없으면 생성(소셜 이름으로), 있으면 닉네임은 유지하고
+  // 아바타/공급자만 갱신한다. (사용자가 바꾼 닉네임을 덮어쓰지 않도록)
+  const ensureProfile = useCallback(async (u: User) => {
     const provider = u.app_metadata?.provider ?? null;
-    await supabase.from("profiles").upsert(
-      {
-        id: u.id,
-        nickname: pickNickname(u),
-        avatar_url: pickAvatar(u),
-        provider,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "id" }
-    );
+    const { data } = await supabase.from("profiles").select("nickname").eq("id", u.id).maybeSingle();
+    if (data) {
+      setNickname(data.nickname || pickNickname(u));
+      supabase.from("profiles").update({ avatar_url: pickAvatar(u), provider, updated_at: new Date().toISOString() }).eq("id", u.id).then(() => {});
+    } else {
+      const nn = pickNickname(u);
+      await supabase.from("profiles").insert({ id: u.id, nickname: nn, avatar_url: pickAvatar(u), provider });
+      setNickname(nn);
+    }
   }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setUser(data.session?.user ?? null);
+      setNickname(pickNickname(data.session?.user ?? null));
       setLoading(false);
-      // 이미 로그인된 사용자도 프로필을 보장(랭킹 표시·집계에 필요)
-      if (data.session?.user) upsertProfile(data.session.user).catch(() => {});
+      if (data.session?.user) ensureProfile(data.session.user).catch(() => {});
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
       setSession(sess);
       setUser(sess?.user ?? null);
       setLoading(false);
-      if (event === "SIGNED_IN" && sess?.user) {
-        upsertProfile(sess.user).catch(() => {});
-      }
+      if (sess?.user) setNickname(prev => prev || pickNickname(sess.user));
+      if (event === "SIGNED_IN" && sess?.user) ensureProfile(sess.user).catch(() => {});
     });
     return () => sub.subscription.unsubscribe();
-  }, [upsertProfile]);
+  }, [ensureProfile]);
 
   const signIn = useCallback(async (provider: Provider) => {
     const redirectTo =
       (process.env.NEXT_PUBLIC_SITE_URL || window.location.origin) + "/auth/callback";
-    await supabase.auth.signInWithOAuth({
-      provider,
-      options: { redirectTo },
-    });
+    await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
   }, []);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
+    setNickname("");
   }, []);
+
+  // 앱에서 닉네임 변경
+  const updateNickname = useCallback(async (name: string) => {
+    if (!user) return false;
+    const trimmed = name.trim().slice(0, 20);
+    if (!trimmed) return false;
+    const { error } = await supabase.from("profiles").update({ nickname: trimmed, updated_at: new Date().toISOString() }).eq("id", user.id);
+    if (error) { console.error("[DABAR] nickname update error:", error); return false; }
+    setNickname(trimmed);
+    return true;
+  }, [user]);
 
   return (
     <AuthContext.Provider
@@ -95,10 +104,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         session,
         loading,
-        nickname: pickNickname(user),
+        nickname: nickname || pickNickname(user),
         avatarUrl: pickAvatar(user),
         signIn,
         signOut,
+        updateNickname,
       }}
     >
       {children}
