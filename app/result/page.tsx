@@ -1,6 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Question } from "@/lib/types";
 import { theme } from "@/lib/theme";
@@ -31,6 +31,7 @@ export default function ResultPage() {
   const { user, loading: authLoading } = useAuth();
   const [result, setResult] = useState<Result | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [errMsg, setErrMsg] = useState("");
   const savedOnce = useRef(false);
 
   useEffect(() => {
@@ -39,21 +40,30 @@ export default function ResultPage() {
     try { setResult(JSON.parse(raw)); } catch { sessionStorage.removeItem("quizResult"); }
   }, []);
 
+  const saveScore = useCallback(async (r: Result, uid: string) => {
+    setSaveState("saving"); setErrMsg("");
+    const pct = Math.round((r.score / r.total) * 100);
+    const { error } = await supabase.from("scores").insert({
+      user_id: uid, score: r.score, total: r.total, percentage: pct,
+      testament: r.meta?.testament ?? null, level: r.meta?.level ?? null, book_count: r.meta?.bookCount ?? null,
+    });
+    if (error) {
+      console.error("[DABAR] score save error:", error);
+      setErrMsg(error.message || error.hint || error.code || "알 수 없는 오류");
+      setSaveState("error");
+      return;
+    }
+    sessionStorage.setItem("quizResultSaved", "1");
+    setSaveState("saved");
+  }, []);
+
   useEffect(() => {
     if (!result || authLoading || !user) return;
-    if (savedOnce.current || sessionStorage.getItem("quizResultSaved")) { setSaveState("saved"); return; }
+    if (sessionStorage.getItem("quizResultSaved")) { setSaveState("saved"); return; }
+    if (savedOnce.current) return;
     savedOnce.current = true;
-    setSaveState("saving");
-    const pct = Math.round((result.score / result.total) * 100);
-    supabase.from("scores").insert({
-      user_id: user.id, score: result.score, total: result.total, percentage: pct,
-      testament: result.meta?.testament ?? null, level: result.meta?.level ?? null, book_count: result.meta?.bookCount ?? null,
-    }).then(({ error }) => {
-      if (error) { setSaveState("error"); return; }
-      sessionStorage.setItem("quizResultSaved", "1");
-      setSaveState("saved");
-    });
-  }, [result, user, authLoading]);
+    saveScore(result, user.id);
+  }, [result, user, authLoading, saveScore]);
 
   if (!result) return <div style={{ textAlign: "center", padding: "4rem", color: theme.textMuted }}>로딩 중...</div>;
 
@@ -86,7 +96,12 @@ export default function ResultPage() {
         )}
         {user && saveState === "saving" && <span style={{ fontSize: 13, color: theme.textMuted }}>점수 저장 중...</span>}
         {user && saveState === "saved" && <span style={{ fontSize: 13, color: theme.correct }}>✅ 점수가 저장되었어요</span>}
-        {user && saveState === "error" && <span style={{ fontSize: 13, color: theme.wrong }}>점수 저장에 실패했어요</span>}
+        {user && saveState === "error" && (
+          <span style={{ fontSize: 13, color: theme.wrong }}>
+            점수 저장 실패{errMsg ? ` — ${errMsg}` : ""}{"  "}
+            <button onClick={() => user && saveScore(result, user.id)} style={{ color: theme.gold, fontWeight: 700, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", padding: 0 }}>다시 저장</button>
+          </span>
+        )}
       </div>
 
       <div style={{ display: "flex", gap: 10, marginBottom: "1.5rem" }}>
