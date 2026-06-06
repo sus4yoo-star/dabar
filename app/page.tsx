@@ -37,9 +37,9 @@ export default function Home() {
   }
 
   return (
-    <main style={{ maxWidth: 480, margin: "0 auto", padding: "1.25rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
+    <main style={{ maxWidth: 440, margin: "0 auto", padding: "0.85rem 1.1rem 1.4rem", minHeight: "100dvh" }}>
       {/* 상단 바 */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
         <button onClick={() => router.push("/ranking")} style={{ fontSize: 13, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "7px 14px", cursor: "pointer" }}>🏆 랭킹</button>
         {!loading && (user ? (
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -51,28 +51,19 @@ export default function Home() {
         ))}
       </div>
 
-      {/* 환영 + 브랜드 (히어로) */}
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+      {/* 환영 + 브랜드 (히어로) — 컴팩트 */}
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.1rem" }}>
         {user && (
-          <p style={{ fontSize: 14, color: theme.primarySoft, fontWeight: 600, margin: "0 0 16px" }}>
+          <p style={{ fontSize: 13, color: theme.primarySoft, fontWeight: 600, margin: "0 0 8px" }}>
             {nickname}님, 오늘도 말씀과 함께해요 👋
           </p>
         )}
-        <div style={{ position: "relative", display: "inline-block", marginBottom: 14 }}>
-          <div aria-hidden style={{ position: "absolute", inset: -22, borderRadius: "50%", background: "radial-gradient(circle, rgba(230,200,120,0.28) 0%, rgba(230,200,120,0) 70%)" }} />
-          <img src="/icons/icon-192.png" alt="DABAR" width={78} height={78} style={{ position: "relative", borderRadius: 20, boxShadow: "0 10px 34px rgba(0,0,0,0.4)" }} />
+        <div style={{ position: "relative", display: "inline-block", marginBottom: 6 }}>
+          <div aria-hidden style={{ position: "absolute", inset: -14, borderRadius: "50%", background: "radial-gradient(circle, rgba(230,200,120,0.26) 0%, rgba(230,200,120,0) 70%)" }} />
+          <img src="/icons/icon-192.png" alt="DABAR" width={52} height={52} style={{ position: "relative", borderRadius: 14, boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }} />
         </div>
-        <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 46, fontWeight: 700, color: theme.gold, letterSpacing: 7, margin: "0 0 6px" }}>DABAR</h1>
-        <p style={{ fontSize: 13, color: theme.goldSoft, fontWeight: 600, letterSpacing: 2, margin: "0 0 6px" }}>다바르 · 말씀 퀴즈</p>
-        <p style={{ fontSize: 14, color: theme.textMuted, margin: 0 }}>성경 퀴즈 — 남녀노소 누구나!</p>
-      </div>
-
-      {/* 말씀 카드 */}
-      <div className="fade-in-2" style={{ background: theme.card, border: `1px solid ${theme.goldBorder}`, borderLeft: `3px solid ${theme.goldSoft}`, borderRadius: 14, padding: "16px 18px", marginBottom: "2rem" }}>
-        <p style={{ fontSize: 14.5, lineHeight: 1.75, color: "#f4f0ff", fontStyle: "italic", margin: "0 0 7px", textAlign: "center" }}>
-          “주의 말씀의 맛이 내게 어찌 그리 단지요<br />내 입에 꿀보다 더 다니이다”
-        </p>
-        <p style={{ fontSize: 12, color: theme.gold, margin: 0, textAlign: "center" }}>— 시편 119:103</p>
+        <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 30, fontWeight: 700, color: theme.gold, letterSpacing: 5, margin: "2px 0 2px" }}>DABAR</h1>
+        <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>다바르 · 말씀 퀴즈 — 남녀노소 누구나!</p>
       </div>
 
       <Section title="성경 구분"><ChipGroup items={TESTAMENTS} value={testament} onChange={changeTestament} /></Section>
@@ -82,26 +73,26 @@ export default function Home() {
         <ChipGroup items={COUNTS.map(n => ({ value: String(n), label: `${n}문제` }))} value={String(count)} onChange={v => setCount(Number(v))} />
       </Section>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, margin: "1.5rem 0 2rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, margin: "0.9rem 0 1.1rem" }}>
         {[["📖","3,000+","문제"],["⏱","30초","문제당"],["🏆","66권","성경 전체"]].map(([icon,val,label]) => (
-          <div key={label} style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "14px 8px", textAlign: "center" }}>
-            <div style={{ fontSize: 18, marginBottom: 4 }}>{icon}</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: theme.gold }}>{val}</div>
-            <div style={{ fontSize: 11, color: theme.textMuted }}>{label}</div>
+          <div key={label} style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "9px 6px", textAlign: "center" }}>
+            <div style={{ fontSize: 15, marginBottom: 2 }}>{icon}</div>
+            <div style={{ fontSize: 13.5, fontWeight: 700, color: theme.gold }}>{val}</div>
+            <div style={{ fontSize: 10.5, color: theme.textMuted }}>{label}</div>
           </div>
         ))}
       </div>
 
-      <button onClick={start} style={{ width: "100%", padding: "16px", fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", letterSpacing: 1, boxShadow: "0 8px 24px rgba(216,190,110,0.25)" }}>퀴즈 시작 →</button>
-      <p style={{ textAlign: "center", fontSize: 11, color: theme.textFaint, marginTop: "2rem", letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
+      <button onClick={start} style={{ width: "100%", padding: "15px", fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", letterSpacing: 1, boxShadow: "0 8px 24px rgba(216,190,110,0.25)" }}>퀴즈 시작 →</button>
+      <p style={{ textAlign: "center", fontSize: 11, color: theme.textFaint, marginTop: "1.1rem", letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
     </main>
   );
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: "1.25rem" }}>
-      <p style={{ fontSize: 11, fontWeight: 700, color: theme.textFaint, letterSpacing: 1, textTransform: "uppercase", margin: "0 0 8px" }}>{title}</p>
+    <div style={{ marginBottom: "0.85rem" }}>
+      <p style={{ fontSize: 11, fontWeight: 700, color: theme.textFaint, letterSpacing: 1, textTransform: "uppercase", margin: "0 0 6px" }}>{title}</p>
       {children}
     </div>
   );
@@ -113,7 +104,7 @@ function ChipGroup({ items, value, onChange }: { items: { value: string; label: 
       {items.map(item => {
         const on = value === item.value;
         return (
-          <button key={item.value} onClick={() => onChange(item.value)} style={{ padding: "9px 18px", borderRadius: 24, fontSize: 14, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 700 : 500 }}>{item.label}</button>
+          <button key={item.value} onClick={() => onChange(item.value)} style={{ padding: "8px 16px", borderRadius: 22, fontSize: 14, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 700 : 500 }}>{item.label}</button>
         );
       })}
     </div>
@@ -132,8 +123,8 @@ function BookPicker({ testament, selected, onToggle, onClear }: {
   const summary = selected.length === 0 ? "전체 권" : `${selected.length}권 선택됨`;
 
   return (
-    <div style={{ marginBottom: "1.25rem" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0 0 8px" }}>
+    <div style={{ marginBottom: "0.85rem" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0 0 6px" }}>
         <p style={{ fontSize: 11, fontWeight: 700, color: theme.textFaint, letterSpacing: 1, textTransform: "uppercase", margin: 0 }}>성경 권 (선택)</p>
         <button onClick={() => setOpen(o => !o)} style={{ fontSize: 12, color: theme.gold, background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
           {summary} {open ? "▲" : "▼"}
