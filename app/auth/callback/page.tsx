@@ -12,19 +12,20 @@ function CallbackInner() {
 
   useEffect(() => {
     (async () => {
-      try {
-        const url = new URL(window.location.href);
-        const code = url.searchParams.get("code");
-        const oauthError = url.searchParams.get("error");
-        if (oauthError) throw new Error(oauthError);
-        if (code) {
-          const { error } = await supabase.auth.exchangeCodeForSession(code);
-          if (error) throw error;
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+      const oauthError = url.searchParams.get("error");
+      if (oauthError) { setError(true); return; }
+
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) {
+          // 코드가 이미 처리됐을 수도 있으니, 세션이 실제로 잡혔는지 확인 후 판단
+          const { data } = await supabase.auth.getSession();
+          if (!data.session) { setError(true); return; }
         }
-        router.replace("/");
-      } catch (e) {
-        setError(true);
       }
+      router.replace("/");
     })();
   }, [router]);
 
