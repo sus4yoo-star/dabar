@@ -12,7 +12,7 @@ const MEDALS = ["🥇", "🥈", "🥉"];
 export default function RankingPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const [tab, setTab] = useState<"weekly" | "all">("weekly");
+  const [tab, setTab] = useState<"weekly" | "all">("all");
   const [rows, setRows] = useState<LeaderboardRow[] | null>(null);
   const [error, setError] = useState(false);
   const [myRank, setMyRank] = useState<number | null>(null);
@@ -56,7 +56,7 @@ export default function RankingPage() {
 
       {/* 주간 / 전체 토글 */}
       <div style={{ display: "flex", gap: 7, marginBottom: "1rem" }}>
-        {([["weekly", "🔥 주간"], ["all", "🏆 전체"]] as const).map(([key, label]) => {
+        {([["all", "🏆 전체"], ["weekly", "🔥 주간"]] as const).map(([key, label]) => {
           const on = tab === key;
           return (
             <button key={key} onClick={() => setTab(key)} style={{ flex: 1, padding: "10px", borderRadius: 12, fontSize: 14, fontWeight: on ? 800 : 600, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text }}>{label}</button>
@@ -64,7 +64,7 @@ export default function RankingPage() {
         })}
       </div>
       <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 1.1rem" }}>
-        {tab === "weekly" ? "최근 7일 동안 모은 점수예요. 매주 새로 시작!" : "지금까지 모은 누적 점수예요. 콤보가 쌓일수록 ↑"}
+        {tab === "weekly" ? "최근 7일 동안 모은 점수예요. (전체 기록은 사라지지 않아요)" : "지금까지 모은 누적 점수예요 — 사라지지 않고 계속 쌓입니다 ⭐"}
       </p>
 
       {user && myRow && (
