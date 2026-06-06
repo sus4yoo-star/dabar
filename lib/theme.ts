@@ -7,10 +7,10 @@ export const theme = {
   goldSoft:   "#c9a84c",
 
   // 배경 / 표면 (밝은 보라 톤)
-  bg:        "#2a1a5e",
-  bgGrad:    "radial-gradient(135% 95% at 50% -8%, #6f4ad0 0%, #4a2fa0 42%, #2d1c66 100%)",
-  card:      "rgba(255,255,255,0.08)",
-  cardBorder:"rgba(255,255,255,0.14)",
+  bg:        "#43298f",
+  bgGrad:    "radial-gradient(135% 100% at 50% -5%, #8a5fe6 0%, #6040c4 45%, #43298f 100%)",
+  card:      "rgba(255,255,255,0.11)",
+  cardBorder:"rgba(255,255,255,0.20)",
   goldBorder:"rgba(216,190,110,0.28)",
   primaryBg: "rgba(124,92,255,0.16)",   // 통계 카드·선택 안 된 칩 등
   goldLight: "rgba(216,190,110,0.12)",
