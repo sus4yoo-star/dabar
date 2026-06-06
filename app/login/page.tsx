@@ -45,12 +45,9 @@ export default function LoginPage() {
         {busy === "google" ? "이동 중..." : "구글(Gmail)로 시작하기"}
       </button>
 
-      <button
-        onClick={() => router.push("/")}
-        style={{ marginTop: 28, fontSize: 13, color: theme.textMuted, background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
-      >
-        로그인 없이 둘러보기
-      </button>
+      <p style={{ fontSize: 12, color: theme.textMuted, marginTop: 22, lineHeight: 1.6 }}>
+        가입은 무료예요. 카카오·구글 계정으로<br />3초 만에 시작할 수 있어요.
+      </p>
 
       <p style={{ fontSize: 11, color: "#bbb", marginTop: "3rem", letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
     </main>
