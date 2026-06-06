@@ -12,56 +12,66 @@ const MEDALS = ["🥇", "🥈", "🥉"];
 export default function RankingPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const [tab, setTab] = useState<"weekly" | "all">("weekly");
   const [rows, setRows] = useState<LeaderboardRow[] | null>(null);
   const [error, setError] = useState(false);
   const [myRank, setMyRank] = useState<number | null>(null);
   const [myRow, setMyRow] = useState<LeaderboardRow | null>(null);
 
+  const view = tab === "weekly" ? "leaderboard_weekly" : "leaderboard";
+
   useEffect(() => {
+    setRows(null); setError(false); setMyRank(null); setMyRow(null);
     supabase
-      .from("leaderboard")
+      .from(view)
       .select("*")
+      .order("total_points", { ascending: false })
       .order("total_score", { ascending: false })
-      .order("best_percentage", { ascending: false })
       .limit(50)
       .then(({ data, error }) => {
         if (error) { setError(true); return; }
         setRows((data ?? []) as LeaderboardRow[]);
       });
-  }, []);
+  }, [view]);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data: mine } = await supabase.from("leaderboard").select("*").eq("user_id", user.id).maybeSingle();
-      if (!mine) return;
+      const { data: mine } = await supabase.from(view).select("*").eq("user_id", user.id).maybeSingle();
+      if (!mine) { setMyRow(null); setMyRank(null); return; }
       setMyRow(mine as LeaderboardRow);
       const { count } = await supabase
-        .from("leaderboard").select("user_id", { count: "exact", head: true })
-        .gt("total_score", (mine as LeaderboardRow).total_score);
+        .from(view).select("user_id", { count: "exact", head: true })
+        .gt("total_points", (mine as LeaderboardRow).total_points);
       setMyRank((count ?? 0) + 1);
     })();
-  }, [user]);
+  }, [user, view]);
 
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: 0 }}>🏆 랭킹</h1>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>홈으로</button>
       </div>
-      <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 1.25rem" }}>누적 정답 수가 많은 순서예요. 많이 풀수록 순위가 올라갑니다!</p>
+
+      {/* 주간 / 전체 토글 */}
+      <div style={{ display: "flex", gap: 7, marginBottom: "1rem" }}>
+        {([["weekly", "🔥 주간"], ["all", "🏆 전체"]] as const).map(([key, label]) => {
+          const on = tab === key;
+          return (
+            <button key={key} onClick={() => setTab(key)} style={{ flex: 1, padding: "10px", borderRadius: 12, fontSize: 14, fontWeight: on ? 800 : 600, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text }}>{label}</button>
+          );
+        })}
+      </div>
+      <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 1.1rem" }}>
+        {tab === "weekly" ? "최근 7일 동안 모은 점수예요. 매주 새로 시작!" : "지금까지 모은 누적 점수예요. 콤보가 쌓일수록 ↑"}
+      </p>
 
       {user && myRow && (
-        <div style={{ display: "flex", alignItems: "center", gap: 12, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "12px 16px", marginBottom: "1.25rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "12px 16px", marginBottom: "1.1rem" }}>
           <span style={{ fontSize: 16, fontWeight: 800, color: theme.gold, minWidth: 36 }}>{myRank ? `${myRank}위` : "-"}</span>
           <span style={{ flex: 1, fontSize: 14, fontWeight: 700, color: theme.text }}>{myRow.nickname} <span style={{ color: theme.textMuted, fontWeight: 400 }}>(나)</span></span>
-          <span style={{ fontSize: 14, fontWeight: 700, color: theme.gold }}>{myRow.total_score}점</span>
-        </div>
-      )}
-      {!user && (
-        <div style={{ textAlign: "center", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "16px", marginBottom: "1.25rem", fontSize: 13, color: theme.textMuted }}>
-          <button onClick={() => router.push("/login")} style={{ color: theme.gold, fontWeight: 700, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", padding: 0 }}>로그인</button>
-          {" "}하면 내 순위가 표시돼요
+          <span style={{ fontSize: 14, fontWeight: 800, color: theme.gold }}>⭐ {myRow.total_points}</span>
         </div>
       )}
 
@@ -77,8 +87,8 @@ export default function RankingPage() {
               <div key={r.user_id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderBottom: i < rows.length - 1 ? `1px solid ${theme.cardBorder}` : "none", background: mine ? theme.primaryBg : "transparent" }}>
                 <span style={{ fontSize: 15, fontWeight: 800, color: i < 3 ? theme.gold : theme.textMuted, minWidth: 32, textAlign: "center" }}>{MEDALS[i] ?? i + 1}</span>
                 <span style={{ flex: 1, fontSize: 14, fontWeight: mine ? 700 : 500, color: theme.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.nickname}{mine ? " (나)" : ""}</span>
-                <span style={{ fontSize: 12, color: theme.textMuted, minWidth: 56, textAlign: "right" }}>{r.plays}판</span>
-                <span style={{ fontSize: 14, fontWeight: 700, color: theme.gold, minWidth: 56, textAlign: "right" }}>{r.total_score}점</span>
+                <span style={{ fontSize: 12, color: theme.textMuted, minWidth: 48, textAlign: "right" }}>{r.plays}판</span>
+                <span style={{ fontSize: 14, fontWeight: 800, color: theme.gold, minWidth: 64, textAlign: "right" }}>⭐ {r.total_points}</span>
               </div>
             );
           })}

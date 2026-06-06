@@ -40,7 +40,10 @@ export default function Home() {
     <main style={{ maxWidth: 440, margin: "0 auto", padding: "0.85rem 1.1rem 1.4rem", minHeight: "100dvh" }}>
       {/* 상단 바 */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-        <button onClick={() => router.push("/ranking")} style={{ fontSize: 13, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "7px 14px", cursor: "pointer" }}>🏆 랭킹</button>
+        <div style={{ display: "flex", gap: 7 }}>
+          <button onClick={() => router.push("/ranking")} style={{ fontSize: 13, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "7px 14px", cursor: "pointer" }}>🏆 랭킹</button>
+          {user && <button onClick={() => router.push("/history")} style={{ fontSize: 13, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer" }}>📒 오답</button>}
+        </div>
         {!loading && (user ? (
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ fontSize: 13, color: theme.text, fontWeight: 600, maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nickname}</span>
@@ -97,7 +100,7 @@ function ChipGroup({ items, value, onChange }: { items: { value: string; label: 
       {items.map(item => {
         const on = value === item.value;
         return (
-          <button key={item.value} onClick={() => onChange(item.value)} style={{ flex: 1, padding: "11px 4px", borderRadius: 12, fontSize: 14.5, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 800 : 600 }}>{item.label}</button>
+          <button key={item.value} onClick={() => onChange(item.value)} style={{ flex: 1, padding: "15px 4px", borderRadius: 13, fontSize: 16, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 800 : 600 }}>{item.label}</button>
         );
       })}
     </div>

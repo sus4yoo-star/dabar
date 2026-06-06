@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Question } from "@/lib/types";
 import { theme } from "@/lib/theme";
@@ -23,6 +23,9 @@ function QuizInner() {
   const [showHint, setShowHint] = useState(false);
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0); // 연속 정답(콤보)
+  const [points, setPoints] = useState(0); // 콤보 보너스 포함 점수
+  const [lastGain, setLastGain] = useState(0);
+  const pointsRef = useRef(0);
 
   useEffect(() => {
     const level = params.get("level") || "전체";
@@ -44,8 +47,9 @@ function QuizInner() {
         level: params.get("level") || "전체",
         bookCount: (params.get("books") || "").split(",").filter(Boolean).length,
       };
-      sessionStorage.setItem("quizResult", JSON.stringify({ score: currentScore, total: questions.length, answers: currentAnswers, questions, meta }));
+      sessionStorage.setItem("quizResult", JSON.stringify({ score: currentScore, total: questions.length, points: pointsRef.current, answers: currentAnswers, questions, meta }));
       sessionStorage.removeItem("quizResultSaved");
+      sessionStorage.removeItem("wrongsSaved");
       router.push("/result");
     } else {
       setIdx(i => i + 1); setSelected(null); setShowHint(false); setTimeLeft(15);
@@ -68,7 +72,19 @@ function QuizInner() {
     if (selected !== null) return;
     setSelected(i);
     const correct = i === questions[idx].answer;
-    if (correct) { setScore(s => s + 1); setStreak(s => s + 1); } else { setStreak(0); }
+    if (correct) {
+      const newStreak = streak + 1;
+      const combo = Math.min((newStreak - 1) * 5, 25); // 연속 정답 보너스
+      const gained = 10 + combo + timeLeft;             // 기본10 + 콤보 + 남은시간(빠를수록 ↑)
+      pointsRef.current += gained;
+      setScore(s => s + 1);
+      setStreak(newStreak);
+      setPoints(pointsRef.current);
+      setLastGain(gained);
+    } else {
+      setStreak(0);
+      setLastGain(0);
+    }
     setAnswers(prev => [...prev, { selected: i, correct }]);
   }
 
@@ -83,7 +99,7 @@ function QuizInner() {
         <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-        <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>{idx + 1} / {questions.length}</span>
+        <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>{idx + 1}/{questions.length} · <span style={{ color: theme.gold }}>⭐{points}</span></span>
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, color: LEVEL_COLOR[q.level], fontWeight: 700 }}>{LEVEL_KO[q.level]}</span>
           {streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, color: theme.gold, fontWeight: 800 }}>🔥 {streak}연속</span>}
@@ -114,7 +130,7 @@ function QuizInner() {
       </div>
       {selected !== null && (
         <div className="fade-in" style={{ padding: "12px 16px", borderRadius: 12, marginBottom: 12, background: selected === q.answer ? theme.correctBg : theme.wrongBg, border: `1px solid ${selected === q.answer ? theme.correct : theme.wrong}` }}>
-          <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? `🎉 정답!${streak >= 2 ? `  🔥 ${streak}연속!` : ""}` : `💡 정답: ${q.options[q.answer]}`}</p>
+          <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? `🎉 정답! +${lastGain}점${streak >= 2 ? `  🔥 ${streak}연속` : ""}` : `💡 정답: ${q.options[q.answer]}`}</p>
           <p style={{ fontSize: 13, color: theme.textMuted, margin: 0, lineHeight: 1.6 }}>{q.explanation}</p>
         </div>
       )}
