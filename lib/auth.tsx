@@ -59,6 +59,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(data.session);
       setUser(data.session?.user ?? null);
       setLoading(false);
+      // 이미 로그인된 사용자도 프로필을 보장(랭킹 표시·집계에 필요)
+      if (data.session?.user) upsertProfile(data.session.user).catch(() => {});
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
