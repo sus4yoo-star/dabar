@@ -11,6 +11,7 @@ interface AuthState {
   loading: boolean;
   nickname: string;
   avatarUrl: string | null;
+  isAdmin: boolean;
   signIn: (provider: Provider) => Promise<void>;
   signOut: () => Promise<void>;
   updateNickname: (name: string) => Promise<boolean>;
@@ -39,14 +40,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [nickname, setNickname] = useState<string>("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // 프로필 보장: 없으면 생성(소셜 이름으로), 있으면 닉네임은 유지하고
   // 아바타/공급자만 갱신한다. (사용자가 바꾼 닉네임을 덮어쓰지 않도록)
   const ensureProfile = useCallback(async (u: User) => {
     const provider = u.app_metadata?.provider ?? null;
-    const { data } = await supabase.from("profiles").select("nickname").eq("id", u.id).maybeSingle();
+    const { data } = await supabase.from("profiles").select("nickname, is_admin").eq("id", u.id).maybeSingle();
     if (data) {
       setNickname(data.nickname || pickNickname(u));
+      setIsAdmin(!!data.is_admin);
       supabase.from("profiles").update({ avatar_url: pickAvatar(u), provider, updated_at: new Date().toISOString() }).eq("id", u.id).then(() => {});
     } else {
       const nn = pickNickname(u);
@@ -85,6 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setSession(null);
     setNickname("");
+    setIsAdmin(false);
   }, []);
 
   // 앱에서 닉네임 변경
@@ -106,6 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         nickname: nickname || pickNickname(user),
         avatarUrl: pickAvatar(user),
+        isAdmin,
         signIn,
         signOut,
         updateNickname,
