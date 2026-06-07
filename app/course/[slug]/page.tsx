@@ -71,7 +71,7 @@ export default function CoursePage() {
       </div>
 
       <p style={{ textAlign: "center", fontSize: 11, color: theme.textFaint, marginTop: "2rem", lineHeight: 1.6 }}>
-        ※ 본 교육 내용은 v1 초안입니다. 교회·교단에 맞게 검토 후 사용하세요.
+        ※ 예장 합동(웨스트민스터 표준문서) 기준 v1 초안입니다. 사용 전 검토해 주세요.
       </p>
     </main>
   );
