@@ -102,6 +102,7 @@ export default function Home() {
         ))}
       </div>
 
+      <button onClick={() => router.push("/guide")} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: "transparent", color: theme.textMuted, border: `1px solid ${theme.border}`, borderRadius: 12, cursor: "pointer", marginBottom: 10 }}>📋 학습·세례·입교 절차 안내</button>
       {user && (
         <button onClick={shareInvite} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: "transparent", color: theme.text, border: `1px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>👋 친구 초대하고 같이 경쟁하기</button>
       )}
