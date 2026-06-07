@@ -1,10 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { theme } from "@/lib/theme";
 import { BIBLE_BOOKS, booksForTestament } from "@/lib/bible";
 import { useAuth } from "@/lib/auth";
 import { shareInvite } from "@/lib/share";
+import { supabase } from "@/lib/supabase";
 
 const TESTAMENTS = [
   { value: "전체", label: "전체" },
@@ -24,7 +25,26 @@ export default function Home() {
   const { user, nickname, loading, signOut, updateNickname } = useAuth();
   const [editingNick, setEditingNick] = useState(false);
   const [nickDraft, setNickDraft] = useState("");
+  const [streak, setStreak] = useState(0);
+  const [playedToday, setPlayedToday] = useState(false);
   const [testament, setTestament] = useState("전체");
+
+  // 데일리 출석 스트릭: 점수 기록의 날짜로 연속 일수 계산
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("scores").select("created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(400)
+      .then(({ data }) => {
+        if (!data) return;
+        const days = new Set(data.map(r => new Date(r.created_at).toLocaleDateString("en-CA")));
+        const today = new Date().toLocaleDateString("en-CA");
+        setPlayedToday(days.has(today));
+        const cur = new Date();
+        if (!days.has(today)) cur.setDate(cur.getDate() - 1); // 오늘 안 풀었으면 어제부터 카운트
+        let s = 0;
+        while (days.has(cur.toLocaleDateString("en-CA"))) { s++; cur.setDate(cur.getDate() - 1); }
+        setStreak(s);
+      });
+  }, [user]);
   const [level, setLevel]         = useState("전체");
   const [count, setCount]         = useState(10);
   const [books, setBooks]         = useState<string[]>([]);
@@ -74,6 +94,11 @@ export default function Home() {
           <p style={{ fontSize: 13, color: theme.primarySoft, fontWeight: 600, margin: "0 0 8px" }}>
             {nickname}님, 오늘도 말씀과 함께해요 👋
           </p>
+        )}
+        {user && streak > 0 && (
+          <div style={{ display: "inline-block", fontSize: 12.5, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "5px 14px", marginBottom: 10 }}>
+            🔥 {streak}일 연속 {playedToday ? "출석!" : "— 오늘도 풀면 이어져요!"}
+          </div>
         )}
         <div style={{ position: "relative", display: "inline-block", marginBottom: 6 }}>
           <div aria-hidden style={{ position: "absolute", inset: -14, borderRadius: "50%", background: "radial-gradient(circle, rgba(230,200,120,0.26) 0%, rgba(230,200,120,0) 70%)" }} />
