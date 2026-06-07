@@ -44,13 +44,13 @@ export default function LessonPage() {
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>
         <button onClick={() => router.push(`/course/${course.slug}`)} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>← 목록</button>
-        <span style={{ fontSize: 13, color: theme.gold, fontWeight: 700 }}>{course.emoji} {course.title} · {lesson.id}과</span>
+        <span style={{ fontSize: 13, color: theme.gold, fontWeight: 700 }}>{course.emoji} {course.title} · {lesson.label ?? `${lesson.id}과`}</span>
       </div>
 
       {/* 배우기 */}
       {phase === "learn" && (
         <div>
-          <h1 style={{ fontSize: 23, fontWeight: 800, color: theme.text, margin: "0 0 14px", lineHeight: 1.35 }}>{lesson.id}과. {lesson.title}</h1>
+          <h1 style={{ fontSize: 23, fontWeight: 800, color: theme.text, margin: "0 0 14px", lineHeight: 1.35 }}>{lesson.label ?? `${lesson.id}과`}. {lesson.title}</h1>
           <div style={{ background: theme.card, border: `1px solid ${theme.goldBorder}`, borderLeft: `3px solid ${theme.goldSoft}`, borderRadius: 14, padding: "14px 16px", marginBottom: "1.25rem" }}>
             <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#f4f0ff", fontStyle: "italic", margin: "0 0 6px" }}>“{lesson.verse}”</p>
             <p style={{ fontSize: 12.5, color: theme.gold, margin: 0 }}>— {lesson.verseRef}</p>
@@ -101,7 +101,7 @@ export default function LessonPage() {
       {phase === "done" && (
         <div style={{ textAlign: "center", paddingTop: "1.5rem" }}>
           <div style={{ fontSize: 56, marginBottom: 8 }}>🎉</div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.correct, margin: "0 0 6px" }}>{lesson.id}과 수료!</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.correct, margin: "0 0 6px" }}>{lesson.label ?? `${lesson.id}과`} 수료!</h2>
           <p style={{ fontSize: 15, color: theme.text, margin: "0 0 4px" }}>{lesson.title}</p>
           <p style={{ fontSize: 14, color: theme.textMuted, margin: "0 0 2rem" }}>{lesson.questions.length}문제 중 {correctCount}문제 정답</p>
           {nextLesson ? (

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { getCourse } from "@/lib/courses";
@@ -49,18 +49,23 @@ export default function CoursePage() {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {course.lessons.map(l => {
+        {course.lessons.map((l, i) => {
           const isDoneL = !!done[`${course.slug}/${l.id}`];
+          const showSection = l.section && l.section !== course.lessons[i - 1]?.section;
+          const prefix = l.label ?? `${l.id}과`;
           return (
-            <button key={l.id} onClick={() => router.push(`/course/${course.slug}/${l.id}`)}
-              style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", padding: "15px 16px", borderRadius: 14, border: `1px solid ${isDoneL ? theme.correct : theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text }}>
-              <span style={{ fontSize: 18, minWidth: 26, textAlign: "center" }}>{isDoneL ? "✅" : <span style={{ color: theme.gold, fontWeight: 800 }}>{l.id}</span>}</span>
-              <span style={{ flex: 1 }}>
-                <span style={{ display: "block", fontSize: 15.5, fontWeight: 700, color: theme.text }}>{l.id}과. {l.title}</span>
-                <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{isDoneL ? "수료 완료" : "배우고 문제 풀기"}</span>
-              </span>
-              <span style={{ fontSize: 16, color: theme.gold }}>→</span>
-            </button>
+            <Fragment key={l.id}>
+              {showSection && <p style={{ fontSize: 12.5, fontWeight: 800, color: theme.primarySoft, letterSpacing: 0.3, margin: "10px 2px 0" }}>{l.section}</p>}
+              <button onClick={() => router.push(`/course/${course.slug}/${l.id}`)}
+                style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", padding: "15px 16px", borderRadius: 14, border: `1px solid ${isDoneL ? theme.correct : theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, width: "100%" }}>
+                <span style={{ fontSize: 18, minWidth: 26, textAlign: "center" }}>{isDoneL ? "✅" : <span style={{ color: theme.gold, fontWeight: 800 }}>{l.id}</span>}</span>
+                <span style={{ flex: 1 }}>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 700, color: theme.text }}>{prefix}. {l.title}</span>
+                  <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{isDoneL ? "수료 완료" : "배우고 문제 풀기"}</span>
+                </span>
+                <span style={{ fontSize: 16, color: theme.gold }}>→</span>
+              </button>
+            </Fragment>
           );
         })}
       </div>
