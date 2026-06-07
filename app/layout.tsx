@@ -4,10 +4,20 @@ import { AuthProvider } from "@/lib/auth";
 import { AuthGate } from "@/lib/AuthGate";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dabar.theamov.com"),
   title: "DABAR · 다바르",
-  description: "말씀 퀴즈 — 성경을 즐겁게 배워요",
+  description: "성경 퀴즈로 말씀을 즐겁게! 같이 풀고 랭킹에 도전해요 🏆",
   manifest: "/manifest.json",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "DABAR" },
+  openGraph: {
+    title: "DABAR · 다바르 — 말씀 퀴즈",
+    description: "성경 퀴즈로 말씀을 즐겁게! 같이 풀고 랭킹에 도전해요 🏆",
+    url: "https://dabar.theamov.com",
+    siteName: "DABAR",
+    images: [{ url: "/icons/icon-512.png", width: 512, height: 512, alt: "DABAR" }],
+    locale: "ko_KR",
+    type: "website",
+  },
 };
 
 // Next 14 권장 방식: themeColor / viewport 는 metadata 가 아닌 viewport 로 분리
