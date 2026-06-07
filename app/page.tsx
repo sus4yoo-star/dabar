@@ -9,6 +9,7 @@ import { COURSES } from "@/lib/courses";
 
 const MENU = [
   ...COURSES.map(c => ({ emoji: c.emoji, title: c.title, subtitle: c.subtitle, href: `/course/${c.slug}` })),
+  { emoji: "📜", title: "소교리문답", subtitle: "웨스트민스터 107문답 · 외우기·퀴즈", href: "/catechism" },
   { emoji: "📖", title: "성경퀴즈", subtitle: "말씀 퀴즈로 도전 · 랭킹", href: "/play" },
 ];
 
