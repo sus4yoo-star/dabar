@@ -96,8 +96,10 @@ export default function Home() {
           </p>
         )}
         {user && streak > 0 && (
-          <div style={{ display: "inline-block", fontSize: 12.5, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "5px 14px", marginBottom: 10 }}>
-            🔥 {streak}일 연속 {playedToday ? "출석!" : "— 오늘도 풀면 이어져요!"}
+          <div style={{ marginBottom: 12 }}>
+            <span style={{ display: "inline-block", fontSize: 12.5, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "5px 14px" }}>
+              🔥 {streak}일 연속 {playedToday ? "출석!" : "— 오늘도 풀면 이어져요!"}
+            </span>
           </div>
         )}
         <div style={{ position: "relative", display: "inline-block", marginBottom: 6 }}>
