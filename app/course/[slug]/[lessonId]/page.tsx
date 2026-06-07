@@ -4,9 +4,12 @@ import { useParams, useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { getCourse } from "@/lib/courses";
 import { markDone } from "@/lib/progress";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 export default function LessonPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const params = useParams<{ slug: string; lessonId: string }>();
   const course = getCourse(params.slug);
   const lesson = course?.lessons.find(l => l.id === params.lessonId);
@@ -34,6 +37,7 @@ export default function LessonPage() {
   function nextQ() {
     if (qIdx + 1 >= lesson!.questions.length) {
       markDone(course!.slug, lesson!.id);
+      if (user) supabase.from("lesson_progress").upsert({ user_id: user.id, course: course!.slug, lesson: lesson!.id }, { onConflict: "user_id,course,lesson" }).then(() => {});
       setPhase("done");
     } else {
       setQIdx(i => i + 1); setSelected(null);

@@ -15,7 +15,7 @@ const MENU = [
 
 export default function Home() {
   const router = useRouter();
-  const { user, nickname, loading, signOut, updateNickname } = useAuth();
+  const { user, nickname, loading, signOut, updateNickname, isAdmin } = useAuth();
   const [editingNick, setEditingNick] = useState(false);
   const [nickDraft, setNickDraft] = useState("");
   const [streak, setStreak] = useState(0);
@@ -103,6 +103,7 @@ export default function Home() {
         ))}
       </div>
 
+      {isAdmin && <button onClick={() => router.push("/admin")} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: theme.goldLight, color: theme.gold, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer", marginBottom: 10 }}>🔧 목사님 현황판</button>}
       <button onClick={() => router.push("/guide")} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: "transparent", color: theme.textMuted, border: `1px solid ${theme.border}`, borderRadius: 12, cursor: "pointer", marginBottom: 10 }}>📋 학습·세례·입교 절차 안내</button>
       {user && (
         <button onClick={shareInvite} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: "transparent", color: theme.text, border: `1px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>👋 친구 초대하고 같이 경쟁하기</button>

@@ -158,3 +158,25 @@ grant select on scores to anon, authenticated;
 grant insert on scores to authenticated;
 grant select, insert on wrong_answers to authenticated;
 grant insert on question_reports to authenticated;
+
+
+-- =========================================================================
+-- 양육 과정 수료 진도 + 관리자(현황판용)
+-- =========================================================================
+create table if not exists lesson_progress (
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  course     text not null,
+  lesson     text not null,
+  created_at timestamptz default now(),
+  primary key (user_id, course, lesson)
+);
+alter table lesson_progress enable row level security;
+drop policy if exists "진도 읽기" on lesson_progress;
+create policy "진도 읽기" on lesson_progress for select using (true);
+drop policy if exists "본인 진도 저장" on lesson_progress;
+create policy "본인 진도 저장" on lesson_progress for insert with check (auth.uid() = user_id);
+grant select on lesson_progress to anon, authenticated;
+grant insert on lesson_progress to authenticated;
+
+-- 관리자(목사님) 표시: true 인 사람만 현황판 접근
+alter table profiles add column if not exists is_admin boolean not null default false;
