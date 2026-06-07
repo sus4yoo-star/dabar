@@ -33,6 +33,17 @@ export default function HistoryPage() {
   (rows ?? []).forEach(r => { if (r.book) byBook[r.book] = (byBook[r.book] || 0) + 1; });
   const topBooks = Object.entries(byBook).sort((a, b) => b[1] - a[1]).slice(0, 3);
 
+  // 틀린 문제만 모아 다시 풀기 (최근 20문제)
+  async function retryWrong() {
+    const ids = Array.from(new Set((rows ?? []).map(r => r.question_id).filter(Boolean))).slice(0, 20) as string[];
+    if (!ids.length) { alert("다시 풀 문제를 찾지 못했어요."); return; }
+    const { data, error } = await supabase.from("questions").select("*").in("id", ids);
+    if (error || !data || !data.length) { alert("다시 풀 문제를 불러오지 못했어요."); return; }
+    sessionStorage.setItem("retryQuiz", JSON.stringify(data));
+    sessionStorage.removeItem("quizResult");
+    router.push("/quiz");
+  }
+
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
@@ -41,14 +52,17 @@ export default function HistoryPage() {
       </div>
 
       {rows && rows.length > 0 && (
-        <div style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "14px 16px", marginBottom: "1.25rem" }}>
-          <p style={{ fontSize: 13, color: theme.text, margin: "0 0 6px", fontWeight: 700 }}>총 {rows.length}개 틀렸어요</p>
-          {topBooks.length > 0 && (
-            <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>
-              자주 틀리는 권: {topBooks.map(([b, n]) => `${b}(${n})`).join(" · ")} — 여길 더 읽어보세요!
-            </p>
-          )}
-        </div>
+        <>
+          <div style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "14px 16px", marginBottom: "0.9rem" }}>
+            <p style={{ fontSize: 13, color: theme.text, margin: "0 0 6px", fontWeight: 700 }}>총 {rows.length}개 틀렸어요</p>
+            {topBooks.length > 0 && (
+              <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>
+                자주 틀리는 권: {topBooks.map(([b, n]) => `${b}(${n})`).join(" · ")} — 여길 더 읽어보세요!
+              </p>
+            )}
+          </div>
+          <button onClick={retryWrong} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: "1.25rem", boxShadow: "0 8px 24px rgba(216,190,110,0.22)" }}>🔁 틀린 문제 다시 풀기</button>
+        </>
       )}
 
       {error && <p style={{ textAlign: "center", color: theme.wrong, fontSize: 14, padding: "2rem 0" }}>불러오지 못했어요.</p>}

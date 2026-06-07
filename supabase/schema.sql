@@ -95,6 +95,20 @@ create policy "본인 오답 저장" on wrong_answers for insert with check (aut
 create index if not exists idx_wrong_user on wrong_answers(user_id, created_at desc);
 
 
+-- 문제 신고 (사용자가 이상한 문제를 신고)
+create table if not exists question_reports (
+  id          uuid primary key default gen_random_uuid(),
+  question_id uuid,
+  user_id     uuid references auth.users(id) on delete set null,
+  question    text,
+  reason      text,
+  created_at  timestamptz default now()
+);
+alter table question_reports enable row level security;
+drop policy if exists "본인 신고 저장" on question_reports;
+create policy "본인 신고 저장" on question_reports for insert with check (auth.uid() = user_id);
+
+
 -- 뷰는 컬럼 순서 변경 충돌을 피하려고 먼저 삭제 후 재생성
 drop view if exists leaderboard;
 drop view if exists leaderboard_weekly;
@@ -143,3 +157,4 @@ grant insert, update on profiles to authenticated;
 grant select on scores to anon, authenticated;
 grant insert on scores to authenticated;
 grant select, insert on wrong_answers to authenticated;
+grant insert on question_reports to authenticated;
