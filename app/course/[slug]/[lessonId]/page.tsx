@@ -19,10 +19,10 @@ function shuffleOptions(q: LessonQuestion): LessonQuestion {
 
 export default function LessonPage() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { user } = useAuth();
   const params = useParams<{ slug: string; lessonId: string }>();
-  const course = getCourse(params.slug);
+  const course = getCourse(params.slug, lang);
   const lesson = course?.lessons.find(l => l.id === params.lessonId);
 
   const [phase, setPhase] = useState<"learn" | "quiz" | "done">("learn");

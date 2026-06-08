@@ -10,10 +10,10 @@ import { supabase } from "@/lib/supabase";
 
 export default function CoursePage() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const params = useParams<{ slug: string }>();
   const { user } = useAuth();
-  const course = getCourse(params.slug);
+  const course = getCourse(params.slug, lang);
   const [done, setDone] = useState<Record<string, boolean>>({});
 
   // 로컬(기기) 진도 + 서버(계정) 진도를 합쳐서 표시 → 다른 기기에서도 이어보기

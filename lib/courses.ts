@@ -657,6 +657,43 @@ export const COURSES: Course[] = [
   },
 ];
 
-export function getCourse(slug: string): Course | undefined {
-  return COURSES.find(c => c.slug === slug);
+import { COURSE_TRANS, TransLang } from "./courses.i18n";
+
+// 한국어 원본(COURSES) 위에 언어별 번역 오버레이를 병합.
+// 번역이 없는 항목은 한국어 원본을 그대로 사용(graceful fallback).
+export function getCourse(slug: string, lang: string = "ko"): Course | undefined {
+  const base = COURSES.find(c => c.slug === slug);
+  if (!base) return undefined;
+  if (lang === "ko") return base;
+  const tr = COURSE_TRANS[slug]?.[lang as TransLang];
+  if (!tr) return base;
+  return {
+    ...base,
+    title: tr.title ?? base.title,
+    subtitle: tr.subtitle ?? base.subtitle,
+    lessons: base.lessons.map(l => {
+      const lt = tr.lessons[l.id];
+      if (!lt) return l;
+      return {
+        ...l,
+        title: lt.title ?? l.title,
+        verse: lt.verse ?? l.verse,
+        verseRef: lt.verseRef ?? l.verseRef,
+        label: lt.label ?? l.label,
+        section: lt.section ?? l.section,
+        teaching: lt.teaching ?? l.teaching,
+        questions: l.questions.map((q, i) => {
+          const qt = lt.questions?.[i];
+          if (!qt) return q;
+          return {
+            ...q,
+            question: qt.question ?? q.question,
+            // 보기는 원본과 같은 순서로 번역되므로 정답 인덱스(answer)는 그대로 유지
+            options: qt.options ?? q.options,
+            explanation: qt.explanation ?? q.explanation,
+          };
+        }),
+      };
+    }),
+  };
 }
