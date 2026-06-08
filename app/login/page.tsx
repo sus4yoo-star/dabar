@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
+import { useI18n, LangSelector } from "@/lib/i18n";
 
 // 브랜드 컬러
 const GOLD = "#d8be6e";
@@ -10,6 +11,7 @@ const GOLD_SOFT = "#c9a84c";
 export default function LoginPage() {
   const router = useRouter();
   const { user, loading, signIn } = useAuth();
+  const { t } = useI18n();
   const [busy, setBusy] = useState<"google" | "kakao" | null>(null);
 
   // 이미 로그인돼 있으면 홈으로
@@ -41,6 +43,7 @@ export default function LoginPage() {
       }}
     >
       <div style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 18 }}><LangSelector /></div>
         {/* 아이콘 + 글로우 */}
         <div style={{ position: "relative", display: "inline-block", marginBottom: 18 }}>
           <div
@@ -73,8 +76,8 @@ export default function LoginPage() {
           다바르 · 말씀 퀴즈
         </p>
         <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#d9d2ee", margin: "0 0 26px" }}>
-          말씀을 즐겁게, 퀴즈로 만나는 시간.<br />
-          남녀노소 누구나 함께해요.
+          {t("login.tagline1")}<br />
+          {t("login.tagline2")}
         </p>
 
         {/* 말씀 카드 */}
@@ -90,9 +93,9 @@ export default function LoginPage() {
           }}
         >
           <p style={{ fontSize: 14.5, lineHeight: 1.75, color: "#efe9fb", fontStyle: "italic", margin: "0 0 8px" }}>
-            “주의 말씀은 내 발에 등이요<br />내 길에 빛이니이다”
+            “{t("login.verse")}”
           </p>
-          <p style={{ fontSize: 12.5, color: GOLD, margin: 0, letterSpacing: 0.5 }}>— 시편 119:105</p>
+          <p style={{ fontSize: 12.5, color: GOLD, margin: 0, letterSpacing: 0.5 }}>— {t("login.verseRef")}</p>
         </div>
 
         {/* 로그인 버튼 */}
@@ -108,7 +111,7 @@ export default function LoginPage() {
           }}
         >
           <span style={{ fontSize: 17 }}>💬</span>
-          {busy === "kakao" ? "이동 중..." : "카카오로 시작하기"}
+          {busy === "kakao" ? t("login.redirecting") : t("login.kakao")}
         </button>
 
         <button
@@ -123,11 +126,11 @@ export default function LoginPage() {
           }}
         >
           <GoogleMark />
-          {busy === "google" ? "이동 중..." : "구글(Gmail)로 시작하기"}
+          {busy === "google" ? t("login.redirecting") : t("login.google")}
         </button>
 
         <p style={{ fontSize: 12.5, color: "#a99fc9", marginTop: 20, lineHeight: 1.6 }}>
-          가입은 무료예요. 카카오·구글 계정으로 3초 만에 시작할 수 있어요.
+          {t("login.free")}
         </p>
 
         <p style={{ fontSize: 11, color: "#7a6fa3", marginTop: "2.5rem", letterSpacing: 1.5 }}>
