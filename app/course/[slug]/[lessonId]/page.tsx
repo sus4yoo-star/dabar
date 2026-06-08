@@ -1,11 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
-import { getCourse } from "@/lib/courses";
+import { getCourse, LessonQuestion } from "@/lib/courses";
 import { markDone } from "@/lib/progress";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+
+// 보기 순서를 섞고 정답 인덱스를 다시 계산 (정답이 늘 1번에 오지 않도록)
+function shuffleOptions(q: LessonQuestion): LessonQuestion {
+  const correct = q.options[q.answer];
+  const opts = [...q.options];
+  for (let i = opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [opts[i], opts[j]] = [opts[j], opts[i]]; }
+  const ans = opts.indexOf(correct);
+  return { ...q, options: opts, answer: ans < 0 ? q.answer : ans };
+}
 
 export default function LessonPage() {
   const router = useRouter();
@@ -18,6 +27,8 @@ export default function LessonPage() {
   const [qIdx, setQIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
+  // 이 과의 문제들 — 보기를 한 번 섞어 고정(과가 바뀌면 다시 섞임)
+  const quiz = useMemo(() => (lesson ? lesson.questions.map(shuffleOptions) : []), [lesson]);
 
   if (!course || !lesson) {
     return <main style={{ maxWidth: 480, margin: "0 auto", padding: "3rem 1.25rem", textAlign: "center", color: theme.textMuted }}>
@@ -27,7 +38,7 @@ export default function LessonPage() {
 
   const lessonIdx = course.lessons.findIndex(l => l.id === lesson.id);
   const nextLesson = course.lessons[lessonIdx + 1];
-  const q = lesson.questions[qIdx];
+  const q = quiz[qIdx];
 
   function choose(i: number) {
     if (selected !== null) return;
@@ -35,7 +46,7 @@ export default function LessonPage() {
     if (i === q.answer) setCorrectCount(c => c + 1);
   }
   function nextQ() {
-    if (qIdx + 1 >= lesson!.questions.length) {
+    if (qIdx + 1 >= quiz.length) {
       markDone(course!.slug, lesson!.id);
       if (user) supabase.from("lesson_progress").upsert({ user_id: user.id, course: course!.slug, lesson: lesson!.id }, { onConflict: "user_id,course,lesson" }).then(() => {});
       setPhase("done");
@@ -70,9 +81,9 @@ export default function LessonPage() {
       {phase === "quiz" && (
         <div>
           <div style={{ height: 6, background: "rgba(0,0,0,0.20)", borderRadius: 3, marginBottom: 16, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${((qIdx + 1) / lesson.questions.length) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .3s ease", borderRadius: 3 }} />
+            <div style={{ height: "100%", width: `${((qIdx + 1) / quiz.length) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .3s ease", borderRadius: 3 }} />
           </div>
-          <p style={{ fontSize: 12, color: theme.textMuted, fontWeight: 600, margin: "0 0 8px" }}>{qIdx + 1} / {lesson.questions.length}</p>
+          <p style={{ fontSize: 12, color: theme.textMuted, fontWeight: 600, margin: "0 0 8px" }}>{qIdx + 1} / {quiz.length}</p>
           <p style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.6, color: theme.text, marginBottom: "1.25rem" }}>{q.question}</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
             {q.options.map((opt, i) => {
@@ -96,7 +107,7 @@ export default function LessonPage() {
             </div>
           )}
           {selected !== null && (
-            <button onClick={nextQ} style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{qIdx + 1 >= lesson.questions.length ? "이 과 마치기 →" : "다음 문제 →"}</button>
+            <button onClick={nextQ} style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{qIdx + 1 >= quiz.length ? "이 과 마치기 →" : "다음 문제 →"}</button>
           )}
         </div>
       )}
@@ -107,7 +118,7 @@ export default function LessonPage() {
           <div style={{ fontSize: 56, marginBottom: 8 }}>🎉</div>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.correct, margin: "0 0 6px" }}>{lesson.label ?? `${lesson.id}과`} 수료!</h2>
           <p style={{ fontSize: 15, color: theme.text, margin: "0 0 4px" }}>{lesson.title}</p>
-          <p style={{ fontSize: 14, color: theme.textMuted, margin: "0 0 2rem" }}>{lesson.questions.length}문제 중 {correctCount}문제 정답</p>
+          <p style={{ fontSize: 14, color: theme.textMuted, margin: "0 0 2rem" }}>{quiz.length}문제 중 {correctCount}문제 정답</p>
           {nextLesson ? (
             <button onClick={() => { setPhase("learn"); setQIdx(0); setSelected(null); setCorrectCount(0); router.push(`/course/${course.slug}/${nextLesson.id}`); }}
               style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>다음 과로 →</button>

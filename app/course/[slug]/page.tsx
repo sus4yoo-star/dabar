@@ -4,14 +4,30 @@ import { useParams, useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { getCourse } from "@/lib/courses";
 import { getCompleted } from "@/lib/progress";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 export default function CoursePage() {
   const router = useRouter();
   const params = useParams<{ slug: string }>();
+  const { user } = useAuth();
   const course = getCourse(params.slug);
   const [done, setDone] = useState<Record<string, boolean>>({});
 
-  useEffect(() => { setDone(getCompleted()); }, []);
+  // 로컬(기기) 진도 + 서버(계정) 진도를 합쳐서 표시 → 다른 기기에서도 이어보기
+  useEffect(() => {
+    setDone(getCompleted());
+    if (!user) return;
+    supabase.from("lesson_progress").select("course, lesson").eq("user_id", user.id)
+      .then(({ data }) => {
+        if (!data) return;
+        setDone(prev => {
+          const merged = { ...prev };
+          data.forEach((r: any) => { merged[`${r.course}/${r.lesson}`] = true; });
+          return merged;
+        });
+      });
+  }, [user, params.slug]);
 
   if (!course) {
     return <main style={{ maxWidth: 480, margin: "0 auto", padding: "3rem 1.25rem", textAlign: "center", color: theme.textMuted }}>
