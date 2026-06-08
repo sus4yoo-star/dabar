@@ -5,8 +5,8 @@ import { Question } from "@/lib/types";
 import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { useI18n } from "@/lib/i18n";
 
-const LEVEL_KO: Record<string, string> = { easy: "쉬움", medium: "보통", hard: "어려움" };
 const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: theme.gold, hard: theme.wrong };
 
 // 보기 순서를 매번 섞고 정답 인덱스를 다시 계산 (정답이 한 위치에 몰리지 않게)
@@ -25,6 +25,7 @@ function Center({ children }: { children: React.ReactNode }) {
 
 function QuizInner() {
   const router = useRouter();
+  const { t } = useI18n();
   const params = useSearchParams();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [idx, setIdx] = useState(0);
@@ -68,7 +69,7 @@ function QuizInner() {
     if (!user || reported) return;
     setReported(true);
     await supabase.from("question_reports").insert({ question_id: questions[idx]?.id, user_id: user.id, question: questions[idx]?.question, reason: "사용자 신고" });
-    alert("신고가 접수됐어요. 검토하겠습니다. 감사합니다! 🙏");
+    alert(t("q.reportAlert"));
   }
 
   const goNext = useCallback((currentScore: number, currentAnswers: typeof answers) => {
@@ -119,8 +120,8 @@ function QuizInner() {
     setAnswers(prev => [...prev, { selected: i, correct }]);
   }
 
-  if (loading) return <Center>문제를 불러오는 중...</Center>;
-  if (!questions.length) return <Center>문제가 없습니다.</Center>;
+  if (loading) return <Center>{t("q.loading")}</Center>;
+  if (!questions.length) return <Center>{t("q.none")}</Center>;
   const q = questions[idx];
 
   return (
@@ -132,10 +133,10 @@ function QuizInner() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
         <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>{retryMode && <span style={{ color: theme.primarySoft }}>🔁 </span>}{idx + 1}/{questions.length} · <span style={{ color: theme.gold }}>⭐{points}</span></span>
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, color: LEVEL_COLOR[q.level], fontWeight: 700 }}>{LEVEL_KO[q.level]}</span>
-          {streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, color: theme.gold, fontWeight: 800 }}>🔥 {streak}연속</span>}
+          <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, color: LEVEL_COLOR[q.level], fontWeight: 700 }}>{t("q." + q.level)}</span>
+          {streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, color: theme.gold, fontWeight: 800 }}>{t("q.combo", { n: streak })}</span>}
         </div>
-        <span style={{ fontSize: 14, fontWeight: 700, color: timeLeft <= 5 ? theme.wrong : theme.textMuted }}>⏱ {timeLeft}초</span>
+        <span style={{ fontSize: 14, fontWeight: 700, color: timeLeft <= 5 ? theme.wrong : theme.textMuted }}>⏱ {timeLeft}{t("q.sec")}</span>
       </div>
       <div style={{ height: 5, background: "rgba(0,0,0,0.20)", borderRadius: 3, marginBottom: 20 }}>
         <div style={{ height: "100%", background: timeLeft <= 5 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 15) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
@@ -161,19 +162,19 @@ function QuizInner() {
       </div>
       {selected !== null && (
         <div className="fade-in" style={{ padding: "12px 16px", borderRadius: 12, marginBottom: 12, background: selected === q.answer ? theme.correctBg : theme.wrongBg, border: `1px solid ${selected === q.answer ? theme.correct : theme.wrong}` }}>
-          <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? `🎉 정답! +${lastGain}점${streak >= 2 ? `  🔥 ${streak}연속` : ""}` : `💡 정답: ${q.options[q.answer]}`}</p>
+          <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? `${t("q.correct")} ${t("q.pts", { n: lastGain })}${streak >= 2 ? "  " + t("q.combo", { n: streak }) : ""}` : t("q.answerIs", { a: q.options[q.answer] })}</p>
           <p style={{ fontSize: 13, color: theme.textMuted, margin: 0, lineHeight: 1.6 }}>{q.explanation}</p>
-          <button onClick={reportQuestion} disabled={reported} style={{ marginTop: 9, fontSize: 12, color: theme.textFaint, background: "none", border: "none", cursor: reported ? "default" : "pointer", textDecoration: "underline", padding: 0 }}>{reported ? "신고 접수됨 ✓" : "🚩 이 문제 신고"}</button>
+          <button onClick={reportQuestion} disabled={reported} style={{ marginTop: 9, fontSize: 12, color: theme.textFaint, background: "none", border: "none", cursor: reported ? "default" : "pointer", textDecoration: "underline", padding: 0 }}>{reported ? t("q.reported") : t("q.report")}</button>
         </div>
       )}
       {selected === null && (
-        <button onClick={() => setShowHint(v => !v)} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", marginBottom: 12 }}>💡 힌트 {showHint ? "숨기기" : "보기"}</button>
+        <button onClick={() => setShowHint(v => !v)} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", marginBottom: 12 }}>{showHint ? t("q.hintHide") : t("q.hintShow")}</button>
       )}
       {showHint && selected === null && (
         <p style={{ fontSize: 13, color: theme.text, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, padding: "10px 14px", borderRadius: 8, marginBottom: 12, lineHeight: 1.6 }}>{q.hint}</p>
       )}
       {selected !== null && (
-        <button onClick={() => goNext(score, answers)} style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{idx + 1 >= questions.length ? "결과 보기 →" : "다음 문제 →"}</button>
+        <button onClick={() => goNext(score, answers)} style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{idx + 1 >= questions.length ? t("q.result") : t("q.next")}</button>
       )}
     </main>
   );
