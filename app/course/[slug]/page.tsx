@@ -5,10 +5,12 @@ import { theme } from "@/lib/theme";
 import { getCourse } from "@/lib/courses";
 import { getCompleted } from "@/lib/progress";
 import { useAuth } from "@/lib/auth";
+import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 
 export default function CoursePage() {
   const router = useRouter();
+  const { t } = useI18n();
   const params = useParams<{ slug: string }>();
   const { user } = useAuth();
   const course = getCourse(params.slug);
@@ -31,7 +33,7 @@ export default function CoursePage() {
 
   if (!course) {
     return <main style={{ maxWidth: 480, margin: "0 auto", padding: "3rem 1.25rem", textAlign: "center", color: theme.textMuted }}>
-      과정을 찾을 수 없어요. <button onClick={() => router.push("/")} style={{ color: theme.gold, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>홈으로</button>
+      {t("co.notFound")} <button onClick={() => router.push("/")} style={{ color: theme.gold, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>{t("r.home")}</button>
     </main>;
   }
 
@@ -42,13 +44,13 @@ export default function CoursePage() {
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>
-        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>← 홈</button>
-        <span style={{ fontSize: 13, color: theme.gold, fontWeight: 700 }}>{completed} / {total} 수료</span>
+        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("common.home")}</button>
+        <span style={{ fontSize: 13, color: theme.gold, fontWeight: 700 }}>{t("co.done", { a: completed, b: total })}</span>
       </div>
 
       <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
         <div style={{ fontSize: 44, marginBottom: 6 }}>{course.emoji}</div>
-        <h1 style={{ fontSize: 26, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{course.title} 과정</h1>
+        <h1 style={{ fontSize: 26, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{t("co.courseTitle", { t: course.title })}</h1>
         <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{course.subtitle}</p>
       </div>
 
@@ -59,8 +61,8 @@ export default function CoursePage() {
 
       {allDone && (
         <div style={{ background: "rgba(74,224,168,0.14)", border: `1px solid ${theme.correct}`, borderRadius: 14, padding: "16px", textAlign: "center", marginBottom: "1.25rem" }}>
-          <p style={{ fontSize: 16, fontWeight: 800, color: theme.correct, margin: "0 0 2px" }}>🎉 {course.title} 과정 수료!</p>
-          <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>모든 과를 마쳤어요. 정말 잘하셨습니다!</p>
+          <p style={{ fontSize: 16, fontWeight: 800, color: theme.correct, margin: "0 0 2px" }}>{t("co.allDone", { t: course.title })}</p>
+          <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{t("co.allDoneSub")}</p>
         </div>
       )}
 
@@ -77,7 +79,7 @@ export default function CoursePage() {
                 <span style={{ fontSize: 18, minWidth: 26, textAlign: "center" }}>{isDoneL ? "✅" : <span style={{ color: theme.gold, fontWeight: 800 }}>{l.id}</span>}</span>
                 <span style={{ flex: 1 }}>
                   <span style={{ display: "block", fontSize: 15, fontWeight: 700, color: theme.text }}>{prefix}. {l.title}</span>
-                  <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{isDoneL ? "수료 완료" : "배우고 문제 풀기"}</span>
+                  <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{isDoneL ? t("co.done2") : t("co.learnQuiz")}</span>
                 </span>
                 <span style={{ fontSize: 16, color: theme.gold }}>→</span>
               </button>
@@ -87,7 +89,7 @@ export default function CoursePage() {
       </div>
 
       <p style={{ textAlign: "center", fontSize: 11, color: theme.textFaint, marginTop: "2rem", lineHeight: 1.6 }}>
-        ※ 예장 합동(웨스트민스터 표준문서) 기준 v1 초안입니다. 사용 전 검토해 주세요.
+        {t("co.disclaimer")}
       </p>
     </main>
   );

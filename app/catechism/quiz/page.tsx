@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
+import { useI18n } from "@/lib/i18n";
 import { CATECHISM, Catechism } from "@/lib/catechism";
 
 const N = 10; // 한 회 문항 수
@@ -25,6 +26,7 @@ function buildQuiz(): QItem[] {
 
 export default function CatechismQuiz() {
   const router = useRouter();
+  const { t } = useI18n();
   const [quiz, setQuiz] = useState<QItem[]>(() => buildQuiz());
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -51,9 +53,9 @@ export default function CatechismQuiz() {
       <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "3rem 1.25rem", minHeight: "100dvh", textAlign: "center" }}>
         <div style={{ fontSize: 56, marginBottom: 8 }}>{pct >= 80 ? "🏆" : pct >= 50 ? "😊" : "🌱"}</div>
         <h1 style={{ fontSize: 40, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{score} / {quiz.length}</h1>
-        <p style={{ fontSize: 15, color: theme.textMuted, margin: "0 0 2rem" }}>소교리문답 퀴즈 정답률 {pct}%</p>
-        <button onClick={restart} style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>다시 풀기 →</button>
-        <button onClick={() => router.push("/catechism")} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>문답으로 돌아가기</button>
+        <p style={{ fontSize: 15, color: theme.textMuted, margin: "0 0 2rem" }}>{t("cat.quizDone", { n: pct })}</p>
+        <button onClick={restart} style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>{t("c.retry")}</button>
+        <button onClick={() => router.push("/catechism")} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>{t("cat.toCat")}</button>
       </main>
     );
   }
@@ -65,10 +67,10 @@ export default function CatechismQuiz() {
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
         <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>{idx + 1} / {quiz.length}</span>
-        <button onClick={() => router.push("/catechism")} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>✕ 나가기</button>
+        <button onClick={() => router.push("/catechism")} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>{t("cat.exit")}</button>
       </div>
 
-      <p style={{ fontSize: 12, fontWeight: 800, color: theme.gold, margin: "0 0 6px" }}>제{cur.item.n}문</p>
+      <p style={{ fontSize: 12, fontWeight: 800, color: theme.gold, margin: "0 0 6px" }}>{t("cat.qno", { n: cur.item.n })}</p>
       <p style={{ fontSize: 18, fontWeight: 700, color: theme.text, lineHeight: 1.55, marginBottom: "1.25rem" }}>{cur.item.q}</p>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -86,7 +88,7 @@ export default function CatechismQuiz() {
       </div>
 
       {selected !== null && (
-        <button onClick={next} className="fade-in" style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer", marginTop: 14 }}>{idx + 1 >= quiz.length ? "결과 보기 →" : "다음 →"}</button>
+        <button onClick={next} className="fade-in" style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer", marginTop: 14 }}>{idx + 1 >= quiz.length ? t("q.result") : t("q.next")}</button>
       )}
     </main>
   );

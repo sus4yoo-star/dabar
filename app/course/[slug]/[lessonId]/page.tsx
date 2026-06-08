@@ -5,6 +5,7 @@ import { theme } from "@/lib/theme";
 import { getCourse, LessonQuestion } from "@/lib/courses";
 import { markDone } from "@/lib/progress";
 import { useAuth } from "@/lib/auth";
+import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 
 // 보기 순서를 섞고 정답 인덱스를 다시 계산 (정답이 늘 1번에 오지 않도록)
@@ -18,6 +19,7 @@ function shuffleOptions(q: LessonQuestion): LessonQuestion {
 
 export default function LessonPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const { user } = useAuth();
   const params = useParams<{ slug: string; lessonId: string }>();
   const course = getCourse(params.slug);
@@ -32,7 +34,7 @@ export default function LessonPage() {
 
   if (!course || !lesson) {
     return <main style={{ maxWidth: 480, margin: "0 auto", padding: "3rem 1.25rem", textAlign: "center", color: theme.textMuted }}>
-      과를 찾을 수 없어요. <button onClick={() => router.push("/")} style={{ color: theme.gold, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>홈으로</button>
+      {t("co.lessonNotFound")} <button onClick={() => router.push("/")} style={{ color: theme.gold, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>{t("r.home")}</button>
     </main>;
   }
 
@@ -58,7 +60,7 @@ export default function LessonPage() {
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>
-        <button onClick={() => router.push(`/course/${course.slug}`)} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>← 목록</button>
+        <button onClick={() => router.push(`/course/${course.slug}`)} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("c.back")}</button>
         <span style={{ fontSize: 13, color: theme.gold, fontWeight: 700 }}>{course.emoji} {course.title} · {lesson.label ?? `${lesson.id}과`}</span>
       </div>
 
@@ -73,7 +75,7 @@ export default function LessonPage() {
           {lesson.teaching.map((para, i) => (
             <p key={i} style={{ fontSize: 15.5, lineHeight: 1.8, color: theme.text, margin: "0 0 14px" }}>{para}</p>
           ))}
-          <button onClick={() => setPhase("quiz")} style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: theme.primary, color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", marginTop: 8 }}>문제 풀기 →</button>
+          <button onClick={() => setPhase("quiz")} style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: theme.primary, color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", marginTop: 8 }}>{t("co.startQuiz")}</button>
         </div>
       )}
 
@@ -102,12 +104,12 @@ export default function LessonPage() {
           </div>
           {selected !== null && (
             <div className="fade-in" style={{ padding: "12px 16px", borderRadius: 12, marginBottom: 12, background: selected === q.answer ? theme.correctBg : theme.wrongBg, border: `1px solid ${selected === q.answer ? theme.correct : theme.wrong}` }}>
-              <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? "🎉 정답!" : `💡 정답: ${q.options[q.answer]}`}</p>
+              <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? t("q.correct") : t("q.answerIs", { a: q.options[q.answer] })}</p>
               <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0, lineHeight: 1.6 }}>{q.explanation}</p>
             </div>
           )}
           {selected !== null && (
-            <button onClick={nextQ} style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{qIdx + 1 >= quiz.length ? "이 과 마치기 →" : "다음 문제 →"}</button>
+            <button onClick={nextQ} style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{qIdx + 1 >= quiz.length ? t("co.finishLesson") : t("q.next")}</button>
           )}
         </div>
       )}
@@ -116,18 +118,18 @@ export default function LessonPage() {
       {phase === "done" && (
         <div style={{ textAlign: "center", paddingTop: "1.5rem" }}>
           <div style={{ fontSize: 56, marginBottom: 8 }}>🎉</div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.correct, margin: "0 0 6px" }}>{lesson.label ?? `${lesson.id}과`} 수료!</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.correct, margin: "0 0 6px" }}>{(lesson.label ?? `${lesson.id}과`)} {t("co.lessonDone")}</h2>
           <p style={{ fontSize: 15, color: theme.text, margin: "0 0 4px" }}>{lesson.title}</p>
-          <p style={{ fontSize: 14, color: theme.textMuted, margin: "0 0 2rem" }}>{quiz.length}문제 중 {correctCount}문제 정답</p>
+          <p style={{ fontSize: 14, color: theme.textMuted, margin: "0 0 2rem" }}>{t("co.scoreLine", { total: quiz.length, n: correctCount })}</p>
           {nextLesson ? (
             <button onClick={() => { setPhase("learn"); setQIdx(0); setSelected(null); setCorrectCount(0); router.push(`/course/${course.slug}/${nextLesson.id}`); }}
-              style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>다음 과로 →</button>
+              style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>{t("co.nextLesson")}</button>
           ) : (
             <div style={{ background: "rgba(74,224,168,0.14)", border: `1px solid ${theme.correct}`, borderRadius: 14, padding: "14px", marginBottom: 10 }}>
-              <p style={{ fontSize: 15, fontWeight: 800, color: theme.correct, margin: 0 }}>🏅 {course.title} 과정의 마지막 과예요!</p>
+              <p style={{ fontSize: 15, fontWeight: 800, color: theme.correct, margin: 0 }}>{t("co.lastLesson", { t: course.title })}</p>
             </div>
           )}
-          <button onClick={() => router.push(`/course/${course.slug}`)} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>과정 목록으로</button>
+          <button onClick={() => router.push(`/course/${course.slug}`)} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>{t("co.toList")}</button>
         </div>
       )}
     </main>
