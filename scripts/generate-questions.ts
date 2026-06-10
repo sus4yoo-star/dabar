@@ -248,7 +248,17 @@ async function main() {
   }
 
   console.log(`📊 기존 ${lang.toUpperCase()} 문제 현황 확인 중...`);
-  const existing = await fetchExisting(lang);
+  let existing: { book: string; question: string }[];
+  try {
+    existing = await fetchExisting(lang);
+  } catch (e: any) {
+    const msg = e?.message || e?.error?.message || e?.code || JSON.stringify(e);
+    console.error(`\n❌ Supabase 조회 실패: ${msg}`);
+    console.error(`   ▸ 'lang' 컬럼이 없다면 Supabase SQL Editor에서 실행:`);
+    console.error(`     alter table questions add column if not exists lang text not null default 'ko';`);
+    console.error(`   ▸ 또는 .env.local 의 SUPABASE_SERVICE_KEY 가 올바른지 확인하세요.`);
+    process.exit(1);
+  }
   const have: Record<string, number> = {};
   const stemsByBook: Record<string, string[]> = {};
   for (const row of existing) {
