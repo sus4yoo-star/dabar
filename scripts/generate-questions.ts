@@ -1,11 +1,17 @@
 /**
- * DABAR 문제 생성 (재개 가능 / 권별 분량·중요도 차등 / 배치 생성)
+ * DABAR 문제 생성 (재개 가능 / 권별 분량·중요도 차등 / 배치 생성 / 다국어)
  *
  * 사용법:
- *   npm run generate              → 부족한 문제 전부 채우기 (이미 있는 건 건너뜀)
- *   npm run generate -- --plan    → 생성 안 하고 계획만 출력 (크레딧 0원)
- *   npm run generate -- --book 창세기   → 특정 권만
- *   npm run generate -- --limit 100     → 이번 실행에서 최대 100개만 (지출 조절)
+ *   npm run generate                    → (한국어) 부족한 문제 전부 채우기
+ *   npm run generate -- --lang en       → 영어판(NIV 기준) 생성
+ *   npm run generate -- --lang th       → 태국어판(Thai Standard Version 기준) 생성
+ *   npm run generate -- --plan          → 생성 안 하고 계획만 출력 (크레딧 0원)
+ *   npm run generate -- --book 창세기    → 특정 권만
+ *   npm run generate -- --limit 100      → 이번 실행에서 최대 100개만 (지출 조절)
+ *   (예: npm run generate -- --lang en --book 창세기 --limit 50)
+ *
+ * ※ 사전 준비: Supabase questions 테이블에 lang 컬럼이 있어야 합니다.
+ *    alter table questions add column if not exists lang text not null default 'ko';
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
@@ -58,10 +64,13 @@ const VALID_CATS   = new Set(["인물", "사건", "말씀", "지명"]);
 function args() {
   const a = process.argv.slice(2);
   const get = (flag: string) => { const i = a.indexOf(flag); return i >= 0 ? a[i + 1] : undefined; };
+  const lang = (get("--lang") || "ko") as "ko" | "en" | "th";
+  if (!["ko", "en", "th"].includes(lang)) { console.error(`❌ --lang 은 ko | en | th 만 가능합니다.`); process.exit(1); }
   return {
     plan: a.includes("--plan"),
     book: get("--book"),
     limit: get("--limit") ? parseInt(get("--limit")!) : Infinity,
+    lang,
   };
 }
 
@@ -87,11 +96,11 @@ function isValidQ(q: any): boolean {
     && typeof q.hint === "string" && typeof q.explanation === "string";
 }
 
-async function fetchExisting(): Promise<{ book: string; question: string }[]> {
+async function fetchExisting(lang: string): Promise<{ book: string; question: string }[]> {
   const all: { book: string; question: string }[] = [];
   const PAGE = 1000;
   for (let from = 0; ; from += PAGE) {
-    const { data, error } = await supabase.from("questions").select("book, question").range(from, from + PAGE - 1);
+    const { data, error } = await supabase.from("questions").select("book, question").eq("lang", lang).range(from, from + PAGE - 1);
     if (error) throw error;
     if (!data?.length) break;
     all.push(...(data as any));
@@ -102,20 +111,57 @@ async function fetchExisting(): Promise<{ book: string; question: string }[]> {
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
-async function generateBatch(book: string, testament: string, n: number, avoidStems: string[]): Promise<any[]> {
+async function generateBatch(book: string, testament: string, n: number, avoidStems: string[], lang: "ko" | "en" | "th"): Promise<any[]> {
   const easy = Math.max(1, Math.round(n * 0.35));
   const medium = Math.max(1, Math.round(n * 0.45));
   const hard = Math.max(0, n - easy - medium);
 
-  const avoidBlock = avoidStems.length
-    ? `\n\n[중복 금지] 아래 질문들과 의미가 겹치지 않는 새로운 문제만 만드세요:\n${avoidStems.slice(0, 60).map(s => `- ${s}`).join("\n")}`
-    : "";
+  // 공통 JSON 스키마 (book/category 는 모든 언어에서 한국어 코드 그대로 유지 → 권 필터·분류 호환)
+  const schema = `[{"book":"${book}","testament":"${testament}","category":"인물","level":"easy","question":"...","options":["..","..","..",".."],"answer":0,"hint":"...","explanation":"..."}]`;
 
-  const prompt = `당신은 성경 전문가입니다. "${book}"에 관한 퀴즈 문제 ${n}개를 만들어 주세요.
+  let prompt: string;
+  if (lang === "en") {
+    const avoidBlock = avoidStems.length
+      ? `\n\n[No duplicates] Create only NEW questions that do not overlap in meaning with these:\n${avoidStems.slice(0, 60).map(s => `- ${s}`).join("\n")}`
+      : "";
+    prompt = `You are a Bible expert. Create ${n} quiz questions about the Bible book whose Korean name is "${book}".
+
+Respond ONLY as a JSON array. No markdown, no code block, no explanatory text — JSON only.
+
+${schema}
+
+Rules:
+- Keep "book" EXACTLY as "${book}" (Korean) and "category" as one of these EXACT codes: "인물" (person) | "사건" (event) | "말씀" (teaching/verse) | "지명" (place).
+- easy ${easy}, medium ${medium}, hard ${hard}
+- "answer" is the 0-based index of the correct option (0~3)
+- Theologically accurate and verified, based on the NIV (New International Version)
+- easy: solvable by a 7-year-old; hard: seminary level
+- Write "question", "options", "hint", "explanation" in ENGLISH${avoidBlock}`;
+  } else if (lang === "th") {
+    const avoidBlock = avoidStems.length
+      ? `\n\n[ห้ามซ้ำ] สร้างเฉพาะคำถามใหม่ที่ไม่ซ้ำความหมายกับรายการต่อไปนี้:\n${avoidStems.slice(0, 60).map(s => `- ${s}`).join("\n")}`
+      : "";
+    prompt = `คุณเป็นผู้เชี่ยวชาญพระคัมภีร์ จงสร้างคำถามควิซ ${n} ข้อ เกี่ยวกับหนังสือพระคัมภีร์ที่มีชื่อภาษาเกาหลีว่า "${book}"
+
+ตอบกลับเป็นอาร์เรย์ JSON เท่านั้น ห้ามมี markdown, code block หรือข้อความอธิบาย — JSON เท่านั้น
+
+${schema}
+
+เงื่อนไข:
+- คง "book" ไว้เป็น "${book}" (ภาษาเกาหลี) ทุกข้อ และ "category" เป็นรหัสใดรหัสหนึ่งต่อไปนี้: "인물" (บุคคล) | "사건" (เหตุการณ์) | "말씀" (พระวจนะ) | "지명" (สถานที่)
+- "answer" คือดัชนีของตัวเลือกที่ถูกต้อง (0~3 เริ่มจาก 0)
+- ถูกต้องตามหลักเทววิทยา อ้างอิงฉบับ Thai Standard Version (TSV)
+- easy: เด็ก 7 ขวบก็ตอบได้, hard: ระดับนักศึกษาเทววิทยา
+- เขียน "question", "options", "hint", "explanation" เป็นภาษาไทย${avoidBlock}`;
+  } else {
+    const avoidBlock = avoidStems.length
+      ? `\n\n[중복 금지] 아래 질문들과 의미가 겹치지 않는 새로운 문제만 만드세요:\n${avoidStems.slice(0, 60).map(s => `- ${s}`).join("\n")}`
+      : "";
+    prompt = `당신은 성경 전문가입니다. "${book}"에 관한 퀴즈 문제 ${n}개를 만들어 주세요.
 
 반드시 아래 JSON 배열 형식으로만 응답하세요. 마크다운, 코드블록, 설명 텍스트 없이 JSON만 출력하세요.
 
-[{"book":"${book}","testament":"${testament}","category":"인물","level":"easy","question":"질문 내용","options":["선택지1","선택지2","선택지3","선택지4"],"answer":0,"hint":"힌트 1~2문장","explanation":"정답 해설 2~3문장"}]
+${schema}
 
 조건:
 - easy ${easy}개, medium ${medium}개, hard ${hard}개
@@ -124,6 +170,7 @@ async function generateBatch(book: string, testament: string, n: number, avoidSt
 - 신학적으로 정확하고 검증된 내용만 (개역개정 기준)
 - easy는 어린이(7세)도 풀 수 있게, hard는 신학생 수준으로
 - 한국어로 작성${avoidBlock}`;
+  }
 
   const res = await anthropic.messages.create({
     model: MODEL,
@@ -135,7 +182,7 @@ async function generateBatch(book: string, testament: string, n: number, avoidSt
   return extractJsonArray(text);
 }
 
-async function fillBook(book: string, have: number, target: number, existingStems: string[], remainingBudget: number): Promise<number> {
+async function fillBook(book: string, have: number, target: number, existingStems: string[], remainingBudget: number, lang: "ko" | "en" | "th"): Promise<number> {
   const need = Math.min(target - have, remainingBudget);
   if (need <= 0) {
     console.log(`⏭️  ${book}: 이미 ${have}/${target}개 — 건너뜀`);
@@ -152,7 +199,7 @@ async function fillBook(book: string, have: number, target: number, existingStem
     const batch = Math.min(BATCH_SIZE, need - added);
     let raw: any[];
     try {
-      raw = await generateBatch(book, testament, batch, [...seen]);
+      raw = await generateBatch(book, testament, batch, [...seen], lang);
     } catch (e) {
       if (isCreditError(e)) throw e;
       console.error(`   ⚠️ ${book} 배치 생성 오류 (건너뜀):`, (e as any)?.message || e);
@@ -163,7 +210,7 @@ async function fillBook(book: string, have: number, target: number, existingStem
     }
 
     const fresh = raw
-      .map(q => ({ ...q, book, testament }))
+      .map(q => ({ ...q, book, testament, lang }))
       .filter(isValidQ)
       .filter(q => { const s = q.question.trim(); if (seen.has(s)) return false; seen.add(s); return true; })
       .slice(0, need - added);
@@ -187,7 +234,8 @@ async function fillBook(book: string, have: number, target: number, existingStem
 }
 
 async function main() {
-  const { plan, book: onlyBook, limit } = args();
+  const { plan, book: onlyBook, limit, lang } = args();
+  console.log(`🌐 언어: ${lang.toUpperCase()}${lang === "en" ? " (NIV)" : lang === "th" ? " (TSV)" : " (개역개정)"}\n`);
 
   if (plan && onlyBook === undefined) {
     let totalTarget = 0;
@@ -197,8 +245,8 @@ async function main() {
     return;
   }
 
-  console.log("📊 기존 문제 현황 확인 중...");
-  const existing = await fetchExisting();
+  console.log(`📊 기존 ${lang.toUpperCase()} 문제 현황 확인 중...`);
+  const existing = await fetchExisting(lang);
   const have: Record<string, number> = {};
   const stemsByBook: Record<string, string[]> = {};
   for (const row of existing) {
@@ -215,7 +263,7 @@ async function main() {
   try {
     for (const b of targets) {
       if (budget <= 0) { console.log("\n💰 이번 실행 생성 한도(--limit) 도달 → 종료"); break; }
-      const added = await fillBook(b, have[b] || 0, BOOK_TARGET[b], stemsByBook[b] || [], budget);
+      const added = await fillBook(b, have[b] || 0, BOOK_TARGET[b], stemsByBook[b] || [], budget, lang);
       totalAdded += added;
       budget -= added;
     }

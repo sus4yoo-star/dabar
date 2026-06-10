@@ -25,7 +25,7 @@ function Center({ children }: { children: React.ReactNode }) {
 
 function QuizInner() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const params = useSearchParams();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [idx, setIdx] = useState(0);
@@ -57,7 +57,7 @@ function QuizInner() {
     const testament = params.get("testament") || "전체";
     const count = params.get("count") || "10";
     const books = params.get("books") || "";
-    const qs = new URLSearchParams({ level, testament, count });
+    const qs = new URLSearchParams({ level, testament, count, lang });
     if (books) qs.set("books", books);
     fetch(`/api/questions?${qs.toString()}`)
       .then(r => r.json())
