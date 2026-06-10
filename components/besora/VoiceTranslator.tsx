@@ -109,25 +109,25 @@ export default function VoiceTranslator() {
       {open && mounted && createPortal(
         // 배경 오버레이 없음 → 위의 전도 내용이 가려지지 않음. 하단에 작은 패널로만 표시.
         <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 60, display: "flex", justifyContent: "center", pointerEvents: "none" }}>
-          <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: "#ffffff", padding: "12px 16px 22px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "62dvh", overflowY: "auto" }}>
+          <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: "#ffffff", padding: "10px 16px 18px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "46dvh", overflowY: "auto" }}>
             <div style={{ marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 16, fontWeight: 700, color: theme.text, margin: 0 }}>🎤 {ui(myLang, "voice")}</h2>
               <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>닫기 ✕</button>
             </div>
 
             {/* 방향 선택: 파랑=내가 말함, 초록=상대가 말함 */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
               {dirBtn("out", `${nameOf(myLang)} → ${nameOf(seeker)}`, theme.primarySoft, theme.primaryBg, theme.primary)}
               {dirBtn("in", `${nameOf(seeker)} → ${nameOf(myLang)}`, theme.gold, theme.goldLight, theme.goldSoft)}
             </div>
 
             {SR ? (
-              <div style={{ textAlign: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <button onClick={toggleMic}
-                  style={{ width: 84, height: 84, borderRadius: 999, border: "none", cursor: "pointer", fontSize: 36, color: "#fff", background: listening ? "#e25555" : theme.primary, boxShadow: listening ? "0 0 0 10px rgba(226,85,85,0.15)" : "0 8px 22px rgba(31,155,239,0.35)", transition: "background .2s" }}>
+                  style={{ flexShrink: 0, width: 58, height: 58, borderRadius: 999, border: "none", cursor: "pointer", fontSize: 24, color: "#fff", background: listening ? "#e25555" : theme.primary, boxShadow: listening ? "0 0 0 8px rgba(226,85,85,0.15)" : "0 6px 18px rgba(31,155,239,0.35)", transition: "background .2s" }}>
                   {listening ? "■" : "🎤"}
                 </button>
-                <p style={{ marginTop: 10, fontSize: 13, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500 }}>
+                <p style={{ fontSize: 13, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500, margin: 0 }}>
                   {listening ? ui(myLang, "listening") : ui(myLang, "tapToTalk")}
                 </p>
               </div>
