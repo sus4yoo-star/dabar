@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { speak } from "@/lib/besora/speak";
@@ -56,6 +57,10 @@ function Direction({ from, to, fromName, toName }: { from: string; to: string; f
 export default function TranslateSheet() {
   const { myLang, seekerLang, languages } = useLang();
   const [open, setOpen] = useState(false);
+  // 헤더의 backdrop-filter 가 position:fixed 의 기준이 되어 시트가 헤더 안에 갇히는
+  // 문제 방지 → 포털로 body 에 직접 렌더
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const nameOf = (c: string) => languages.find((l) => l.code === c)?.name_native ?? c;
   const seeker = seekerLang || "en";
 
@@ -66,7 +71,7 @@ export default function TranslateSheet() {
         🌐
       </button>
 
-      {open && (
+      {open && mounted && createPortal(
         <div onClick={() => setOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", flexDirection: "column", justifyContent: "flex-end", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}>
           <div onClick={(e) => e.stopPropagation()} style={{ margin: "0 auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 24, borderTopRightRadius: 24, borderTop: `1px solid ${theme.cardBorder}`, background: "#ffffff", padding: "16px 16px 32px" }}>
             <div style={{ marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -78,7 +83,8 @@ export default function TranslateSheet() {
               <Direction from={seeker} to={myLang} fromName={nameOf(seeker)} toName={nameOf(myLang)} />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
