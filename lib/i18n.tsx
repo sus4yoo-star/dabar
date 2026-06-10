@@ -26,6 +26,7 @@ const DICT: Dict = {
   "home.invite":      { ko: "👋 친구 초대하고 같이 경쟁하기", en: "👋 Invite friends & compete", th: "👋 ชวนเพื่อนมาแข่งกัน" },
   "home.guide":       { ko: "📋 학습·세례·입교 절차 안내", en: "📋 Membership steps guide", th: "📋 ขั้นตอนการเป็นสมาชิก" },
   "home.admin":       { ko: "🔧 목사님 현황판", en: "🔧 Pastor dashboard", th: "🔧 แดชบอร์ดศิษยาภิบาล" },
+  "home.growSection": { ko: "양육 · 교육 과정", en: "Discipleship · Education", th: "การเป็นสาวก · การศึกษา" },
 
   "menu.newcomer.t":  { ko: "새신자", en: "New Believer", th: "ผู้เชื่อใหม่" },
   "menu.newcomer.s":  { ko: "예수님을 처음 만난 분", en: "Just met Jesus", th: "เพิ่งพบพระเยซู" },

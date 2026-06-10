@@ -7,13 +7,13 @@ import { shareInvite } from "@/lib/share";
 import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
 
-const MENU = [
+// 양육·교육 과정 (2열 그리드로 한 묶음)
+const COURSE_MENU = [
   { emoji: "🌱", href: "/course/newcomer", tk: "menu.newcomer" },
   { emoji: "💧", href: "/course/baptism", tk: "menu.baptism" },
   { emoji: "✝️", href: "/course/confirmation", tk: "menu.confirmation" },
   { emoji: "📚", href: "/course/deep", tk: "menu.deep" },
   { emoji: "📜", href: "/catechism", tk: "menu.catechism" },
-  { emoji: "📖", href: "/play", tk: "menu.quiz" },
 ];
 
 export default function Home() {
@@ -94,17 +94,26 @@ export default function Home() {
         <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{t("home.tagline")}</p>
       </div>
 
-      {/* 4개 메뉴 카드 */}
-      <div className="fade-in-2" style={{ display: "flex", flexDirection: "column", gap: 11, marginBottom: "1.25rem" }}>
-        {MENU.map(m => (
+      {/* 성경퀴즈 — 메인 카드(맨 위, 크게) */}
+      <button onClick={() => router.push("/play")} className="fade-in-2"
+        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "18px 18px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, cursor: "pointer", color: theme.text, marginBottom: "1.1rem" }}>
+        <span style={{ fontSize: 32, lineHeight: 1 }}>📖</span>
+        <span style={{ flex: 1 }}>
+          <span style={{ display: "block", fontSize: 18, fontWeight: 800, color: theme.gold }}>{t("menu.quiz.t")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>{t("menu.quiz.s")}</span>
+        </span>
+        <span style={{ fontSize: 18, color: theme.gold }}>→</span>
+      </button>
+
+      {/* 양육·교육 과정 (한 묶음, 2열 그리드) */}
+      <p style={{ fontSize: 12, fontWeight: 700, color: theme.textFaint, letterSpacing: 1, margin: "0 0 9px 2px" }}>{t("home.growSection")}</p>
+      <div className="fade-in-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9, marginBottom: "1.25rem" }}>
+        {COURSE_MENU.map(m => (
           <button key={m.href} onClick={() => router.push(m.href)}
-            style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", padding: "16px 18px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text }}>
-            <span style={{ fontSize: 30, lineHeight: 1 }}>{m.emoji}</span>
-            <span style={{ flex: 1 }}>
-              <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.text }}>{t(m.tk + ".t")}</span>
-              <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>{t(m.tk + ".s")}</span>
-            </span>
-            <span style={{ fontSize: 18, color: theme.gold }}>→</span>
+            style={{ display: "flex", flexDirection: "column", gap: 4, textAlign: "left", padding: "13px 14px", borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, minHeight: 76 }}>
+            <span style={{ fontSize: 24, lineHeight: 1 }}>{m.emoji}</span>
+            <span style={{ fontSize: 14.5, fontWeight: 800, color: theme.text, lineHeight: 1.25 }}>{t(m.tk + ".t")}</span>
+            <span style={{ fontSize: 11, color: theme.textMuted, lineHeight: 1.3 }}>{t(m.tk + ".s")}</span>
           </button>
         ))}
       </div>
