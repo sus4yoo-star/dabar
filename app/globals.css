@@ -1,6 +1,3 @@
-/* 베소라(/share) 전도 화면용 세리프 폰트 — @import 는 반드시 파일 최상단 */
-@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&display=swap");
-
 * { box-sizing: border-box; }
 html, body { min-height: 100%; }
 body {
@@ -34,20 +31,3 @@ button:not(:disabled):hover { filter: brightness(1.06); }
 @media (prefers-reduced-motion: reduce) {
   *, button { animation: none !important; transition: none !important; }
 }
-
-/* ===================================================================== */
-/* 베소라(/share) 전용 — Tailwind 유틸리티 + 전도 도구 일러스트 애니메이션   */
-/* ⚠️ @tailwind base 는 넣지 않음 (preflight off와 함께 다바르 스타일 보존)  */
-/* ===================================================================== */
-@tailwind components;
-@tailwind utilities;
-
-@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-.animate-rise { animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-
-@keyframes sk-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes sk-pop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
-@keyframes sk-cross { 0% { opacity: 0; transform: translateX(-46px); } 20% { opacity: 1; } 100% { opacity: 1; transform: translateX(46px); } }
-@keyframes sk-glow { 0%, 100% { opacity: 0.35; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.06); } }
-@keyframes sk-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes sk-twinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.9; } }
