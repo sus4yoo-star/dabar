@@ -127,7 +127,7 @@ function QuizInner() {
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>
       {/* 전체 진행바 */}
-      <div style={{ height: 6, background: "rgba(0,0,0,0.20)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
+      <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
         <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
@@ -138,7 +138,7 @@ function QuizInner() {
         </div>
         <span style={{ fontSize: 14, fontWeight: 700, color: timeLeft <= 5 ? theme.wrong : theme.textMuted }}>⏱ {timeLeft}{t("q.sec")}</span>
       </div>
-      <div style={{ height: 5, background: "rgba(0,0,0,0.20)", borderRadius: 3, marginBottom: 20 }}>
+      <div style={{ height: 5, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 20 }}>
         <div style={{ height: "100%", background: timeLeft <= 5 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 15) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
       </div>
       <div key={idx} className="fade-in">

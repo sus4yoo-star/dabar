@@ -5,8 +5,8 @@ import { useAuth } from "@/lib/auth";
 import { useI18n, LangSelector } from "@/lib/i18n";
 
 // 브랜드 컬러 (파랑·초록·흰색)
-const GOLD = "#9ed62b";
-const GOLD_SOFT = "#86c40a";
+const GOLD = "#58a700";
+const GOLD_SOFT = "#79c61d";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function LoginPage() {
         justifyContent: "center",
         padding: "3rem 1.5rem",
         background:
-          "radial-gradient(135% 100% at 50% -5%, #36a7f2 0%, #2b8fd2 45%, #4a9c46 100%)",
+          "#ffffff",
       }}
     >
       <div style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
@@ -50,7 +50,7 @@ export default function LoginPage() {
             aria-hidden
             style={{
               position: "absolute", inset: -28, borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(146,215,0,0.32) 0%, rgba(146,215,0,0) 70%)",
+              background: "radial-gradient(circle, rgba(146,215,0,0.22) 0%, rgba(146,215,0,0) 70%)",
               filter: "blur(6px)",
             }}
           />
@@ -72,10 +72,10 @@ export default function LoginPage() {
         >
           DABAR
         </h1>
-        <p style={{ fontSize: 13, color: "#d4ecfb", letterSpacing: 3, margin: "0 0 18px" }}>
+        <p style={{ fontSize: 13, color: "#54718a", letterSpacing: 3, margin: "0 0 18px" }}>
           다바르 · 말씀 퀴즈
         </p>
-        <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#dbeffb", margin: "0 0 26px" }}>
+        <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#3c5a73", margin: "0 0 26px" }}>
           {t("login.tagline1")}<br />
           {t("login.tagline2")}
         </p>
@@ -84,7 +84,7 @@ export default function LoginPage() {
         <div
           style={{
             textAlign: "left",
-            background: "rgba(255,255,255,0.05)",
+            background: "rgba(146,215,0,0.07)",
             border: "1px solid rgba(146,215,0,0.30)",
             borderLeft: `3px solid ${GOLD_SOFT}`,
             borderRadius: 14,
@@ -92,7 +92,7 @@ export default function LoginPage() {
             margin: "0 0 28px",
           }}
         >
-          <p style={{ fontSize: 14.5, lineHeight: 1.75, color: "#eef8ff", fontStyle: "italic", margin: "0 0 8px" }}>
+          <p style={{ fontSize: 14.5, lineHeight: 1.75, color: "#173249", fontStyle: "italic", margin: "0 0 8px" }}>
             “{t("login.verse")}”
           </p>
           <p style={{ fontSize: 12.5, color: GOLD, margin: 0, letterSpacing: 0.5 }}>— {t("login.verseRef")}</p>
@@ -119,7 +119,7 @@ export default function LoginPage() {
           disabled={busy !== null}
           style={{
             width: "100%", padding: 15, fontSize: 16, fontWeight: 700,
-            background: "#ffffff", color: "#1a1a1a", border: "none", borderRadius: 14,
+            background: "#ffffff", color: "#1a1a1a", border: "1px solid #d8e2ea", borderRadius: 14,
             cursor: busy ? "default" : "pointer",
             opacity: busy && busy !== "google" ? 0.55 : 1,
             display: "flex", alignItems: "center", justifyContent: "center", gap: 9,
@@ -129,11 +129,11 @@ export default function LoginPage() {
           {busy === "google" ? t("login.redirecting") : t("login.google")}
         </button>
 
-        <p style={{ fontSize: 12.5, color: "#a7d3ef", marginTop: 20, lineHeight: 1.6 }}>
+        <p style={{ fontSize: 12.5, color: "#85a0b5", marginTop: 20, lineHeight: 1.6 }}>
           {t("login.free")}
         </p>
 
-        <p style={{ fontSize: 11, color: "#6fa6cf", marginTop: "2.5rem", letterSpacing: 1.5 }}>
+        <p style={{ fontSize: 11, color: "#9ab4c6", marginTop: "2.5rem", letterSpacing: 1.5 }}>
           DABAR by AMOV · Love Creates Value
         </p>
       </div>

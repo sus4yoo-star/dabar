@@ -69,7 +69,7 @@ export default function PresentClient() {
       {!inDecision && (
         <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
           {contentSteps.map((_, i) => (
-            <span key={i} style={{ height: 6, flex: 1, borderRadius: 999, background: i <= idx ? theme.gold : "rgba(255,255,255,0.18)" }} />
+            <span key={i} style={{ height: 6, flex: 1, borderRadius: 999, background: i <= idx ? theme.gold : "rgba(13,52,84,0.12)" }} />
           ))}
         </div>
       )}
