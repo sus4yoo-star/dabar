@@ -4,8 +4,8 @@
   "description": "말씀 퀴즈 — 성경을 즐겁게 배워요",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#2b8fd2",
-  "theme_color": "#2b8fd2",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "/icons/icon-192.png",

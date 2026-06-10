@@ -68,8 +68,8 @@ export default function AudioButton({
         display: "inline-flex", alignItems: "center", gap: 8,
         padding: "10px 20px", fontSize: 14, fontWeight: 700,
         borderRadius: 999, cursor: "pointer",
-        color: theme.text, background: "rgba(255,255,255,0.12)",
-        border: "1px solid rgba(255,255,255,0.35)",
+        color: "#173249", background: "rgba(255,255,255,0.65)",
+        border: "1px solid rgba(23,50,73,0.25)",
       }}
     >
       <span>{playing ? "‖" : "▶"}</span>

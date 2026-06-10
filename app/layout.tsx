@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 // Next 14 권장 방식: themeColor / viewport 는 metadata 가 아닌 viewport 로 분리
 export const viewport: Viewport = {
-  themeColor: "#2b8fd2",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };

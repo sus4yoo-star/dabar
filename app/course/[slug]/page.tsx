@@ -55,7 +55,7 @@ export default function CoursePage() {
       </div>
 
       {/* 진도바 */}
-      <div style={{ height: 8, background: "rgba(0,0,0,0.20)", borderRadius: 4, marginBottom: "1.5rem", overflow: "hidden" }}>
+      <div style={{ height: 8, background: "rgba(13,52,84,0.12)", borderRadius: 4, marginBottom: "1.5rem", overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${total ? (completed / total) * 100 : 0}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .4s ease", borderRadius: 4 }} />
       </div>
 

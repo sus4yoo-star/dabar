@@ -62,7 +62,7 @@ export default function CatechismQuiz() {
 
   return (
     <main style={{ maxWidth: 560, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>
-      <div style={{ height: 6, background: "rgba(0,0,0,0.20)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
+      <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${((idx + 1) / quiz.length) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .3s", borderRadius: 3 }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>

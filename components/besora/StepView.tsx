@@ -22,7 +22,7 @@ export default function StepView({
 }) {
   const isColor = step.kind === "color" && step.color_key;
   const skin = isColor ? CARD_BG[step.color_key as string] : null;
-  const bg = skin?.bg ?? "linear-gradient(160deg,#16557e,#0a2236)";
+  const bg = skin?.bg ?? "linear-gradient(160deg,#f4faff,#e7f2fb)";
   const fg = skin?.fg ?? theme.text;
   const showBoth = myLang !== seekerLang && (step.helper.title || step.helper.body);
 
@@ -35,7 +35,7 @@ export default function StepView({
           position: "relative", display: "flex", flex: 1, flexDirection: "column",
           alignItems: "center", justifyContent: "center", overflow: "hidden",
           borderRadius: 28, background: bg, color: fg, padding: 40, textAlign: "center",
-          boxShadow: "0 26px 64px -30px rgba(0,0,0,0.75)",
+          boxShadow: "0 22px 54px -28px rgba(23,50,73,0.35)",
         }}
       >
         {step.kind === "diagram" && <Sketch k={step.sketch_key} />}

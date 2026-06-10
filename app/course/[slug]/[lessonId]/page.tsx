@@ -82,7 +82,7 @@ export default function LessonPage() {
       {/* 문제 */}
       {phase === "quiz" && (
         <div>
-          <div style={{ height: 6, background: "rgba(0,0,0,0.20)", borderRadius: 3, marginBottom: 16, overflow: "hidden" }}>
+          <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 16, overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${((qIdx + 1) / quiz.length) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .3s ease", borderRadius: 3 }} />
           </div>
           <p style={{ fontSize: 12, color: theme.textMuted, fontWeight: 600, margin: "0 0 8px" }}>{qIdx + 1} / {quiz.length}</p>

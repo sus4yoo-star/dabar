@@ -232,12 +232,12 @@ export const useI18n = () => useContext(I18nCtx);
 export function LangSelector() {
   const { lang, setLang } = useI18n();
   return (
-    <div style={{ display: "inline-flex", gap: 4, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 16, padding: 3 }}>
+    <div style={{ display: "inline-flex", gap: 4, background: "rgba(13,52,84,0.05)", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 16, padding: 3 }}>
       {LANGS.map(l => {
         const on = lang === l.code;
         return (
           <button key={l.code} onClick={() => setLang(l.code)}
-            style={{ fontSize: 12, fontWeight: on ? 800 : 600, padding: "4px 9px", borderRadius: 13, border: "none", cursor: "pointer", background: on ? "#9ed62b" : "transparent", color: on ? "#08263a" : "#d4ecfb" }}>
+            style={{ fontSize: 12, fontWeight: on ? 800 : 600, padding: "4px 9px", borderRadius: 13, border: "none", cursor: "pointer", background: on ? "#1f9bef" : "transparent", color: on ? "#ffffff" : "#54718a" }}>
             {l.code.toUpperCase()}
           </button>
         );
