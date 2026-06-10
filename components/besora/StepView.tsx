@@ -22,7 +22,7 @@ export default function StepView({
 }) {
   const isColor = step.kind === "color" && step.color_key;
   const skin = isColor ? CARD_BG[step.color_key as string] : null;
-  const bg = skin?.bg ?? "linear-gradient(160deg,#2a1d52,#1c1238)";
+  const bg = skin?.bg ?? "linear-gradient(160deg,#16557e,#0a2236)";
   const fg = skin?.fg ?? theme.text;
   const showBoth = myLang !== seekerLang && (step.helper.title || step.helper.body);
 

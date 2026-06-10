@@ -38,7 +38,7 @@ export default function DecisionFlow({ toolSlug, onAgain }: { toolSlug: string; 
   const Divider = () => <div style={{ margin: "20px 0", height: 1, width: 48, background: "currentColor", opacity: 0.2 }} />;
   const pillCrimson = { borderRadius: 999, background: "#C9402F", padding: "12px 32px", fontWeight: 700, color: "#fff", border: "none", cursor: "pointer" } as const;
   const pillGreen = { borderRadius: 999, background: theme.correct, padding: "12px 32px", fontWeight: 700, color: "#10301f", border: "none", cursor: "pointer" } as const;
-  const pillGold = { borderRadius: 999, background: theme.gold, padding: "12px 32px", fontWeight: 800, color: "#241246", border: "none", cursor: "pointer" } as const;
+  const pillGold = { borderRadius: 999, background: theme.gold, padding: "12px 32px", fontWeight: 800, color: "#08263a", border: "none", cursor: "pointer" } as const;
 
   return (
     <div style={{ display: "flex", flex: 1, flexDirection: "column" }}>
@@ -47,7 +47,7 @@ export default function DecisionFlow({ toolSlug, onAgain }: { toolSlug: string; 
         dir={rtl ? "rtl" : "ltr"}
         style={{
           display: "flex", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center",
-          overflow: "hidden", borderRadius: 28, background: "radial-gradient(circle at 50% 18%,#3a2a66,#1c1238 72%)",
+          overflow: "hidden", borderRadius: 28, background: "radial-gradient(circle at 50% 18%,#16557e,#0a2236 72%)",
           color: theme.text, padding: 40, textAlign: "center", boxShadow: "0 26px 64px -30px rgba(0,0,0,0.75)",
         }}
       >

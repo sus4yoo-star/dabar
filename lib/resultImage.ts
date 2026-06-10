@@ -11,8 +11,8 @@ interface ResultImageArgs {
   wrongList?: WrongItem[]; // 오답 (있으면 카드에 오답노트로 표시)
 }
 
-const GOLD = "#e6c878";
-const GOLD_SOFT = "#d8be6e";
+const GOLD = "#9ed62b";
+const GOLD_SOFT = "#86c40a";
 const IMG_MAX_WRONG = 3; // 이미지에는 최대 3개까지
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
@@ -37,11 +37,11 @@ export function drawResultCard({ score, total, percentage, message, color, wrong
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext("2d")!;
 
-  // 배경 (밝은 보라)
+  // 배경 (파랑 → 초록)
   const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, "#9a6cf2");
-  bg.addColorStop(0.5, "#6e49d8");
-  bg.addColorStop(1, "#4d2fae");
+  bg.addColorStop(0, "#36a7f2");
+  bg.addColorStop(0.5, "#2b8fd2");
+  bg.addColorStop(1, "#4a9c46");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
 
@@ -50,12 +50,12 @@ export function drawResultCard({ score, total, percentage, message, color, wrong
   ctx.save();
   ctx.shadowColor = "rgba(0,0,0,0.32)";
   ctx.shadowBlur = 44; ctx.shadowOffsetY = 18;
-  ctx.fillStyle = "#241152";
+  ctx.fillStyle = "#0a2236";
   roundRect(ctx, cx, cy, cw, ch, 56);
   ctx.fill();
   ctx.restore();
   ctx.lineWidth = 2;
-  ctx.strokeStyle = "rgba(230,200,120,0.38)";
+  ctx.strokeStyle = "rgba(146,215,0,0.40)";
   roundRect(ctx, cx, cy, cw, ch, 56);
   ctx.stroke();
 
@@ -72,7 +72,7 @@ export function drawResultCard({ score, total, percentage, message, color, wrong
   ctx.fillStyle = color;
   ctx.font = "800 150px -apple-system, 'Segoe UI', sans-serif";
   ctx.fillText(String(score), W / 2 - 50, 420);
-  ctx.fillStyle = "#c4b9e6";
+  ctx.fillStyle = "#bfe0f5";
   ctx.font = "400 56px -apple-system, 'Segoe UI', sans-serif";
   ctx.fillText(`/ ${total}`, W / 2 + 105, 420);
 
@@ -87,7 +87,7 @@ export function drawResultCard({ score, total, percentage, message, color, wrong
   roundRect(ctx, barX, barY, barW, barH, 11); ctx.fill();
   ctx.fillStyle = color;
   roundRect(ctx, barX, barY, Math.max(barH, barW * (percentage / 100)), barH, 11); ctx.fill();
-  ctx.fillStyle = "#d6ccf2";
+  ctx.fillStyle = "#d4ecfb";
   ctx.font = "600 32px -apple-system, 'Segoe UI', sans-serif";
   ctx.fillText(`정답률 ${percentage}%`, W / 2, barY + 70);
 
@@ -106,7 +106,7 @@ export function drawResultCard({ score, total, percentage, message, color, wrong
 
     let y = 800;
     wrongList.slice(0, IMG_MAX_WRONG).forEach((w, i) => {
-      ctx.fillStyle = "#efe9fb";
+      ctx.fillStyle = "#eef8ff";
       ctx.font = "600 30px -apple-system, 'Segoe UI', sans-serif";
       ctx.fillText(fit(ctx, `${i + 1}. ${w.q}`, maxW), tx, y);
       ctx.fillStyle = "#46e0a8";
@@ -115,7 +115,7 @@ export function drawResultCard({ score, total, percentage, message, color, wrong
       y += 100;
     });
     if (wrongList.length > IMG_MAX_WRONG) {
-      ctx.fillStyle = "#cfc2ef";
+      ctx.fillStyle = "#bfe0f5";
       ctx.font = "500 26px -apple-system, 'Segoe UI', sans-serif";
       ctx.fillText(`…외 ${wrongList.length - IMG_MAX_WRONG}개 더`, tx, y + 4);
     }

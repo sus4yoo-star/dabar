@@ -39,7 +39,7 @@ function Direction({ from, to, fromName, toName }: { from: string; to: string; f
         value={text} onChange={(e) => setText(e.target.value)} rows={2} placeholder={`${fromName}로 입력`}
         style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: "rgba(0,0,0,0.25)", padding: "8px 12px", fontSize: 14, color: theme.text, outline: "none", boxSizing: "border-box" }}
       />
-      <button onClick={go} disabled={busy || !text.trim()} style={{ marginTop: 8, width: "100%", borderRadius: 999, background: theme.gold, padding: "8px 0", fontSize: 14, fontWeight: 700, color: "#241246", border: "none", cursor: busy ? "default" : "pointer", opacity: busy || !text.trim() ? 0.4 : 1 }}>
+      <button onClick={go} disabled={busy || !text.trim()} style={{ marginTop: 8, width: "100%", borderRadius: 999, background: theme.gold, padding: "8px 0", fontSize: 14, fontWeight: 700, color: "#08263a", border: "none", cursor: busy ? "default" : "pointer", opacity: busy || !text.trim() ? 0.4 : 1 }}>
         {busy ? "번역 중…" : `${toName}로 번역·들려주기`}
       </button>
       {err && <p style={{ marginTop: 8, fontSize: 12, color: theme.wrong }}>{err}</p>}
@@ -68,7 +68,7 @@ export default function TranslateSheet() {
 
       {open && (
         <div onClick={() => setOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", flexDirection: "column", justifyContent: "flex-end", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ margin: "0 auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 24, borderTopRightRadius: 24, borderTop: `1px solid ${theme.cardBorder}`, background: "#1c1238", padding: "16px 16px 32px" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ margin: "0 auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 24, borderTopRightRadius: 24, borderTop: `1px solid ${theme.cardBorder}`, background: "#0a2236", padding: "16px 16px 32px" }}>
             <div style={{ marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 18, fontWeight: 700, color: theme.text, margin: 0 }}>음성 번역</h2>
               <button onClick={() => setOpen(false)} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>닫기 ✕</button>

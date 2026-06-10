@@ -123,7 +123,7 @@ export default function LessonPage() {
           <p style={{ fontSize: 14, color: theme.textMuted, margin: "0 0 2rem" }}>{t("co.scoreLine", { total: quiz.length, n: correctCount })}</p>
           {nextLesson ? (
             <button onClick={() => { setPhase("learn"); setQIdx(0); setSelected(null); setCorrectCount(0); router.push(`/course/${course.slug}/${nextLesson.id}`); }}
-              style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>{t("co.nextLesson")}</button>
+              style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#a6e02f 0%,#86c40a 100%)", color: "#08263a", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>{t("co.nextLesson")}</button>
           ) : (
             <div style={{ background: "rgba(74,224,168,0.14)", border: `1px solid ${theme.correct}`, borderRadius: 14, padding: "14px", marginBottom: 10 }}>
               <p style={{ fontSize: 15, fontWeight: 800, color: theme.correct, margin: 0 }}>{t("co.lastLesson", { t: course.title })}</p>

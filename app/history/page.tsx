@@ -63,7 +63,7 @@ export default function HistoryPage() {
               </p>
             )}
           </div>
-          <button onClick={retryWrong} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: "1.25rem", boxShadow: "0 8px 24px rgba(216,190,110,0.22)" }}>{t("h.retry")}</button>
+          <button onClick={retryWrong} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 800, background: "linear-gradient(135deg,#a6e02f 0%,#86c40a 100%)", color: "#08263a", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: "1.25rem", boxShadow: "0 8px 24px rgba(216,190,110,0.22)" }}>{t("h.retry")}</button>
         </>
       )}
 

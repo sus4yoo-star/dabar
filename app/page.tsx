@@ -7,13 +7,14 @@ import { shareInvite } from "@/lib/share";
 import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
 
-// 양육·교육 과정 (2열 그리드로 한 묶음)
+// 양육·교육 과정 (2열 그리드로 한 묶음) — 성경퀴즈를 6번째 칸으로 포함
 const COURSE_MENU = [
   { emoji: "🌱", href: "/course/newcomer", tk: "menu.newcomer" },
   { emoji: "💧", href: "/course/baptism", tk: "menu.baptism" },
   { emoji: "✝️", href: "/course/confirmation", tk: "menu.confirmation" },
   { emoji: "📚", href: "/course/deep", tk: "menu.deep" },
   { emoji: "📜", href: "/catechism", tk: "menu.catechism" },
+  { emoji: "📖", href: "/play", tk: "menu.quiz" },
 ];
 
 export default function Home() {
@@ -55,7 +56,7 @@ export default function Home() {
               <input value={nickDraft} onChange={e => setNickDraft(e.target.value)} maxLength={20} autoFocus
                 style={{ width: 110, fontSize: 13, padding: "6px 10px", borderRadius: 14, border: `1px solid ${theme.gold}`, background: theme.card, color: theme.text, outline: "none" }} />
               <button onClick={async () => { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else alert("닉네임을 바꾸지 못했어요."); }}
-                style={{ fontSize: 12, fontWeight: 700, color: "#241246", background: theme.gold, border: "none", borderRadius: 14, padding: "6px 12px", cursor: "pointer" }}>{t("common.save")}</button>
+                style={{ fontSize: 12, fontWeight: 700, color: "#08263a", background: theme.gold, border: "none", borderRadius: 14, padding: "6px 12px", cursor: "pointer" }}>{t("common.save")}</button>
               <button onClick={() => setEditingNick(false)} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>✕</button>
             </div>
           ) : (
@@ -87,7 +88,7 @@ export default function Home() {
           </div>
         )}
         <div style={{ position: "relative", display: "inline-block", marginBottom: 6 }}>
-          <div aria-hidden style={{ position: "absolute", inset: -14, borderRadius: "50%", background: "radial-gradient(circle, rgba(230,200,120,0.26) 0%, rgba(230,200,120,0) 70%)" }} />
+          <div aria-hidden style={{ position: "absolute", inset: -14, borderRadius: "50%", background: "radial-gradient(circle, rgba(146,215,0,0.30) 0%, rgba(146,215,0,0) 70%)" }} />
           <img src="/icons/icon-192.png" alt="DABAR" width={52} height={52} style={{ position: "relative", borderRadius: 14, boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }} />
         </div>
         <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 30, fontWeight: 700, color: theme.gold, letterSpacing: 5, margin: "2px 0 2px" }}>DABAR</h1>
@@ -105,18 +106,7 @@ export default function Home() {
         <span style={{ fontSize: 18, color: theme.gold }}>→</span>
       </button>
 
-      {/* 성경퀴즈 */}
-      <button onClick={() => router.push("/play")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "18px 18px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, marginBottom: "1.25rem" }}>
-        <span style={{ fontSize: 32, lineHeight: 1 }}>📖</span>
-        <span style={{ flex: 1 }}>
-          <span style={{ display: "block", fontSize: 18, fontWeight: 800, color: theme.gold }}>{t("menu.quiz.t")}</span>
-          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>{t("menu.quiz.s")}</span>
-        </span>
-        <span style={{ fontSize: 18, color: theme.gold }}>→</span>
-      </button>
-
-      {/* 양육·교육 과정 (한 묶음, 2열 그리드) */}
+      {/* 양육·교육 과정 (한 묶음, 2열 그리드 — 성경퀴즈 포함) */}
       <p style={{ fontSize: 12, fontWeight: 700, color: theme.textFaint, letterSpacing: 1, margin: "0 0 9px 2px" }}>{t("home.growSection")}</p>
       <div className="fade-in-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9, marginBottom: "1.25rem" }}>
         {COURSE_MENU.map(m => (

@@ -85,7 +85,7 @@ export default function PresentClient() {
               {ui(myLang, "prev")}
             </button>
             <button onClick={() => setInDecision(true)} style={{ fontSize: 14, color: theme.wrong, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>{ui(myLang, "toDecision")}</button>
-            <button onClick={next} style={{ borderRadius: 999, background: theme.gold, padding: "12px 24px", fontSize: 14, fontWeight: 700, color: "#241246", border: "none", cursor: "pointer" }}>{atEnd ? ui(myLang, "toDecision") : ui(myLang, "next")}</button>
+            <button onClick={next} style={{ borderRadius: 999, background: theme.gold, padding: "12px 24px", fontSize: 14, fontWeight: 700, color: "#08263a", border: "none", cursor: "pointer" }}>{atEnd ? ui(myLang, "toDecision") : ui(myLang, "next")}</button>
           </div>
         </>
       ) : (

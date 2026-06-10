@@ -54,7 +54,7 @@ export default function CatechismQuiz() {
         <div style={{ fontSize: 56, marginBottom: 8 }}>{pct >= 80 ? "🏆" : pct >= 50 ? "😊" : "🌱"}</div>
         <h1 style={{ fontSize: 40, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{score} / {quiz.length}</h1>
         <p style={{ fontSize: 15, color: theme.textMuted, margin: "0 0 2rem" }}>{t("cat.quizDone", { n: pct })}</p>
-        <button onClick={restart} style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#e6cf86 0%,#c9a84c 100%)", color: "#241246", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>{t("c.retry")}</button>
+        <button onClick={restart} style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#a6e02f 0%,#86c40a 100%)", color: "#08263a", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>{t("c.retry")}</button>
         <button onClick={() => router.push("/catechism")} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>{t("cat.toCat")}</button>
       </main>
     );

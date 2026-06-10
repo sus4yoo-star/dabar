@@ -18,7 +18,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
           padding: "12px 18px",
           borderBottom: `1px solid ${theme.cardBorder}`,
-          background: "rgba(61,31,107,0.72)", backdropFilter: "blur(10px)",
+          background: "rgba(8,34,54,0.72)", backdropFilter: "blur(10px)",
         }}
       >
         <Link href="/share" style={{ fontSize: 18, fontWeight: 800, color: theme.gold, textDecoration: "none", letterSpacing: 0.3 }}>
