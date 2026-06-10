@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 
 // 로그인 없이 접근 가능한 경로 (이 두 곳까지 막으면 로그인 자체가 불가능해짐)
-const PUBLIC_PREFIXES = ["/login", "/auth"];
+// /share(베소라 전도): 비신자에게 복음을 전하는 화면이라 게스트도 접근 가능해야 함
+const PUBLIC_PREFIXES = ["/login", "/auth", "/share"];
 
 function Splash() {
   return (
