@@ -7,17 +7,23 @@ import { I18nProvider } from "@/lib/i18n";
 export const metadata: Metadata = {
   metadataBase: new URL("https://dabar.theamov.com"),
   title: "DABAR · 다바르",
-  description: "성경 퀴즈로 말씀을 즐겁게! 같이 풀고 랭킹에 도전해요 🏆",
+  description: "성경 퀴즈 · 양육 · 복음 전하기 — 말씀을 즐겁게, 함께 자라요 🕊️",
   manifest: "/manifest.json",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "DABAR" },
   openGraph: {
-    title: "DABAR · 다바르 — 말씀 퀴즈",
-    description: "성경 퀴즈로 말씀을 즐겁게! 같이 풀고 랭킹에 도전해요 🏆",
+    title: "DABAR · 다바르",
+    description: "성경 퀴즈 · 양육 · 복음 전하기 — 말씀을 즐겁게, 함께 자라요 🕊️",
     url: "https://dabar.theamov.com",
     siteName: "DABAR",
-    images: [{ url: "/icons/icon-512.png", width: 512, height: 512, alt: "DABAR" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "DABAR · 다바르" }],
     locale: "ko_KR",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DABAR · 다바르",
+    description: "성경 퀴즈 · 양육 · 복음 전하기 — 말씀을 즐겁게, 함께 자라요 🕊️",
+    images: ["/og.png"],
   },
 };
 
