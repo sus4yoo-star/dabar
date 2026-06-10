@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { theme } from "@/lib/theme";
 import LanguageToggle from "@/components/besora/LanguageToggle";
-import TranslateSheet from "@/components/besora/TranslateSheet";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
 
@@ -25,11 +24,10 @@ export default function AppShell({ children }: { children: ReactNode }) {
           🕊️ {ui(myLang, "appName")}
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <TranslateSheet />
           <LanguageToggle />
         </div>
       </header>
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 18px 24px" }}>{children}</main>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 18px 100px" }}>{children}</main>
     </div>
   );
 }
