@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
-import { CATECHISM } from "@/lib/catechism";
+import { getCatechism } from "@/lib/catechism";
 
 const MEM_KEY = "dabar_catechism_memorized";
 const CATS = ["전체", "하나님", "구원", "십계명", "기도"] as const;
@@ -20,7 +20,7 @@ function catOf(n: number): string {
 
 export default function CatechismPage() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [memorize, setMemorize] = useState(false);
   const [revealed, setRevealed] = useState<Set<number>>(new Set());
   const [memorized, setMemorized] = useState<Set<number>>(new Set());
@@ -41,7 +41,7 @@ export default function CatechismPage() {
     });
   }
 
-  const list = CATECHISM.filter(c => cat === "전체" || catOf(c.n) === cat);
+  const list = getCatechism(lang).filter(c => cat === "전체" || catOf(c.n) === cat);
   const memCount = memorized.size;
 
   return (

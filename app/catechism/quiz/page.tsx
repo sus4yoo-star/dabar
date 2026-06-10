@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
-import { CATECHISM, Catechism } from "@/lib/catechism";
+import { getCatechism, Catechism } from "@/lib/catechism";
 
 const N = 10; // 한 회 문항 수
 
@@ -15,10 +15,10 @@ function shuffle<T>(arr: T[]): T[] {
 
 interface QItem { item: Catechism; options: string[]; answer: number; }
 
-function buildQuiz(): QItem[] {
-  const picks = shuffle(CATECHISM).slice(0, N);
+function buildQuiz(list: Catechism[]): QItem[] {
+  const picks = shuffle(list).slice(0, N);
   return picks.map(item => {
-    const distractors = shuffle(CATECHISM.filter(c => c.n !== item.n)).slice(0, 3).map(c => c.a);
+    const distractors = shuffle(list.filter(c => c.n !== item.n)).slice(0, 3).map(c => c.a);
     const options = shuffle([item.a, ...distractors]);
     return { item, options, answer: options.indexOf(item.a) };
   });
@@ -26,8 +26,8 @@ function buildQuiz(): QItem[] {
 
 export default function CatechismQuiz() {
   const router = useRouter();
-  const { t } = useI18n();
-  const [quiz, setQuiz] = useState<QItem[]>(() => buildQuiz());
+  const { t, lang } = useI18n();
+  const [quiz, setQuiz] = useState<QItem[]>(() => buildQuiz(getCatechism(lang)));
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
@@ -45,7 +45,7 @@ export default function CatechismQuiz() {
     setIdx(i => i + 1); setSelected(null);
   }
   function restart() {
-    setQuiz(buildQuiz()); setIdx(0); setSelected(null); setScore(0); setDone(false);
+    setQuiz(buildQuiz(getCatechism(lang))); setIdx(0); setSelected(null); setScore(0); setDone(false);
   }
 
   if (done) {
