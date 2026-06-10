@@ -28,6 +28,9 @@ export const UI = {
     offlineReady: "오프라인 준비됨",
     home: "홈",
     growStart: "양육 시작하기",
+    voice: "음성 통역",
+    tapToTalk: "마이크를 탭하고 말하세요",
+    listening: "듣는 중… 탭하면 멈춰요",
   },
   en: {
     appName: "Share the Gospel",
@@ -52,6 +55,9 @@ export const UI = {
     offlineReady: "Offline ready",
     home: "Home",
     growStart: "Start discipleship",
+    voice: "Voice translate",
+    tapToTalk: "Tap the mic and speak",
+    listening: "Listening… tap to stop",
   },
 } as const;
 
