@@ -40,7 +40,7 @@ export default function ShareHome() {
         <div style={{ marginBottom: 12, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
           {languages.map((l) => (
             <button key={l.code} onClick={() => { setSeekerLang(l.code); setPick(false); }}
-              style={{ borderRadius: 12, padding: "8px", fontSize: 14, cursor: "pointer", border: "none", background: l.code === seekerLang ? theme.gold : theme.card, color: l.code === seekerLang ? "#241246" : theme.text, fontWeight: l.code === seekerLang ? 800 : 500 }}>
+              style={{ borderRadius: 12, padding: "8px", fontSize: 14, cursor: "pointer", border: "none", background: l.code === seekerLang ? theme.gold : theme.card, color: l.code === seekerLang ? "#08263a" : theme.text, fontWeight: l.code === seekerLang ? 800 : 500 }}>
               {l.name_native}
             </button>
           ))}

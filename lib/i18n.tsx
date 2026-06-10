@@ -237,7 +237,7 @@ export function LangSelector() {
         const on = lang === l.code;
         return (
           <button key={l.code} onClick={() => setLang(l.code)}
-            style={{ fontSize: 12, fontWeight: on ? 800 : 600, padding: "4px 9px", borderRadius: 13, border: "none", cursor: "pointer", background: on ? "#d8be6e" : "transparent", color: on ? "#241246" : "#cfc2ef" }}>
+            style={{ fontSize: 12, fontWeight: on ? 800 : 600, padding: "4px 9px", borderRadius: 13, border: "none", cursor: "pointer", background: on ? "#9ed62b" : "transparent", color: on ? "#08263a" : "#d4ecfb" }}>
             {l.code.toUpperCase()}
           </button>
         );

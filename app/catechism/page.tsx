@@ -48,7 +48,7 @@ export default function CatechismPage() {
     <main className="fade-in" style={{ maxWidth: 560, margin: "0 auto", padding: "2rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("common.home")}</button>
-        <button onClick={() => router.push("/catechism/quiz")} style={{ fontSize: 13, fontWeight: 800, color: "#241246", background: theme.gold, border: "none", borderRadius: 16, padding: "7px 16px", cursor: "pointer" }}>{t("cat.quizBtn")}</button>
+        <button onClick={() => router.push("/catechism/quiz")} style={{ fontSize: 13, fontWeight: 800, color: "#08263a", background: theme.gold, border: "none", borderRadius: 16, padding: "7px 16px", cursor: "pointer" }}>{t("cat.quizBtn")}</button>
       </div>
 
       <div style={{ textAlign: "center", marginBottom: "1rem" }}>
