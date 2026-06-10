@@ -98,17 +98,20 @@ export default function VoiceTranslator() {
 
   return (
     <>
-      {/* 플로팅 마이크 버튼 — 전도 도구 진행 중에도 항상 표시 */}
-      <button onClick={() => setOpen(true)} aria-label={ui(myLang, "voice")}
-        style={{ position: "fixed", right: 16, bottom: 22, zIndex: 55, width: 62, height: 62, borderRadius: 999, border: "none", cursor: "pointer", background: "linear-gradient(135deg,#3CAFFF,#92D700)", color: "#fff", fontSize: 27, boxShadow: "0 10px 28px rgba(23,50,73,0.35)", display: "grid", placeItems: "center" }}>
-        🎤
-      </button>
+      {/* 플로팅 마이크 버튼 — 통역 패널이 열려 있지 않을 때만 (열리면 패널이 대신 표시) */}
+      {!open && (
+        <button onClick={() => setOpen(true)} aria-label={ui(myLang, "voice")}
+          style={{ position: "fixed", right: 16, bottom: 22, zIndex: 55, width: 62, height: 62, borderRadius: 999, border: "none", cursor: "pointer", background: "linear-gradient(135deg,#3CAFFF,#92D700)", color: "#fff", fontSize: 27, boxShadow: "0 10px 28px rgba(23,50,73,0.35)", display: "grid", placeItems: "center" }}>
+          🎤
+        </button>
+      )}
 
       {open && mounted && createPortal(
-        <div onClick={close} style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", flexDirection: "column", justifyContent: "flex-end", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ margin: "0 auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 24, borderTopRightRadius: 24, borderTop: `1px solid ${theme.cardBorder}`, background: "#ffffff", padding: "16px 16px 30px" }}>
-            <div style={{ marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 18, fontWeight: 700, color: theme.text, margin: 0 }}>🎤 {ui(myLang, "voice")}</h2>
+        // 배경 오버레이 없음 → 위의 전도 내용이 가려지지 않음. 하단에 작은 패널로만 표시.
+        <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 60, display: "flex", justifyContent: "center", pointerEvents: "none" }}>
+          <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: "#ffffff", padding: "12px 16px 22px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "62dvh", overflowY: "auto" }}>
+            <div style={{ marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 16, fontWeight: 700, color: theme.text, margin: 0 }}>🎤 {ui(myLang, "voice")}</h2>
               <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>닫기 ✕</button>
             </div>
 
