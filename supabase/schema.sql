@@ -15,12 +15,17 @@ create table if not exists questions (
   answer      int     not null check (answer between 0 and 3),
   hint        text    default '',
   explanation text    default '',
+  lang        text    not null default 'ko' check (lang in ('ko', 'en', 'th')),
   created_at  timestamptz default now()
 );
+
+-- 기존 DB 업그레이드용(이미 questions 테이블이 있는 경우): 아래 한 줄을 실행하세요.
+alter table questions add column if not exists lang text not null default 'ko';
 
 create index if not exists idx_questions_testament on questions(testament);
 create index if not exists idx_questions_level     on questions(level);
 create index if not exists idx_questions_book      on questions(book);
+create index if not exists idx_questions_lang      on questions(lang);
 
 alter table questions enable row level security;
 drop policy if exists "누구나 읽기 가능" on questions;
