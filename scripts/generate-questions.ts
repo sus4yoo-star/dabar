@@ -64,12 +64,14 @@ const VALID_CATS   = new Set(["인물", "사건", "말씀", "지명"]);
 function args() {
   const a = process.argv.slice(2);
   const get = (flag: string) => { const i = a.indexOf(flag); return i >= 0 ? a[i + 1] : undefined; };
-  const lang = (get("--lang") || "ko") as "ko" | "en" | "th";
-  if (!["ko", "en", "th"].includes(lang)) { console.error(`❌ --lang 은 ko | en | th 만 가능합니다.`); process.exit(1); }
+  // 플래그(--lang) 또는 환경변수(GEN_LANG) 둘 다 지원 — 붙여넣을 때 "--"가 "—"로 바뀌는 문제 회피용
+  const lang = (get("--lang") || process.env.GEN_LANG || "ko") as "ko" | "en" | "th";
+  if (!["ko", "en", "th"].includes(lang)) { console.error(`❌ 언어는 ko | en | th 만 가능합니다. (--lang en 또는 GEN_LANG=en)`); process.exit(1); }
+  const limitRaw = get("--limit") || process.env.GEN_LIMIT;
   return {
-    plan: a.includes("--plan"),
-    book: get("--book"),
-    limit: get("--limit") ? parseInt(get("--limit")!) : Infinity,
+    plan: a.includes("--plan") || process.env.GEN_PLAN === "1",
+    book: get("--book") || process.env.GEN_BOOK,
+    limit: limitRaw ? parseInt(limitRaw) : Infinity,
     lang,
   };
 }
