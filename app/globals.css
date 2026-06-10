@@ -31,3 +31,11 @@ button:not(:disabled):hover { filter: brightness(1.06); }
 @media (prefers-reduced-motion: reduce) {
   *, button { animation: none !important; transition: none !important; }
 }
+
+/* 복음 전하기(/share) 전도 도구 일러스트 애니메이션 (Sketch SVG용) */
+@keyframes sk-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes sk-pop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+@keyframes sk-cross { 0% { opacity: 0; transform: translateX(-46px); } 20% { opacity: 1; } 100% { opacity: 1; transform: translateX(46px); } }
+@keyframes sk-glow { 0%, 100% { opacity: 0.35; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.06); } }
+@keyframes sk-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes sk-twinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.9; } }

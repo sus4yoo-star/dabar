@@ -94,9 +94,20 @@ export default function Home() {
         <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{t("home.tagline")}</p>
       </div>
 
-      {/* 성경퀴즈 — 메인 카드(맨 위, 크게) */}
-      <button onClick={() => router.push("/play")} className="fade-in-2"
+      {/* 복음 전하기 (/share) — 메인 카드(맨 위, 강조) */}
+      <button onClick={() => router.push("/share")} className="fade-in-2"
         style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "18px 18px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, cursor: "pointer", color: theme.text, marginBottom: "1.1rem" }}>
+        <span style={{ fontSize: 32, lineHeight: 1 }}>🕊️</span>
+        <span style={{ flex: 1 }}>
+          <span style={{ display: "block", fontSize: 18, fontWeight: 800, color: theme.gold }}>{t("home.shareTitle")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>{t("home.shareSub")}</span>
+        </span>
+        <span style={{ fontSize: 18, color: theme.gold }}>→</span>
+      </button>
+
+      {/* 성경퀴즈 */}
+      <button onClick={() => router.push("/play")} className="fade-in-2"
+        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "18px 18px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, marginBottom: "1.25rem" }}>
         <span style={{ fontSize: 32, lineHeight: 1 }}>📖</span>
         <span style={{ flex: 1 }}>
           <span style={{ display: "block", fontSize: 18, fontWeight: 800, color: theme.gold }}>{t("menu.quiz.t")}</span>
