@@ -111,7 +111,7 @@ export default function ChatPage() {
       </div>
 
       {/* 메시지 */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "14px", display: "flex", flexDirection: "column", gap: 8, background: theme.bgGrad }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "14px", display: "flex", flexDirection: "column", gap: 8, background: theme.bgGrad }}>
         {msgs.map((m) => {
           const mine = m.sender === myId;
           const t = tr[m.id];
@@ -133,7 +133,7 @@ export default function ChatPage() {
       </div>
 
       {/* 입력 */}
-      <div style={{ display: "flex", gap: 8, padding: "10px 12px", borderTop: `1px solid ${theme.cardBorder}`, background: "#fff" }}>
+      <div style={{ display: "flex", gap: 8, padding: "10px 12px", paddingBottom: "calc(10px + env(safe-area-inset-bottom))", borderTop: `1px solid ${theme.cardBorder}`, background: "#fff", flexShrink: 0 }}>
         <input value={text} onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") onSend(); }}
           placeholder={ui(myLang, "chatPlaceholder")}
