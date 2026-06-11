@@ -1,8 +1,15 @@
 // 앱 UI(버튼/안내) 다국어. 전도 콘텐츠는 DB에 있고, 여기는 화면 골격용.
 
 // 현재 콘텐츠·이름이 준비된 언어 (선택지에 이 언어들만 노출).
-// 셀라 30개 언어 번역이 추가되면 여기에 코드를 더한다.
-export const SUPPORTED_LANGS = ["ko", "en", "es"];
+export const SUPPORTED_LANGS = ["ko", "en", "th"];
+
+// 선택지에 항상 뜨도록 언어 메타를 내장 (besora DB 'languages' 테이블이 없어도 동작).
+// DB에 같은 code 가 있으면 그 값으로 덮어씀.
+export const LANG_META: Record<string, { code: string; name_native: string; name_en: string; rtl: boolean; enabled: boolean; sort: number }> = {
+  ko: { code: "ko", name_native: "한국어", name_en: "Korean", rtl: false, enabled: true, sort: 1 },
+  en: { code: "en", name_native: "English", name_en: "English", rtl: false, enabled: true, sort: 2 },
+  th: { code: "th", name_native: "ไทย", name_en: "Thai", rtl: false, enabled: true, sort: 3 },
+};
 
 export const UI = {
   ko: {
@@ -59,6 +66,33 @@ export const UI = {
     tapToTalk: "Tap the mic and speak",
     listening: "Listening… tap to stop",
   },
+  th: {
+    appName: "ประกาศข่าวประเสริฐ",
+    tagline: "ข่าวดีสำหรับมวลมนุษยชาติ",
+    start: "เริ่มประกาศ",
+    chooseTool: "เลือกเครื่องมือ",
+    myLanguage: "ภาษาของฉัน",
+    seekerLanguage: "ภาษาของผู้ฟัง",
+    setMyLanguage: "เลือกภาษาของคุณ",
+    setSeekerLanguage: "เลือกภาษาที่ผู้ฟังจะอ่าน",
+    next: "ถัดไป",
+    prev: "ย้อนกลับ",
+    toDecision: "สู่การตัดสินใจ",
+    listen: "ฟังเสียง",
+    follow: "อ่านตาม",
+    pray: "อธิษฐานด้วยกัน",
+    amen: "อธิษฐานเสร็จแล้ว",
+    again: "ประกาศอีกครั้ง",
+    notNow: "ขอคิดดูก่อน",
+    yes: "ใช่ ฉันรับพระเยซู",
+    myRecords: "บันทึกของฉัน",
+    offlineReady: "พร้อมใช้ออฟไลน์",
+    home: "หน้าแรก",
+    growStart: "เริ่มการเป็นสาวก",
+    voice: "ล่ามเสียง",
+    tapToTalk: "แตะไมโครโฟนแล้วพูด",
+    listening: "กำลังฟัง… แตะเพื่อหยุด",
+  },
 } as const;
 
 export type UILang = keyof typeof UI;
@@ -74,27 +108,27 @@ export const TOOL_NAMES: Record<string, Record<string, string>> = {
   wordless: {
     ko: "글없는책",
     en: "The Wordless Book",
-    es: "El libro sin palabras",
+    th: "หนังสือไร้คำ",
   },
   "four-laws": {
     ko: "사영리",
     en: "Four Spiritual Laws",
-    es: "Las cuatro leyes espirituales",
+    th: "กฎทางวิญญาณสี่ประการ",
   },
   bridge: {
     ko: "다리 예화",
     en: "The Bridge to Life",
-    es: "El puente a la vida",
+    th: "สะพานสู่ชีวิต",
   },
   "three-circles": {
     ko: "세 개의 원",
     en: "Three Circles",
-    es: "Tres círculos",
+    th: "สามวงกลม",
   },
   romans: {
     ko: "로마서로의 길",
     en: "The Romans Road",
-    es: "El camino de Romanos",
+    th: "ถนนสู่ความรอด (โรม)",
   },
 };
 
