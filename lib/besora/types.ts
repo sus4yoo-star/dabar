@@ -41,7 +41,7 @@ export type StepTranslation = {
 // 한 단계 + 두 언어(상대/전도자) 콘텐츠를 합친 뷰
 export type RenderedStep = ToolStep & {
   seeker: { title: string; body: string; audio_url: string | null; verse_ref: string | null };
-  helper: { title: string; body: string; guide: string | null };
+  helper: { title: string; body: string; guide: string | null; verse_ref: string | null };
 };
 
 export type DecisionContent = {

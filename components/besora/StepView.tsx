@@ -97,6 +97,11 @@ export default function StepView({
         {showBoth && (
           <>
             <div style={{ margin: "20px 0", height: 1, width: 48, background: "currentColor", opacity: 0.2 }} />
+            {step.helper.verse_ref && (
+              <span style={{ marginBottom: 8, display: "inline-block", fontFamily: "'Noto Serif KR',serif", fontSize: 13, fontWeight: 700, opacity: 0.7 }}>
+                {step.helper.verse_ref}
+              </span>
+            )}
             <h3 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 18, fontWeight: 600, lineHeight: 1.35, opacity: 0.95, margin: 0 }}>{step.helper.title}</h3>
             {step.helper.body && <p style={{ marginTop: 6, maxWidth: 460, fontSize: 14.5, lineHeight: 1.6, opacity: 0.85 }}>{step.helper.body}</p>}
           </>
