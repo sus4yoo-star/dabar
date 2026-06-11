@@ -51,35 +51,34 @@ export default function Home() {
           <button onClick={() => router.push("/ranking")} style={{ fontSize: 13, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.ranking")}</button>
           {user && <button onClick={() => router.push("/history")} style={{ fontSize: 13, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.wrongnote")}</button>}
         </div>
-        {!loading && (user ? (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <LangSelector />
+          {!loading && (user ? (
+            <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "5px 12px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>{t("common.logout")}</button>
+          ) : (
+            <button onClick={() => router.push("/login")} style={{ fontSize: 13, fontWeight: 700, color: "#fff", background: theme.primary, border: "none", borderRadius: 20, padding: "7px 14px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>{t("common.login")}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* 히어로 */}
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+        {user && (
           editingNick ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, margin: "0 0 8px" }}>
               <input value={nickDraft} onChange={e => setNickDraft(e.target.value)} maxLength={20} autoFocus
-                style={{ width: 110, fontSize: 13, padding: "6px 10px", borderRadius: 14, border: `1px solid ${theme.gold}`, background: theme.card, color: theme.text, outline: "none" }} />
+                style={{ width: 150, fontSize: 14, padding: "6px 10px", borderRadius: 14, border: `1px solid ${theme.gold}`, background: theme.card, color: theme.text, outline: "none" }} />
               <button onClick={async () => { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else alert("닉네임을 바꾸지 못했어요."); }}
                 style={{ fontSize: 12, fontWeight: 700, color: "#08263a", background: theme.gold, border: "none", borderRadius: 14, padding: "6px 12px", cursor: "pointer" }}>{t("common.save")}</button>
               <button onClick={() => setEditingNick(false)} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>✕</button>
             </div>
           ) : (
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 1, minWidth: 0 }}>
+            <p style={{ fontSize: 13, color: theme.primarySoft, fontWeight: 600, margin: "0 0 8px" }}>
+              {t("home.greeting", { name: nickname })}
               <button onClick={() => { setNickDraft(nickname); setEditingNick(true); }} title="닉네임 바꾸기"
-                style={{ fontSize: 13, color: theme.text, fontWeight: 600, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>{nickname} ✏️</button>
-              <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "5px 12px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>{t("common.logout")}</button>
-            </div>
+                style={{ marginLeft: 6, fontSize: 12, background: "none", border: "none", cursor: "pointer", padding: 0 }}>✏️</button>
+            </p>
           )
-        ) : (
-          <button onClick={() => router.push("/login")} style={{ fontSize: 13, fontWeight: 700, color: "#fff", background: theme.primary, border: "none", borderRadius: 20, padding: "7px 16px", cursor: "pointer" }}>{t("common.login")}</button>
-        ))}
-      </div>
-
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}><LangSelector /></div>
-
-      {/* 히어로 */}
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-        {user && (
-          <p style={{ fontSize: 13, color: theme.primarySoft, fontWeight: 600, margin: "0 0 8px" }}>
-            {t("home.greeting", { name: nickname })}
-          </p>
         )}
         {user && streak > 0 && (
           <div style={{ marginBottom: 12 }}>
