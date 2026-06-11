@@ -34,14 +34,16 @@ export async function POST(req: NextRequest) {
       }
     );
     const data = await res.json();
-    const text: string | undefined = data?.data?.translations?.[0]?.translatedText;
+    const tr = data?.data?.translations?.[0];
+    const text: string | undefined = tr?.translatedText;
     if (!res.ok || !text) {
       return NextResponse.json(
         { error: "translate-failed", detail: data?.error?.message ?? null },
         { status: 502 }
       );
     }
-    return NextResponse.json({ text });
+    // source 를 생략하면 구글이 언어를 자동 감지 → 감지된 언어 코드도 함께 반환
+    return NextResponse.json({ text, detected: tr?.detectedSourceLanguage ?? null });
   } catch {
     return NextResponse.json({ error: "network" }, { status: 502 });
   }
