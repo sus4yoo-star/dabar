@@ -24,7 +24,7 @@ const DICT: Dict = {
   "home.greeting":    { ko: "{name}님, 오늘도 말씀과 함께해요 👋", en: "{name}, walk with the Word today 👋", th: "{name} วันนี้มาเดินกับพระวจนะกัน 👋" },
   "home.streakToday": { ko: "🔥 {n}일 연속 출석!", en: "🔥 {n}-day streak!", th: "🔥 ต่อเนื่อง {n} วัน!" },
   "home.streakGo":    { ko: "🔥 {n}일 연속 — 오늘도 풀면 이어져요!", en: "🔥 {n}-day streak — keep it going today!", th: "🔥 ต่อเนื่อง {n} วัน — ทำต่อวันนี้สิ!" },
-  "home.invite":      { ko: "👋 친구 초대하고 같이 경쟁하기", en: "👋 Invite friends & compete", th: "👋 ชวนเพื่อนมาแข่งกัน" },
+  "home.invite":      { ko: "👋 친구 초대하고 함께 공부하기", en: "👋 Invite friends & study together", th: "👋 ชวนเพื่อนมาเรียนด้วยกัน" },
   "home.guide":       { ko: "📋 학습·세례·입교 절차 안내", en: "📋 Membership steps guide", th: "📋 ขั้นตอนการเป็นสมาชิก" },
   "home.admin":       { ko: "🔧 목사님 현황판", en: "🔧 Pastor dashboard", th: "🔧 แดชบอร์ดศิษยาภิบาล" },
   "home.growSection": { ko: "양육 · 교육 과정", en: "Discipleship · Education", th: "การเป็นสาวก · การศึกษา" },

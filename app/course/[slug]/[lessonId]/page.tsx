@@ -45,7 +45,19 @@ export default function LessonPage() {
   function choose(i: number) {
     if (selected !== null) return;
     setSelected(i);
-    if (i === q.answer) setCorrectCount(c => c + 1);
+    if (i === q.answer) {
+      setCorrectCount(c => c + 1);
+    } else if (user) {
+      // 틀린 문제를 오답노트에 기록 (성경퀴즈와 동일하게). 과정 문제는 question_id 없음(null)
+      supabase.from("wrong_answers").insert({
+        user_id: user.id,
+        question_id: null,
+        book: course!.title,
+        category: lesson!.label ?? `${lesson!.id}과`,
+        question: q.question,
+        correct_answer: q.options[q.answer],
+      }).then(() => {});
+    }
   }
   function nextQ() {
     if (qIdx + 1 >= quiz.length) {
@@ -69,7 +81,7 @@ export default function LessonPage() {
         <div>
           <h1 style={{ fontSize: 23, fontWeight: 800, color: theme.text, margin: "0 0 14px", lineHeight: 1.35 }}>{lesson.label ?? `${lesson.id}과`}. {lesson.title}</h1>
           <div style={{ background: theme.card, border: `1px solid ${theme.goldBorder}`, borderLeft: `3px solid ${theme.goldSoft}`, borderRadius: 14, padding: "14px 16px", marginBottom: "1.25rem" }}>
-            <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#f4f0ff", fontStyle: "italic", margin: "0 0 6px" }}>“{lesson.verse}”</p>
+            <p style={{ fontSize: 14.5, lineHeight: 1.7, color: theme.text, fontStyle: "italic", margin: "0 0 6px" }}>“{lesson.verse}”</p>
             <p style={{ fontSize: 12.5, color: theme.gold, margin: 0 }}>— {lesson.verseRef}</p>
           </div>
           {lesson.teaching.map((para, i) => (

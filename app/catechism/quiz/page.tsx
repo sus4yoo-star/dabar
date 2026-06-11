@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 import { getCatechism, Catechism } from "@/lib/catechism";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 const N = 10; // 한 회 문항 수
 
@@ -27,6 +29,7 @@ function buildQuiz(list: Catechism[]): QItem[] {
 export default function CatechismQuiz() {
   const router = useRouter();
   const { t, lang } = useI18n();
+  const { user } = useAuth();
   const [quiz, setQuiz] = useState<QItem[]>(() => buildQuiz(getCatechism(lang)));
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -38,7 +41,19 @@ export default function CatechismQuiz() {
   function choose(i: number) {
     if (selected !== null) return;
     setSelected(i);
-    if (i === cur.answer) setScore(s => s + 1);
+    if (i === cur.answer) {
+      setScore(s => s + 1);
+    } else if (user) {
+      // 틀린 문제를 오답노트에 기록 (소교리문답은 question_id 없음)
+      supabase.from("wrong_answers").insert({
+        user_id: user.id,
+        question_id: null,
+        book: "소교리문답",
+        category: t("cat.qno", { n: cur.item.n }),
+        question: cur.item.q,
+        correct_answer: cur.item.a,
+      }).then(() => {});
+    }
   }
   function next() {
     if (idx + 1 >= quiz.length) { setDone(true); return; }
