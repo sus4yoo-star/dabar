@@ -2,14 +2,16 @@
 
 // 🎤 실시간 양방향 통역 — /share 전체(도구 진행 중 포함)에 떠 있는 플로팅 버튼.
 // 좌/우 2분할: 왼쪽=내 언어, 오른쪽=상대 언어.
-//  - 각자 자기 칸에 말하거나(안드로이드 마이크) 입력하면(아이폰 키보드)
-//    반대쪽 칸에 상대 언어로 자동 번역돼 떠서 서로 원문·번역을 모두 확인.
+//  - 각 칸의 화면 마이크를 탭하면 그 칸 언어로 받아쓰기 → 반대 칸으로 자동 번역.
+//  - 음성인식: 지원 브라우저(안드로이드/크롬)는 Web Speech, 아이폰은 직접 녹음 → 서버 구글 STT.
+//  - 키보드로 직접 입력해도 자동 번역.
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
 import { speak } from "@/lib/besora/speak";
+import { startRecording, canRecord, type Recorder } from "@/lib/besora/recorder";
 
 const LOCALE: Record<string, string> = {
   ko: "ko-KR", en: "en-US", es: "es-ES", zh: "zh-CN",
@@ -25,7 +27,8 @@ export default function VoiceTranslator() {
   const [rightText, setRightText] = useState(""); // 상대 언어 칸
   const [busy, setBusy] = useState<"" | "L" | "R">(""); // 번역 중인 도착 칸
   const [err, setErr] = useState("");
-  const recRef = useRef<any>(null);
+  const recRef = useRef<any>(null);           // Web Speech 인스턴스
+  const recorderRef = useRef<Recorder | null>(null); // 녹음 인스턴스(iOS 등)
   const finalRef = useRef("");
   const leftTimer = useRef<any>(null);
   const rightTimer = useRef<any>(null);
@@ -37,11 +40,8 @@ export default function VoiceTranslator() {
   const SR = typeof window !== "undefined"
     ? ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
     : null;
-  // iOS 사파리는 웹 실시간 음성인식 미지원 → 키보드 받아쓰기로 입력
-  const isIOS = typeof navigator !== "undefined" &&
-    (/iP(hone|ad|od)/.test(navigator.userAgent) ||
-     (navigator.platform === "MacIntel" && (navigator as any).maxTouchPoints > 1));
-  const useMic = !!SR && !isIOS;
+  // 화면 마이크 사용 가능 여부: Web Speech 또는 직접 녹음(getUserMedia) 중 하나라도 되면 OK
+  const micAvailable = !!SR || canRecord();
 
   async function callApi(q: string, target: string, source: string) {
     const r = await fetch("/api/translate", {
@@ -83,12 +83,21 @@ export default function VoiceTranslator() {
     rightTimer.current = setTimeout(() => translateInto(v, seeker, myLang, "L"), 700);
   }
 
-  function stopRec() { try { recRef.current?.stop(); } catch { /* ignore */ } }
-
-  // 안드로이드: 해당 칸 언어로 받아쓰기 → 끝나면 반대 칸으로 번역
+  // 화면 마이크 탭 — 듣는 중이면 멈추고, 아니면 그 칸 언어로 받아쓰기 시작
   function micFor(lang: string) {
-    if (listening) { stopRec(); return; }
-    if (!SR) return;
+    if (listening) { stopMic(); return; }
+    if (SR) startSR(lang);
+    else if (canRecord()) startRecorder(lang);
+    else setErr("이 브라우저에서는 음성 입력을 지원하지 않아요. 직접 입력해 주세요.");
+  }
+
+  function stopMic() {
+    if (recRef.current) { try { recRef.current.stop(); } catch { /* ignore */ } }
+    else if (recorderRef.current) { finishRecorder(listening || myLang); }
+  }
+
+  // Web Speech (안드로이드/크롬): 실시간 자막
+  function startSR(lang: string) {
     const isLeft = lang === myLang;
     setErr(""); finalRef.current = "";
     if (isLeft) setLeftText(""); else setRightText("");
@@ -108,16 +117,58 @@ export default function VoiceTranslator() {
       if (isLeft) setLeftText(txt); else setRightText(txt);
     };
     rec.onend = () => {
+      recRef.current = null;
       setListening(null);
       const txt = finalRef.current.trim();
       if (txt) translateInto(txt, lang, isLeft ? seeker : myLang, isLeft ? "R" : "L");
     };
-    rec.onerror = () => { setListening(null); setErr("음성을 인식하지 못했어요. 다시 시도해 주세요."); };
+    rec.onerror = () => { recRef.current = null; setListening(null); setErr("음성을 인식하지 못했어요. 다시 시도해 주세요."); };
     setListening(lang);
-    try { rec.start(); } catch { setListening(null); }
+    try { rec.start(); } catch { recRef.current = null; setListening(null); }
   }
 
-  function close() { if (listening) stopRec(); setOpen(false); }
+  // 직접 녹음 (아이폰 등): 탭으로 시작/정지 → 서버 STT
+  async function startRecorder(lang: string) {
+    const isLeft = lang === myLang;
+    setErr("");
+    if (isLeft) setLeftText(""); else setRightText("");
+    try {
+      recorderRef.current = await startRecording();
+      setListening(lang);
+    } catch {
+      recorderRef.current = null;
+      setErr("마이크 권한이 필요해요. 권한을 허용해 주세요.");
+    }
+  }
+
+  async function finishRecorder(lang: string) {
+    const rec = recorderRef.current;
+    recorderRef.current = null;
+    setListening(null);
+    if (!rec) return;
+    const isLeft = lang === myLang;
+    setBusy(isLeft ? "R" : "L");
+    try {
+      const { base64, rate } = await rec.stop();
+      const r = await fetch("/api/transcribe", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ audio: base64, lang, rate }),
+      });
+      const d = await r.json();
+      if (!r.ok || !d.text) {
+        setErr(d.error === "no-key"
+          ? "음성 인식 키가 아직 설정되지 않았어요 (Speech-to-Text)"
+          : "음성을 인식하지 못했어요. 다시 시도해 주세요.");
+        setBusy(""); return;
+      }
+      if (isLeft) setLeftText(d.text); else setRightText(d.text);
+      await translateInto(d.text, lang, isLeft ? seeker : myLang, isLeft ? "R" : "L");
+    } catch {
+      setErr("네트워크 오류예요."); setBusy("");
+    }
+  }
+
+  function close() { if (listening) stopMic(); setOpen(false); }
 
   // 한 칸(패널) — 언어 라벨 + (마이크/듣기) + 입력·번역 텍스트
   const pane = (code: string, value: string, onType: (v: string) => void,
@@ -131,16 +182,16 @@ export default function VoiceTranslator() {
             {busy === side && <span style={{ fontSize: 11, color: theme.textFaint }}>…</span>}
             <button onClick={() => value.trim() && speak(value, code)} aria-label="듣기"
               style={{ fontSize: 15, color: accent, background: "none", border: "none", cursor: "pointer", padding: 0, lineHeight: 1 }}>▶</button>
-            {useMic && (
+            {micAvailable && (
               <button onClick={() => micFor(code)} aria-label="말하기"
-                style={{ fontSize: 15, color: on ? "#fff" : accent, background: on ? "#e25555" : "transparent", border: "none", borderRadius: 999, width: 26, height: 26, cursor: "pointer", display: "grid", placeItems: "center", lineHeight: 1 }}>
+                style={{ fontSize: 16, color: on ? "#fff" : accent, background: on ? "#e25555" : theme.card, border: `1px solid ${on ? "#e25555" : border}`, borderRadius: 999, width: 30, height: 30, cursor: "pointer", display: "grid", placeItems: "center", lineHeight: 1, boxShadow: on ? "0 0 0 5px rgba(226,85,85,0.15)" : "none" }}>
                 {on ? "■" : "🎤"}
               </button>
             )}
           </div>
         </div>
         <textarea value={value} onChange={(e) => onType(e.target.value)} rows={4}
-          placeholder={useMic ? `${nameOf(code)} · 🎤` : nameOf(code)}
+          placeholder={micAvailable ? `🎤 ${nameOf(code)}` : nameOf(code)}
           style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bg, padding: "9px 10px", fontSize: 15, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: 88, lineHeight: 1.5 }} />
       </div>
     );
