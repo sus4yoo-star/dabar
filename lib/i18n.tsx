@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 export type Lang = "ko" | "en" | "th";
 export const LANGS: { code: Lang; label: string }[] = [
@@ -232,17 +232,37 @@ export const useI18n = () => useContext(I18nCtx);
 // 🌐 언어 선택 토글
 export function LangSelector() {
   const { lang, setLang } = useI18n();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, [open]);
+
+  const current = LANGS.find(l => l.code === lang) ?? LANGS[0];
+
   return (
-    <div style={{ display: "inline-flex", gap: 4, background: "rgba(13,52,84,0.05)", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 16, padding: 3 }}>
-      {LANGS.map(l => {
-        const on = lang === l.code;
-        return (
-          <button key={l.code} onClick={() => setLang(l.code)}
-            style={{ fontSize: 12, fontWeight: on ? 800 : 600, padding: "4px 9px", borderRadius: 13, border: "none", cursor: "pointer", background: on ? "#1f9bef" : "transparent", color: on ? "#ffffff" : "#54718a" }}>
-            {l.code.toUpperCase()}
-          </button>
-        );
-      })}
+    <div ref={ref} style={{ position: "relative" }}>
+      <button onClick={() => setOpen(o => !o)} aria-haspopup="listbox" aria-expanded={open}
+        style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, color: "#173249", background: "rgba(13,52,84,0.05)", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 16, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>
+        🌐 {current.label}<span style={{ fontSize: 9, opacity: 0.55, marginLeft: 1 }}>▼</span>
+      </button>
+      {open && (
+        <div role="listbox" style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 50, minWidth: 150, background: "#fff", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 14, boxShadow: "0 12px 32px rgba(23,50,73,0.18)", padding: 4 }}>
+          {LANGS.map(l => {
+            const on = l.code === lang;
+            return (
+              <button key={l.code} role="option" aria-selected={on} onClick={() => { setLang(l.code); setOpen(false); }}
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", gap: 10, fontSize: 14, fontWeight: on ? 800 : 500, color: on ? "#1f9bef" : "#173249", background: on ? "rgba(31,155,239,0.10)" : "transparent", border: "none", borderRadius: 10, padding: "10px 12px", cursor: "pointer", textAlign: "left" }}>
+                {l.label}{on && <span>✓</span>}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
