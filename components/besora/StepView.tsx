@@ -67,13 +67,6 @@ export default function StepView({
 
   return (
     <div style={{ display: "flex", flex: 1, flexDirection: "column" }}>
-      {/* 전도자용 코칭 멘트 (내 언어) — 카드 위에 두어 스크롤 없이 바로 보이게 */}
-      {step.helper.guide && (
-        <div style={{ marginBottom: 12, display: "flex", gap: 8, alignItems: "flex-start", borderRadius: 14, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, padding: "10px 13px" }}>
-          <span style={{ fontSize: 15, flexShrink: 0 }}>💬</span>
-          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: theme.textMuted }}>{step.helper.guide}</p>
-        </div>
-      )}
       <div
         className="fade-in"
         dir={rtl ? "rtl" : "ltr"}
@@ -99,6 +92,14 @@ export default function StepView({
           {step.seeker.title}
         </h2>
         <p style={{ marginTop: 16, maxWidth: 460, fontSize: 18, lineHeight: 1.62, opacity: 0.95 }}>{step.seeker.body}</p>
+
+        {/* 전도자용 코칭 멘트 (내 언어) — 상대 언어와 내 언어 사이에 */}
+        {step.helper.guide && (
+          <div style={{ marginTop: 20, width: "100%", maxWidth: 460, display: "flex", gap: 8, alignItems: "flex-start", textAlign: "left", borderRadius: 12, padding: "9px 12px", background: skin ? "rgba(255,255,255,0.16)" : theme.primaryBg, border: `1px solid ${skin ? "rgba(255,255,255,0.32)" : theme.cardBorder}` }}>
+            <span style={{ fontSize: 14, flexShrink: 0 }}>💬</span>
+            <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: skin ? fg : theme.textMuted, opacity: skin ? 0.95 : 1 }}>{step.helper.guide}</p>
+          </div>
+        )}
 
         {/* 내 언어 — 보조 */}
         {showBoth && (
