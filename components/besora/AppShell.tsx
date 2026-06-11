@@ -20,10 +20,15 @@ export default function AppShell({ children }: { children: ReactNode }) {
           background: "rgba(255,255,255,0.86)", backdropFilter: "blur(10px)",
         }}
       >
-        <Link href="/share" style={{ fontSize: 18, fontWeight: 800, color: theme.gold, textDecoration: "none", letterSpacing: 0.3 }}>
-          🕊️ {ui(myLang, "appName")}
-        </Link>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+          <Link href="/" aria-label={ui(myLang, "home")} style={{ fontSize: 13, fontWeight: 600, color: theme.textMuted, textDecoration: "none", whiteSpace: "nowrap" }}>
+            ← {ui(myLang, "home")}
+          </Link>
+          <Link href="/share" style={{ fontSize: 18, fontWeight: 800, color: theme.gold, textDecoration: "none", letterSpacing: 0.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            🕊️ {ui(myLang, "appName")}
+          </Link>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <LanguageToggle />
         </div>
       </header>

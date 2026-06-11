@@ -126,6 +126,10 @@ function QuizInner() {
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>
+      {/* 나가기 — 진행 중에도 홈으로 */}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+        <button onClick={() => router.push("/")} style={{ fontSize: 13, fontWeight: 600, color: theme.textMuted, background: "none", border: "none", cursor: "pointer", padding: "2px 4px" }}>{t("cat.exit")}</button>
+      </div>
       {/* 전체 진행바 */}
       <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
         <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
