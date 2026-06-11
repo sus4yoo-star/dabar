@@ -13,6 +13,7 @@ type Dict = Record<string, Record<Lang, string>>;
 // UI 문자열 사전 (콘텐츠가 아닌 화면 라벨). 콘텐츠(문제·교재)는 별도 단계.
 const DICT: Dict = {
   "common.ranking":   { ko: "🏆 랭킹", en: "🏆 Ranking", th: "🏆 อันดับ" },
+  "common.companions": { ko: "🤝 동행", en: "🤝 Companions", th: "🤝 เพื่อนร่วมทาง" },
   "common.wrongnote": { ko: "📒 오답", en: "📒 Notes", th: "📒 ข้อผิด" },
   "common.login":     { ko: "로그인", en: "Login", th: "เข้าสู่ระบบ" },
   "common.logout":    { ko: "로그아웃", en: "Logout", th: "ออกจากระบบ" },
