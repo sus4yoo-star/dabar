@@ -6,6 +6,7 @@
 //  - 음성인식: 지원 브라우저(안드로이드/크롬)는 Web Speech, 아이폰은 직접 녹음 → 서버 구글 STT.
 //  - 키보드로 직접 입력해도 자동 번역.
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
 import { useLang } from "@/lib/besora/LanguageContext";
@@ -20,6 +21,7 @@ const LOCALE: Record<string, string> = {
 
 export default function VoiceTranslator() {
   const { myLang, seekerLang, languages } = useLang();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [listening, setListening] = useState<null | string>(null); // 듣는 중인 언어코드
@@ -211,6 +213,9 @@ export default function VoiceTranslator() {
   };
 
   const twoWay = seeker !== myLang;
+
+  // 채팅 화면에서는 입력창과 겹치므로 음성 통역 FAB을 숨긴다
+  if (pathname?.startsWith("/share/chat")) return null;
 
   return (
     <>
