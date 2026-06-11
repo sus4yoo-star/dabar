@@ -1,7 +1,9 @@
 "use client";
 
 // 🎤 실시간 음성 통역 — /share 전체(도구 진행 중 포함)에 떠 있는 플로팅 버튼.
-// 말하면(Web Speech API) → 번역(/api/translate) → 상대 언어로 읽어줌(TTS).
+// 방향 선택 없음: 입력/음성의 언어를 자동 감지해 반대 언어로 번역·재생.
+//  - 안드로이드: 마이크 2개(말하는 사람 언어) → 실시간 자막 → 번역
+//  - 아이폰: 입력칸 1개(키보드 받아쓰기) → 자동 감지 번역
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
@@ -18,10 +20,11 @@ export default function VoiceTranslator() {
   const { myLang, seekerLang, languages } = useLang();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [dir, setDir] = useState<"out" | "in">("out"); // out: 나→상대, in: 상대→나
-  const [listening, setListening] = useState(false);
+  const [listening, setListening] = useState<null | string>(null); // 듣는 중인 언어코드
   const [heard, setHeard] = useState("");
   const [out, setOut] = useState("");
+  const [fromLang, setFromLang] = useState("");  // 감지/선택된 출발 언어
+  const [toLang, setToLang] = useState("");      // 도착 언어 (재생용)
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [typed, setTyped] = useState("");
@@ -30,46 +33,73 @@ export default function VoiceTranslator() {
   useEffect(() => setMounted(true), []);
 
   const seeker = seekerLang || "en";
-  const from = dir === "out" ? myLang : seeker;
-  const to = dir === "out" ? seeker : myLang;
   const nameOf = (c: string) => languages.find((l) => l.code === c)?.name_native ?? c;
 
   const SR = typeof window !== "undefined"
     ? ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
     : null;
-  // iOS(아이폰/아이패드) 사파리는 웹 실시간 음성인식이 불안정/미지원 →
-  // 키보드 받아쓰기(마이크) + 입력 방식으로 폴백한다.
+  // iOS 사파리는 웹 실시간 음성인식 미지원 → 키보드 받아쓰기 + 자동감지 번역으로
   const isIOS = typeof navigator !== "undefined" &&
     (/iP(hone|ad|od)/.test(navigator.userAgent) ||
      (navigator.platform === "MacIntel" && (navigator as any).maxTouchPoints > 1));
   const useMic = !!SR && !isIOS;
 
-  async function translate(q: string) {
+  async function callApi(q: string, target: string, source?: string) {
+    const r = await fetch("/api/translate", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(source ? { q, source, target } : { q, target }),
+    });
+    return { ok: r.ok, d: await r.json() };
+  }
+
+  // 출발 언어를 아는 경우(안드로이드 마이크): 반대 언어로 바로 번역
+  async function translateFrom(q: string, source: string) {
+    if (!q.trim()) return;
+    const target = source === myLang ? seeker : myLang;
+    setBusy(true); setErr(""); setOut(""); setFromLang(source); setToLang(target);
+    try {
+      const { ok, d } = await callApi(q, target, source);
+      if (!ok || !d.text) setErr(d.error === "no-key" ? "번역 키가 아직 설정되지 않았어요 (GOOGLE_TRANSLATE_API_KEY)" : "번역에 실패했어요. 잠시 후 다시 시도해 주세요.");
+      else { setOut(d.text); speak(d.text, target); }
+    } catch { setErr("네트워크 오류예요."); }
+    setBusy(false);
+  }
+
+  // 출발 언어를 모르는 경우(아이폰 입력): 자동 감지 → 반대 언어로
+  async function translateAuto(q: string) {
     if (!q.trim()) return;
     setBusy(true); setErr(""); setOut("");
     try {
-      const r = await fetch("/api/translate", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ q, source: from, target: to }),
-      });
-      const d = await r.json();
-      if (!r.ok || !d.text) {
+      // 1차: 상대 언어로 번역하며 언어 감지
+      let { ok, d } = await callApi(q, seeker);
+      if (!ok || !d.text) {
         setErr(d.error === "no-key" ? "번역 키가 아직 설정되지 않았어요 (GOOGLE_TRANSLATE_API_KEY)" : "번역에 실패했어요. 잠시 후 다시 시도해 주세요.");
-      } else { setOut(d.text); speak(d.text, to); }
+        setBusy(false); return;
+      }
+      let target = seeker;
+      let detected: string = (d.detected || myLang).split("-")[0];
+      // 상대 언어로 말한 거였다면 → 내 언어로 다시 번역
+      if (detected === seeker && seeker !== myLang) {
+        const second = await callApi(q, myLang, seeker);
+        if (second.ok && second.d.text) { d = second.d; target = myLang; }
+      }
+      setHeard(q); setFromLang(detected); setToLang(target);
+      setOut(d.text); speak(d.text, target);
     } catch { setErr("네트워크 오류예요."); }
     setBusy(false);
   }
 
   function stopRec() { try { recRef.current?.stop(); } catch { /* ignore */ } }
 
-  function toggleMic() {
+  // 안드로이드: 말하는 사람 언어의 마이크를 탭
+  function micFor(lang: string) {
     if (listening) { stopRec(); return; }
     if (!SR) return;
     setHeard(""); setOut(""); setErr(""); finalRef.current = "";
     const rec = new SR();
     recRef.current = rec;
-    rec.lang = LOCALE[from] ?? from;
-    rec.interimResults = true;   // 말하는 동안 실시간으로 자막 표시
+    rec.lang = LOCALE[lang] ?? lang;
+    rec.interimResults = true;
     rec.continuous = false;
     rec.onresult = (e: any) => {
       let interim = "", fin = "";
@@ -80,31 +110,27 @@ export default function VoiceTranslator() {
       finalRef.current = fin || interim;
       setHeard(fin || interim);
     };
-    rec.onend = () => { setListening(false); if (finalRef.current.trim()) translate(finalRef.current); };
-    rec.onerror = () => { setListening(false); setErr("음성을 인식하지 못했어요. 다시 시도해 주세요."); };
-    setListening(true);
-    try { rec.start(); } catch { setListening(false); }
+    rec.onend = () => { setListening(null); if (finalRef.current.trim()) translateFrom(finalRef.current, lang); };
+    rec.onerror = () => { setListening(null); setErr("음성을 인식하지 못했어요. 다시 시도해 주세요."); };
+    setListening(lang);
+    try { rec.start(); } catch { setListening(null); }
   }
 
-  function pickDir(d: "out" | "in") {
-    if (listening) stopRec();
-    setDir(d); setHeard(""); setOut(""); setErr("");
-  }
   function close() { if (listening) stopRec(); setOpen(false); }
 
-  const dirBtn = (d: "out" | "in", label: string, color: string, bgOn: string, border: string) => {
-    const on = dir === d;
+  const micBtn = (lang: string, accent: string, bgOn: string) => {
+    const on = listening === lang;
     return (
-      <button onClick={() => pickDir(d)}
-        style={{ flex: 1, borderRadius: 14, padding: "10px 8px", fontSize: 13.5, fontWeight: on ? 800 : 600, cursor: "pointer", border: `1px solid ${on ? border : theme.cardBorder}`, background: on ? bgOn : theme.card, color: on ? color : theme.textMuted }}>
-        {label}
+      <button onClick={() => micFor(lang)}
+        style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, borderRadius: 16, padding: "14px 8px", fontSize: 15, fontWeight: 800, cursor: "pointer", border: "none", background: on ? "#e25555" : bgOn, color: on ? "#fff" : accent, boxShadow: on ? "0 0 0 6px rgba(226,85,85,0.15)" : "none", transition: "background .2s" }}>
+        {on ? "■" : "🎤"} {nameOf(lang)}
       </button>
     );
   };
 
   return (
     <>
-      {/* 플로팅 마이크 버튼 — 통역 패널이 열려 있지 않을 때만 (열리면 패널이 대신 표시) */}
+      {/* 플로팅 마이크 버튼 — 통역 패널이 열려 있지 않을 때만 */}
       {!open && (
         <button onClick={() => setOpen(true)} aria-label={ui(myLang, "voice")}
           style={{ position: "fixed", right: 16, bottom: 22, zIndex: 55, width: 62, height: 62, borderRadius: 999, border: "none", cursor: "pointer", background: "linear-gradient(135deg,#3CAFFF,#92D700)", color: "#fff", fontSize: 27, boxShadow: "0 10px 28px rgba(23,50,73,0.35)", display: "grid", placeItems: "center" }}>
@@ -113,7 +139,7 @@ export default function VoiceTranslator() {
       )}
 
       {open && mounted && createPortal(
-        // 배경 오버레이 없음 → 위의 전도 내용이 가려지지 않음. 하단에 작은 패널로만 표시.
+        // 배경 오버레이 없음 → 위의 전도 내용이 가려지지 않음
         <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 60, display: "flex", justifyContent: "center", pointerEvents: "none" }}>
           <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: "#ffffff", padding: "10px 16px 18px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "46dvh", overflowY: "auto" }}>
             <div style={{ marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -121,41 +147,34 @@ export default function VoiceTranslator() {
               <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>닫기 ✕</button>
             </div>
 
-            {/* 방향 선택: 파랑=내가 말함, 초록=상대가 말함 */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-              {dirBtn("out", `${nameOf(myLang)} → ${nameOf(seeker)}`, theme.primarySoft, theme.primaryBg, theme.primary)}
-              {dirBtn("in", `${nameOf(seeker)} → ${nameOf(myLang)}`, theme.gold, theme.goldLight, theme.goldSoft)}
-            </div>
-
             {useMic ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <button onClick={toggleMic}
-                  style={{ flexShrink: 0, width: 58, height: 58, borderRadius: 999, border: "none", cursor: "pointer", fontSize: 24, color: "#fff", background: listening ? "#e25555" : theme.primary, boxShadow: listening ? "0 0 0 8px rgba(226,85,85,0.15)" : "0 6px 18px rgba(31,155,239,0.35)", transition: "background .2s" }}>
-                  {listening ? "■" : "🎤"}
-                </button>
-                <p style={{ fontSize: 13, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500, margin: 0 }}>
-                  {listening ? ui(myLang, "listening") : ui(myLang, "tapToTalk")}
+              <>
+                {/* 말하는 사람 언어의 마이크를 누르면 끝 — 방향 선택 없음 */}
+                <div style={{ display: "flex", gap: 8 }}>
+                  {micBtn(myLang, theme.primarySoft, theme.primaryBg)}
+                  {seeker !== myLang && micBtn(seeker, theme.gold, theme.goldLight)}
+                </div>
+                <p style={{ marginTop: 8, fontSize: 12.5, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500, textAlign: "center" }}>
+                  {listening ? ui(myLang, "listening") : "말하는 사람의 언어를 탭하고 말하세요"}
                 </p>
-              </div>
+              </>
             ) : (
               <div>
-                <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 8px", lineHeight: 1.55 }}>
-                  🎤 아래 칸을 누른 뒤 <b style={{ color: theme.text }}>키보드의 마이크</b>를 눌러 말하면 글자가 입력돼요. 그다음 번역을 누르세요.
-                </p>
-                <textarea value={typed} onChange={(e) => setTyped(e.target.value)} rows={3} placeholder={`${nameOf(from)}로 말하거나 입력`}
+                <textarea value={typed} onChange={(e) => setTyped(e.target.value)} rows={3}
+                  placeholder="말하거나 입력하세요 (언어 자동 감지) — 키보드의 🎤로 받아쓰기"
                   style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: "#f2f7fb", padding: "10px 12px", fontSize: 16, color: theme.text, outline: "none", boxSizing: "border-box" }} />
-                <button onClick={() => translate(typed)} disabled={busy || !typed.trim()}
+                <button onClick={() => translateAuto(typed)} disabled={busy || !typed.trim()}
                   style={{ marginTop: 8, width: "100%", borderRadius: 999, background: theme.primary, padding: "12px 0", fontSize: 15, fontWeight: 700, color: "#fff", border: "none", cursor: "pointer", opacity: busy || !typed.trim() ? 0.4 : 1 }}>
-                  {busy ? "번역 중…" : `${nameOf(to)}로 번역·들려주기`}
+                  {busy ? "번역 중…" : "번역 · 들려주기 (자동 감지)"}
                 </button>
               </div>
             )}
 
             {(heard || busy || out || err) && (
-              <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+              <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
                 {heard && (
                   <div style={{ borderRadius: 12, background: "#f2f7fb", border: `1px solid ${theme.cardBorder}`, padding: "10px 12px" }}>
-                    <p style={{ fontSize: 11, color: theme.textFaint, margin: "0 0 3px" }}>{nameOf(from)}</p>
+                    <p style={{ fontSize: 11, color: theme.textFaint, margin: "0 0 3px" }}>{fromLang ? nameOf(fromLang) : "…"}</p>
                     <p style={{ fontSize: 15, color: theme.text, margin: 0, lineHeight: 1.5 }}>{heard}</p>
                   </div>
                 )}
@@ -163,10 +182,10 @@ export default function VoiceTranslator() {
                 {out && (
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, padding: "10px 12px" }}>
                     <div>
-                      <p style={{ fontSize: 11, color: theme.goldSoft, margin: "0 0 3px", fontWeight: 700 }}>{nameOf(to)}</p>
+                      <p style={{ fontSize: 11, color: theme.goldSoft, margin: "0 0 3px", fontWeight: 700 }}>{toLang ? nameOf(toLang) : ""}</p>
                       <p style={{ fontSize: 17, color: theme.text, margin: 0, lineHeight: 1.5, fontWeight: 600 }}>{out}</p>
                     </div>
-                    <button onClick={() => speak(out, to)} aria-label="다시 듣기" style={{ flexShrink: 0, fontSize: 18, color: theme.gold, background: "none", border: "none", cursor: "pointer" }}>▶</button>
+                    <button onClick={() => out && toLang && speak(out, toLang)} aria-label="다시 듣기" style={{ flexShrink: 0, fontSize: 18, color: theme.gold, background: "none", border: "none", cursor: "pointer" }}>▶</button>
                   </div>
                 )}
                 {err && <p style={{ fontSize: 12.5, color: theme.wrong, margin: 0 }}>{err}</p>}
