@@ -89,6 +89,7 @@ export async function fetchRenderedSteps(
         title: helper?.title ?? "",
         body: helper?.body ?? "",
         guide: helper?.guide ?? null,
+        verse_ref: helper?.verse_ref ?? s.verse_ref ?? null,
       },
     };
   });
