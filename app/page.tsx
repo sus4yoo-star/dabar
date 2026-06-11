@@ -45,13 +45,13 @@ export default function Home() {
   return (
     <main style={{ maxWidth: 440, margin: "0 auto", padding: "0.85rem 1.1rem 1.5rem", minHeight: "100dvh" }}>
       {/* 상단 바 */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: "0.75rem" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: "0.75rem" }}>
         <div style={{ display: "flex", gap: 7, flexShrink: 0 }}>
           <button onClick={() => router.push("/share/me")} style={{ fontSize: 13, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.companions")}</button>
           <button onClick={() => router.push("/ranking")} style={{ fontSize: 13, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.ranking")}</button>
           {user && <button onClick={() => router.push("/history")} style={{ fontSize: 13, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.wrongnote")}</button>}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, marginLeft: "auto" }}>
           <LangSelector />
           {!loading && (user ? (
             <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "5px 12px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>{t("common.logout")}</button>
