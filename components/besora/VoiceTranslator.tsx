@@ -37,6 +37,12 @@ export default function VoiceTranslator() {
   const SR = typeof window !== "undefined"
     ? ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
     : null;
+  // iOS(아이폰/아이패드) 사파리는 웹 실시간 음성인식이 불안정/미지원 →
+  // 키보드 받아쓰기(마이크) + 입력 방식으로 폴백한다.
+  const isIOS = typeof navigator !== "undefined" &&
+    (/iP(hone|ad|od)/.test(navigator.userAgent) ||
+     (navigator.platform === "MacIntel" && (navigator as any).maxTouchPoints > 1));
+  const useMic = !!SR && !isIOS;
 
   async function translate(q: string) {
     if (!q.trim()) return;
@@ -121,7 +127,7 @@ export default function VoiceTranslator() {
               {dirBtn("in", `${nameOf(seeker)} → ${nameOf(myLang)}`, theme.gold, theme.goldLight, theme.goldSoft)}
             </div>
 
-            {SR ? (
+            {useMic ? (
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <button onClick={toggleMic}
                   style={{ flexShrink: 0, width: 58, height: 58, borderRadius: 999, border: "none", cursor: "pointer", fontSize: 24, color: "#fff", background: listening ? "#e25555" : theme.primary, boxShadow: listening ? "0 0 0 8px rgba(226,85,85,0.15)" : "0 6px 18px rgba(31,155,239,0.35)", transition: "background .2s" }}>
@@ -133,11 +139,13 @@ export default function VoiceTranslator() {
               </div>
             ) : (
               <div>
-                <p style={{ fontSize: 12.5, color: theme.textMuted, margin: "0 0 8px" }}>이 브라우저는 음성 인식을 지원하지 않아요 — 입력으로 번역해 드릴게요.</p>
-                <textarea value={typed} onChange={(e) => setTyped(e.target.value)} rows={2} placeholder={`${nameOf(from)}로 입력`}
-                  style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: "#f2f7fb", padding: "8px 12px", fontSize: 14, color: theme.text, outline: "none", boxSizing: "border-box" }} />
+                <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 8px", lineHeight: 1.55 }}>
+                  🎤 아래 칸을 누른 뒤 <b style={{ color: theme.text }}>키보드의 마이크</b>를 눌러 말하면 글자가 입력돼요. 그다음 번역을 누르세요.
+                </p>
+                <textarea value={typed} onChange={(e) => setTyped(e.target.value)} rows={3} placeholder={`${nameOf(from)}로 말하거나 입력`}
+                  style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: "#f2f7fb", padding: "10px 12px", fontSize: 16, color: theme.text, outline: "none", boxSizing: "border-box" }} />
                 <button onClick={() => translate(typed)} disabled={busy || !typed.trim()}
-                  style={{ marginTop: 8, width: "100%", borderRadius: 999, background: theme.primary, padding: "10px 0", fontSize: 14, fontWeight: 700, color: "#fff", border: "none", cursor: "pointer", opacity: busy || !typed.trim() ? 0.4 : 1 }}>
+                  style={{ marginTop: 8, width: "100%", borderRadius: 999, background: theme.primary, padding: "12px 0", fontSize: 15, fontWeight: 700, color: "#fff", border: "none", cursor: "pointer", opacity: busy || !typed.trim() ? 0.4 : 1 }}>
                   {busy ? "번역 중…" : `${nameOf(to)}로 번역·들려주기`}
                 </button>
               </div>
