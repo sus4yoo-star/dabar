@@ -38,6 +38,7 @@ export const UI = {
     voice: "음성 통역",
     tapToTalk: "마이크를 탭하고 말하세요",
     listening: "듣는 중… 탭하면 멈춰요",
+    twoPaneHint: "각자 자기 언어로 말하거나 입력하면 서로의 언어로 자동 번역돼요",
   },
   en: {
     appName: "Share the Gospel",
@@ -65,6 +66,7 @@ export const UI = {
     voice: "Voice translate",
     tapToTalk: "Tap the mic and speak",
     listening: "Listening… tap to stop",
+    twoPaneHint: "Each person speaks or types in their own language — it auto-translates for the other",
   },
   th: {
     appName: "ประกาศข่าวประเสริฐ",
@@ -92,6 +94,7 @@ export const UI = {
     voice: "ล่ามเสียง",
     tapToTalk: "แตะไมโครโฟนแล้วพูด",
     listening: "กำลังฟัง… แตะเพื่อหยุด",
+    twoPaneHint: "แต่ละคนพูดหรือพิมพ์ภาษาของตน แล้วระบบจะแปลให้อีกฝ่ายโดยอัตโนมัติ",
   },
 } as const;
 
