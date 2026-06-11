@@ -25,7 +25,13 @@ function CallbackInner() {
           if (!data.session) { setError(true); return; }
         }
       }
-      router.replace("/");
+      // 동행 초대 링크로 들어와 로그인한 경우, 수락 화면으로 복귀
+      let next = "/";
+      try {
+        const pending = localStorage.getItem("besora.invite");
+        if (pending) next = `/share/join?code=${pending}`;
+      } catch { /* ignore */ }
+      router.replace(next);
     })();
   }, [router]);
 

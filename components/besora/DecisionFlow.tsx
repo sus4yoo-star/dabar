@@ -92,8 +92,10 @@ export default function DecisionFlow({ toolSlug, onAgain }: { toolSlug: string; 
                 {helper!.welcome_body && <p style={{ marginTop: 6, maxWidth: 460, fontSize: 15, lineHeight: 1.6, opacity: 0.85 }}>{helper!.welcome_body}</p>}
               </>
             )}
+            {/* 전도 → 동행 연결: 채팅으로 양육을 이어가기 */}
+            <button onClick={() => router.push("/share/me")} style={{ ...pillGold, marginTop: 40 }}>🤝 {ui(myLang, "inviteCreate")}</button>
             {/* 전도 → 양육 연결: 다바르 새가족(새신자) 코스로 */}
-            <button onClick={() => router.push("/course/newcomer")} style={{ ...pillGold, marginTop: 40 }}>{ui(myLang, "growStart")} →</button>
+            <button onClick={() => router.push("/course/newcomer")} style={{ marginTop: 12, borderRadius: 999, background: theme.primaryBg, color: theme.primarySoft, border: `1px solid ${theme.cardBorder}`, padding: "12px 32px", fontWeight: 700, cursor: "pointer" }}>{ui(myLang, "growStart")} →</button>
             <button onClick={onAgain} style={{ marginTop: 12, borderRadius: 999, border: `1px solid ${theme.border}`, padding: "12px 32px", color: theme.text, background: "transparent", cursor: "pointer" }}>{ui(myLang, "again")}</button>
           </>
         )}
