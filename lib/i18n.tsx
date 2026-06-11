@@ -247,7 +247,7 @@ export function LangSelector() {
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button onClick={() => setOpen(o => !o)} aria-haspopup="listbox" aria-expanded={open}
-        style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, color: "#173249", background: "rgba(13,52,84,0.05)", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 16, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>
+        style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, fontWeight: 600, color: "#173249", background: "rgba(13,52,84,0.05)", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 16, padding: "6px 10px", cursor: "pointer", whiteSpace: "nowrap" }}>
         🌐 {current.label}<span style={{ fontSize: 9, opacity: 0.55, marginLeft: 1 }}>▼</span>
       </button>
       {open && (
