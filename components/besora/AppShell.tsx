@@ -30,8 +30,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
           <Link href="/share/me" aria-label={ui(myLang, "companions")} title={ui(myLang, "companions")}
-            style={{ fontSize: 20, lineHeight: 1, textDecoration: "none" }}>
-            🤝
+            style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "6px 12px", textDecoration: "none", whiteSpace: "nowrap" }}>
+            🤝 {ui(myLang, "companionsNav")}
           </Link>
           <LanguageToggle />
         </div>
