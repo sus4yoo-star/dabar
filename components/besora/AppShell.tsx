@@ -28,7 +28,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
             🕊️ {ui(myLang, "appName")}
           </Link>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <Link href="/share/me" aria-label={ui(myLang, "companions")} title={ui(myLang, "companions")}
+            style={{ fontSize: 20, lineHeight: 1, textDecoration: "none" }}>
+            🤝
+          </Link>
           <LanguageToggle />
         </div>
       </header>
