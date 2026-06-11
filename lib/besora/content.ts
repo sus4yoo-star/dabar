@@ -83,10 +83,12 @@ export async function fetchRenderedSteps(
         title: seeker?.title ?? "",
         body: seeker?.body ?? "",
         audio_url: seeker?.audio_url ?? null,
+        verse_ref: seeker?.verse_ref ?? s.verse_ref ?? null,
       },
       helper: {
         title: helper?.title ?? "",
         body: helper?.body ?? "",
+        guide: helper?.guide ?? null,
       },
     };
   });
