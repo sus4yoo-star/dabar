@@ -34,6 +34,14 @@ export default function VoiceTranslator() {
   const rightTimer = useRef<any>(null);
   useEffect(() => setMounted(true), []);
 
+  // 패널이 열리면 본문에 아래 여백을 줘서, 전도 도구의 '이전/다음' 버튼을
+  // 패널 위로 스크롤해 올려 누를 수 있게 한다. (패널이 가려 막던 문제 해결)
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.body.style.paddingBottom = open ? "46dvh" : "";
+    return () => { document.body.style.paddingBottom = ""; };
+  }, [open]);
+
   const seeker = seekerLang || "en";
   const nameOf = (c: string) => languages.find((l) => l.code === c)?.name_native ?? c;
 
@@ -170,32 +178,38 @@ export default function VoiceTranslator() {
 
   function close() { if (listening) stopMic(); setOpen(false); }
 
-  // 한 칸(패널) — 언어 라벨 + (마이크/듣기) + 입력·번역 텍스트
-  const pane = (code: string, value: string, onType: (v: string) => void,
-                side: "L" | "R", accent: string, bg: string, border: string) => {
+  // 상단의 큰 마이크 버튼 — 그 칸 언어로 받아쓰기 시작/정지
+  const bigMic = (code: string, accent: string, bgSoft: string) => {
     const on = listening === code;
     return (
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 4 }}>
-          <span style={{ fontSize: 12, fontWeight: 800, color: accent, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{nameOf(code)}</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-            {busy === side && <span style={{ fontSize: 11, color: theme.textFaint }}>…</span>}
-            <button onClick={() => value.trim() && speak(value, code)} aria-label="듣기"
-              style={{ fontSize: 15, color: accent, background: "none", border: "none", cursor: "pointer", padding: 0, lineHeight: 1 }}>▶</button>
-            {micAvailable && (
-              <button onClick={() => micFor(code)} aria-label="말하기"
-                style={{ fontSize: 16, color: on ? "#fff" : accent, background: on ? "#e25555" : theme.card, border: `1px solid ${on ? "#e25555" : border}`, borderRadius: 999, width: 30, height: 30, cursor: "pointer", display: "grid", placeItems: "center", lineHeight: 1, boxShadow: on ? "0 0 0 5px rgba(226,85,85,0.15)" : "none" }}>
-                {on ? "■" : "🎤"}
-              </button>
-            )}
-          </div>
-        </div>
-        <textarea value={value} onChange={(e) => onType(e.target.value)} rows={4}
-          placeholder={micAvailable ? `🎤 ${nameOf(code)}` : nameOf(code)}
-          style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bg, padding: "9px 10px", fontSize: 15, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: 88, lineHeight: 1.5 }} />
-      </div>
+      <button onClick={() => micFor(code)} disabled={!micAvailable}
+        style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+          height: 56, borderRadius: 16, border: "none", cursor: micAvailable ? "pointer" : "default",
+          background: on ? "#e25555" : bgSoft, color: on ? "#fff" : accent, fontSize: 16, fontWeight: 800,
+          boxShadow: on ? "0 0 0 6px rgba(226,85,85,0.15)" : "none", transition: "background .2s",
+          opacity: micAvailable ? 1 : 0.5 }}>
+        <span style={{ fontSize: 23, lineHeight: 1 }}>{on ? "■" : "🎤"}</span>
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)}</span>
+      </button>
     );
   };
+
+  // 결과/입력 칸 — 원문·번역을 함께 확인, 큰 ▶ 재생
+  const textBox = (code: string, value: string, onType: (v: string) => void,
+                   side: "L" | "R", accent: string, bg: string, border: string) => (
+    <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 4 }}>
+        <span style={{ fontSize: 11.5, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)}{busy === side ? " · 번역 중…" : ""}</span>
+        <button onClick={() => value.trim() && speak(value, code)} aria-label="듣기" disabled={!value.trim()}
+          style={{ fontSize: 18, color: value.trim() ? accent : theme.textFaint, background: "none", border: "none", cursor: value.trim() ? "pointer" : "default", padding: 0, lineHeight: 1 }}>▶</button>
+      </div>
+      <textarea value={value} onChange={(e) => onType(e.target.value)} rows={3}
+        placeholder={nameOf(code)}
+        style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bg, padding: "8px 10px", fontSize: 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: 60, lineHeight: 1.45 }} />
+    </div>
+  );
+
+  const twoWay = seeker !== myLang;
 
   return (
     <>
@@ -210,21 +224,28 @@ export default function VoiceTranslator() {
       {open && mounted && createPortal(
         // 배경 오버레이 없음 → 위의 전도 내용이 가려지지 않음
         <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 60, display: "flex", justifyContent: "center", pointerEvents: "none" }}>
-          <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: "#ffffff", padding: "10px 16px 16px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "56dvh", overflowY: "auto" }}>
+          <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: "#ffffff", padding: "10px 16px 14px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "48dvh", overflowY: "auto" }}>
             <div style={{ marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 16, fontWeight: 700, color: theme.text, margin: 0 }}>🎤 {ui(myLang, "voice")}</h2>
               <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>닫기 ✕</button>
             </div>
 
-            <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-              {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder)}
-              {seeker !== myLang && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder)}
+            {/* 상단: 큰 마이크 버튼 — 자기 언어를 탭하고 말하기 */}
+            <div style={{ display: "flex", gap: 8 }}>
+              {bigMic(myLang, theme.primarySoft, theme.primaryBg)}
+              {twoWay && bigMic(seeker, theme.gold, theme.goldLight)}
             </div>
 
-            <p style={{ marginTop: 8, fontSize: 12, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500, textAlign: "center" }}>
+            {/* 아래: 원문·번역 확인 (직접 입력도 가능) */}
+            <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 10 }}>
+              {textBox(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder)}
+              {twoWay && textBox(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder)}
+            </div>
+
+            <p style={{ marginTop: 8, fontSize: 11.5, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500, textAlign: "center" }}>
               {listening ? ui(myLang, "listening") : ui(myLang, "twoPaneHint")}
             </p>
-            {err && <p style={{ fontSize: 12.5, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
+            {err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
           </div>
         </div>,
         document.body
