@@ -206,3 +206,38 @@ export function toolName(slug: string, lang: string): string {
   if (!m) return slug;
   return m[lang] ?? m.en ?? m.ko ?? slug;
 }
+
+// 도구 한 줄 설명 (처음 보는 사람이 무엇인지 알 수 있게). 없는 언어는 en→ko 폴백.
+export const TOOL_DESCS: Record<string, Record<string, string>> = {
+  wordless: {
+    ko: "5가지 색으로 전하는 가장 쉬운 복음",
+    en: "The gospel in five colors — easiest to share",
+    th: "ข่าวประเสริฐในห้าสี — ง่ายที่สุด",
+  },
+  "four-laws": {
+    ko: "네 가지 원리로 정리한 복음",
+    en: "The gospel in four simple principles",
+    th: "ข่าวประเสริฐในสี่หลักการ",
+  },
+  bridge: {
+    ko: "죄의 간격을 십자가가 잇는 그림",
+    en: "A drawing: the cross bridges sin's gap",
+    th: "ภาพ: กางเขนเชื่อมเหวแห่งบาป",
+  },
+  "three-circles": {
+    ko: "디자인·깨어짐·회복을 그림으로",
+    en: "Design, brokenness, recovery — by drawing",
+    th: "ออกแบบ·แตกสลาย·ฟื้นฟู ด้วยการวาด",
+  },
+  romans: {
+    ko: "로마서 구절을 따라가는 복음",
+    en: "The gospel through verses in Romans",
+    th: "ข่าวประเสริฐผ่านข้อพระคัมภีร์โรม",
+  },
+};
+
+export function toolDesc(slug: string, lang: string): string {
+  const m = TOOL_DESCS[slug];
+  if (!m) return "";
+  return m[lang] ?? m.en ?? m.ko ?? "";
+}

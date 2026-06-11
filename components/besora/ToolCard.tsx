@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import type { Tool } from "@/lib/besora/types";
 import { useLang } from "@/lib/besora/LanguageContext";
-import { toolName } from "@/lib/besora/i18n";
+import { toolName, toolDesc } from "@/lib/besora/i18n";
 
 // 도구별 그라데이션 (인라인 — Tailwind 의존 없음)
 const GRAD: Record<string, { bg: string; dark?: boolean }> = {
@@ -24,6 +24,7 @@ export default function ToolCard({ tool, wide = false }: { tool: Tool; wide?: bo
   const lead = seekerLang || myLang;
   const seekerName = toolName(tool.slug, lead);
   const myName = toolName(tool.slug, myLang);
+  const desc = toolDesc(tool.slug, myLang); // 설명은 전도자(내) 언어로
   const showBoth = !!seekerLang && seekerLang !== myLang;
 
   const go = () => router.push(`/share/present/${tool.slug}`);
@@ -41,6 +42,7 @@ export default function ToolCard({ tool, wide = false }: { tool: Tool; wide?: bo
     <button onClick={go} style={{ position: "relative", display: "flex", aspectRatio: "6 / 5", width: "100%", flexDirection: "column", justifyContent: "flex-end", overflow: "hidden", borderRadius: 22, background: g.bg, padding: 16, border: "none", cursor: "pointer", textAlign: "left" }}>
       <span style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.15, color: fg, fontFamily: "'Noto Serif KR',serif" }}>{seekerName}</span>
       {showBoth && <span style={{ marginTop: 2, fontSize: 12, color: fg, opacity: 0.8 }}>{myName}</span>}
+      {desc && <span style={{ marginTop: 5, fontSize: 11.5, lineHeight: 1.35, color: fg, opacity: 0.82 }}>{desc}</span>}
     </button>
   );
 }
