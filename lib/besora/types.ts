@@ -34,12 +34,14 @@ export type StepTranslation = {
   title: string | null;
   body: string | null;
   audio_url: string | null;
+  verse_ref: string | null;   // 현지화된 성경 구절 출처 (예: "요한복음 3:16")
+  guide: string | null;       // 전도자용 코칭 멘트 ("이렇게 말해보세요…")
 };
 
 // 한 단계 + 두 언어(상대/전도자) 콘텐츠를 합친 뷰
 export type RenderedStep = ToolStep & {
-  seeker: { title: string; body: string; audio_url: string | null };
-  helper: { title: string; body: string };
+  seeker: { title: string; body: string; audio_url: string | null; verse_ref: string | null };
+  helper: { title: string; body: string; guide: string | null };
 };
 
 export type DecisionContent = {
