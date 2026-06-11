@@ -1,10 +1,20 @@
 name: Generate Questions
 
 # 노트북이 꺼져 있어도 GitHub 클라우드 서버에서 문제 생성을 돌립니다.
-# 수동 실행(workflow_dispatch)으로만 시작되며, 스크립트는 재개 가능하므로
-# 이미 만든 문제는 건너뛰고 부족한 것만 채웁니다.
+# 수동 실행(workflow_dispatch)으로 시작하며, 언어/개수를 고를 수 있습니다.
+# 스크립트는 재개 가능하므로 이미 만든 문제는 건너뛰고 부족한 것만 채웁니다.
 on:
   workflow_dispatch:
+    inputs:
+      lang:
+        description: "언어 (en=영어/NIV, th=태국어/TSV, ko=한국어)"
+        type: choice
+        options: [en, th, ko]
+        default: en
+      limit:
+        description: "이번 실행 최대 생성 개수 (비우면 부족한 만큼 전부)"
+        type: string
+        default: ""
 
 jobs:
   generate:
@@ -21,10 +31,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate questions
+      - name: Generate questions (${{ inputs.lang }})
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        # ts-node 는 CI(Node 20 ESM)에서 .ts 확장자를 못 읽으므로 tsx 로 실행
+          GEN_LANG: ${{ inputs.lang }}
+          GEN_LIMIT: ${{ inputs.limit }}
+        # ts-node 는 CI(ESM)에서 .ts 확장자를 못 읽으므로 tsx 로 실행
         run: npx tsx scripts/generate-questions.ts
