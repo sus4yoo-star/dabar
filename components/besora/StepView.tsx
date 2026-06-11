@@ -67,6 +67,13 @@ export default function StepView({
 
   return (
     <div style={{ display: "flex", flex: 1, flexDirection: "column" }}>
+      {/* 전도자용 코칭 멘트 (내 언어) — 카드 위에 두어 스크롤 없이 바로 보이게 */}
+      {step.helper.guide && (
+        <div style={{ marginBottom: 12, display: "flex", gap: 8, alignItems: "flex-start", borderRadius: 14, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, padding: "10px 13px" }}>
+          <span style={{ fontSize: 15, flexShrink: 0 }}>💬</span>
+          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: theme.textMuted }}>{step.helper.guide}</p>
+        </div>
+      )}
       <div
         className="fade-in"
         dir={rtl ? "rtl" : "ltr"}
@@ -116,14 +123,6 @@ export default function StepView({
           />
         </div>
       </div>
-
-      {/* 전도자용 코칭 멘트 (내 언어, 카드 밖 아래) */}
-      {step.helper.guide && (
-        <div style={{ marginTop: 12, display: "flex", gap: 8, alignItems: "flex-start", borderRadius: 14, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, padding: "10px 13px" }}>
-          <span style={{ fontSize: 15, flexShrink: 0 }}>💬</span>
-          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: theme.textMuted }}>{step.helper.guide}</p>
-        </div>
-      )}
     </div>
   );
 }
