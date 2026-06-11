@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { theme } from "@/lib/theme";
 
 // 짧은 언어코드 → BCP-47 로케일. 음성합성이 맞는 발음/목소리를 고르도록 돕는다.
 const LOCALE: Record<string, string> = {
   ko: "ko-KR", en: "en-US", es: "es-ES", zh: "zh-CN",
-  fr: "fr-FR", hi: "hi-IN", pt: "pt-BR", ar: "ar-SA",
+  fr: "fr-FR", hi: "hi-IN", pt: "pt-BR", ar: "ar-SA", th: "th-TH",
 };
 
 export default function AudioButton({
@@ -14,8 +13,10 @@ export default function AudioButton({
 }: {
   text: string; lang: string; audioUrl?: string | null; label: string;
 }) {
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(false); // 발화/재생이 진행 중(일시정지 포함)
+  const [paused, setPaused] = useState(false);    // 일시정지 상태
   const uRef = useRef<SpeechSynthesisUtterance | null>(null); // GC 방지(일부 브라우저)
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     // 음성 목록을 미리 깨워둔다(첫 호출에서 비어있는 브라우저 대응)
@@ -23,7 +24,12 @@ export default function AudioButton({
       window.speechSynthesis.getVoices();
       window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     }
-    return () => { if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.onvoiceschanged = null; };
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = null;
+        window.speechSynthesis.cancel();
+      }
+    };
   }, []);
 
   function pickVoice(locale: string): SpeechSynthesisVoice | undefined {
@@ -38,19 +44,37 @@ export default function AudioButton({
     );
   }
 
-  function play() {
+  // 들려주기 토글: 재생 중이면 일시정지 / 일시정지 중이면 재개 / 아니면 처음부터 재생
+  function toggle() {
     if (typeof window === "undefined") return;
+
+    // 1) 미리 녹음된 오디오 파일
     if (audioUrl) {
-      const a = new Audio(audioUrl);
-      setPlaying(true);
-      a.onended = () => setPlaying(false);
-      a.play().catch(() => setPlaying(false));
+      const a = audioRef.current;
+      if (playing && a) {
+        if (paused) { a.play().catch(() => {}); setPaused(false); }
+        else { a.pause(); setPaused(true); }
+        return;
+      }
+      const el = new Audio(audioUrl);
+      audioRef.current = el;
+      el.onended = () => { setPlaying(false); setPaused(false); };
+      el.onpause = () => { /* 사용자가 명시적으로 멈춘 경우만 위에서 처리 */ };
+      el.play().then(() => { setPlaying(true); setPaused(false); }).catch(() => setPlaying(false));
       return;
     }
+
+    // 2) 음성합성(TTS)
     const synth = window.speechSynthesis;
     if (!synth || !text) return;
-    const locale = LOCALE[lang] ?? lang;
 
+    if (playing) {
+      if (paused) { try { synth.resume(); } catch { /* ignore */ } setPaused(false); }
+      else { try { synth.pause(); } catch { /* ignore */ } setPaused(true); }
+      return;
+    }
+
+    const locale = LOCALE[lang] ?? lang;
     const fire = () => {
       synth.cancel();
       const u = new SpeechSynthesisUtterance(text);
@@ -58,33 +82,31 @@ export default function AudioButton({
       const v = pickVoice(locale);
       if (v) u.voice = v;
       u.rate = 0.95;
-      u.onstart = () => setPlaying(true);
-      u.onend = () => setPlaying(false);
-      u.onerror = () => setPlaying(false);
+      u.onstart = () => { setPlaying(true); setPaused(false); };
+      u.onend = () => { setPlaying(false); setPaused(false); };
+      u.onerror = () => { setPlaying(false); setPaused(false); };
       uRef.current = u; // 참조 유지(Chrome GC 버그)
-      // cancel 직후 곧장 speak 하면 무음인 안드로이드 대응 → 살짝 지연
       setTimeout(() => {
         synth.speak(u);
-        // 일부 안드로이드 Chrome 은 바로 일시정지됨 → resume 로 깨움
         setTimeout(() => { try { synth.resume(); } catch { /* ignore */ } }, 200);
       }, 60);
     };
 
-    // 음성이 아직 로드 안 된 경우 한 번 기다렸다 발화
     if (!synth.getVoices().length) {
       let done = false;
       const go = () => { if (done) return; done = true; fire(); };
       synth.onvoiceschanged = () => { synth.getVoices(); go(); };
-      setTimeout(go, 350); // onvoiceschanged 가 안 오는 브라우저 대비
+      setTimeout(go, 350);
     } else {
       fire();
     }
   }
 
+  const showPause = playing && !paused; // 재생 중(일시정지 아님) → ‖, 그 외 → ▶
   return (
     <button
-      onClick={play}
-      aria-pressed={playing}
+      onClick={toggle}
+      aria-pressed={showPause}
       style={{
         display: "inline-flex", alignItems: "center", gap: 8,
         padding: "10px 20px", fontSize: 14, fontWeight: 700,
@@ -93,7 +115,7 @@ export default function AudioButton({
         border: "1px solid rgba(23,50,73,0.25)",
       }}
     >
-      <span>{playing ? "‖" : "▶"}</span>
+      <span>{showPause ? "‖" : "▶"}</span>
       {label}
     </button>
   );
