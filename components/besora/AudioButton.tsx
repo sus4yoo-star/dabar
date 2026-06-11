@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { theme } from "@/lib/theme";
 
 // 짧은 언어코드 → BCP-47 로케일. 음성합성이 맞는 발음/목소리를 고르도록 돕는다.
@@ -15,23 +15,25 @@ export default function AudioButton({
   text: string; lang: string; audioUrl?: string | null; label: string;
 }) {
   const [playing, setPlaying] = useState(false);
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const uRef = useRef<SpeechSynthesisUtterance | null>(null); // GC 방지(일부 브라우저)
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    const load = () => setVoices(window.speechSynthesis.getVoices());
-    load();
-    window.speechSynthesis.onvoiceschanged = load;
-    return () => { window.speechSynthesis.onvoiceschanged = null; };
+    // 음성 목록을 미리 깨워둔다(첫 호출에서 비어있는 브라우저 대응)
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+    return () => { if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.onvoiceschanged = null; };
   }, []);
 
   function pickVoice(locale: string): SpeechSynthesisVoice | undefined {
-    if (!voices.length) return undefined;
+    const vs = window.speechSynthesis.getVoices();
+    if (!vs.length) return undefined;
     const target = locale.toLowerCase();
     const base = target.split("-")[0];
     return (
-      voices.find((v) => v.lang.toLowerCase() === target) ||
-      voices.find((v) => v.lang.toLowerCase().startsWith(base)) ||
+      vs.find((v) => v.lang.toLowerCase() === target) ||
+      vs.find((v) => v.lang.toLowerCase().startsWith(base)) ||
       undefined
     );
   }
@@ -47,17 +49,36 @@ export default function AudioButton({
     }
     const synth = window.speechSynthesis;
     if (!synth || !text) return;
-    synth.cancel();
     const locale = LOCALE[lang] ?? lang;
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = locale;
-    const v = pickVoice(locale);
-    if (v) u.voice = v;
-    u.rate = 0.95;
-    u.onstart = () => setPlaying(true);
-    u.onend = () => setPlaying(false);
-    u.onerror = () => setPlaying(false);
-    synth.speak(u);
+
+    const fire = () => {
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = locale;
+      const v = pickVoice(locale);
+      if (v) u.voice = v;
+      u.rate = 0.95;
+      u.onstart = () => setPlaying(true);
+      u.onend = () => setPlaying(false);
+      u.onerror = () => setPlaying(false);
+      uRef.current = u; // 참조 유지(Chrome GC 버그)
+      // cancel 직후 곧장 speak 하면 무음인 안드로이드 대응 → 살짝 지연
+      setTimeout(() => {
+        synth.speak(u);
+        // 일부 안드로이드 Chrome 은 바로 일시정지됨 → resume 로 깨움
+        setTimeout(() => { try { synth.resume(); } catch { /* ignore */ } }, 200);
+      }, 60);
+    };
+
+    // 음성이 아직 로드 안 된 경우 한 번 기다렸다 발화
+    if (!synth.getVoices().length) {
+      let done = false;
+      const go = () => { if (done) return; done = true; fire(); };
+      synth.onvoiceschanged = () => { synth.getVoices(); go(); };
+      setTimeout(go, 350); // onvoiceschanged 가 안 오는 브라우저 대비
+    } else {
+      fire();
+    }
   }
 
   return (

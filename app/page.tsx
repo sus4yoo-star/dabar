@@ -45,11 +45,11 @@ export default function Home() {
   return (
     <main style={{ maxWidth: 440, margin: "0 auto", padding: "0.85rem 1.1rem 1.5rem", minHeight: "100dvh" }}>
       {/* 상단 바 */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-        <div style={{ display: "flex", gap: 7 }}>
-          <button onClick={() => router.push("/share/me")} style={{ fontSize: 13, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "7px 14px", cursor: "pointer" }}>{t("common.companions")}</button>
-          <button onClick={() => router.push("/ranking")} style={{ fontSize: 13, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "7px 14px", cursor: "pointer" }}>{t("common.ranking")}</button>
-          {user && <button onClick={() => router.push("/history")} style={{ fontSize: 13, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer" }}>{t("common.wrongnote")}</button>}
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: "0.75rem" }}>
+        <div style={{ display: "flex", gap: 7, flexShrink: 0 }}>
+          <button onClick={() => router.push("/share/me")} style={{ fontSize: 13, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.companions")}</button>
+          <button onClick={() => router.push("/ranking")} style={{ fontSize: 13, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.ranking")}</button>
+          {user && <button onClick={() => router.push("/history")} style={{ fontSize: 13, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.wrongnote")}</button>}
         </div>
         {!loading && (user ? (
           editingNick ? (
@@ -61,9 +61,9 @@ export default function Home() {
               <button onClick={() => setEditingNick(false)} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>✕</button>
             </div>
           ) : (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
               <button onClick={() => { setNickDraft(nickname); setEditingNick(true); }} title="닉네임 바꾸기"
-                style={{ fontSize: 13, color: theme.text, fontWeight: 600, maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>{nickname} ✏️</button>
+                style={{ fontSize: 13, color: theme.text, fontWeight: 600, maxWidth: 96, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>{nickname} ✏️</button>
               <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "5px 12px", cursor: "pointer" }}>{t("common.logout")}</button>
             </div>
           )
