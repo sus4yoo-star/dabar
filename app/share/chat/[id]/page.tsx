@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { theme } from "@/lib/theme";
+import { useAuth } from "@/lib/auth";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
+import { notifyPeer } from "@/lib/besora/push";
 import {
   fetchCompanion, fetchMessages, sendMessage, subscribeMessages, markRead,
   getMyId, type Companion, type ChatMessage,
@@ -15,6 +17,7 @@ export default function ChatPage() {
   const params = useParams();
   const companionId = String(params.id);
   const { myLang } = useLang();
+  const { nickname } = useAuth();
 
   const [myId, setMyId] = useState<string | null>(null);
   const [companion, setCompanion] = useState<Companion | null>(null);
@@ -77,7 +80,10 @@ export default function ChatPage() {
     const body = text.trim();
     if (!body) return;
     setText("");
-    try { await sendMessage(companionId, body); } catch { /* ignore */ }
+    try {
+      await sendMessage(companionId, body);
+      notifyPeer(companionId, nickname || "동행자", body); // 상대에게 푸시
+    } catch { /* ignore */ }
   }
 
   if (loading) {
