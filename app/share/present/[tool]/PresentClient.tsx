@@ -10,6 +10,8 @@ import { fetchTool, fetchRenderedSteps } from "@/lib/besora/content";
 import type { Tool, RenderedStep } from "@/lib/besora/types";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
+import { needsServerTTS, prefetchTTS } from "@/lib/besora/speak";
+import { versesFor } from "@/lib/besora/verses";
 
 // 콘텐츠 좌우 중앙에 떠 있는 원형 화살표 버튼 스타일
 function sideNav(side: "left" | "right"): CSSProperties {
@@ -58,6 +60,15 @@ export default function PresentClient() {
       .catch(() => setSteps([]))
       .finally(() => setLoading(false));
   }, [tool, seekerLang, myLang]);
+
+  // 현재·다음·이전 단계 음성을 미리 받아둠 → ▶ 즉시 재생 (라오스어 등 서버 TTS 언어만)
+  useEffect(() => {
+    if (!seekerLang || !needsServerTTS(seekerLang)) return;
+    const cs = steps.filter((s) => s.kind !== "decision");
+    const textOf = (s: RenderedStep) =>
+      `${s.seeker.title}. ${s.seeker.body} ${versesFor(s.seeker.verse_ref ?? s.verse_ref, seekerLang).map((v) => v.text).join(" ")}`;
+    [idx, idx + 1, idx - 1].forEach((j) => { const s = cs[j]; if (s) prefetchTTS(textOf(s), seekerLang); });
+  }, [idx, seekerLang, steps]);
 
   // 1) 상대 언어 미설정 → 선택 게이트
   if (!seekerLang) {
