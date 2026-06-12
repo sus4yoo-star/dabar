@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 
-// 양육·교육 과정 (성경퀴즈 제외 — 새신자부터 소교리문답까지)
+// 양육·교육 과정 (성경퀴즈 제외 — 새신자부터 소요리문답까지)
 const COURSE_MENU = [
   { emoji: "🌱", href: "/course/newcomer", tk: "menu.newcomer" },
   { emoji: "💧", href: "/course/baptism", tk: "menu.baptism" },

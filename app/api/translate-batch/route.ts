@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// 여러 문자열을 한 번에 번역 (교리문답·교재 등 대량 번역용).
+// 여러 문자열을 한 번에 번역 (요리문답·교재 등 대량 번역용).
 // Google Translate v2 는 q 배열을 받아 같은 순서로 translations 를 돌려준다.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

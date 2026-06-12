@@ -31,7 +31,7 @@ export default function CatechismQuiz() {
   const router = useRouter();
   const { t, lang } = useI18n();
   const { user } = useAuth();
-  // ko/en/th 외(예: 라오스어)는 한국어 원문을 런타임 자동번역(교리문답 페이지와 캐시 공유)
+  // ko/en/th 외(예: 라오스어)는 한국어 원문을 런타임 자동번역(요리문답 페이지와 캐시 공유)
   const STATIC = ["ko", "en", "th"];
   const isAuto = !!lang && !STATIC.includes(lang);
   const base = getCatechism(isAuto ? "ko" : lang);
@@ -59,11 +59,11 @@ export default function CatechismQuiz() {
     if (i === cur.answer) {
       setScore(s => s + 1);
     } else if (user) {
-      // 틀린 문제를 오답노트에 기록 (소교리문답은 question_id 없음)
+      // 틀린 문제를 오답노트에 기록 (소요리문답은 question_id 없음)
       supabase.from("wrong_answers").insert({
         user_id: user.id,
         question_id: null,
-        book: "소교리문답",
+        book: "소요리문답",
         category: t("cat.qno", { n: cur.item.n }),
         question: cur.item.q,
         correct_answer: cur.item.a,
