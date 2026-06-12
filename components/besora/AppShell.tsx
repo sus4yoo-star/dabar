@@ -20,8 +20,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
           background: "rgba(255,255,255,0.86)", backdropFilter: "blur(10px)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-          <Link href="/" aria-label={ui(myLang, "home")} style={{ fontSize: 13, fontWeight: 600, color: theme.textMuted, textDecoration: "none", whiteSpace: "nowrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+          <Link href="/" aria-label={ui(myLang, "home")} style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12.5, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "6px 11px", textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}>
             ← {ui(myLang, "home")}
           </Link>
           <Link href="/share" style={{ fontSize: 18, fontWeight: 800, color: theme.gold, textDecoration: "none", letterSpacing: 0.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
