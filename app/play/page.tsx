@@ -14,6 +14,7 @@ export default function PlaySetup() {
   const [level, setLevel]         = useState("전체");
   const [count, setCount]         = useState(10);
   const [books, setBooks]         = useState<string[]>([]);
+  const [complete, setComplete]   = useState(false);
 
   const TESTAMENTS = [
     { value: "전체", label: t("pl.all") },
@@ -32,7 +33,9 @@ export default function PlaySetup() {
     setBooks(prev => prev.includes(book) ? prev.filter(b => b !== book) : [...prev, book]);
   }
   function start() {
-    const q = new URLSearchParams({ level, testament, count: String(count) });
+    const q = new URLSearchParams({ level, testament });
+    if (complete) q.set("complete", "1");
+    else q.set("count", String(count));
     if (books.length) q.set("books", books.join(","));
     router.push(`/quiz?${q.toString()}`);
   }
@@ -48,9 +51,20 @@ export default function PlaySetup() {
       <Section title={t("pl.testament")}><ChipGroup items={TESTAMENTS} value={testament} onChange={changeTestament} /></Section>
       <BookPicker testament={testament} selected={books} onToggle={toggleBook} onClear={() => setBooks([])} onSelectAll={() => setBooks(booksForTestament(testament))} />
       <Section title={t("pl.level")}><ChipGroup items={LEVELS} value={level} onChange={setLevel} /></Section>
-      <Section title={t("pl.count")}>
-        <ChipGroup items={COUNTS.map(n => ({ value: String(n), label: t("pl.countN", { n }) }))} value={String(count)} onChange={v => setCount(Number(v))} />
-      </Section>
+      {!complete && (
+        <Section title={t("pl.count")}>
+          <ChipGroup items={COUNTS.map(n => ({ value: String(n), label: t("pl.countN", { n }) }))} value={String(count)} onChange={v => setCount(Number(v))} />
+        </Section>
+      )}
+
+      {/* 빠짐없이 풀기(완주) — 신학생·목회자용 */}
+      <div style={{ marginBottom: "0.85rem" }}>
+        <button onClick={() => setComplete(c => !c)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 15px", borderRadius: 13, cursor: "pointer", border: `1px solid ${complete ? "transparent" : theme.border}`, background: complete ? theme.primary : theme.card, color: complete ? "#fff" : theme.text, fontWeight: 700, fontSize: 15 }}>
+          <span>{t("pl.complete")}</span>
+          <span style={{ fontSize: 18 }}>{complete ? "✓" : ""}</span>
+        </button>
+        {complete && <p style={{ fontSize: 11.5, color: theme.textMuted, margin: "6px 2px 0", lineHeight: 1.5 }}>{t("pl.completeHint")}</p>}
+      </div>
 
       <div style={{ height: "1.2rem" }} />
       <button onClick={start} style={{ width: "100%", padding: "15px", fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#a6e02f 0%,#86c40a 100%)", color: "#08263a", border: "none", borderRadius: 14, cursor: "pointer", letterSpacing: 1, boxShadow: "0 8px 24px rgba(216,190,110,0.25)" }}>{t("pl.start")}</button>

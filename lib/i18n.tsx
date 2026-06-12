@@ -209,6 +209,10 @@ const DICT: Dict = {
   "pl.selectAll": { ko: "전체 선택", en: "Select all", th: "เลือกทั้งหมด", lo: "ເລືອກທັງໝົດ" },
   "pl.clear":     { ko: "선택 해제", en: "Clear", th: "ล้าง", lo: "ລ້າງ" },
   "pl.start":     { ko: "퀴즈 시작 →", en: "Start quiz →", th: "เริ่มควิซ →", lo: "ເລີ່ມຄິວສ໌ →" },
+  "pl.complete":  { ko: "📚 빠짐없이 풀기 (전 문제)", en: "📚 Complete all", th: "📚 ทำครบทุกข้อ", lo: "📚 ເຮັດຄົບທຸກຂໍ້" },
+  "pl.completeHint": { ko: "신학생·목회자용 — 범위 내 모든 문제를 순서대로(타이머 없이), 이어풀기 됩니다", en: "For students & pastors — every question in order, no timer, resumable", th: "สำหรับนักศึกษา·ศิษยาภิบาล — ทุกข้อตามลำดับ ไม่มีเวลาจับ ทำต่อได้", lo: "ສຳລັບນັກສຶກສາ·ສິດຍາພິບານ — ທຸກຂໍ້ຕາມລຳດັບ ບໍ່ມີໂມງຈັບ ສືບຕໍ່ໄດ້" },
+  "q.restart":    { ko: "↺ 처음부터", en: "↺ Restart", th: "↺ เริ่มใหม่", lo: "↺ ເລີ່ມໃໝ່" },
+  "q.studyDone":  { ko: "🎓 이 범위의 모든 문제를 완주했어요!", en: "🎓 You completed every question in this scope!", th: "🎓 ทำครบทุกข้อในขอบเขตนี้แล้ว!", lo: "🎓 ເຮັດຄົບທຸກຂໍ້ໃນຂອບເຂດນີ້ແລ້ວ!" },
 };
 
 interface I18n { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; }

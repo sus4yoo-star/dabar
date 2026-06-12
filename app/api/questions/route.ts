@@ -10,41 +10,59 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const level     = searchParams.get("level");
   const testament = searchParams.get("testament");
-  // count 는 1~50 으로 제한 (주소창으로 큰 값을 넣어 서버에 부담 주는 것 방지)
   const parsed    = parseInt(searchParams.get("count") || "10", 10);
   const count     = Number.isFinite(parsed) ? Math.min(50, Math.max(1, parsed)) : 10;
-  const booksRaw  = searchParams.get("books"); // 선택한 권 (쉼표 구분)
+  const complete  = searchParams.get("complete") === "1"; // 빠짐없이 풀기(완주) — 범위 내 전 문제 고정 순서
+  const booksRaw  = searchParams.get("books");
   const langRaw   = searchParams.get("lang") || "ko";
   const lang      = ["ko", "en", "th", "lo"].includes(langRaw) ? langRaw : "ko";
 
-  const books = booksRaw
-    ? booksRaw.split(",").map(b => b.trim()).filter(Boolean)
-    : [];
+  const books = booksRaw ? booksRaw.split(",").map(b => b.trim()).filter(Boolean) : [];
 
-  // withLang=false 면 lang 필터 없이 조회 (lang 컬럼이 아직 없는 DB에서도 동작)
-  function build(useLang: string, withLang: boolean) {
-    let q = supabase.from("questions").select("*").limit(count * 5);
+  const applyFilters = (q: any, useLang: string, withLang: boolean) => {
     if (withLang) q = q.eq("lang", useLang);
     if (level     && level     !== "전체") q = q.eq("level", level);
     if (testament && testament !== "전체") q = q.eq("testament", testament);
-    if (books.length) q = q.in("book", books); // 특정 권 선택 시 필터
+    if (books.length) q = q.in("book", books);
     return q;
+  };
+
+  // 완주 모드: 범위 내 모든 문제를 고정 순서(생성순)로 페이지네이션해 전부 가져옴
+  async function fetchAll(useLang: string, withLang: boolean) {
+    const rows: any[] = [];
+    for (let from = 0; from < 8000; from += 1000) {
+      let q = supabase.from("questions").select("*").order("created_at", { ascending: true }).range(from, from + 999);
+      q = applyFilters(q, useLang, withLang);
+      const { data, error } = await q;
+      if (error) return { data: null as any[] | null, error };
+      rows.push(...(data || []));
+      if (!data || data.length < 1000) break;
+    }
+    return { data: rows, error: null as any };
   }
 
-  let { data, error } = await build(lang, true);
-  // lang 컬럼이 아직 없으면(마이그레이션 전) 필터 없이 재조회
-  if (error && /lang/i.test(error.message)) {
-    ({ data, error } = await build(lang, false));
+  // 일반 모드: 후보를 넉넉히 받아 섞어 count 개
+  function fetchSome(useLang: string, withLang: boolean) {
+    return applyFilters(supabase.from("questions").select("*").limit(count * 5), useLang, withLang);
   }
+
+  const run = (useLang: string, withLang: boolean) =>
+    complete ? fetchAll(useLang, withLang) : fetchSome(useLang, withLang);
+
+  let { data, error } = await run(lang, true);
+  if (error && /lang/i.test(error.message)) ({ data, error } = await run(lang, false));
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  // 해당 언어 문제가 아직 없으면 한국어로 폴백 (생성 전에도 퀴즈가 비지 않도록)
+
+  // 해당 언어 문제가 아직 없으면 한국어로 폴백
   if ((!data || !data.length) && lang !== "ko") {
-    ({ data, error } = await build("ko", true));
-    if (error && /lang/i.test(error.message)) ({ data, error } = await build("ko", false));
+    ({ data, error } = await run("ko", true));
+    if (error && /lang/i.test(error.message)) ({ data, error } = await run("ko", false));
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   }
   if (!data?.length) return NextResponse.json([], { status: 200 });
 
+  // 완주 모드는 고정 순서 그대로(이어풀기용), 일반 모드는 무작위 count개
+  if (complete) return NextResponse.json(data);
   const shuffled = [...data].sort(() => Math.random() - 0.5).slice(0, count);
   return NextResponse.json(shuffled);
 }
