@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ttsUrl, gttsUrls } from "@/lib/besora/speak";
+import { gttsUrls, fetchTTS, getCachedTTS } from "@/lib/besora/speak";
 
 // 짧은 언어코드 → BCP-47 로케일. 음성합성이 맞는 발음/목소리를 고르도록 돕는다.
 const LOCALE: Record<string, string> = {
@@ -83,7 +83,7 @@ export default function AudioButton({
       return;
     }
 
-    // 서버 /api/tts(Azure) 우선, 실패 시 브라우저 직접 Google TTS 폴백 (라오스어 등 로컬 음성 없음)
+    // 캐시 즉시 재생 → 없으면 서버 /api/tts(Azure) → 실패 시 브라우저 Google 폴백
     const playServer = () => {
       modeRef.current = "audio";
       const el = audioRef.current ?? new Audio();
@@ -102,8 +102,15 @@ export default function AudioButton({
       };
       el.onended = () => { setPlaying(false); setPaused(false); };
       el.onerror = () => playClient();
-      el.src = ttsUrl(text, locale);
-      el.play().catch(() => playClient());
+
+      // 1) 미리 받아둔(캐시) 음성이면 제스처 안에서 즉시 재생
+      const cached = getCachedTTS(text, locale);
+      if (cached) { el.src = cached; el.play().catch(() => playClient()); return; }
+      // 2) 없으면 서버에서 받아 재생(+캐시), 실패하면 Google 폴백
+      fetchTTS(text, locale).then((url) => {
+        if (url) { el.src = url; el.play().catch(() => playClient()); }
+        else playClient();
+      });
     };
 
     const fireSynth = () => {

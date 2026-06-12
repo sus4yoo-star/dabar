@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 // 짧은 코드 → Edge 음성/언어
 const VOICE: Record<string, { voice: string; lang: string }> = {
-  lo: { voice: "lo-LA-ChanthavongNeural", lang: "lo-LA" },
+  lo: { voice: "lo-LA-KeomanyNeural", lang: "lo-LA" },
   ko: { voice: "ko-KR-SunHiNeural", lang: "ko-KR" },
   en: { voice: "en-US-AriaNeural", lang: "en-US" },
   th: { voice: "th-TH-PremwadeeNeural", lang: "th-TH" },

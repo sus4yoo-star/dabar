@@ -42,6 +42,45 @@ export function ttsUrl(text: string, locale: string): string {
   return `/api/tts?lang=${encodeURIComponent(locale)}&text=${encodeURIComponent(text.slice(0, 900))}`;
 }
 
+// 라오스어 등 서버 TTS 가 필요한 언어인지
+export function needsServerTTS(lang: string): boolean {
+  const base = (LOCALE[lang] ?? lang).toLowerCase().split("-")[0];
+  return NO_LOCAL_VOICE.has(base);
+}
+
+// 합성된 음성을 브라우저에 캐시 (같은 글은 즉시 재생) — key: "locale|text"
+const _ttsCache = new Map<string, string>();
+const ttsKey = (text: string, locale: string) => `${locale}|${text.slice(0, 900)}`;
+
+// 서버에서 음성을 받아 Blob URL 로 캐시 (재생은 안 함) — 미리 받아두면 ▶ 즉시 재생
+export async function fetchTTS(text: string, locale: string): Promise<string | null> {
+  if (typeof window === "undefined" || !text) return null;
+  const key = ttsKey(text, locale);
+  const hit = _ttsCache.get(key);
+  if (hit) return hit;
+  try {
+    const res = await fetch(ttsUrl(text, locale));
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    if (!blob.size) return null;
+    const url = URL.createObjectURL(blob);
+    _ttsCache.set(key, url);
+    return url;
+  } catch { return null; }
+}
+
+// 단계가 보이면 미리 음성을 받아둠 (재생 X)
+export function prefetchTTS(text: string, locale: string) {
+  if (typeof window === "undefined" || !text) return;
+  if (_ttsCache.has(ttsKey(text, locale))) return;
+  fetchTTS(text, locale);
+}
+
+// 동기 캐시 조회 (있으면 제스처 내 즉시 재생 가능)
+export function getCachedTTS(text: string, locale: string): string | null {
+  return _ttsCache.get(ttsKey(text, locale)) ?? null;
+}
+
 // Google 번역 TTS(gTTS 방식) URL — 브라우저 <audio> 로 직접 재생 (서버 실패 시 폴백)
 export function gttsUrls(text: string, locale: string): string[] {
   const tl = locale.toLowerCase().split("-")[0];
@@ -51,12 +90,13 @@ export function gttsUrls(text: string, locale: string): string[] {
   );
 }
 
-// 라오스어 등: 서버 /api/tts(Azure) 우선, 실패하면 브라우저에서 직접 Google TTS 폴백.
+// 라오스어 등: (1) 캐시 있으면 즉시 재생 (2) 서버 /api/tts(Azure) (3) 실패 시 브라우저 Google 폴백
 export function fallbackSpeak(text: string, locale: string) {
   if (typeof window === "undefined" || !text) return;
   if (!_audio) _audio = new Audio();
   const a = _audio;
   a.pause();
+  a.onended = null;
 
   let usedFallback = false;
   const playClient = () => {
@@ -69,10 +109,15 @@ export function fallbackSpeak(text: string, locale: string) {
     next();
   };
 
-  a.onended = null;
-  a.onerror = () => playClient();      // 서버가 음성 못 주면 브라우저 Google 로 폴백
-  a.src = ttsUrl(text, locale);
-  a.play().catch(() => playClient());
+  // 1) 캐시된 음성 → 즉시 재생 (제스처 유지)
+  const cached = _ttsCache.get(ttsKey(text, locale));
+  if (cached) { a.src = cached; a.play().catch(() => playClient()); return; }
+
+  // 2) 캐시 없으면 서버에서 받아 재생하고 캐시에 저장, 실패하면 Google 폴백
+  fetchTTS(text, locale).then((url) => {
+    if (url) { a.src = url; a.play().catch(() => playClient()); }
+    else playClient();
+  });
 }
 
 // 현재 기기에 target/base 로케일 음성이 있는지

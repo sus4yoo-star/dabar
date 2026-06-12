@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
 import type { RenderedStep } from "@/lib/besora/types";
 import { theme } from "@/lib/theme";
 import AudioButton from "@/components/besora/AudioButton";
 import Sketch from "@/components/besora/Sketch";
 import { ui } from "@/lib/besora/i18n";
+import { needsServerTTS, prefetchTTS } from "@/lib/besora/speak";
 import { versesFor, type VersePassage } from "@/lib/besora/verses";
 
 // 실제 성경 말씀 본문 인용 카드
@@ -86,6 +88,12 @@ export default function StepView({
   const seekerVerses = versesFor(step.seeker.verse_ref ?? step.verse_ref, seekerLang);
   const helperVerses = versesFor(step.helper.verse_ref ?? step.verse_ref, myLang);
 
+  // 들려주기 텍스트 — 단계가 보이면 미리 음성을 받아둠(서버 TTS 언어만) → ▶ 즉시 재생
+  const audioText = `${step.seeker.title}. ${step.seeker.body} ${seekerVerses.map((v) => v.text).join(" ")}`;
+  useEffect(() => {
+    if (needsServerTTS(seekerLang)) prefetchTTS(audioText, seekerLang);
+  }, [audioText, seekerLang]);
+
   return (
     <div style={{ display: "flex", flex: 1, flexDirection: "column" }}>
       <div
@@ -128,7 +136,7 @@ export default function StepView({
         {/* 들려주기 + 결단하기 — 상대 언어와 내 언어 설명 사이 정중앙 (언제나 누르기 좋게) */}
         <div style={{ marginTop: 24, display: "flex", gap: 10, alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
           <AudioButton
-            text={`${step.seeker.title}. ${step.seeker.body} ${seekerVerses.map((v) => v.text).join(" ")}`}
+            text={audioText}
             lang={seekerLang}
             audioUrl={step.seeker.audio_url}
             label={ui(myLang, "listen")}
