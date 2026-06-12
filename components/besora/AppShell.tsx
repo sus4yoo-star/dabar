@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { theme } from "@/lib/theme";
 import LanguageToggle from "@/components/besora/LanguageToggle";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
+import { fetchUnreadTotal } from "@/lib/besora/companions";
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const { myLang } = useLang();
+  const [unread, setUnread] = useState(0);
+  useEffect(() => { fetchUnreadTotal().then(setUnread).catch(() => {}); }, []);
   return (
     <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <header
@@ -30,8 +33,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
           <Link href="/share/me" aria-label={ui(myLang, "companions")} title={ui(myLang, "companions")}
-            style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "6px 12px", textDecoration: "none", whiteSpace: "nowrap" }}>
+            style={{ position: "relative", display: "flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "6px 12px", textDecoration: "none", whiteSpace: "nowrap" }}>
             🤝 {ui(myLang, "companionsNav")}
+            {unread > 0 && (
+              <span style={{ position: "absolute", top: -5, right: -5, minWidth: 17, height: 17, padding: "0 5px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 10, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{unread > 99 ? "99+" : unread}</span>
+            )}
           </Link>
           <LanguageToggle />
         </div>
