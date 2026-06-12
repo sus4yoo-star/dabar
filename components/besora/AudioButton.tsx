@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 // 짧은 언어코드 → BCP-47 로케일. 음성합성이 맞는 발음/목소리를 고르도록 돕는다.
 const LOCALE: Record<string, string> = {
   ko: "ko-KR", en: "en-US", es: "es-ES", zh: "zh-CN",
-  fr: "fr-FR", hi: "hi-IN", pt: "pt-BR", ar: "ar-SA", th: "th-TH",
+  fr: "fr-FR", hi: "hi-IN", pt: "pt-BR", ar: "ar-SA", th: "th-TH", lo: "lo-LA",
 };
 
 export default function AudioButton({
@@ -17,6 +17,7 @@ export default function AudioButton({
   const [paused, setPaused] = useState(false);    // 일시정지 상태
   const uRef = useRef<SpeechSynthesisUtterance | null>(null); // GC 방지(일부 브라우저)
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const modeRef = useRef<"synth" | "audio">("synth"); // 현재 재생 방식
 
   useEffect(() => {
     // 음성 목록을 미리 깨워둔다(첫 호출에서 비어있는 브라우저 대응)
@@ -64,23 +65,47 @@ export default function AudioButton({
       return;
     }
 
-    // 2) 음성합성(TTS)
+    // 2) 음성합성(TTS) — 로컬 음성이 없으면 서버 TTS(MP3)로 폴백 (예: 라오스어)
     const synth = window.speechSynthesis;
-    if (!synth || !text) return;
+    const locale = LOCALE[lang] ?? lang;
+    if (!text) return;
 
+    // 재생 중 → 일시정지/재개 (모드별)
     if (playing) {
-      if (paused) { try { synth.resume(); } catch { /* ignore */ } setPaused(false); }
-      else { try { synth.pause(); } catch { /* ignore */ } setPaused(true); }
+      if (modeRef.current === "audio") {
+        const a = audioRef.current;
+        if (a) { if (paused) { a.play().catch(() => {}); setPaused(false); } else { a.pause(); setPaused(true); } }
+      } else if (synth) {
+        if (paused) { try { synth.resume(); } catch { /* ignore */ } setPaused(false); }
+        else { try { synth.pause(); } catch { /* ignore */ } setPaused(true); }
+      }
       return;
     }
 
-    const locale = LOCALE[lang] ?? lang;
-    const fire = () => {
+    // 서버 TTS 로 재생 (라오스어 등 로컬 음성 없음)
+    const playServer = async () => {
+      modeRef.current = "audio";
+      const el = audioRef.current ?? new Audio();
+      audioRef.current = el;
+      el.onended = () => { setPlaying(false); setPaused(false); };
+      setPlaying(true); setPaused(false);
+      try {
+        const res = await fetch("/api/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, lang: locale }) });
+        if (!res.ok) { setPlaying(false); return; }
+        const data = await res.json();
+        if (!data?.audio) { setPlaying(false); return; }
+        el.src = `data:audio/mp3;base64,${data.audio}`;
+        await el.play().catch(() => setPlaying(false));
+      } catch { setPlaying(false); }
+    };
+
+    const fireSynth = () => {
+      modeRef.current = "synth";
       synth.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = locale;
       const v = pickVoice(locale);
-      if (v) u.voice = v;
+      u.voice = v ?? null;
       u.rate = 0.95;
       u.onstart = () => { setPlaying(true); setPaused(false); };
       u.onend = () => { setPlaying(false); setPaused(false); };
@@ -92,13 +117,22 @@ export default function AudioButton({
       }, 60);
     };
 
+    if (!synth) { playServer(); return; }
+
+    const decide = () => {
+      const t = locale.toLowerCase();
+      const base = t.split("-")[0];
+      const has = synth.getVoices().some((v) => v.lang.toLowerCase() === t || v.lang.toLowerCase().startsWith(base));
+      if (has) fireSynth(); else playServer();
+    };
+
     if (!synth.getVoices().length) {
       let done = false;
-      const go = () => { if (done) return; done = true; fire(); };
+      const go = () => { if (done) return; done = true; decide(); };
       synth.onvoiceschanged = () => { synth.getVoices(); go(); };
       setTimeout(go, 350);
     } else {
-      fire();
+      decide();
     }
   }
 
