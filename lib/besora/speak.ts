@@ -19,21 +19,49 @@ let _keep: SpeechSynthesisUtterance | null = null;
 // 폴백 TTS 재생용 오디오 (재사용 — iOS 제스처 정책 대응)
 let _audio: HTMLAudioElement | null = null;
 
-// 서버 프록시 TTS URL — 같은 출처라 referer/CORS/iOS 제스처 문제 없음.
-// 라오스어 등 브라우저에 음성이 없는 언어는 서버가 Google 번역 TTS 를 받아 MP3 로 스트리밍.
-export function ttsUrl(text: string, locale: string): string {
-  return `/api/tts?lang=${encodeURIComponent(locale)}&text=${encodeURIComponent(text.slice(0, 900))}`;
+// 브라우저에 음성이 없는 언어 → 서버가 아니라 "브라우저에서 직접" Google 번역 TTS 재생.
+// (호스팅 서버 IP 는 Google/Edge TTS 가 차단하지만, 사용자 브라우저의 실제 IP 는 접근 가능)
+const NO_LOCAL_VOICE = new Set(["lo"]);
+
+// 200자 제한에 맞춰 (가능하면 공백 기준) 분할
+function chunkText(text: string, max = 190): string[] {
+  const out: string[] = [];
+  let s = text.replace(/\s+/g, " ").trim();
+  while (s.length > max) {
+    let cut = s.lastIndexOf(" ", max);
+    if (cut <= 0) cut = max;
+    out.push(s.slice(0, cut).trim());
+    s = s.slice(cut).trim();
+  }
+  if (s) out.push(s);
+  return out;
 }
 
-// 브라우저에 해당 언어 음성이 없을 때(예: 라오스어) 서버 TTS 로 재생
+// Google 번역 TTS(gTTS 방식) URL — 브라우저 <audio> 로 직접 재생 (미디어 요소는 CORS 무관)
+export function gttsUrls(text: string, locale: string): string[] {
+  const tl = locale.toLowerCase().split("-")[0];
+  const chunks = chunkText(text);
+  return chunks.map((c, i) =>
+    `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${encodeURIComponent(tl)}&total=${chunks.length}&idx=${i}&textlen=${c.length}&q=${encodeURIComponent(c)}`
+  );
+}
+
+// 브라우저에서 직접 Google TTS 를 순차 재생 (제스처 유지 위해 동기 호출)
 export function fallbackSpeak(text: string, locale: string) {
   if (typeof window === "undefined" || !text) return;
+  const urls = gttsUrls(text, locale);
+  if (!urls.length) return;
   if (!_audio) _audio = new Audio();
   const a = _audio;
   a.pause();
-  a.onended = null;
-  a.src = ttsUrl(text, locale);
-  a.play().catch(() => {});
+  let i = 0;
+  const playNext = () => {
+    if (i >= urls.length) { a.onended = null; return; }
+    a.src = urls[i++];
+    a.play().catch(() => {});
+  };
+  a.onended = playNext;
+  playNext();
 }
 
 // 현재 기기에 target/base 로케일 음성이 있는지
@@ -48,14 +76,16 @@ export function speak(text: string, lang: string) {
   const locale = LOCALE[lang] ?? lang;
   const target = locale.toLowerCase();
   const base = target.split("-")[0];
-  const synth = window.speechSynthesis;
 
-  // 음성합성 자체가 없으면 바로 서버 TTS
+  // 라오스어 등은 브라우저에 음성이 없으니 바로 Google TTS (제스처 유지 — iOS 대응)
+  if (NO_LOCAL_VOICE.has(base)) { fallbackSpeak(text, locale); return; }
+
+  const synth = window.speechSynthesis;
   if (!synth) { fallbackSpeak(text, locale); return; }
 
   const fire = () => {
     const has = hasLocalVoice(synth, target, base);
-    if (has === false) { fallbackSpeak(text, locale); return; } // 로컬 음성 없음 → 서버 TTS
+    if (has === false) { fallbackSpeak(text, locale); return; } // 로컬 음성 없음 → Google TTS
     synth.cancel();
     const voices = synth.getVoices();
     const voice =
