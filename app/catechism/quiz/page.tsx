@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 import { getCatechism, Catechism } from "@/lib/catechism";
+import { useAutoTranslate } from "@/lib/autoTranslate";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -30,13 +31,27 @@ export default function CatechismQuiz() {
   const router = useRouter();
   const { t, lang } = useI18n();
   const { user } = useAuth();
-  const [quiz, setQuiz] = useState<QItem[]>(() => buildQuiz(getCatechism(lang)));
+  // ko/en/th 외(예: 라오스어)는 한국어 원문을 런타임 자동번역(교리문답 페이지와 캐시 공유)
+  const STATIC = ["ko", "en", "th"];
+  const isAuto = !!lang && !STATIC.includes(lang);
+  const base = getCatechism(isAuto ? "ko" : lang);
+  const { out: tq, auto, loading: lq } = useAutoTranslate(base.map(c => c.q), lang, "cat_q");
+  const { out: ta, loading: la } = useAutoTranslate(base.map(c => c.a), lang, "cat_a");
+  const items = useMemo(
+    () => base.map((c, i) => (auto ? { ...c, q: tq[i] ?? c.q, a: ta[i] ?? c.a } : c)),
+    [base, auto, tq, ta]
+  );
+  const ready = !auto || (!lq && !la);
+
+  const [round, setRound] = useState(0);
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
+  // 번역 준비가 끝나면 그 시점의 items 로 퀴즈 생성 (retry 는 round 증가)
+  const quiz = useMemo(() => (ready ? buildQuiz(items) : []), [ready, round, lang]); // eslint-disable-line react-hooks/exhaustive-deps
   const cur = quiz[idx];
-  const pct = useMemo(() => Math.round((score / quiz.length) * 100), [score, quiz.length]);
+  const pct = quiz.length ? Math.round((score / quiz.length) * 100) : 0;
 
   function choose(i: number) {
     if (selected !== null) return;
@@ -60,7 +75,16 @@ export default function CatechismQuiz() {
     setIdx(i => i + 1); setSelected(null);
   }
   function restart() {
-    setQuiz(buildQuiz(getCatechism(lang))); setIdx(0); setSelected(null); setScore(0); setDone(false);
+    setRound(r => r + 1); setIdx(0); setSelected(null); setScore(0); setDone(false);
+  }
+
+  // 자동번역 준비 중
+  if (auto && !ready) {
+    return (
+      <main style={{ maxWidth: 480, margin: "0 auto", padding: "4rem 1.25rem", minHeight: "60dvh", textAlign: "center", color: theme.textMuted }}>
+        {t("c.loading")}
+      </main>
+    );
   }
 
   if (done) {

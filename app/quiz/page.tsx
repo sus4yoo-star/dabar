@@ -6,6 +6,7 @@ import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useI18n } from "@/lib/i18n";
+import { translateMany } from "@/lib/autoTranslate";
 
 const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: theme.gold, hard: theme.wrong };
 
@@ -61,7 +62,18 @@ function QuizInner() {
     if (books) qs.set("books", books);
     fetch(`/api/questions?${qs.toString()}`)
       .then(r => r.json())
-      .then(data => { setQuestions(Array.isArray(data) ? prepare(data) : []); setLoading(false); })
+      .then(async data => {
+        let arr: Question[] = Array.isArray(data) ? data : [];
+        // ko/en/th 외(예: 라오스어)는 DB에 없으면 한국어로 폴백되므로 런타임 자동번역
+        if (arr.length && lang && !["ko", "en", "th"].includes(lang)) {
+          const strings: string[] = [];
+          arr.forEach(q => { strings.push(q.question, ...q.options); if (q.explanation) strings.push(q.explanation); if (q.hint) strings.push(q.hint); });
+          const m = await translateMany(strings, lang, "quiz");
+          const tr = (s?: string) => (s && m[s]) ? m[s] : (s ?? "");
+          arr = arr.map(q => ({ ...q, question: tr(q.question), options: q.options.map(o => tr(o)), explanation: tr(q.explanation), hint: q.hint ? tr(q.hint) : q.hint }));
+        }
+        setQuestions(prepare(arr)); setLoading(false);
+      })
       .catch(() => { setQuestions([]); setLoading(false); });
   }, []);
 
