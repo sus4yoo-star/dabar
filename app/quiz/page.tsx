@@ -24,6 +24,30 @@ function Center({ children }: { children: React.ReactNode }) {
   return <div style={{ textAlign: "center", padding: "4rem", color: theme.textMuted, minHeight: "60dvh" }}>{children}</div>;
 }
 
+// 권별 완주 진도율 (예: 창세기 80/100)
+function BookProgressList({ allQ, result }: { allQ: Question[]; result: Record<string, "o" | "x"> }) {
+  const byBook = new Map<string, { a: number; t: number }>();
+  allQ.forEach(q => { const b = byBook.get(q.book) ?? { a: 0, t: 0 }; b.t++; if (result[q.id]) b.a++; byBook.set(q.book, b); });
+  return (
+    <div style={{ textAlign: "left", maxWidth: 360, margin: "0 auto", maxHeight: 240, overflowY: "auto", border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "8px 12px", background: theme.card }}>
+      {[...byBook.entries()].map(([book, s]) => {
+        const pct = s.t ? Math.round((s.a / s.t) * 100) : 0;
+        return (
+          <div key={book} style={{ margin: "7px 0" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: theme.text, marginBottom: 3 }}>
+              <span style={{ fontWeight: 600 }}>{book}</span>
+              <span style={{ color: pct === 100 ? theme.correct : theme.textMuted, fontWeight: 700 }}>{s.a}/{s.t}{pct === 100 ? " ✓" : ""}</span>
+            </div>
+            <div style={{ height: 5, background: "rgba(13,52,84,0.12)", borderRadius: 3, overflow: "hidden" }}>
+              <div style={{ height: "100%", width: `${pct}%`, background: pct === 100 ? theme.correct : `linear-gradient(90deg,${theme.primarySoft},${theme.gold})`, borderRadius: 3 }} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function QuizInner() {
   const router = useRouter();
   const { t, lang } = useI18n();
@@ -47,6 +71,12 @@ function QuizInner() {
   const [retryMode, setRetryMode] = useState(false);
   const pointsRef = useRef(0);
   const { user } = useAuth();
+  // 완주 모드용: 전체 문제 + 문제별 결과(o/x) + 현재 하위모드(all/wrong) + 진도 패널
+  const [allQ, setAllQ] = useState<Question[]>([]);
+  const [result, setResult] = useState<Record<string, "o" | "x">>({});
+  const [mode, setMode] = useState<"all" | "wrong">("all");
+  const [showProgress, setShowProgress] = useState(false);
+  const saveResult = (r: Record<string, "o" | "x">) => { setResult(r); try { localStorage.setItem(progressKey, JSON.stringify(r)); } catch { /* */ } };
 
   useEffect(() => {
     // 오답 다시풀기: /history 에서 넘겨준 문제들이 있으면 그걸로 진행
@@ -79,12 +109,17 @@ function QuizInner() {
           arr = arr.map(q => ({ ...q, question: tr(q.question), options: q.options.map(o => tr(o)), explanation: tr(q.explanation), hint: q.hint ? tr(q.hint) : q.hint }));
         }
         const prepared = prepare(arr);
-        setQuestions(prepared);
-        // 완주 모드: 저장된 진도에서 이어풀기
-        if (complete && prepared.length) {
-          let saved = 0;
-          try { saved = parseInt(localStorage.getItem(progressKey) || "0", 10) || 0; } catch { /* */ }
-          setIdx(Math.min(Math.max(0, saved), prepared.length - 1));
+        if (complete) {
+          setAllQ(prepared);
+          let r: Record<string, "o" | "x"> = {};
+          try { const p = JSON.parse(localStorage.getItem(progressKey) || "{}"); if (p && typeof p === "object" && !Array.isArray(p)) r = p; } catch { /* */ }
+          setResult(r);
+          const active = prepared.filter(q => !r[q.id]); // 이어풀기: 아직 안 푼 문제만
+          setQuestions(active);
+          setIdx(0);
+          if (!active.length) setDoneAll(true); // 이미 다 풀었으면 완주 화면
+        } else {
+          setQuestions(prepared);
         }
         setLoading(false);
       })
@@ -100,15 +135,9 @@ function QuizInner() {
 
   const goNext = useCallback((currentScore: number, currentAnswers: typeof answers) => {
     if (complete) {
-      // 완주 모드: 진도 저장하며 다음으로, 마지막이면 완주 화면
-      if (idx + 1 >= questions.length) {
-        try { localStorage.removeItem(progressKey); } catch { /* */ }
-        setDoneAll(true);
-      } else {
-        const ni = idx + 1;
-        try { localStorage.setItem(progressKey, String(ni)); } catch { /* */ }
-        setIdx(ni); setSelected(null); setShowHint(false); setReported(false);
-      }
+      // 완주 모드: 결과는 답할 때마다 저장됨. 마지막이면 완주 화면, 아니면 다음 문제.
+      if (idx + 1 >= questions.length) setDoneAll(true);
+      else { setIdx(i => i + 1); setSelected(null); setShowHint(false); setReported(false); }
       return;
     }
     if (idx + 1 >= questions.length) {
@@ -143,6 +172,10 @@ function QuizInner() {
     if (selected !== null) return;
     setSelected(i);
     const correct = i === questions[idx].answer;
+    if (complete) {
+      // 완주 모드: 문제별 정답/오답 기록 (이어풀기·틀린문제·진도율용)
+      saveResult({ ...result, [questions[idx].id]: correct ? "o" : "x" });
+    }
     if (correct) {
       const newStreak = streak + 1;
       const combo = Math.min((newStreak - 1) * 5, 25); // 연속 정답 보너스
@@ -161,21 +194,37 @@ function QuizInner() {
 
   function restartComplete() {
     try { localStorage.removeItem(progressKey); } catch { /* */ }
-    setIdx(0); setSelected(null); setShowHint(false); setReported(false); setDoneAll(false); setScore(0); setAnswers([]);
+    setResult({}); setMode("all"); setQuestions(allQ); setIdx(0);
+    setSelected(null); setShowHint(false); setReported(false); setDoneAll(false);
   }
+  function startWrong() {
+    const wrong = allQ.filter(qq => result[qq.id] === "x");
+    if (!wrong.length) return;
+    setMode("wrong"); setQuestions(wrong); setIdx(0);
+    setSelected(null); setShowHint(false); setReported(false); setDoneAll(false);
+  }
+  const answeredCount = complete ? allQ.filter(qq => result[qq.id]).length : 0;
 
   if (loading) return <Center>{t("q.loading")}</Center>;
-  if (!questions.length) return <Center>{t("q.none")}</Center>;
   if (complete && doneAll) {
+    const oCount = allQ.filter(qq => result[qq.id] === "o").length;
+    const xCount = allQ.filter(qq => result[qq.id] === "x").length;
+    const btn = (bg: string, color: string, border: string) => ({ display: "block", width: "100%", maxWidth: 340, margin: "0 auto 10px", padding: 14, fontSize: 15, fontWeight: 700, background: bg, color, border, borderRadius: 12, cursor: "pointer" } as React.CSSProperties);
     return (
-      <Center>
-        <div style={{ fontSize: 56, marginBottom: 10 }}>🎓</div>
-        <p style={{ fontSize: 17, fontWeight: 800, color: theme.gold, margin: "0 0 18px", lineHeight: 1.5 }}>{t("q.studyDone")}</p>
-        <button onClick={restartComplete} style={{ display: "block", width: "100%", maxWidth: 320, margin: "0 auto 10px", padding: 14, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{t("q.restart")}</button>
-        <button onClick={() => router.push("/")} style={{ display: "block", width: "100%", maxWidth: 320, margin: "0 auto", padding: 13, fontSize: 14, fontWeight: 700, background: "transparent", color: theme.text, border: `1px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>{t("r.home")}</button>
-      </Center>
+      <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh", textAlign: "center" }}>
+        <div style={{ fontSize: 52, marginBottom: 8 }}>🎓</div>
+        <p style={{ fontSize: 17, fontWeight: 800, color: theme.gold, margin: "0 0 6px" }}>{t("q.studyDone")}</p>
+        <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 18px" }}>{t("q.studyScore", { o: oCount, x: xCount, t: allQ.length })}</p>
+        {xCount > 0 && <button onClick={startWrong} style={btn(theme.wrongBg, theme.wrong, `1px solid ${theme.wrong}`)}>{t("q.retryWrong", { n: xCount })}</button>}
+        <p style={{ fontSize: 12, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "16px 0 8px" }}>{t("q.bookProg")}</p>
+        <BookProgressList allQ={allQ} result={result} />
+        <div style={{ height: 14 }} />
+        <button onClick={restartComplete} style={btn(theme.primary, "#fff", "none")}>{t("q.restart")}</button>
+        <button onClick={() => router.push("/")} style={btn("transparent", theme.text, `1px solid ${theme.border}`)}>{t("r.home")}</button>
+      </main>
     );
   }
+  if (!questions.length) return <Center>{t("q.none")}</Center>;
   const q = questions[idx];
   if (!q) return <Center>{t("q.none")}</Center>;
 
@@ -190,14 +239,18 @@ function QuizInner() {
       )}
       {/* 전체 진행바 */}
       <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
-        <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
+        <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${complete ? (allQ.length ? (answeredCount / allQ.length) * 100 : 0) : ((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: complete ? 18 : 10 }}>
-        <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>
-          {retryMode && <span style={{ color: theme.primarySoft }}>🔁 </span>}
-          {complete && <span style={{ color: theme.primarySoft }}>📚 </span>}
-          {idx + 1}/{questions.length}{!complete && <> · <span style={{ color: theme.gold }}>⭐{points}</span></>}
-        </span>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: complete ? 12 : 10 }}>
+        {complete ? (
+          <button onClick={() => setShowProgress(s => !s)} style={{ fontSize: 13, fontWeight: 700, color: theme.text, background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>
+            {mode === "wrong" && <span style={{ color: theme.wrong }}>❌ </span>}📚 {answeredCount}/{allQ.length} <span style={{ color: theme.gold }}>{showProgress ? "▴" : "▾"}</span>
+          </button>
+        ) : (
+          <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>
+            {retryMode && <span style={{ color: theme.primarySoft }}>🔁 </span>}{idx + 1}/{questions.length} · <span style={{ color: theme.gold }}>⭐{points}</span>
+          </span>
+        )}
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, color: LEVEL_COLOR[q.level], fontWeight: 700 }}>{t("q." + q.level)}</span>
           {!complete && streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, color: theme.gold, fontWeight: 800 }}>{t("q.combo", { n: streak })}</span>}
@@ -206,6 +259,12 @@ function QuizInner() {
           ? <button onClick={restartComplete} style={{ fontSize: 12, fontWeight: 700, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 12, padding: "4px 10px", cursor: "pointer" }}>{t("q.restart")}</button>
           : <span style={{ fontSize: 14, fontWeight: 700, color: timeLeft <= 5 ? theme.wrong : theme.textMuted }}>⏱ {timeLeft}{t("q.sec")}</span>}
       </div>
+      {complete && showProgress && (
+        <div style={{ marginBottom: 14 }}>
+          <p style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "0 0 6px 2px" }}>{t("q.bookProg")}</p>
+          <BookProgressList allQ={allQ} result={result} />
+        </div>
+      )}
       {!complete && (
         <div style={{ height: 5, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 20 }}>
           <div style={{ height: "100%", background: timeLeft <= 5 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 15) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />

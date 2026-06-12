@@ -212,7 +212,11 @@ const DICT: Dict = {
   "pl.complete":  { ko: "📚 빠짐없이 풀기 (전 문제)", en: "📚 Complete all", th: "📚 ทำครบทุกข้อ", lo: "📚 ເຮັດຄົບທຸກຂໍ້" },
   "pl.completeHint": { ko: "신학생·목회자용 — 범위 내 모든 문제를 순서대로(타이머 없이), 이어풀기 됩니다", en: "For students & pastors — every question in order, no timer, resumable", th: "สำหรับนักศึกษา·ศิษยาภิบาล — ทุกข้อตามลำดับ ไม่มีเวลาจับ ทำต่อได้", lo: "ສຳລັບນັກສຶກສາ·ສິດຍາພິບານ — ທຸກຂໍ້ຕາມລຳດັບ ບໍ່ມີໂມງຈັບ ສືບຕໍ່ໄດ້" },
   "q.restart":    { ko: "↺ 처음부터", en: "↺ Restart", th: "↺ เริ่มใหม่", lo: "↺ ເລີ່ມໃໝ່" },
-  "q.studyDone":  { ko: "🎓 이 범위의 모든 문제를 완주했어요!", en: "🎓 You completed every question in this scope!", th: "🎓 ทำครบทุกข้อในขอบเขตนี้แล้ว!", lo: "🎓 ເຮັດຄົບທຸກຂໍ້ໃນຂອບເຂດນີ້ແລ້ວ!" },
+  "q.studyDone":  { ko: "🎓 이 범위를 완주했어요!", en: "🎓 You completed this scope!", th: "🎓 ทำครบขอบเขตนี้แล้ว!", lo: "🎓 ເຮັດຄົບຂອບເຂດນີ້ແລ້ວ!" },
+  "q.retryWrong": { ko: "❌ 틀린 {n}문제 다시 풀기", en: "❌ Retry {n} wrong", th: "❌ ทำข้อผิด {n} ข้ออีกครั้ง", lo: "❌ ເຮັດຂໍ້ຜິດ {n} ຂໍ້ອີກ" },
+  "q.progressBtn":{ ko: "📊 진도", en: "📊 Progress", th: "📊 ความคืบหน้า", lo: "📊 ຄວາມຄືບໜ້າ" },
+  "q.bookProg":   { ko: "권별 진도율", en: "Progress by book", th: "ความคืบหน้าตามเล่ม", lo: "ຄວາມຄືບໜ້າຕາມຫົວ" },
+  "q.studyScore": { ko: "맞음 {o} · 틀림 {x} / 전체 {t}", en: "Correct {o} · Wrong {x} / Total {t}", th: "ถูก {o} · ผิด {x} / ทั้งหมด {t}", lo: "ຖືກ {o} · ຜິດ {x} / ທັງໝົດ {t}" },
 };
 
 interface I18n { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; }
