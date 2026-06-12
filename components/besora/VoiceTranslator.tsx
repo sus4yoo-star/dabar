@@ -166,9 +166,12 @@ export default function VoiceTranslator() {
       });
       const d = await r.json();
       if (!r.ok || !d.text) {
-        setErr(d.error === "no-key"
-          ? "음성 인식 키가 아직 설정되지 않았어요 (Speech-to-Text)"
-          : "음성을 인식하지 못했어요. 다시 시도해 주세요.");
+        setErr(
+          d.error === "no-key"
+            ? "음성 인식 키가 아직 설정되지 않았어요 (Speech-to-Text)"
+            : d.error === "stt-disabled"
+            ? "음성 인식이 꺼져 있어요. Google Cloud에서 'Cloud Speech-to-Text API'를 켜주세요."
+            : "음성을 인식하지 못했어요. 다시 시도해 주세요.");
         setBusy(""); return;
       }
       if (isLeft) setLeftText(d.text); else setRightText(d.text);
