@@ -64,8 +64,9 @@ function QuizInner() {
       .then(r => r.json())
       .then(async data => {
         let arr: Question[] = Array.isArray(data) ? data : [];
-        // ko/en/th 외(예: 라오스어)는 DB에 없으면 한국어로 폴백되므로 런타임 자동번역
-        if (arr.length && lang && !["ko", "en", "th"].includes(lang)) {
+        // ko/en/th 외(예: 라오스어)는 DB에 없으면 한국어로 폴백 → 런타임 자동번역.
+        // 단, DB에 이미 해당 언어(lo) 문제가 있으면(검수본) 재번역하지 않음.
+        if (arr.length && lang && !["ko", "en", "th"].includes(lang) && arr[0]?.lang !== lang) {
           const strings: string[] = [];
           arr.forEach(q => { strings.push(q.question, ...q.options); if (q.explanation) strings.push(q.explanation); if (q.hint) strings.push(q.hint); });
           const m = await translateMany(strings, lang, "quiz");
