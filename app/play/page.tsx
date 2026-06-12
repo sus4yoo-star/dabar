@@ -45,7 +45,7 @@ export default function PlaySetup() {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("common.home")}</button>
         <h1 style={{ fontSize: 18, fontWeight: 800, color: theme.gold, margin: 0 }}>{t("pl.title")}</h1>
-        <span style={{ width: 56 }} />
+        <button onClick={() => router.push("/progress")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "6px 11px", cursor: "pointer", whiteSpace: "nowrap" }}>{t("prog.link")}</button>
       </div>
 
       <Section title={t("pl.testament")}><ChipGroup items={TESTAMENTS} value={testament} onChange={changeTestament} /></Section>

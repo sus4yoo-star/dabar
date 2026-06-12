@@ -217,6 +217,11 @@ const DICT: Dict = {
   "q.progressBtn":{ ko: "📊 진도", en: "📊 Progress", th: "📊 ความคืบหน้า", lo: "📊 ຄວາມຄືບໜ້າ" },
   "q.bookProg":   { ko: "권별 진도율", en: "Progress by book", th: "ความคืบหน้าตามเล่ม", lo: "ຄວາມຄືບໜ້າຕາມຫົວ" },
   "q.studyScore": { ko: "맞음 {o} · 틀림 {x} / 전체 {t}", en: "Correct {o} · Wrong {x} / Total {t}", th: "ถูก {o} · ผิด {x} / ทั้งหมด {t}", lo: "ຖືກ {o} · ຜິດ {x} / ທັງໝົດ {t}" },
+  "prog.title":   { ko: "📊 내 완주 진도", en: "📊 My progress", th: "📊 ความคืบหน้าของฉัน", lo: "📊 ຄວາມຄືບໜ້າຂອງຂ້ອຍ" },
+  "prog.link":    { ko: "📊 내 진도", en: "📊 My progress", th: "📊 ความคืบหน้า", lo: "📊 ຄວາມຄືບໜ້າ" },
+  "prog.login":   { ko: "로그인하면 권별 완주 진도를 볼 수 있어요.", en: "Log in to see your progress by book.", th: "เข้าสู่ระบบเพื่อดูความคืบหน้าตามเล่ม", lo: "ເຂົ້າສູ່ລະບົບເພື່ອເບິ່ງຄວາມຄືບໜ້າຕາມຫົວ" },
+  "prog.overall": { ko: "전체 {a} / {t} ({p}%)", en: "Total {a} / {t} ({p}%)", th: "ทั้งหมด {a} / {t} ({p}%)", lo: "ທັງໝົດ {a} / {t} ({p}%)" },
+  "prog.empty":   { ko: "아직 푼 문제가 없어요. ‘빠짐없이 풀기’로 시작해 보세요!", en: "No questions answered yet. Try Complete mode!", th: "ยังไม่ได้ทำข้อใด ลองโหมดทำครบทุกข้อ!", lo: "ຍັງບໍ່ໄດ້ເຮັດຂໍ້ໃດ ລອງໂໝດເຮັດຄົບທຸກຂໍ້!" },
 };
 
 interface I18n { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; }

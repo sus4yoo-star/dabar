@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useI18n } from "@/lib/i18n";
 import { translateMany } from "@/lib/autoTranslate";
+import { fetchQuizProgress, upsertQuizProgress, clearQuizProgress } from "@/lib/quizProgress";
 
 const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: theme.gold, hard: theme.wrong };
 
@@ -70,6 +71,7 @@ function QuizInner() {
   const [reported, setReported] = useState(false);
   const [retryMode, setRetryMode] = useState(false);
   const pointsRef = useRef(0);
+  const syncedRef = useRef(false);
   const { user } = useAuth();
   // 완주 모드용: 전체 문제 + 문제별 결과(o/x) + 현재 하위모드(all/wrong) + 진도 패널
   const [allQ, setAllQ] = useState<Question[]>([]);
@@ -126,6 +128,22 @@ function QuizInner() {
       .catch(() => { setQuestions([]); setLoading(false); });
   }, [lang]);
 
+  // 로그인 진도 동기화: 들어올 때 1회 DB 진도를 합쳐 이어풀기(기기 간)
+  useEffect(() => {
+    if (!complete || !user || !allQ.length || syncedRef.current || mode !== "all") return;
+    syncedRef.current = true;
+    fetchQuizProgress(user.id).then(db => {
+      if (!Object.keys(db).length) return;
+      const merged = { ...result, ...db };
+      saveResult(merged);
+      const active = allQ.filter(qq => !merged[qq.id]);
+      setQuestions(active);
+      setIdx(0);
+      if (!active.length) setDoneAll(true);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [complete, user, allQ.length]);
+
   async function reportQuestion() {
     if (!user || reported) return;
     setReported(true);
@@ -173,8 +191,9 @@ function QuizInner() {
     setSelected(i);
     const correct = i === questions[idx].answer;
     if (complete) {
-      // 완주 모드: 문제별 정답/오답 기록 (이어풀기·틀린문제·진도율용)
+      // 완주 모드: 문제별 정답/오답 기록 (로컬 + 로그인 시 DB 동기화)
       saveResult({ ...result, [questions[idx].id]: correct ? "o" : "x" });
+      if (user) upsertQuizProgress(user.id, questions[idx].id, correct);
     }
     if (correct) {
       const newStreak = streak + 1;
@@ -194,6 +213,7 @@ function QuizInner() {
 
   function restartComplete() {
     try { localStorage.removeItem(progressKey); } catch { /* */ }
+    if (user) { syncedRef.current = true; clearQuizProgress(user.id, allQ.map(qq => qq.id)); } // 이 범위 DB 진도도 초기화
     setResult({}); setMode("all"); setQuestions(allQ); setIdx(0);
     setSelected(null); setShowHint(false); setReported(false); setDoneAll(false);
   }
