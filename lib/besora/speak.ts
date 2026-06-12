@@ -19,49 +19,21 @@ let _keep: SpeechSynthesisUtterance | null = null;
 // 폴백 TTS 재생용 오디오 (재사용 — iOS 제스처 정책 대응)
 let _audio: HTMLAudioElement | null = null;
 
-// 짧은 코드(Google 번역 TTS용): "lo-LA" → "lo"
-function shortCode(locale: string) { return locale.toLowerCase().split("-")[0]; }
-
-// 200자 제한에 맞춰 (가능하면 공백 기준) 분할
-function chunkText(text: string, max = 190): string[] {
-  const out: string[] = [];
-  let s = text.replace(/\s+/g, " ").trim();
-  while (s.length > max) {
-    let cut = s.lastIndexOf(" ", max);
-    if (cut <= 0) cut = max;
-    out.push(s.slice(0, cut).trim());
-    s = s.slice(cut).trim();
-  }
-  if (s) out.push(s);
-  return out;
+// 서버 프록시 TTS URL — 같은 출처라 referer/CORS/iOS 제스처 문제 없음.
+// 라오스어 등 브라우저에 음성이 없는 언어는 서버가 Google 번역 TTS 를 받아 MP3 로 스트리밍.
+export function ttsUrl(text: string, locale: string): string {
+  return `/api/tts?lang=${encodeURIComponent(locale)}&text=${encodeURIComponent(text.slice(0, 900))}`;
 }
 
-// Google 번역 TTS(gTTS 방식) URL — 라오스어(tl=lo) 등 브라우저에 음성이 없는 언어용.
-// 클라이언트 <audio> 로 직접 재생(미디어 요소는 CORS 영향을 받지 않음).
-export function gttsUrls(text: string, locale: string): string[] {
-  const tl = shortCode(locale);
-  const chunks = chunkText(text);
-  return chunks.map((c, i) =>
-    `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${encodeURIComponent(tl)}&total=${chunks.length}&idx=${i}&textlen=${c.length}&q=${encodeURIComponent(c)}`
-  );
-}
-
-// 브라우저에 해당 언어 음성이 없을 때(예: 라오스어) Google 번역 TTS 로 순차 재생
+// 브라우저에 해당 언어 음성이 없을 때(예: 라오스어) 서버 TTS 로 재생
 export function fallbackSpeak(text: string, locale: string) {
   if (typeof window === "undefined" || !text) return;
-  const urls = gttsUrls(text, locale);
-  if (!urls.length) return;
   if (!_audio) _audio = new Audio();
   const a = _audio;
   a.pause();
-  let i = 0;
-  const playNext = () => {
-    if (i >= urls.length) { a.onended = null; return; }
-    a.src = urls[i++];
-    a.play().catch(() => {});
-  };
-  a.onended = playNext;
-  playNext();
+  a.onended = null;
+  a.src = ttsUrl(text, locale);
+  a.play().catch(() => {});
 }
 
 // 현재 기기에 target/base 로케일 음성이 있는지
