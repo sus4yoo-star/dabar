@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { gttsUrls } from "@/lib/besora/speak";
 
 // 짧은 언어코드 → BCP-47 로케일. 음성합성이 맞는 발음/목소리를 고르도록 돕는다.
 const LOCALE: Record<string, string> = {
@@ -82,21 +83,22 @@ export default function AudioButton({
       return;
     }
 
-    // 서버 TTS 로 재생 (라오스어 등 로컬 음성 없음)
-    const playServer = async () => {
+    // Google 번역 TTS 로 순차 재생 (라오스어 등 로컬 음성 없음)
+    const playServer = () => {
       modeRef.current = "audio";
+      const urls = gttsUrls(text, locale);
+      if (!urls.length) return;
       const el = audioRef.current ?? new Audio();
       audioRef.current = el;
-      el.onended = () => { setPlaying(false); setPaused(false); };
       setPlaying(true); setPaused(false);
-      try {
-        const res = await fetch("/api/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, lang: locale }) });
-        if (!res.ok) { setPlaying(false); return; }
-        const data = await res.json();
-        if (!data?.audio) { setPlaying(false); return; }
-        el.src = `data:audio/mp3;base64,${data.audio}`;
-        await el.play().catch(() => setPlaying(false));
-      } catch { setPlaying(false); }
+      let i = 0;
+      const playNext = () => {
+        if (i >= urls.length) { el.onended = null; setPlaying(false); setPaused(false); return; }
+        el.src = urls[i++];
+        el.play().catch(() => setPlaying(false));
+      };
+      el.onended = playNext;
+      playNext();
     };
 
     const fireSynth = () => {
