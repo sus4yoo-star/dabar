@@ -7,6 +7,11 @@
 
 export interface CatItemTrans { q: string; a: string; }
 
+// 라오스어(lo) 소교리문답 — 현지 신자/공인 번역본 검수 후 채웁니다.
+// 비어 있는 동안 getCatechism("lo")은 문항별로 한국어 원문으로 폴백합니다.
+// (복음 도구로 쓰이므로, 검증되지 않은 자동 번역은 넣지 않습니다.)
+export const CAT_TRANS_LO: Record<number, CatItemTrans> = {};
+
 export const CAT_TRANS_EN: Record<number, CatItemTrans> = {
   1: { q: "What is the chief end of man?", a: "Man's chief end is to glorify God, and to enjoy him forever." },
   2: { q: "What rule hath God given to direct us how we may glorify and enjoy him?", a: "The Word of God, which is contained in the Scriptures of the Old and New Testaments, is the only rule to direct us how we may glorify and enjoy him." },

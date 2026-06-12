@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   const count     = Number.isFinite(parsed) ? Math.min(50, Math.max(1, parsed)) : 10;
   const booksRaw  = searchParams.get("books"); // 선택한 권 (쉼표 구분)
   const langRaw   = searchParams.get("lang") || "ko";
-  const lang      = ["ko", "en", "th"].includes(langRaw) ? langRaw : "ko";
+  const lang      = ["ko", "en", "th", "lo"].includes(langRaw) ? langRaw : "ko";
 
   const books = booksRaw
     ? booksRaw.split(",").map(b => b.trim()).filter(Boolean)

@@ -71,9 +71,9 @@ function VerseMotif() {
 }
 
 export default function StepView({
-  step, seekerLang, myLang, rtl,
+  step, seekerLang, myLang, rtl, onDecision,
 }: {
-  step: RenderedStep; seekerLang: string; myLang: string; rtl: boolean;
+  step: RenderedStep; seekerLang: string; myLang: string; rtl: boolean; onDecision?: () => void;
 }) {
   const isColor = step.kind === "color" && step.color_key;
   const isVerse = step.kind === "verse";
@@ -123,6 +123,23 @@ export default function StepView({
             <span style={{ fontSize: 14, flexShrink: 0 }}>💬</span>
             <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: skin ? fg : theme.textMuted, opacity: skin ? 0.95 : 1 }}>{step.helper.guide}</p>
           </div>
+        )}
+
+        {/* 결단하기 — 상대 언어와 내 언어 설명 사이 정중앙 (언제나 누르기 좋게) */}
+        {onDecision && (
+          <button
+            onClick={onDecision}
+            style={{
+              marginTop: 24, alignSelf: "center", borderRadius: 999,
+              padding: "12px 30px", fontFamily: "'Noto Serif KR',serif",
+              fontSize: 15, fontWeight: 800, letterSpacing: 0.3,
+              color: theme.wrong, background: "#fff",
+              border: `1px solid ${skin ? "rgba(255,255,255,0.7)" : theme.cardBorder}`,
+              boxShadow: "0 8px 22px rgba(23,50,73,0.18)", cursor: "pointer",
+            }}
+          >
+            {ui(myLang, "toDecision")}
+          </button>
         )}
 
         {/* 내 언어 — 보조 */}
