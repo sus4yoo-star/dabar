@@ -5,6 +5,7 @@
  *   npm run generate                    → (한국어) 부족한 문제 전부 채우기
  *   npm run generate -- --lang en       → 영어판(NIV 기준) 생성
  *   npm run generate -- --lang th       → 태국어판(Thai Standard Version 기준) 생성
+ *   npm run generate -- --lang lo       → 라오스어판(Lao Standard Version 2015 기준) 생성
  *   npm run generate -- --plan          → 생성 안 하고 계획만 출력 (크레딧 0원)
  *   npm run generate -- --book 창세기    → 특정 권만
  *   npm run generate -- --limit 100      → 이번 실행에서 최대 100개만 (지출 조절)
@@ -65,8 +66,8 @@ function args() {
   const a = process.argv.slice(2);
   const get = (flag: string) => { const i = a.indexOf(flag); return i >= 0 ? a[i + 1] : undefined; };
   // 플래그(--lang) 또는 환경변수(GEN_LANG) 둘 다 지원 — 붙여넣을 때 "--"가 "—"로 바뀌는 문제 회피용
-  const lang = (get("--lang") || process.env.GEN_LANG || "ko") as "ko" | "en" | "th";
-  if (!["ko", "en", "th"].includes(lang)) { console.error(`❌ 언어는 ko | en | th 만 가능합니다. (--lang en 또는 GEN_LANG=en)`); process.exit(1); }
+  const lang = (get("--lang") || process.env.GEN_LANG || "ko") as "ko" | "en" | "th" | "lo";
+  if (!["ko", "en", "th", "lo"].includes(lang)) { console.error(`❌ 언어는 ko | en | th | lo 만 가능합니다. (--lang lo 또는 GEN_LANG=lo)`); process.exit(1); }
   const limitRaw = get("--limit") || process.env.GEN_LIMIT;
   return {
     plan: a.includes("--plan") || process.env.GEN_PLAN === "1",
@@ -113,7 +114,7 @@ async function fetchExisting(lang: string): Promise<{ book: string; question: st
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
-async function generateBatch(book: string, testament: string, n: number, avoidStems: string[], lang: "ko" | "en" | "th"): Promise<any[]> {
+async function generateBatch(book: string, testament: string, n: number, avoidStems: string[], lang: "ko" | "en" | "th" | "lo"): Promise<any[]> {
   const easy = Math.max(1, Math.round(n * 0.35));
   const medium = Math.max(1, Math.round(n * 0.45));
   const hard = Math.max(0, n - easy - medium);
@@ -155,6 +156,23 @@ ${schema}
 - ถูกต้องตามหลักเทววิทยา อ้างอิงฉบับ Thai Standard Version (TSV)
 - easy: เด็ก 7 ขวบก็ตอบได้, hard: ระดับนักศึกษาเทววิทยา
 - เขียน "question", "options", "hint", "explanation" เป็นภาษาไทย${avoidBlock}`;
+  } else if (lang === "lo") {
+    const avoidBlock = avoidStems.length
+      ? `\n\n[ຫ້າມຊ້ຳ] ສ້າງສະເພາະຄຳຖາມໃໝ່ທີ່ບໍ່ຊ້ຳຄວາມໝາຍກັບລາຍການຕໍ່ໄປນີ້:\n${avoidStems.slice(0, 60).map(s => `- ${s}`).join("\n")}`
+      : "";
+    prompt = `ທ່ານເປັນຜູ້ຊ່ຽວຊານດ້ານພຣະຄຳພີ ຈົ່ງສ້າງຄຳຖາມຄິວສ໌ ${n} ຂໍ້ ກ່ຽວກັບໜັງສືພຣະຄຳພີທີ່ມີຊື່ພາສາເກົາຫຼີວ່າ "${book}"
+
+ຕອບກັບເປັນ JSON array ເທົ່ານັ້ນ ຫ້າມມີ markdown, code block ຫຼື ຂໍ້ຄວາມອະທິບາຍ — JSON ເທົ່ານັ້ນ
+
+${schema}
+
+ເງື່ອນໄຂ:
+- ຮັກສາ "book" ໄວ້ເປັນ "${book}" (ພາສາເກົາຫຼີ) ທຸກຂໍ້ ແລະ "category" ເປັນລະຫັດໃດໜຶ່ງຕໍ່ໄປນີ້: "인물" (ບຸກຄົນ) | "사건" (ເຫດການ) | "말씀" (ພຣະທຳ) | "지명" (ສະຖານທີ່)
+- easy ${easy} ຂໍ້, medium ${medium} ຂໍ້, hard ${hard} ຂໍ້
+- "answer" ຄືດັດຊະນີຂອງຕົວເລືອກທີ່ຖືກຕ້ອງ (0~3 ເລີ່ມຈາກ 0)
+- ຖືກຕ້ອງຕາມຫຼັກເທວະວິທະຍາ ອ້າງອີງສະບັບ ພຣະຄຳພີ ພາສາລາວ ສະບັບ 2015 (Lao Standard Version 2015)
+- easy: ເດັກ 7 ປີກໍຕອບໄດ້, hard: ລະດັບນັກສຶກສາເທວະວິທະຍາ
+- ຂຽນ "question", "options", "hint", "explanation" ເປັນພາສາລາວ${avoidBlock}`;
   } else {
     const avoidBlock = avoidStems.length
       ? `\n\n[중복 금지] 아래 질문들과 의미가 겹치지 않는 새로운 문제만 만드세요:\n${avoidStems.slice(0, 60).map(s => `- ${s}`).join("\n")}`
@@ -184,7 +202,7 @@ ${schema}
   return extractJsonArray(text);
 }
 
-async function fillBook(book: string, have: number, target: number, existingStems: string[], remainingBudget: number, lang: "ko" | "en" | "th"): Promise<number> {
+async function fillBook(book: string, have: number, target: number, existingStems: string[], remainingBudget: number, lang: "ko" | "en" | "th" | "lo"): Promise<number> {
   const need = Math.min(target - have, remainingBudget);
   if (need <= 0) {
     console.log(`⏭️  ${book}: 이미 ${have}/${target}개 — 건너뜀`);
@@ -237,7 +255,7 @@ async function fillBook(book: string, have: number, target: number, existingStem
 
 async function main() {
   const { plan, book: onlyBook, limit, lang } = args();
-  console.log(`🌐 언어: ${lang.toUpperCase()}${lang === "en" ? " (NIV)" : lang === "th" ? " (TSV)" : " (개역개정)"}\n`);
+  console.log(`🌐 언어: ${lang.toUpperCase()}${lang === "en" ? " (NIV)" : lang === "th" ? " (TSV)" : lang === "lo" ? " (Lao Standard Version 2015)" : " (개역개정)"}\n`);
 
   if (plan && onlyBook === undefined) {
     let totalTarget = 0;
