@@ -1,13 +1,13 @@
 // 웨스트민스터 소교리문답 (107문답) — 공교회 공용 문서(1647). 원문(공개) 기반의 한글 표준 번역.
 // 예장 합동(웨스트민스터 표준문서) 교육용.
 
-import { CAT_TRANS_EN, CAT_TRANS_TH } from "./catechism.i18n";
+import { CAT_TRANS_EN, CAT_TRANS_TH, CAT_TRANS_LO } from "./catechism.i18n";
 
 export interface Catechism { n: number; q: string; a: string; }
 
 // 언어별 소교리문답을 돌려줍니다. 번역이 없는 문항은 한국어로 자동 폴백.
 export function getCatechism(lang: string = "ko"): Catechism[] {
-  const tr = lang === "en" ? CAT_TRANS_EN : lang === "th" ? CAT_TRANS_TH : null;
+  const tr = lang === "en" ? CAT_TRANS_EN : lang === "th" ? CAT_TRANS_TH : lang === "lo" ? CAT_TRANS_LO : null;
   if (!tr) return CATECHISM;
   return CATECHISM.map(c => {
     const t = tr[c.n];
