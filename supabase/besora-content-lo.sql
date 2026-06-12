@@ -2,9 +2,8 @@
 --  베소라 전도 콘텐츠 — 라오스어(lo) 추가
 --  Supabase 대시보드 > SQL Editor 에 통째로 붙여넣고 RUN 하세요.
 --  (upsert 방식이라 여러 번 실행해도 안전)
---  ※ 라오스어 표준역(LSV) 문체. 의미는 공인 라오스 성경(Revised Lao Bible 2012 /
---    laobible.net)과 대조 확인. 로마서 구절 본문·영접 기도는 현장 사용 전
---    라오스어 모어 신자의 최종 교정을 권장합니다.
+--  ※ 로마서 구절 본문은 라오스어 표준역 LSV(Lao Standard Version) 공인 본문.
+--    영접 기도는 현장 사용 전 라오스어 모어 신자의 최종 교정을 권장합니다.
 -- =====================================================================
 
 -- 0) 언어 등록 (FK 필요)
@@ -106,23 +105,23 @@ begin
   -- ============ 로마서로의 길 (romans) — LO (LSV 문체) ============
   select id into s from besora.tool_steps where tool_id=(select id from besora.tools where slug='romans') and step_order=1;
   insert into besora.tool_step_translations (step_id,language_code,title,body) values
-    (s,'lo','ທຸກຄົນເຮັດບາບ','ເພາະວ່າທຸກຄົນໄດ້ເຮັດບາບ ແລະ ເສື່ອມຈາກລັດສະໝີຂອງພຣະເຈົ້າ')
+    (s,'lo','ທຸກຄົນເຮັດບາບ','ເພາະທຸກຄົນໄດ້ເຮັດບາບ.')
   on conflict (step_id,language_code) do update set title=excluded.title, body=excluded.body;
   select id into s from besora.tool_steps where tool_id=(select id from besora.tools where slug='romans') and step_order=2;
   insert into besora.tool_step_translations (step_id,language_code,title,body) values
-    (s,'lo','ຄ່າຈ້າງ ແລະ ຂອງປະທານ','ເພາະວ່າຄ່າຈ້າງຂອງບາບຄືຄວາມຕາຍ ແຕ່ຂອງປະທານຈາກພຣະເຈົ້າຄືຊີວິດນິລັນດອນໃນພຣະເຢຊູຄຣິດ ອົງພຣະຜູ້ເປັນເຈົ້າຂອງເຮົາ')
+    (s,'lo','ຄ່າຈ້າງ ແລະ ຂອງປະທານ','ຄ່າຈ້າງຂອງບາບຄືຄວາມຕາຍ ແຕ່ຂອງປະທານຂອງພຣະເຈົ້າຄືຊີວິດນິລັນດອນ.')
   on conflict (step_id,language_code) do update set title=excluded.title, body=excluded.body;
   select id into s from besora.tool_steps where tool_id=(select id from besora.tools where slug='romans') and step_order=3;
   insert into besora.tool_step_translations (step_id,language_code,title,body) values
-    (s,'lo','ຄວາມຮັກນັ້ນ','ແຕ່ພຣະເຈົ້າຊົງສຳແດງຄວາມຮັກຂອງພຣະອົງຕໍ່ເຮົາ ຄືຂະນະທີ່ເຮົາຍັງເປັນຄົນບາບຢູ່ນັ້ນ ພຣະຄຣິດໄດ້ສິ້ນພຣະຊົນເພື່ອເຮົາ')
+    (s,'lo','ຄວາມຮັກນັ້ນ','ແຕ່ພຣະເຈົ້າສຳແດງຄວາມຮັກຂອງພຣະອົງຕໍ່ພວກເຮົາ.')
   on conflict (step_id,language_code) do update set title=excluded.title, body=excluded.body;
   select id into s from besora.tool_steps where tool_id=(select id from besora.tools where slug='romans') and step_order=4;
   insert into besora.tool_step_translations (step_id,language_code,title,body) values
-    (s,'lo','ຍອມຮັບ ແລະ ເຊື່ອ','ຖ້າທ່ານຍອມຮັບດ້ວຍປາກວ່າພຣະເຢຊູຊົງເປັນອົງພຣະຜູ້ເປັນເຈົ້າ ແລະ ເຊື່ອໃນໃຈວ່າພຣະເຈົ້າຊົງໃຫ້ພຣະອົງຄືນມາຈາກຕາຍ ທ່ານກໍຈະລອດ')
+    (s,'lo','ຍອມຮັບ ແລະ ເຊື່ອ','ຖ້າທ່ານປະກາດດ້ວຍປາກວ່າພຣະເຢຊູເປັນອົງພຣະຜູ້ເປັນເຈົ້າ.')
   on conflict (step_id,language_code) do update set title=excluded.title, body=excluded.body;
   select id into s from besora.tool_steps where tool_id=(select id from besora.tools where slug='romans') and step_order=5;
   insert into besora.tool_step_translations (step_id,language_code,title,body) values
-    (s,'lo','ທຸກຄົນທີ່ຮ້ອງເອີ້ນ','ເພາະວ່າທຸກຄົນທີ່ຮ້ອງອອກພຣະນາມຂອງອົງພຣະຜູ້ເປັນເຈົ້າຈະລອດ')
+    (s,'lo','ທຸກຄົນທີ່ຮ້ອງເອີ້ນ','ຜູ້ໃດກໍຕາມທີ່ຮ້ອງອອກພຣະນາມອົງພຣະຜູ້ເປັນເຈົ້າ ຈະພົ້ນ.')
   on conflict (step_id,language_code) do update set title=excluded.title, body=excluded.body;
 end $$;
 
