@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 import { getCatechism } from "@/lib/catechism";
+import { useAutoTranslate } from "@/lib/autoTranslate";
 
 const MEM_KEY = "dabar_catechism_memorized";
 const CATS = ["전체", "하나님", "구원", "십계명", "기도"] as const;
@@ -41,7 +42,14 @@ export default function CatechismPage() {
     });
   }
 
-  const list = getCatechism(lang).filter(c => cat === "전체" || catOf(c.n) === cat);
+  // ko/en/th는 정적 번역, 그 외(예: 라오스어)는 한국어 원문을 런타임 자동번역
+  const STATIC = ["ko", "en", "th"];
+  const isAuto = !!lang && !STATIC.includes(lang);
+  const base = getCatechism(isAuto ? "ko" : lang);
+  const { out: tq, auto, loading: lq } = useAutoTranslate(base.map(c => c.q), lang, "cat_q");
+  const { out: ta, loading: la } = useAutoTranslate(base.map(c => c.a), lang, "cat_a");
+  const merged = base.map((c, i) => (auto ? { ...c, q: tq[i] ?? c.q, a: ta[i] ?? c.a } : c));
+  const list = merged.filter(c => cat === "전체" || catOf(c.n) === cat);
   const memCount = memorized.size;
 
   return (
@@ -55,6 +63,11 @@ export default function CatechismPage() {
         <div style={{ fontSize: 36, marginBottom: 4 }}>📜</div>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{t("cat.title")}</h1>
         <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{t("cat.sub")}</p>
+        {auto && (
+          <p style={{ marginTop: 8, fontSize: 11.5, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "6px 10px", display: "inline-block" }}>
+            ⚠ {lq || la ? "자동 번역 중…" : "자동 번역 (현지 검수 권장)"}
+          </p>
+        )}
       </div>
 
       {/* 외우기 진도 */}
