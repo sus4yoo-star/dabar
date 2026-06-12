@@ -20,12 +20,12 @@ const TRUSTED = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
 const WSS = `wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${TRUSTED}`;
 const GEC_VERSION = "1-130.0.2849.68";
 
-// Microsoft 요구 토큰 (edge-tts 알고리즘과 동일하게 float 연산으로 계산)
+// Microsoft 요구 토큰 (edge-tts 알고리즘). 값이 1e17 규모라 BigInt 로 정확히 계산해야 함.
 function secMsGec(): string {
-  let ticks = Math.floor(Date.now() / 1000) + 11644473600;
-  ticks -= ticks % 300; // 5분 단위로 내림
-  const val = ticks * 1e7; // 100ns 단위 (double 연산 — edge-tts와 동일)
-  return crypto.createHash("sha256").update(`${val.toFixed(0)}${TRUSTED}`, "ascii").digest("hex").toUpperCase();
+  // ticks = (현재시각 ms → 100ns 단위) + (Windows epoch 보정), 5분(3e9 ticks) 단위로 내림
+  let ticks = BigInt(Date.now()) * 10000n + 11644473600n * 10000000n;
+  ticks -= ticks % 3000000000n;
+  return crypto.createHash("sha256").update(`${ticks.toString()}${TRUSTED}`, "ascii").digest("hex").toUpperCase();
 }
 
 function escapeXml(s: string): string {
@@ -104,19 +104,22 @@ export async function GET(req: NextRequest) {
   const ok = (mp3: Buffer) =>
     new Response(new Uint8Array(mp3), { status: 200, headers: { "Content-Type": "audio/mpeg", "Cache-Control": "public, max-age=86400" } });
 
+  let reason = "";
   // 1) Edge TTS
   const v = VOICE[base];
   if (v) {
     try {
       const mp3 = await edgeTTS(text, v.voice, v.lang);
       if (mp3.length) return ok(mp3);
-    } catch { /* 폴백으로 진행 */ }
+      reason = "edge-empty";
+    } catch (e) { reason = "edge:" + (e instanceof Error ? e.message : "err"); }
   }
   // 2) Google 번역 TTS 폴백
   try {
     const mp3 = await googleTTS(text, base || "en");
     if (mp3) return ok(mp3);
-  } catch { /* */ }
+    reason += " google-empty";
+  } catch (e) { reason += " google:" + (e instanceof Error ? e.message : "err"); }
 
-  return new Response("tts-failed", { status: 502 });
+  return new Response(`tts-failed ${reason}`.trim(), { status: 502 });
 }
