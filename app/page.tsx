@@ -7,16 +7,6 @@ import { shareInvite } from "@/lib/share";
 import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
 
-// 양육·교육 과정 (2열 그리드로 한 묶음) — 성경퀴즈를 6번째 칸으로 포함
-const COURSE_MENU = [
-  { emoji: "🌱", href: "/course/newcomer", tk: "menu.newcomer" },
-  { emoji: "💧", href: "/course/baptism", tk: "menu.baptism" },
-  { emoji: "✝️", href: "/course/confirmation", tk: "menu.confirmation" },
-  { emoji: "📚", href: "/course/deep", tk: "menu.deep" },
-  { emoji: "📜", href: "/catechism", tk: "menu.catechism" },
-  { emoji: "📖", href: "/play", tk: "menu.quiz" },
-];
-
 export default function Home() {
   const router = useRouter();
   const { t } = useI18n();
@@ -106,18 +96,27 @@ export default function Home() {
         <span style={{ fontSize: 18, color: theme.gold }}>→</span>
       </button>
 
-      {/* 양육·교육 과정 (한 묶음, 2열 그리드 — 성경퀴즈 포함) */}
-      <p style={{ fontSize: 12, fontWeight: 700, color: theme.textFaint, letterSpacing: 1, margin: "0 0 9px 2px" }}>{t("home.growSection")}</p>
-      <div className="fade-in-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9, marginBottom: "1.25rem" }}>
-        {COURSE_MENU.map(m => (
-          <button key={m.href} onClick={() => router.push(m.href)}
-            style={{ display: "flex", flexDirection: "column", gap: 4, textAlign: "left", padding: "13px 14px", borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, minHeight: 76 }}>
-            <span style={{ fontSize: 24, lineHeight: 1 }}>{m.emoji}</span>
-            <span style={{ fontSize: 14.5, fontWeight: 800, color: theme.text, lineHeight: 1.25 }}>{t(m.tk + ".t")}</span>
-            <span style={{ fontSize: 11, color: theme.textMuted, lineHeight: 1.3 }}>{t(m.tk + ".s")}</span>
-          </button>
-        ))}
-      </div>
+      {/* 양육 · 교육 과정 — 긴 바(누르면 과정 목록으로) */}
+      <button onClick={() => router.push("/learn")} className="fade-in-2"
+        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "16px 18px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, marginBottom: "0.7rem" }}>
+        <span style={{ fontSize: 28, lineHeight: 1 }}>📚</span>
+        <span style={{ flex: 1 }}>
+          <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.text }}>{t("home.growSection")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>{t("home.growSub")}</span>
+        </span>
+        <span style={{ fontSize: 18, color: theme.textMuted }}>→</span>
+      </button>
+
+      {/* 성경퀴즈 — 맨 마지막 긴 바 */}
+      <button onClick={() => router.push("/play")} className="fade-in-2"
+        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "16px 18px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, marginBottom: "1.25rem" }}>
+        <span style={{ fontSize: 28, lineHeight: 1 }}>📖</span>
+        <span style={{ flex: 1 }}>
+          <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.text }}>{t("menu.quiz.t")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>{t("menu.quiz.s")}</span>
+        </span>
+        <span style={{ fontSize: 18, color: theme.textMuted }}>→</span>
+      </button>
 
       {isAdmin && <button onClick={() => router.push("/admin")} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: theme.goldLight, color: theme.gold, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer", marginBottom: 10 }}>{t("home.admin")}</button>}
       <button onClick={() => router.push("/guide")} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: "transparent", color: theme.textMuted, border: `1px solid ${theme.border}`, borderRadius: 12, cursor: "pointer", marginBottom: 10 }}>{t("home.guide")}</button>
