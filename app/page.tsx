@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { shareInvite } from "@/lib/share";
 import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
+import { fetchUnreadTotal } from "@/lib/besora/companions";
 
 export default function Home() {
   const router = useRouter();
@@ -15,6 +16,12 @@ export default function Home() {
   const [nickDraft, setNickDraft] = useState("");
   const [streak, setStreak] = useState(0);
   const [playedToday, setPlayedToday] = useState(false);
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    if (!user) { setUnread(0); return; }
+    fetchUnreadTotal().then(setUnread).catch(() => {});
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -37,7 +44,10 @@ export default function Home() {
       {/* 상단 바 */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6, marginBottom: "1.6rem" }}>
         <div style={{ display: "flex", gap: 5, flexShrink: 0 }}>
-          <button onClick={() => router.push("/share/me")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 18, padding: "6px 9px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.companions")}</button>
+          <button onClick={() => router.push("/share/me")} style={{ position: "relative", fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 18, padding: "6px 9px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
+            {t("common.companions")}
+            {unread > 0 && <span style={{ position: "absolute", top: -5, right: -5, minWidth: 16, height: 16, padding: "0 4px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 9.5, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{unread > 99 ? "99+" : unread}</span>}
+          </button>
           <button onClick={() => router.push("/ranking")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 18, padding: "6px 9px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.ranking")}</button>
           {user && <button onClick={() => router.push("/history")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 18, padding: "6px 9px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.wrongnote")}</button>}
         </div>

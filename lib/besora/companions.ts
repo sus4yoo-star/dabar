@@ -121,6 +121,17 @@ export async function fetchChatList(): Promise<ChatListItem[]> {
   }));
 }
 
+// 전체 안읽음 메시지 수 (헤더/홈 동행 버튼 배지용). 로그인/RPC 없으면 0.
+export async function fetchUnreadTotal(): Promise<number> {
+  try {
+    const myId = await getMyId();
+    if (!myId) return 0;
+    const { data, error } = await getSupabase().rpc("chat_list");
+    if (error || !data) return 0;
+    return (data as any[]).reduce((sum, r) => sum + (r.unread ?? 0), 0);
+  } catch { return 0; }
+}
+
 // 채팅방을 열거나 새 메시지를 봤을 때 — 내 쪽 읽음 처리
 export async function markRead(companionId: string): Promise<void> {
   try { await getSupabase().rpc("mark_read", { p_companion: companionId }); } catch { /* ignore */ }
