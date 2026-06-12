@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ttsUrl } from "@/lib/besora/speak";
+import { gttsUrls } from "@/lib/besora/speak";
 
 // 짧은 언어코드 → BCP-47 로케일. 음성합성이 맞는 발음/목소리를 고르도록 돕는다.
 const LOCALE: Record<string, string> = {
@@ -83,15 +83,22 @@ export default function AudioButton({
       return;
     }
 
-    // 서버 TTS(같은 출처)로 재생 (라오스어 등 로컬 음성 없음)
+    // 브라우저에서 직접 Google TTS 순차 재생 (라오스어 등 로컬 음성 없음)
     const playServer = () => {
       modeRef.current = "audio";
+      const urls = gttsUrls(text, locale);
+      if (!urls.length) { return; }
       const el = audioRef.current ?? new Audio();
       audioRef.current = el;
-      el.onended = () => { setPlaying(false); setPaused(false); };
       setPlaying(true); setPaused(false);
-      el.src = ttsUrl(text, locale);
-      el.play().catch(() => setPlaying(false));
+      let i = 0;
+      const playNext = () => {
+        if (i >= urls.length) { el.onended = null; setPlaying(false); setPaused(false); return; }
+        el.src = urls[i++];
+        el.play().catch(() => setPlaying(false));
+      };
+      el.onended = playNext;
+      playNext();
     };
 
     const fireSynth = () => {
