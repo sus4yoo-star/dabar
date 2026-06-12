@@ -29,7 +29,7 @@ const DICT: Dict = {
   "home.guide":       { ko: "📋 학습·세례·입교 절차 안내", en: "📋 Membership steps guide", th: "📋 ขั้นตอนการเป็นสมาชิก", lo: "📋 ຂັ້ນຕອນການເປັນສະມາຊິກ" },
   "home.admin":       { ko: "🔧 목사님 현황판", en: "🔧 Pastor dashboard", th: "🔧 แดชบอร์ดศิษยาภิบาล", lo: "🔧 ກະດານສິດຍາພິບານ" },
   "home.growSection": { ko: "양육 · 교육 과정", en: "Discipleship · Education", th: "การเป็นสาวก · การศึกษา", lo: "ການເປັນສາວົກ · ການສຶກສາ" },
-  "home.growSub":     { ko: "새신자부터 소교리문답까지", en: "From new believer to catechism", th: "ตั้งแต่ผู้เชื่อใหม่ถึงคำสอนสั้น", lo: "ຕັ້ງແຕ່ຜູ້ເຊື່ອໃໝ່ຮອດຄຳສອນສັ້ນ" },
+  "home.growSub":     { ko: "새신자부터 소요리문답까지", en: "From new believer to catechism", th: "ตั้งแต่ผู้เชื่อใหม่ถึงคำสอนสั้น", lo: "ຕັ້ງແຕ່ຜູ້ເຊື່ອໃໝ່ຮອດຄຳສອນສັ້ນ" },
   "home.shareTitle":  { ko: "복음 전하기 · 새신자 영접", en: "Share the Gospel · Lead to Christ", th: "ประกาศข่าวประเสริฐ · นำสู่พระคริสต์", lo: "ປະກາດຂ່າວປະເສີດ · ນຳສູ່ພຣະຄຣິດ" },
   "home.shareSub":    { ko: "다국어·음성으로 복음을 전하고 영접까지", en: "Share in many languages & voice, to decision", th: "ประกาศหลายภาษา·เสียง จนถึงการตัดสินใจ", lo: "ປະກາດຫຼາຍພາສາ·ສຽງ ຈົນຮອດການຕັດສິນໃຈ" },
 
@@ -41,7 +41,7 @@ const DICT: Dict = {
   "menu.confirmation.s": { ko: "입교를 준비하는 분", en: "Preparing for confirmation", th: "เตรียมเป็นสมาชิกสมบูรณ์", lo: "ກຽມເປັນສະມາຊິກສົມບູນ" },
   "menu.deep.t":      { ko: "더 깊은 성경공부", en: "Deeper Bible Study", th: "ศึกษาพระคัมภีร์เชิงลึก", lo: "ສຶກສາພຣະຄຳພີເລິກເຊິ່ງ" },
   "menu.deep.s":      { ko: "제자 양육", en: "Discipleship", th: "การเป็นสาวก", lo: "ການເປັນສາວົກ" },
-  "menu.catechism.t": { ko: "소교리문답", en: "Catechism", th: "คำสอนสั้น", lo: "ຄຳສອນສັ້ນ" },
+  "menu.catechism.t": { ko: "소요리문답", en: "Catechism", th: "คำสอนสั้น", lo: "ຄຳສອນສັ້ນ" },
   "menu.catechism.s": { ko: "웨스트민스터 107문답", en: "Westminster Shorter (107)", th: "เวสต์มินสเตอร์ 107 ข้อ", lo: "ເວສມິນສະເຕີ 107 ຂໍ້" },
   "menu.quiz.t":      { ko: "성경퀴즈", en: "Bible Quiz", th: "ควิซพระคัมภีร์", lo: "ຄິວສ໌ພຣະຄຳພີ" },
   "menu.quiz.s":      { ko: "말씀 퀴즈로 도전 · 랭킹", en: "Quiz & ranking", th: "ควิซและอันดับ", lo: "ຄິວສ໌ ແລະ ອັນດັບ" },
@@ -146,8 +146,8 @@ const DICT: Dict = {
   "co.lastLesson": { ko: "🏅 {t} 과정의 마지막 과예요!", en: "🏅 Last lesson of {t}!", th: "🏅 บทสุดท้ายของ {t}!", lo: "🏅 ບົດສຸດທ້າຍຂອງ {t}!" },
   "co.toList":  { ko: "과정 목록으로", en: "Back to lessons", th: "กลับไปรายการบท", lo: "ກັບໄປລາຍການບົດ" },
 
-  // 소교리문답
-  "cat.title":  { ko: "웨스트민스터 소교리문답", en: "Westminster Shorter Catechism", th: "คำสอนสั้นเวสต์มินสเตอร์", lo: "ຄຳສອນສັ້ນເວສມິນສະເຕີ" },
+  // 소요리문답
+  "cat.title":  { ko: "웨스트민스터 소요리문답", en: "Westminster Shorter Catechism", th: "คำสอนสั้นเวสต์มินสเตอร์", lo: "ຄຳສອນສັ້ນເວສມິນສະເຕີ" },
   "cat.sub":    { ko: "전체 107문답 · 예장 합동 표준", en: "All 107 Q&A · Westminster standard", th: "ทั้งหมด 107 ข้อ · มาตรฐานเวสต์มินสเตอร์", lo: "ທັງໝົດ 107 ຂໍ້ · ມາດຕະຖານເວສມິນສະເຕີ" },
   "cat.memProg":{ ko: "외운 문답", en: "Memorized", th: "ท่องได้แล้ว", lo: "ທ່ອງໄດ້ແລ້ວ" },
   "cat.all":    { ko: "전체", en: "All", th: "ทั้งหมด", lo: "ທັງໝົດ" },
@@ -162,7 +162,7 @@ const DICT: Dict = {
   "cat.memOn":  { ko: "✓ 외움", en: "✓ Memorized", th: "✓ ท่องได้", lo: "✓ ທ່ອງໄດ້" },
   "cat.memOff": { ko: "외움 표시", en: "Mark memorized", th: "ทำเครื่องหมาย", lo: "ໝາຍວ່າທ່ອງໄດ້" },
   "cat.quizBtn":{ ko: "🎯 퀴즈", en: "🎯 Quiz", th: "🎯 ควิซ", lo: "🎯 ຄິວສ໌" },
-  "cat.quizDone": { ko: "소교리문답 퀴즈 정답률 {n}%", en: "Catechism quiz: {n}% correct", th: "ควิซคำสอน: ถูก {n}%", lo: "ຄິວສ໌ຄຳສອນ: ຖືກ {n}%" },
+  "cat.quizDone": { ko: "소요리문답 퀴즈 정답률 {n}%", en: "Catechism quiz: {n}% correct", th: "ควิซคำสอน: ถูก {n}%", lo: "ຄິວສ໌ຄຳສອນ: ຖືກ {n}%" },
   "cat.toCat":  { ko: "문답으로 돌아가기", en: "Back to catechism", th: "กลับไปคำสอน", lo: "ກັບໄປຄຳສອນ" },
   "cat.exit":   { ko: "✕ 나가기", en: "✕ Exit", th: "✕ ออก", lo: "✕ ອອກ" },
 
