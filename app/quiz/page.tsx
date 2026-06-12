@@ -28,6 +28,10 @@ function QuizInner() {
   const router = useRouter();
   const { t, lang } = useI18n();
   const params = useSearchParams();
+  // 빠짐없이 풀기(완주) 모드 — 범위 내 전 문제를 순서대로, 타이머 없이, 이어풀기
+  const complete = params.get("complete") === "1";
+  const progressKey = `dabar_complete|${lang}|${params.get("testament") || "전체"}|${params.get("level") || "전체"}|${params.get("books") || ""}`;
+  const [doneAll, setDoneAll] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -58,7 +62,8 @@ function QuizInner() {
     const testament = params.get("testament") || "전체";
     const count = params.get("count") || "10";
     const books = params.get("books") || "";
-    const qs = new URLSearchParams({ level, testament, count, lang });
+    const qs = new URLSearchParams({ level, testament, lang });
+    if (complete) qs.set("complete", "1"); else qs.set("count", count);
     if (books) qs.set("books", books);
     fetch(`/api/questions?${qs.toString()}`)
       .then(r => r.json())
@@ -73,7 +78,15 @@ function QuizInner() {
           const tr = (s?: string) => (s && m[s]) ? m[s] : (s ?? "");
           arr = arr.map(q => ({ ...q, question: tr(q.question), options: q.options.map(o => tr(o)), explanation: tr(q.explanation), hint: q.hint ? tr(q.hint) : q.hint }));
         }
-        setQuestions(prepare(arr)); setLoading(false);
+        const prepared = prepare(arr);
+        setQuestions(prepared);
+        // 완주 모드: 저장된 진도에서 이어풀기
+        if (complete && prepared.length) {
+          let saved = 0;
+          try { saved = parseInt(localStorage.getItem(progressKey) || "0", 10) || 0; } catch { /* */ }
+          setIdx(Math.min(Math.max(0, saved), prepared.length - 1));
+        }
+        setLoading(false);
       })
       .catch(() => { setQuestions([]); setLoading(false); });
   }, [lang]);
@@ -86,6 +99,18 @@ function QuizInner() {
   }
 
   const goNext = useCallback((currentScore: number, currentAnswers: typeof answers) => {
+    if (complete) {
+      // 완주 모드: 진도 저장하며 다음으로, 마지막이면 완주 화면
+      if (idx + 1 >= questions.length) {
+        try { localStorage.removeItem(progressKey); } catch { /* */ }
+        setDoneAll(true);
+      } else {
+        const ni = idx + 1;
+        try { localStorage.setItem(progressKey, String(ni)); } catch { /* */ }
+        setIdx(ni); setSelected(null); setShowHint(false); setReported(false);
+      }
+      return;
+    }
     if (idx + 1 >= questions.length) {
       const meta = {
         testament: params.get("testament") || "전체",
@@ -102,6 +127,7 @@ function QuizInner() {
   }, [idx, questions, router, params]);
 
   useEffect(() => {
+    if (complete) return; // 완주(학습) 모드는 타이머 없음
     if (selected !== null || loading || !questions.length) return;
     setTimeLeft(15);
     const t = setInterval(() => {
@@ -133,9 +159,25 @@ function QuizInner() {
     setAnswers(prev => [...prev, { selected: i, correct }]);
   }
 
+  function restartComplete() {
+    try { localStorage.removeItem(progressKey); } catch { /* */ }
+    setIdx(0); setSelected(null); setShowHint(false); setReported(false); setDoneAll(false); setScore(0); setAnswers([]);
+  }
+
   if (loading) return <Center>{t("q.loading")}</Center>;
   if (!questions.length) return <Center>{t("q.none")}</Center>;
+  if (complete && doneAll) {
+    return (
+      <Center>
+        <div style={{ fontSize: 56, marginBottom: 10 }}>🎓</div>
+        <p style={{ fontSize: 17, fontWeight: 800, color: theme.gold, margin: "0 0 18px", lineHeight: 1.5 }}>{t("q.studyDone")}</p>
+        <button onClick={restartComplete} style={{ display: "block", width: "100%", maxWidth: 320, margin: "0 auto 10px", padding: 14, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{t("q.restart")}</button>
+        <button onClick={() => router.push("/")} style={{ display: "block", width: "100%", maxWidth: 320, margin: "0 auto", padding: 13, fontSize: 14, fontWeight: 700, background: "transparent", color: theme.text, border: `1px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>{t("r.home")}</button>
+      </Center>
+    );
+  }
   const q = questions[idx];
+  if (!q) return <Center>{t("q.none")}</Center>;
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>
@@ -150,17 +192,25 @@ function QuizInner() {
       <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
         <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-        <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>{retryMode && <span style={{ color: theme.primarySoft }}>🔁 </span>}{idx + 1}/{questions.length} · <span style={{ color: theme.gold }}>⭐{points}</span></span>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: complete ? 18 : 10 }}>
+        <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>
+          {retryMode && <span style={{ color: theme.primarySoft }}>🔁 </span>}
+          {complete && <span style={{ color: theme.primarySoft }}>📚 </span>}
+          {idx + 1}/{questions.length}{!complete && <> · <span style={{ color: theme.gold }}>⭐{points}</span></>}
+        </span>
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, color: LEVEL_COLOR[q.level], fontWeight: 700 }}>{t("q." + q.level)}</span>
-          {streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, color: theme.gold, fontWeight: 800 }}>{t("q.combo", { n: streak })}</span>}
+          {!complete && streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, color: theme.gold, fontWeight: 800 }}>{t("q.combo", { n: streak })}</span>}
         </div>
-        <span style={{ fontSize: 14, fontWeight: 700, color: timeLeft <= 5 ? theme.wrong : theme.textMuted }}>⏱ {timeLeft}{t("q.sec")}</span>
+        {complete
+          ? <button onClick={restartComplete} style={{ fontSize: 12, fontWeight: 700, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 12, padding: "4px 10px", cursor: "pointer" }}>{t("q.restart")}</button>
+          : <span style={{ fontSize: 14, fontWeight: 700, color: timeLeft <= 5 ? theme.wrong : theme.textMuted }}>⏱ {timeLeft}{t("q.sec")}</span>}
       </div>
-      <div style={{ height: 5, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 20 }}>
-        <div style={{ height: "100%", background: timeLeft <= 5 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 15) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
-      </div>
+      {!complete && (
+        <div style={{ height: 5, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 20 }}>
+          <div style={{ height: "100%", background: timeLeft <= 5 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 15) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
+        </div>
+      )}
       <div key={idx} className="fade-in">
         <p style={{ fontSize: 12, color: theme.gold, fontWeight: 700, margin: "0 0 8px", letterSpacing: 0.5 }}>{q.book} · {q.category}</p>
         <p style={{ fontSize: 19, fontWeight: 600, lineHeight: 1.65, color: theme.text, marginBottom: "1.5rem" }}>{q.question}</p>
@@ -182,7 +232,7 @@ function QuizInner() {
       </div>
       {selected !== null && (
         <div className="fade-in" style={{ padding: "12px 16px", borderRadius: 12, marginBottom: 12, background: selected === q.answer ? theme.correctBg : theme.wrongBg, border: `1px solid ${selected === q.answer ? theme.correct : theme.wrong}` }}>
-          <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? `${t("q.correct")} ${t("q.pts", { n: lastGain })}${streak >= 2 ? "  " + t("q.combo", { n: streak }) : ""}` : t("q.answerIs", { a: q.options[q.answer] })}</p>
+          <p style={{ fontWeight: 700, color: selected === q.answer ? theme.correct : theme.wrong, margin: "0 0 4px" }}>{selected === q.answer ? (complete ? t("q.correct") : `${t("q.correct")} ${t("q.pts", { n: lastGain })}${streak >= 2 ? "  " + t("q.combo", { n: streak }) : ""}`) : t("q.answerIs", { a: q.options[q.answer] })}</p>
           <p style={{ fontSize: 13, color: theme.textMuted, margin: 0, lineHeight: 1.6 }}>{q.explanation}</p>
           <button onClick={reportQuestion} disabled={reported} style={{ marginTop: 9, fontSize: 12, color: theme.textFaint, background: "none", border: "none", cursor: reported ? "default" : "pointer", textDecoration: "underline", padding: 0 }}>{reported ? t("q.reported") : t("q.report")}</button>
         </div>
@@ -194,7 +244,7 @@ function QuizInner() {
         <p style={{ fontSize: 13, color: theme.text, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, padding: "10px 14px", borderRadius: 8, marginBottom: 12, lineHeight: 1.6 }}>{q.hint}</p>
       )}
       {selected !== null && (
-        <button onClick={() => goNext(score, answers)} style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{idx + 1 >= questions.length ? t("q.result") : t("q.next")}</button>
+        <button onClick={() => goNext(score, answers)} style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{!complete && idx + 1 >= questions.length ? t("q.result") : t("q.next")}</button>
       )}
     </main>
   );
