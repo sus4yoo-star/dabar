@@ -122,7 +122,7 @@ export async function GET(req: NextRequest) {
   if (!text) return new Response("bad-request", { status: 400 });
 
   const ok = (mp3: Buffer) =>
-    new Response(new Uint8Array(mp3), { status: 200, headers: { "Content-Type": "audio/mpeg", "Cache-Control": "public, max-age=86400" } });
+    new Response(new Uint8Array(mp3), { status: 200, headers: { "Content-Type": "audio/mpeg", "Cache-Control": "no-store" } });
 
   let reason = "";
   const v = VOICE[base];
