@@ -5,6 +5,24 @@ import { theme } from "@/lib/theme";
 import AudioButton from "@/components/besora/AudioButton";
 import Sketch from "@/components/besora/Sketch";
 import { ui } from "@/lib/besora/i18n";
+import { versesFor, type VersePassage } from "@/lib/besora/verses";
+
+// 실제 성경 말씀 본문 인용 카드
+function ScriptureQuote({ passages, onSkin, fg }: { passages: VersePassage[]; onSkin: boolean; fg: string }) {
+  if (passages.length === 0) return null;
+  return (
+    <div style={{ marginTop: 18, width: "100%", maxWidth: 460, textAlign: "left", borderRadius: 14, padding: "14px 16px", background: onSkin ? "rgba(255,255,255,0.16)" : theme.goldLight, borderLeft: `3px solid ${onSkin ? "rgba(255,255,255,0.55)" : theme.gold}` }}>
+      {passages.map((p, i) => (
+        <div key={p.key} style={{ marginTop: i === 0 ? 0 : 12 }}>
+          <span style={{ display: "block", fontFamily: "'Noto Serif KR',serif", fontSize: 12, fontWeight: 700, letterSpacing: 0.3, color: onSkin ? fg : theme.gold, opacity: onSkin ? 0.85 : 1, marginBottom: 3 }}>{p.label}</span>
+          <p style={{ margin: 0, fontFamily: "'Noto Serif KR',serif", fontSize: 16.5, lineHeight: 1.66, color: onSkin ? fg : theme.text, opacity: onSkin ? 0.98 : 0.92 }}>
+            &ldquo;{p.text}&rdquo;
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // color 단계용 배경 (사영리 색깔책 등)
 const CARD_BG: Record<string, { bg: string; fg: string }> = {
@@ -64,6 +82,9 @@ export default function StepView({
   const fg = skin?.fg ?? theme.text;
   const showBoth = myLang !== seekerLang && (step.helper.title || step.helper.body);
   const verseRef = step.seeker.verse_ref;
+  const onSkin = !!skin;
+  const seekerVerses = versesFor(step.seeker.verse_ref ?? step.verse_ref, seekerLang);
+  const helperVerses = versesFor(step.helper.verse_ref ?? step.verse_ref, myLang);
 
   return (
     <div style={{ display: "flex", flex: 1, flexDirection: "column" }}>
@@ -93,6 +114,9 @@ export default function StepView({
         </h2>
         <p style={{ marginTop: 16, maxWidth: 460, fontSize: 18, lineHeight: 1.62, opacity: 0.95 }}>{step.seeker.body}</p>
 
+        {/* 실제 성경 말씀 본문 (상대 언어) */}
+        <ScriptureQuote passages={seekerVerses} onSkin={onSkin} fg={fg} />
+
         {/* 전도자용 코칭 멘트 (내 언어) — 상대 언어와 내 언어 사이에 */}
         {step.helper.guide && (
           <div style={{ marginTop: 20, width: "100%", maxWidth: 460, display: "flex", gap: 8, alignItems: "flex-start", textAlign: "left", borderRadius: 12, padding: "9px 12px", background: skin ? "rgba(255,255,255,0.16)" : theme.primaryBg, border: `1px solid ${skin ? "rgba(255,255,255,0.32)" : theme.cardBorder}` }}>
@@ -112,12 +136,22 @@ export default function StepView({
             )}
             <h3 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 18, fontWeight: 600, lineHeight: 1.35, opacity: 0.95, margin: 0 }}>{step.helper.title}</h3>
             {step.helper.body && <p style={{ marginTop: 6, maxWidth: 460, fontSize: 14.5, lineHeight: 1.6, opacity: 0.85 }}>{step.helper.body}</p>}
+            {/* 내 언어 성경 말씀 본문 */}
+            {helperVerses.length > 0 && (
+              <div style={{ marginTop: 10, width: "100%", maxWidth: 460, textAlign: "left" }}>
+                {helperVerses.map((p, i) => (
+                  <p key={p.key} style={{ margin: i === 0 ? 0 : "8px 0 0", fontFamily: "'Noto Serif KR',serif", fontSize: 13.5, lineHeight: 1.6, opacity: 0.78 }}>
+                    <b style={{ opacity: 0.85 }}>{p.label}</b> &ldquo;{p.text}&rdquo;
+                  </p>
+                ))}
+              </div>
+            )}
           </>
         )}
 
         <div style={{ marginTop: 26 }}>
           <AudioButton
-            text={`${step.seeker.title}. ${step.seeker.body}`}
+            text={`${step.seeker.title}. ${step.seeker.body} ${seekerVerses.map((v) => v.text).join(" ")}`}
             lang={seekerLang}
             audioUrl={step.seeker.audio_url}
             label={ui(myLang, "listen")}
