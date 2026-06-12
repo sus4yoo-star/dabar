@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const LANG: Record<string, string> = { ko: "ko-KR", en: "en-US", th: "th-TH" };
+const LANG: Record<string, string> = { ko: "ko-KR", en: "en-US", th: "th-TH", lo: "lo-LA" };
 
 export async function POST(req: NextRequest) {
   const key = process.env.GOOGLE_TRANSLATE_API_KEY;

@@ -1,7 +1,7 @@
 // 앱 UI(버튼/안내) 다국어. 전도 콘텐츠는 DB에 있고, 여기는 화면 골격용.
 
 // 현재 콘텐츠·이름이 준비된 언어 (선택지에 이 언어들만 노출).
-export const SUPPORTED_LANGS = ["ko", "en", "th"];
+export const SUPPORTED_LANGS = ["ko", "en", "th", "lo"];
 
 // 선택지에 항상 뜨도록 언어 메타를 내장 (besora DB 'languages' 테이블이 없어도 동작).
 // DB에 같은 code 가 있으면 그 값으로 덮어씀.
@@ -9,6 +9,7 @@ export const LANG_META: Record<string, { code: string; name_native: string; name
   ko: { code: "ko", name_native: "한국어", name_en: "Korean", rtl: false, enabled: true, sort: 1 },
   en: { code: "en", name_native: "English", name_en: "English", rtl: false, enabled: true, sort: 2 },
   th: { code: "th", name_native: "ไทย", name_en: "Thai", rtl: false, enabled: true, sort: 3 },
+  lo: { code: "lo", name_native: "ລາວ", name_en: "Lao", rtl: false, enabled: true, sort: 4 },
 };
 
 export const UI = {
@@ -171,6 +172,59 @@ export const UI = {
     pushEnabled: "🔔 เปิดแจ้งเตือนแล้ว",
     pushDenied: "การแจ้งเตือนถูกบล็อก โปรดอนุญาตในการตั้งค่าเบราว์เซอร์",
   },
+  lo: {
+    appName: "ປະກາດຂ່າວປະເສີດ",
+    tagline: "ຂ່າວດີສຳລັບມວນມະນຸດ",
+    start: "ເລີ່ມປະກາດ",
+    chooseTool: "ເລືອກເຄື່ອງມື",
+    myLanguage: "ພາສາຂອງຂ້ອຍ",
+    seekerLanguage: "ພາສາຂອງຜູ້ຟັງ",
+    setMyLanguage: "ເລືອກພາສາຂອງທ່ານ",
+    setSeekerLanguage: "ເລືອກພາສາທີ່ຜູ້ຟັງຈະອ່ານ",
+    next: "ຕໍ່ໄປ",
+    prev: "ກັບຄືນ",
+    toDecision: "ສູ່ການຕັດສິນໃຈ",
+    listen: "ຟັງສຽງ",
+    follow: "ອ່ານຕາມ",
+    pray: "ອະທິຖານຮ່ວມກັນ",
+    amen: "ອະທິຖານແລ້ວ",
+    again: "ປະກາດອີກຄັ້ງ",
+    notNow: "ຂໍຄິດເບິ່ງກ່ອນ",
+    yes: "ແມ່ນແລ້ວ ຂ້ອຍຮັບເອົາພຣະເຢຊູ",
+    myRecords: "ບັນທຶກຂອງຂ້ອຍ",
+    offlineReady: "ພ້ອມໃຊ້ອອບໄລນ໌",
+    home: "ໜ້າຫຼັກ",
+    growStart: "ເລີ່ມການເປັນສາວົກ",
+    voice: "ລ່າມສຽງ",
+    tapToTalk: "ແຕະໄມໂຄຣໂຟນແລ້ວເວົ້າ",
+    listening: "ກຳລັງຟັງ… ແຕະເພື່ອຢຸດ",
+    twoPaneHint: "ແຕ່ລະຄົນເວົ້າຫຼືພິມພາສາຂອງຕົນ ລະບົບຈະແປໃຫ້ອີກຝ່າຍໂດຍອັດຕະໂນມັດ",
+    companions: "ເພື່ອນຮ່ວມທາງຂອງຂ້ອຍ",
+    companionsNav: "ເພື່ອນຮ່ວມທາງ",
+    companionLabel: "ເພື່ອນຮ່ວມທາງ",
+    inviteCreate: "ເຊີນເພື່ອນຮ່ວມທາງ",
+    inviteDesc: "ເຊື່ອມຕໍ່ກັບຜູ້ທີ່ທ່ານປະກາດ ແລະ ສືບຕໍ່ການເລ້ຍງດູຜ່ານການສົນທະນາ",
+    inviteReady: "ສະແດງ ຫຼື ສົ່ງລິ້ງ/QR ນີ້ ເມື່ອເຂົາເປີດ ແລະ ເຂົ້າສູ່ລະບົບ ການເດີນທາງຮ່ວມກັນກໍເລີ່ມຂຶ້ນ",
+    inviteCopy: "ກັອບປີ້ລິ້ງ",
+    inviteCopied: "ກັອບປີ້ແລ້ວ!",
+    inviteShare: "ແບ່ງປັນ",
+    noCompanions: "ຍັງບໍ່ມີເພື່ອນຮ່ວມທາງ ລອງເຊີນຜູ້ທີ່ທ່ານປະກາດເບິ່ງ",
+    openChat: "ເປີດການສົນທະນາ",
+    chatPlaceholder: "ພິມຂໍ້ຄວາມ…",
+    send: "ສົ່ງ",
+    autoTranslate: "ແປອັດຕະໂນມັດ",
+    loginToConnect: "ເຂົ້າສູ່ລະບົບເພື່ອເລີ່ມການເປັນເພື່ອນຮ່ວມທາງ ແລະ ສົນທະນາ",
+    login: "ເຂົ້າສູ່ລະບົບ",
+    joinTitle: "ທ່ານໄດ້ຮັບຄຳເຊີນເປັນເພື່ອນຮ່ວມທາງ",
+    joinDesc: "ຕອບຮັບເພື່ອຍ່າງໄປໃນເສັ້ນທາງຄວາມເຊື່ອຮ່ວມກັນຜ່ານການສົນທະນາ",
+    joinAccept: "ຕອບຮັບການເປັນເພື່ອນຮ່ວມທາງ",
+    joining: "ກຳລັງເຊື່ອມຕໍ່…",
+    joinError: "ຄຳເຊີນນີ້ບໍ່ຖືກຕ້ອງ ຫຼື ໝົດອາຍຸແລ້ວ",
+    backToList: "ເພື່ອນຮ່ວມທາງ",
+    pushEnable: "🔔 ເປີດການແຈ້ງເຕືອນຂໍ້ຄວາມ",
+    pushEnabled: "🔔 ເປີດແຈ້ງເຕືອນແລ້ວ",
+    pushDenied: "ການແຈ້ງເຕືອນຖືກບລັອກ ກະລຸນາອະນຸຍາດໃນການຕັ້ງຄ່າຂອງເບຣົາເຊີ",
+  },
 } as const;
 
 export type UILang = keyof typeof UI;
@@ -187,26 +241,31 @@ export const TOOL_NAMES: Record<string, Record<string, string>> = {
     ko: "글없는책",
     en: "The Wordless Book",
     th: "หนังสือไร้คำ",
+    lo: "ໜັງສືບໍ່ມີຄຳ",
   },
   "four-laws": {
     ko: "사영리",
     en: "Four Spiritual Laws",
     th: "กฎทางวิญญาณสี่ประการ",
+    lo: "ກົດທາງວິນຍານສີ່ປະການ",
   },
   bridge: {
     ko: "다리 예화",
     en: "The Bridge to Life",
     th: "สะพานสู่ชีวิต",
+    lo: "ຂົວສູ່ຊີວິດ",
   },
   "three-circles": {
     ko: "세 개의 원",
     en: "Three Circles",
     th: "สามวงกลม",
+    lo: "ສາມວົງມົນ",
   },
   romans: {
     ko: "로마서로의 길",
     en: "The Romans Road",
     th: "ถนนสู่ความรอด (โรม)",
+    lo: "ເສັ້ນທາງສູ່ຄວາມລອດ (ໂຣມ)",
   },
 };
 
@@ -222,26 +281,31 @@ export const TOOL_DESCS: Record<string, Record<string, string>> = {
     ko: "5가지 색으로 전하는 가장 쉬운 복음",
     en: "The gospel in five colors — easiest to share",
     th: "ข่าวประเสริฐในห้าสี — ง่ายที่สุด",
+    lo: "ຂ່າວປະເສີດໃນຫ້າສີ — ງ່າຍທີ່ສຸດ",
   },
   "four-laws": {
     ko: "네 가지 원리로 정리한 복음",
     en: "The gospel in four simple principles",
     th: "ข่าวประเสริฐในสี่หลักการ",
+    lo: "ຂ່າວປະເສີດໃນສີ່ຫຼັກການ",
   },
   bridge: {
     ko: "죄의 간격을 십자가가 잇는 그림",
     en: "A drawing: the cross bridges sin's gap",
     th: "ภาพ: กางเขนเชื่อมเหวแห่งบาป",
+    lo: "ຮູບ: ໄມ້ກາງເຂນເຊື່ອມເຫວແຫ່ງບາບ",
   },
   "three-circles": {
     ko: "디자인·깨어짐·회복을 그림으로",
     en: "Design, brokenness, recovery — by drawing",
     th: "ออกแบบ·แตกสลาย·ฟื้นฟู ด้วยการวาด",
+    lo: "ອອກແບບ·ແຕກສະຫຼາຍ·ຟື້ນຟູ ດ້ວຍການແຕ້ມ",
   },
   romans: {
     ko: "로마서 구절을 따라가는 복음",
     en: "The gospel through verses in Romans",
     th: "ข่าวประเสริฐผ่านข้อพระคัมภีร์โรม",
+    lo: "ຂ່າວປະເສີດຜ່ານຂໍ້ພຣະຄຳພີໂຣມ",
   },
 };
 

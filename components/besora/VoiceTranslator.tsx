@@ -16,7 +16,7 @@ import { startRecording, canRecord, type Recorder } from "@/lib/besora/recorder"
 
 const LOCALE: Record<string, string> = {
   ko: "ko-KR", en: "en-US", es: "es-ES", zh: "zh-CN",
-  fr: "fr-FR", hi: "hi-IN", pt: "pt-BR", ar: "ar-SA", th: "th-TH",
+  fr: "fr-FR", hi: "hi-IN", pt: "pt-BR", ar: "ar-SA", th: "th-TH", lo: "lo-LA",
 };
 
 export default function VoiceTranslator() {
