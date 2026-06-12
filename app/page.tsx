@@ -33,9 +33,9 @@ export default function Home() {
   }, [user]);
 
   return (
-    <main style={{ maxWidth: 440, margin: "0 auto", padding: "0.85rem 1.1rem 1.5rem", minHeight: "100dvh" }}>
+    <main style={{ maxWidth: 440, margin: "0 auto", padding: "1.5rem 1.1rem 2rem", minHeight: "100dvh" }}>
       {/* 상단 바 */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6, marginBottom: "0.75rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6, marginBottom: "1.6rem" }}>
         <div style={{ display: "flex", gap: 5, flexShrink: 0 }}>
           <button onClick={() => router.push("/share/me")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 18, padding: "6px 9px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.companions")}</button>
           <button onClick={() => router.push("/ranking")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 18, padding: "6px 9px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.ranking")}</button>
@@ -52,7 +52,7 @@ export default function Home() {
       </div>
 
       {/* 히어로 */}
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: "2rem" }}>
         {user && (
           editingNick ? (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, margin: "0 0 8px" }}>
@@ -63,7 +63,7 @@ export default function Home() {
               <button onClick={() => setEditingNick(false)} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>✕</button>
             </div>
           ) : (
-            <p style={{ fontSize: 13, color: theme.primarySoft, fontWeight: 600, margin: "0 0 8px" }}>
+            <p style={{ fontSize: 13, color: theme.primarySoft, fontWeight: 600, margin: "0 0 18px" }}>
               {t("home.greeting", { name: nickname })}
               <button onClick={() => { setNickDraft(nickname); setEditingNick(true); }} title="닉네임 바꾸기"
                 style={{ marginLeft: 6, fontSize: 12, background: "none", border: "none", cursor: "pointer", padding: 0 }}>✏️</button>
@@ -77,11 +77,11 @@ export default function Home() {
             </span>
           </div>
         )}
-        <div style={{ position: "relative", display: "inline-block", marginBottom: 6 }}>
+        <div style={{ position: "relative", display: "inline-block", marginBottom: 12 }}>
           <div aria-hidden style={{ position: "absolute", inset: -14, borderRadius: "50%", background: "radial-gradient(circle, rgba(146,215,0,0.30) 0%, rgba(146,215,0,0) 70%)" }} />
           <img src="/icons/icon-192.png" alt="DABAR" width={52} height={52} style={{ position: "relative", borderRadius: 14, boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }} />
         </div>
-        <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 30, fontWeight: 700, color: theme.gold, letterSpacing: 5, margin: "2px 0 2px" }}>DABAR</h1>
+        <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 30, fontWeight: 700, color: theme.gold, letterSpacing: 5, margin: "4px 0 5px" }}>DABAR</h1>
         <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{t("home.tagline")}</p>
       </div>
 
