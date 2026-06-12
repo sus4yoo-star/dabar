@@ -7,7 +7,7 @@ import { theme } from "@/lib/theme";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
 import {
-  fetchCompanion, fetchMessages, sendMessage, subscribeMessages,
+  fetchCompanion, fetchMessages, sendMessage, subscribeMessages, markRead,
   getMyId, type Companion, type ChatMessage,
 } from "@/lib/besora/companions";
 
@@ -35,8 +35,10 @@ export default function ChatPage() {
       setCompanion(c);
       setMsgs(m);
       setLoading(false);
+      markRead(companionId); // 방에 들어오면 읽음 처리
       unsub = subscribeMessages(companionId, (nm) => {
         setMsgs((prev) => (prev.some((p) => p.id === nm.id) ? prev : [...prev, nm]));
+        if (nm.sender !== id) markRead(companionId); // 보고 있는 중 새 메시지도 읽음
       });
     })();
     return () => unsub();
