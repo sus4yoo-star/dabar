@@ -32,6 +32,26 @@ function escapeXml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 }
 
+// ── 1순위: Microsoft Azure Speech (키 방식 — 라오스어 lo-LA 정식 지원, 서버 IP 차단/403 없음) ──
+async function azureTTS(text: string, voice: string, xmlLang: string): Promise<Buffer | null> {
+  const key = process.env.AZURE_SPEECH_KEY;
+  const region = process.env.AZURE_SPEECH_REGION;
+  if (!key || !region) return null;
+  const ssml = `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='${xmlLang}'><voice name='${voice}'>${escapeXml(text)}</voice></speak>`;
+  const r = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+    method: "POST",
+    headers: {
+      "Ocp-Apim-Subscription-Key": key,
+      "Content-Type": "application/ssml+xml",
+      "X-Microsoft-OutputFormat": "audio-24khz-48kbitrate-mono-mp3",
+      "User-Agent": "dabar",
+    },
+    body: ssml,
+  });
+  if (!r.ok) throw new Error(`azure-${r.status}`);
+  return Buffer.from(await r.arrayBuffer());
+}
+
 function edgeTTS(text: string, voice: string, xmlLang: string, timeoutMs = 12000): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const uuid = () => crypto.randomUUID().replace(/-/g, "");
@@ -105,14 +125,21 @@ export async function GET(req: NextRequest) {
     new Response(new Uint8Array(mp3), { status: 200, headers: { "Content-Type": "audio/mpeg", "Cache-Control": "public, max-age=86400" } });
 
   let reason = "";
-  // 1) Edge TTS
   const v = VOICE[base];
+  // 1) Azure Speech (키가 있으면 — 가장 확실)
+  if (v) {
+    try {
+      const mp3 = await azureTTS(text, v.voice, v.lang);
+      if (mp3 && mp3.length) return ok(mp3);
+    } catch (e) { reason = "azure:" + (e instanceof Error ? e.message : "err"); }
+  }
+  // 2) Edge TTS (키 없을 때 시도 — 다만 MS DRM 으로 403 날 수 있음)
   if (v) {
     try {
       const mp3 = await edgeTTS(text, v.voice, v.lang);
       if (mp3.length) return ok(mp3);
-      reason = "edge-empty";
-    } catch (e) { reason = "edge:" + (e instanceof Error ? e.message : "err"); }
+      reason += " edge-empty";
+    } catch (e) { reason += " edge:" + (e instanceof Error ? e.message : "err"); }
   }
   // 2) Google 번역 TTS 폴백
   try {

@@ -37,7 +37,12 @@ function chunkText(text: string, max = 190): string[] {
   return out;
 }
 
-// Google 번역 TTS(gTTS 방식) URL — 브라우저 <audio> 로 직접 재생 (미디어 요소는 CORS 무관)
+// 서버 프록시 TTS(같은 출처) — Azure Speech 등으로 합성된 MP3 스트리밍.
+export function ttsUrl(text: string, locale: string): string {
+  return `/api/tts?lang=${encodeURIComponent(locale)}&text=${encodeURIComponent(text.slice(0, 900))}`;
+}
+
+// Google 번역 TTS(gTTS 방식) URL — 브라우저 <audio> 로 직접 재생 (서버 실패 시 폴백)
 export function gttsUrls(text: string, locale: string): string[] {
   const tl = locale.toLowerCase().split("-")[0];
   const chunks = chunkText(text);
@@ -46,22 +51,28 @@ export function gttsUrls(text: string, locale: string): string[] {
   );
 }
 
-// 브라우저에서 직접 Google TTS 를 순차 재생 (제스처 유지 위해 동기 호출)
+// 라오스어 등: 서버 /api/tts(Azure) 우선, 실패하면 브라우저에서 직접 Google TTS 폴백.
 export function fallbackSpeak(text: string, locale: string) {
   if (typeof window === "undefined" || !text) return;
-  const urls = gttsUrls(text, locale);
-  if (!urls.length) return;
   if (!_audio) _audio = new Audio();
   const a = _audio;
   a.pause();
-  let i = 0;
-  const playNext = () => {
-    if (i >= urls.length) { a.onended = null; return; }
-    a.src = urls[i++];
-    a.play().catch(() => {});
+
+  let usedFallback = false;
+  const playClient = () => {
+    if (usedFallback) return;
+    usedFallback = true;
+    const urls = gttsUrls(text, locale);
+    let i = 0;
+    const next = () => { if (i >= urls.length) { a.onended = null; return; } a.src = urls[i++]; a.play().catch(() => {}); };
+    a.onended = next;
+    next();
   };
-  a.onended = playNext;
-  playNext();
+
+  a.onended = null;
+  a.onerror = () => playClient();      // 서버가 음성 못 주면 브라우저 Google 로 폴백
+  a.src = ttsUrl(text, locale);
+  a.play().catch(() => playClient());
 }
 
 // 현재 기기에 target/base 로케일 음성이 있는지
