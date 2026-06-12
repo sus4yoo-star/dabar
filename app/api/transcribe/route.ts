@@ -42,8 +42,11 @@ export async function POST(req: NextRequest) {
     );
     const data = await res.json();
     if (!res.ok) {
+      const msg = String(data?.error?.message ?? "");
+      // Cloud Speech-to-Text API 가 꺼져 있거나 권한이 없는 경우를 구분
+      const disabled = /has not been used|is disabled|SERVICE_DISABLED|PERMISSION_DENIED|not enabled/i.test(msg);
       return NextResponse.json(
-        { error: "stt-failed", detail: data?.error?.message ?? null },
+        { error: disabled ? "stt-disabled" : "stt-failed", detail: msg || null },
         { status: 502 }
       );
     }
