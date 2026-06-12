@@ -16,6 +16,25 @@ async function translateChunk(q: string[], target: string): Promise<string[]> {
   return (d.translations as string[]) ?? [];
 }
 
+// 훅이 아닌 일반 함수: 문자열들을 대상 언어로 번역해 {원문: 번역} 맵 반환 (+캐시).
+// 정적 언어(ko/en/th)는 빈 맵.
+export async function translateMany(texts: string[], lang: string, ns: string): Promise<Record<string, string>> {
+  if (!lang || STATIC_LANGS.includes(lang)) return {};
+  const cacheKey = `dabar_at_${ns}_${lang}`;
+  let cache: Record<string, string> = {};
+  try { cache = JSON.parse(localStorage.getItem(cacheKey) || "{}"); } catch { /* ignore */ }
+  const need = Array.from(new Set(texts.filter((t) => t && !(t in cache))));
+  for (let i = 0; i < need.length; i += 50) {
+    const slice = need.slice(i, i + 50);
+    try {
+      const tr = await translateChunk(slice, lang);
+      slice.forEach((t, j) => { if (tr[j]) cache[t] = tr[j]; });
+    } catch { break; }
+  }
+  try { localStorage.setItem(cacheKey, JSON.stringify(cache)); } catch { /* ignore */ }
+  return cache;
+}
+
 // 한국어 원문 배열을 대상 언어로 자동번역 (Google 번역) + localStorage 캐시.
 // 정적 번역 언어(ko/en/th)는 원문을 그대로 반환.
 export function useAutoTranslate(items: string[], lang: string, ns: string) {
