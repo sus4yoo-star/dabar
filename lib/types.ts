@@ -13,6 +13,7 @@ export interface Question {
   answer: number;
   hint: string;
   explanation: string;
+  lang?: string;
   created_at: string;
 }
 
