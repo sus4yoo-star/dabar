@@ -125,22 +125,29 @@ export default function StepView({
           </div>
         )}
 
-        {/* 결단하기 — 상대 언어와 내 언어 설명 사이 정중앙 (언제나 누르기 좋게) */}
-        {onDecision && (
-          <button
-            onClick={onDecision}
-            style={{
-              marginTop: 24, alignSelf: "center", borderRadius: 999,
-              padding: "12px 30px", fontFamily: "'Noto Serif KR',serif",
-              fontSize: 15, fontWeight: 800, letterSpacing: 0.3,
-              color: theme.wrong, background: "#fff",
-              border: `1px solid ${skin ? "rgba(255,255,255,0.7)" : theme.cardBorder}`,
-              boxShadow: "0 8px 22px rgba(23,50,73,0.18)", cursor: "pointer",
-            }}
-          >
-            {ui(myLang, "toDecision")}
-          </button>
-        )}
+        {/* 들려주기 + 결단하기 — 상대 언어와 내 언어 설명 사이 정중앙 (언제나 누르기 좋게) */}
+        <div style={{ marginTop: 24, display: "flex", gap: 10, alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
+          <AudioButton
+            text={`${step.seeker.title}. ${step.seeker.body} ${seekerVerses.map((v) => v.text).join(" ")}`}
+            lang={seekerLang}
+            audioUrl={step.seeker.audio_url}
+            label={ui(myLang, "listen")}
+          />
+          {onDecision && (
+            <button
+              onClick={onDecision}
+              style={{
+                borderRadius: 999, padding: "12px 30px",
+                fontFamily: "'Noto Serif KR',serif", fontSize: 15, fontWeight: 800, letterSpacing: 0.3,
+                color: theme.wrong, background: "#fff",
+                border: `1px solid ${skin ? "rgba(255,255,255,0.7)" : theme.cardBorder}`,
+                boxShadow: "0 8px 22px rgba(23,50,73,0.18)", cursor: "pointer",
+              }}
+            >
+              {ui(myLang, "toDecision")}
+            </button>
+          )}
+        </div>
 
         {/* 내 언어 — 보조 */}
         {showBoth && (
@@ -165,15 +172,6 @@ export default function StepView({
             )}
           </>
         )}
-
-        <div style={{ marginTop: 26 }}>
-          <AudioButton
-            text={`${step.seeker.title}. ${step.seeker.body} ${seekerVerses.map((v) => v.text).join(" ")}`}
-            lang={seekerLang}
-            audioUrl={step.seeker.audio_url}
-            label={ui(myLang, "listen")}
-          />
-        </div>
       </div>
     </div>
   );
