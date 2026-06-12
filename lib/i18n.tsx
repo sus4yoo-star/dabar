@@ -28,6 +28,7 @@ const DICT: Dict = {
   "home.guide":       { ko: "📋 학습·세례·입교 절차 안내", en: "📋 Membership steps guide", th: "📋 ขั้นตอนการเป็นสมาชิก" },
   "home.admin":       { ko: "🔧 목사님 현황판", en: "🔧 Pastor dashboard", th: "🔧 แดชบอร์ดศิษยาภิบาล" },
   "home.growSection": { ko: "양육 · 교육 과정", en: "Discipleship · Education", th: "การเป็นสาวก · การศึกษา" },
+  "home.growSub":     { ko: "새신자부터 소교리문답까지", en: "From new believer to catechism", th: "ตั้งแต่ผู้เชื่อใหม่ถึงคำสอนสั้น" },
   "home.shareTitle":  { ko: "복음 전하기 · 새신자 영접", en: "Share the Gospel · Lead to Christ", th: "ประกาศข่าวประเสริฐ · นำสู่พระคริสต์" },
   "home.shareSub":    { ko: "다국어·음성으로 복음을 전하고 영접까지", en: "Share in many languages & voice, to decision", th: "ประกาศหลายภาษา·เสียง จนถึงการตัดสินใจ" },
 
