@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import AppShell from "@/components/besora/AppShell";
@@ -10,6 +10,31 @@ import { fetchTool, fetchRenderedSteps } from "@/lib/besora/content";
 import type { Tool, RenderedStep } from "@/lib/besora/types";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
+
+// 콘텐츠 좌우 중앙에 떠 있는 원형 화살표 버튼 스타일
+function sideNav(side: "left" | "right"): CSSProperties {
+  return {
+    position: "absolute",
+    top: "50%",
+    [side]: -6,
+    transform: "translateY(-50%)",
+    zIndex: 30,
+    width: 44,
+    height: 44,
+    display: "grid",
+    placeItems: "center",
+    borderRadius: 999,
+    background: "rgba(255,255,255,0.92)",
+    border: `1px solid ${theme.goldBorder}`,
+    color: theme.gold,
+    fontSize: 26,
+    lineHeight: 1,
+    fontWeight: 700,
+    cursor: "pointer",
+    boxShadow: "0 6px 18px rgba(23,50,73,0.16)",
+    backdropFilter: "blur(4px)",
+  };
+}
 
 export default function PresentClient() {
   const params = useParams();
@@ -77,17 +102,21 @@ export default function PresentClient() {
       {inDecision ? (
         <DecisionFlow toolSlug={slug} onAgain={() => router.push("/share")} />
       ) : current ? (
-        <>
+        <div style={{ position: "relative", flex: 1, display: "flex", flexDirection: "column" }}>
+          {/* 좌우 중앙 화살표 — 이전/다음 */}
+          {idx > 0 && (
+            <button onClick={() => setIdx((i) => Math.max(0, i - 1))} aria-label={ui(myLang, "prev")} title={ui(myLang, "prev")}
+              style={sideNav("left")}>‹</button>
+          )}
+          <button onClick={next} aria-label={atEnd ? ui(myLang, "toDecision") : ui(myLang, "next")} title={atEnd ? ui(myLang, "toDecision") : ui(myLang, "next")}
+            style={sideNav("right")}>›</button>
+
           <StepView step={current} seekerLang={seekerLang} myLang={myLang} rtl={rtlFor(seekerLang)} />
-          <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-            <button onClick={() => setIdx((i) => Math.max(0, i - 1))} disabled={idx === 0}
-              style={{ borderRadius: 999, padding: "12px 20px", fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: idx === 0 ? "default" : "pointer", opacity: idx === 0 ? 0.3 : 1 }}>
-              {ui(myLang, "prev")}
-            </button>
+
+          <div style={{ marginTop: 16, display: "flex", justifyContent: "center" }}>
             <button onClick={() => setInDecision(true)} style={{ fontSize: 14, color: theme.wrong, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>{ui(myLang, "toDecision")}</button>
-            <button onClick={next} style={{ borderRadius: 999, background: theme.gold, padding: "12px 24px", fontSize: 14, fontWeight: 700, color: "#08263a", border: "none", cursor: "pointer" }}>{atEnd ? ui(myLang, "toDecision") : ui(myLang, "next")}</button>
           </div>
-        </>
+        </div>
       ) : (
         <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", color: theme.textMuted }}>
           <p>아직 이 언어의 콘텐츠가 없어요.</p>
