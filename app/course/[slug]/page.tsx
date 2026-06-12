@@ -6,14 +6,18 @@ import { getCourse } from "@/lib/courses";
 import { getCompleted } from "@/lib/progress";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
+import { useAutoCourse } from "@/lib/autoTranslate";
 import { supabase } from "@/lib/supabase";
+
+const STATIC_LANGS = ["ko", "en", "th"];
 
 export default function CoursePage() {
   const router = useRouter();
   const { t, lang } = useI18n();
   const params = useParams<{ slug: string }>();
   const { user } = useAuth();
-  const course = getCourse(params.slug, lang);
+  const isAuto = !!lang && !STATIC_LANGS.includes(lang);
+  const { course, auto, loading } = useAutoCourse(getCourse(params.slug, isAuto ? "ko" : lang), lang);
   const [done, setDone] = useState<Record<string, boolean>>({});
 
   // 로컬(기기) 진도 + 서버(계정) 진도를 합쳐서 표시 → 다른 기기에서도 이어보기
@@ -52,6 +56,11 @@ export default function CoursePage() {
         <div style={{ fontSize: 44, marginBottom: 6 }}>{course.emoji}</div>
         <h1 style={{ fontSize: 26, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{t("co.courseTitle", { t: course.title })}</h1>
         <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{course.subtitle}</p>
+        {auto && (
+          <p style={{ marginTop: 8, fontSize: 11.5, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "6px 10px", display: "inline-block" }}>
+            ⚠ {loading ? "자동 번역 중…" : "자동 번역 (현지 검수 권장)"}
+          </p>
+        )}
       </div>
 
       {/* 진도바 */}

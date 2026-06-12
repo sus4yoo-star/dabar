@@ -6,7 +6,10 @@ import { getCourse, LessonQuestion } from "@/lib/courses";
 import { markDone } from "@/lib/progress";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
+import { useAutoCourse } from "@/lib/autoTranslate";
 import { supabase } from "@/lib/supabase";
+
+const STATIC_LANGS = ["ko", "en", "th"];
 
 // 보기 순서를 섞고 정답 인덱스를 다시 계산 (정답이 늘 1번에 오지 않도록)
 function shuffleOptions(q: LessonQuestion): LessonQuestion {
@@ -22,7 +25,8 @@ export default function LessonPage() {
   const { t, lang } = useI18n();
   const { user } = useAuth();
   const params = useParams<{ slug: string; lessonId: string }>();
-  const course = getCourse(params.slug, lang);
+  const isAuto = !!lang && !STATIC_LANGS.includes(lang);
+  const { course } = useAutoCourse(getCourse(params.slug, isAuto ? "ko" : lang), lang);
   const lesson = course?.lessons.find(l => l.id === params.lessonId);
 
   const [phase, setPhase] = useState<"learn" | "quiz" | "done">("learn");
