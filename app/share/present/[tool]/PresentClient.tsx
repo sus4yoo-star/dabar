@@ -111,11 +111,7 @@ export default function PresentClient() {
           <button onClick={next} aria-label={atEnd ? ui(myLang, "toDecision") : ui(myLang, "next")} title={atEnd ? ui(myLang, "toDecision") : ui(myLang, "next")}
             style={sideNav("right")}>›</button>
 
-          <StepView step={current} seekerLang={seekerLang} myLang={myLang} rtl={rtlFor(seekerLang)} />
-
-          <div style={{ marginTop: 16, display: "flex", justifyContent: "center" }}>
-            <button onClick={() => setInDecision(true)} style={{ fontSize: 14, color: theme.wrong, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>{ui(myLang, "toDecision")}</button>
-          </div>
+          <StepView step={current} seekerLang={seekerLang} myLang={myLang} rtl={rtlFor(seekerLang)} onDecision={() => setInDecision(true)} />
         </div>
       ) : (
         <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", color: theme.textMuted }}>
