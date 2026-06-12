@@ -61,6 +61,9 @@ export const UI = {
     joining: "연결 중…",
     joinError: "초대가 유효하지 않거나 만료됐어요.",
     backToList: "동행 목록",
+    pushEnable: "🔔 메시지 알림 켜기",
+    pushEnabled: "🔔 알림 켜짐",
+    pushDenied: "알림이 차단돼 있어요. 브라우저 설정에서 허용해 주세요.",
   },
   en: {
     appName: "Share the Gospel",
@@ -111,6 +114,9 @@ export const UI = {
     joining: "Connecting…",
     joinError: "This invite is invalid or expired.",
     backToList: "Companions",
+    pushEnable: "🔔 Turn on message alerts",
+    pushEnabled: "🔔 Alerts on",
+    pushDenied: "Notifications are blocked. Please allow them in browser settings.",
   },
   th: {
     appName: "ประกาศข่าวประเสริฐ",
@@ -161,6 +167,9 @@ export const UI = {
     joining: "กำลังเชื่อมต่อ…",
     joinError: "คำเชิญนี้ไม่ถูกต้องหรือหมดอายุแล้ว",
     backToList: "เพื่อนร่วมทาง",
+    pushEnable: "🔔 เปิดการแจ้งเตือนข้อความ",
+    pushEnabled: "🔔 เปิดแจ้งเตือนแล้ว",
+    pushDenied: "การแจ้งเตือนถูกบล็อก โปรดอนุญาตในการตั้งค่าเบราว์เซอร์",
   },
 } as const;
 

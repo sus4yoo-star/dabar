@@ -5,6 +5,7 @@ import Link from "next/link";
 import { theme } from "@/lib/theme";
 import AppShell from "@/components/besora/AppShell";
 import InvitePanel from "@/components/besora/InvitePanel";
+import PushToggle from "@/components/besora/PushToggle";
 import { getSupabase } from "@/lib/besora/supabase";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
@@ -89,6 +90,7 @@ export default function Me() {
               </div>
             )}
 
+            <PushToggle />
             <InvitePanel />
           </div>
         </>
