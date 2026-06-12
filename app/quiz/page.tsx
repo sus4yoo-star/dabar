@@ -75,7 +75,7 @@ function QuizInner() {
         setQuestions(prepare(arr)); setLoading(false);
       })
       .catch(() => { setQuestions([]); setLoading(false); });
-  }, []);
+  }, [lang]);
 
   async function reportQuestion() {
     if (!user || reported) return;
@@ -142,6 +142,9 @@ function QuizInner() {
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, fontWeight: 600, color: theme.textMuted, background: "none", border: "none", cursor: "pointer", padding: "2px 4px" }}>{t("cat.exit")}</button>
       </div>
+      {!!lang && !["ko", "en", "th"].includes(lang) && (
+        <p style={{ margin: "0 0 10px", fontSize: 11, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "5px 9px", textAlign: "center" }}>⚠ 자동 번역 (현지 검수 권장)</p>
+      )}
       {/* 전체 진행바 */}
       <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
         <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
