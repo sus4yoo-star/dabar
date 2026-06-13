@@ -254,16 +254,56 @@ const DICT: Dict = {
 interface I18n { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; }
 const I18nCtx = createContext<I18n>({ lang: "ko", setLang: () => {}, t: (k) => k });
 
+const STATIC_UI = ["ko", "en", "th", "lo"]; // 직접 번역 보유 언어
+const RTL_LANGS = new Set(["ar", "fa", "ur"]);
+
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("ko");
+  const [uiMap, setUiMap] = useState<Record<string, string>>({}); // 영어 원문 → 현재 언어 번역(자동)
+
   useEffect(() => {
     const saved = (typeof localStorage !== "undefined" && localStorage.getItem("dabar_lang")) as Lang | null;
     if (saved && LANGS.some(l => l.code === saved)) setLangState(saved);
   }, []);
+
+  // 방향(RTL) + UI 자동번역 (ko/en/th/lo 외 언어)
+  useEffect(() => {
+    if (typeof document !== "undefined") document.documentElement.dir = RTL_LANGS.has(lang) ? "rtl" : "ltr";
+    if (STATIC_UI.includes(lang)) { setUiMap({}); return; }
+    const cacheKey = `dabar_ui_${lang}`;
+    let cache: Record<string, string> = {};
+    try { cache = JSON.parse(localStorage.getItem(cacheKey) || "{}"); } catch { /* */ }
+    // 치환자({n} 등)가 없는 영어 문자열만 자동번역 (치환자 보존 위해)
+    const allEn = Array.from(new Set(Object.values(DICT).map(e => e.en).filter(s => s && !s.includes("{"))));
+    const need = allEn.filter(s => !(s in cache));
+    if (!need.length) { setUiMap(cache); return; }
+    setUiMap(cache);
+    let cancelled = false;
+    (async () => {
+      for (let i = 0; i < need.length; i += 50) {
+        const slice = need.slice(i, i + 50);
+        try {
+          const r = await fetch("/api/translate-batch", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q: slice, source: "en", target: lang }) });
+          if (!r.ok) break;
+          const d = await r.json();
+          (d.translations as string[] ?? []).forEach((tr, j) => { if (tr) cache[slice[j]] = tr; });
+          if (cancelled) return;
+          setUiMap({ ...cache });
+        } catch { break; }
+      }
+      try { localStorage.setItem(cacheKey, JSON.stringify(cache)); } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [lang]);
+
   const setLang = (l: Lang) => { setLangState(l); try { localStorage.setItem("dabar_lang", l); } catch { /* ignore */ } };
   const t = (key: string, vars?: Record<string, string | number>) => {
     const e = DICT[key] as Record<string, string> | undefined;
-    let s = e?.[lang] ?? e?.en ?? e?.ko ?? key; // ko/en/th/lo 외 언어는 영어로 폴백
+    const en = e?.en;
+    // 자동번역 언어: UI 번역맵 우선 → 없으면 영어
+    let s = STATIC_UI.includes(lang)
+      ? (e?.[lang] ?? en ?? e?.ko ?? key)
+      : ((en && uiMap[en]) ?? en ?? e?.ko ?? key);
     if (vars) for (const k of Object.keys(vars)) s = s.replace(`{${k}}`, String(vars[k]));
     return s;
   };
