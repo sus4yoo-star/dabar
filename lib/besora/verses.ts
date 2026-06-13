@@ -153,7 +153,8 @@ export type VersePassage = { key: string; label: string; text: string };
 // "요한복음 3:16 · 10:10" / "John 3:16; 10:10" / "โรม 3:23, 6:23" 등을 파싱
 export function versesFor(ref: string | null | undefined, lang: string): VersePassage[] {
   if (!ref) return [];
-  const L: VLang = (lang === "en" || lang === "th" || lang === "lo") ? lang : "ko";
+  // ko/en/th/lo 만 구절 보유 — 그 외 언어는 영어 구절로 폴백
+  const L: VLang = (lang === "en" || lang === "th" || lang === "lo") ? lang : (lang === "ko" ? "ko" : "en");
   const out: VersePassage[] = [];
   let currentBook: string | null = null;
 

@@ -12,6 +12,8 @@ const LOCALE: Record<string, string> = {
   ar: "ar-SA",
   th: "th-TH",
   lo: "lo-LA",
+  fa: "fa-IR", my: "my-MM", ms: "ms-MY", vi: "vi-VN", id: "id-ID",
+  bn: "bn-IN", ja: "ja-JP", ur: "ur-PK", ru: "ru-RU", sw: "sw-KE",
 };
 
 // 발화 객체가 GC 되어 무음이 되는 버그 방지용 참조 유지

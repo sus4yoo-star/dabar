@@ -5,7 +5,12 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const LANG: Record<string, string> = { ko: "ko-KR", en: "en-US", th: "th-TH", lo: "lo-LA" };
+const LANG: Record<string, string> = {
+  ko: "ko-KR", en: "en-US", th: "th-TH", lo: "lo-LA",
+  es: "es-ES", pt: "pt-BR", zh: "zh-CN", hi: "hi-IN", ar: "ar-SA", fa: "fa-IR",
+  my: "my-MM", ms: "ms-MY", vi: "vi-VN", id: "id-ID", bn: "bn-IN", ja: "ja-JP",
+  ur: "ur-PK", fr: "fr-FR", ru: "ru-RU", sw: "sw-KE",
+};
 
 export async function POST(req: NextRequest) {
   const key = process.env.GOOGLE_TRANSLATE_API_KEY;

@@ -1,15 +1,36 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-export type Lang = "ko" | "en" | "th" | "lo";
+export type Lang =
+  | "ko" | "en" | "th" | "lo"
+  | "es" | "pt" | "zh" | "hi" | "ar" | "fa" | "my" | "ms"
+  | "vi" | "id" | "bn" | "ja" | "ur" | "fr" | "ru" | "sw";
+// 라벨은 "원어 (코드)" 형식 — 코드로 식별 가능하게.
 export const LANGS: { code: Lang; label: string }[] = [
-  { code: "ko", label: "한국어" },
-  { code: "en", label: "English" },
-  { code: "th", label: "ไทย" },
-  { code: "lo", label: "ລາວ" },
+  { code: "ko", label: "한국어 (ko)" },
+  { code: "en", label: "English (en)" },
+  { code: "th", label: "ไทย (th)" },
+  { code: "lo", label: "ລາວ (lo)" },
+  { code: "es", label: "Español (es)" },
+  { code: "pt", label: "Português (pt)" },
+  { code: "zh", label: "中文 (zh)" },
+  { code: "hi", label: "हिन्दी (hi)" },
+  { code: "ar", label: "العربية (ar)" },
+  { code: "fa", label: "فارسی (fa)" },
+  { code: "my", label: "မြန်မာ (my)" },
+  { code: "ms", label: "Bahasa Melayu (ms)" },
+  { code: "vi", label: "Tiếng Việt (vi)" },
+  { code: "id", label: "Bahasa Indonesia (id)" },
+  { code: "bn", label: "বাংলা (bn)" },
+  { code: "ja", label: "日本語 (ja)" },
+  { code: "ur", label: "اردو (ur)" },
+  { code: "fr", label: "Français (fr)" },
+  { code: "ru", label: "Русский (ru)" },
+  { code: "sw", label: "Kiswahili (sw)" },
 ];
 
-type Dict = Record<string, Record<Lang, string>>;
+// DICT 는 ko/en/th/lo 만 직접 번역. 그 외 언어는 영어로 폴백하고, 콘텐츠는 자동번역됨.
+type Dict = Record<string, Record<"ko" | "en" | "th" | "lo", string>>;
 
 // UI 문자열 사전 (콘텐츠가 아닌 화면 라벨). 콘텐츠(문제·교재)는 별도 단계.
 const DICT: Dict = {
@@ -237,11 +258,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("ko");
   useEffect(() => {
     const saved = (typeof localStorage !== "undefined" && localStorage.getItem("dabar_lang")) as Lang | null;
-    if (saved === "ko" || saved === "en" || saved === "th" || saved === "lo") setLangState(saved);
+    if (saved && LANGS.some(l => l.code === saved)) setLangState(saved);
   }, []);
   const setLang = (l: Lang) => { setLangState(l); try { localStorage.setItem("dabar_lang", l); } catch { /* ignore */ } };
   const t = (key: string, vars?: Record<string, string | number>) => {
-    let s = DICT[key]?.[lang] ?? DICT[key]?.ko ?? key;
+    const e = DICT[key] as Record<string, string> | undefined;
+    let s = e?.[lang] ?? e?.en ?? e?.ko ?? key; // ko/en/th/lo 외 언어는 영어로 폴백
     if (vars) for (const k of Object.keys(vars)) s = s.replace(`{${k}}`, String(vars[k]));
     return s;
   };
@@ -277,7 +299,7 @@ export function LangSelector() {
           {LANGS.map(l => {
             const on = l.code === lang;
             return (
-              <button key={l.code} role="option" aria-selected={on} onClick={() => { const changed = l.code !== lang; setLang(l.code); setOpen(false); if (changed) { setToast(DICT["common.langSwitched"]?.[l.code] ?? ""); setTimeout(() => setToast(null), 3500); } }}
+              <button key={l.code} role="option" aria-selected={on} onClick={() => { const changed = l.code !== lang; setLang(l.code); setOpen(false); if (changed) { const m = DICT["common.langSwitched"] as Record<string, string> | undefined; setToast(m?.[l.code] ?? m?.en ?? ""); setTimeout(() => setToast(null), 3500); } }}
                 style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", gap: 10, fontSize: 14, fontWeight: on ? 800 : 500, color: on ? "#1f9bef" : "#173249", background: on ? "rgba(31,155,239,0.10)" : "transparent", border: "none", borderRadius: 10, padding: "10px 12px", cursor: "pointer", textAlign: "left" }}>
                 {l.label}{on && <span>✓</span>}
               </button>
