@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       lang:
-        description: "언어 (lo=라오스어/LSV2015, en=영어/NIV, th=태국어/TSV, ko=한국어)"
+        description: "언어 코드 (각 언어 권위 성경 기준 생성)"
         type: choice
-        options: [lo, en, th, ko]
+        options: [lo, en, th, ko, es, pt, zh, hi, ar, fa, my, ms, vi, id, bn, ja, ur, fr, ru, sw]
         default: lo
       limit:
         description: "이번 실행 최대 생성 개수 (비우면 부족한 만큼 전부)"

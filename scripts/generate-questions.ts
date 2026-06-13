@@ -62,12 +62,33 @@ const BOOKS = Object.keys(BOOK_TARGET);
 const VALID_LEVELS = new Set(["easy", "medium", "hard"]);
 const VALID_CATS   = new Set(["인물", "사건", "말씀", "지명"]);
 
+// 언어별 권위 성경 (각 언어 표준/공인 역본 기준으로 생성하도록 프롬프트에 명시)
+const LANG_BIBLE: Record<string, { name: string; bible: string }> = {
+  es: { name: "Spanish", bible: "Reina-Valera 1960 (RVR1960)" },
+  pt: { name: "Portuguese", bible: "João Ferreira de Almeida (ARC)" },
+  zh: { name: "Chinese (Simplified)", bible: "Chinese Union Version 和合本 (CUV)" },
+  hi: { name: "Hindi", bible: "Hindi Bible (पवित्र बाइबिल)" },
+  ar: { name: "Arabic", bible: "Smith & Van Dyke (فان دايك)" },
+  fa: { name: "Persian (Farsi)", bible: "Persian Old Version (ترجمه قدیم)" },
+  my: { name: "Burmese", bible: "Judson Bible" },
+  ms: { name: "Malay", bible: "Alkitab Terjemahan Baru (TB)" },
+  vi: { name: "Vietnamese", bible: "Kinh Thánh Bản Truyền Thống (1934)" },
+  id: { name: "Indonesian", bible: "Alkitab Terjemahan Baru (TB)" },
+  bn: { name: "Bengali", bible: "Bengali Bible (BSI Common Language)" },
+  ja: { name: "Japanese", bible: "新改訳聖書 (Shinkaiyaku)" },
+  ur: { name: "Urdu", bible: "Urdu Geo Version" },
+  fr: { name: "French", bible: "Louis Segond 1910 (LSG)" },
+  ru: { name: "Russian", bible: "Синодальный перевод (Synodal)" },
+  sw: { name: "Swahili", bible: "Swahili Union Version (SUV)" },
+};
+const ALL_GEN_LANGS = ["ko", "en", "th", "lo", ...Object.keys(LANG_BIBLE)];
+
 function args() {
   const a = process.argv.slice(2);
   const get = (flag: string) => { const i = a.indexOf(flag); return i >= 0 ? a[i + 1] : undefined; };
   // 플래그(--lang) 또는 환경변수(GEN_LANG) 둘 다 지원 — 붙여넣을 때 "--"가 "—"로 바뀌는 문제 회피용
-  const lang = (get("--lang") || process.env.GEN_LANG || "ko") as "ko" | "en" | "th" | "lo";
-  if (!["ko", "en", "th", "lo"].includes(lang)) { console.error(`❌ 언어는 ko | en | th | lo 만 가능합니다. (--lang lo 또는 GEN_LANG=lo)`); process.exit(1); }
+  const lang = (get("--lang") || process.env.GEN_LANG || "ko") as string;
+  if (!ALL_GEN_LANGS.includes(lang)) { console.error(`❌ 지원 언어 코드가 아닙니다: ${lang}\n   가능: ${ALL_GEN_LANGS.join(", ")}`); process.exit(1); }
   const limitRaw = get("--limit") || process.env.GEN_LIMIT;
   return {
     plan: a.includes("--plan") || process.env.GEN_PLAN === "1",
@@ -114,7 +135,7 @@ async function fetchExisting(lang: string): Promise<{ book: string; question: st
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
-async function generateBatch(book: string, testament: string, n: number, avoidStems: string[], lang: "ko" | "en" | "th" | "lo"): Promise<any[]> {
+async function generateBatch(book: string, testament: string, n: number, avoidStems: string[], lang: string): Promise<any[]> {
   const easy = Math.max(1, Math.round(n * 0.35));
   const medium = Math.max(1, Math.round(n * 0.45));
   const hard = Math.max(0, n - easy - medium);
@@ -173,6 +194,25 @@ ${schema}
 - ຖືກຕ້ອງຕາມຫຼັກເທວະວິທະຍາ ອ້າງອີງສະບັບ ພຣະຄຳພີ ພາສາລາວ ສະບັບ 2015 (Lao Standard Version 2015)
 - easy: ເດັກ 7 ປີກໍຕອບໄດ້, hard: ລະດັບນັກສຶກສາເທວະວິທະຍາ
 - ຂຽນ "question", "options", "hint", "explanation" ເປັນພາສາລາວ${avoidBlock}`;
+  } else if (LANG_BIBLE[lang]) {
+    const { name, bible } = LANG_BIBLE[lang];
+    const avoidBlock = avoidStems.length
+      ? `\n\n[No duplicates] Create only NEW questions that do not overlap in meaning with these:\n${avoidStems.slice(0, 60).map(s => `- ${s}`).join("\n")}`
+      : "";
+    prompt = `You are a Bible expert. Create ${n} Bible quiz questions about the Bible book whose Korean name is "${book}".
+
+Respond ONLY as a JSON array. No markdown, no code block, no explanatory text — JSON only.
+
+${schema}
+
+Rules:
+- Keep "book" EXACTLY as "${book}" (Korean) and "category" as one of these EXACT codes: "인물" (person) | "사건" (event) | "말씀" (teaching/verse) | "지명" (place).
+- easy ${easy}, medium ${medium}, hard ${hard}
+- "answer" is the 0-based index of the correct option (0~3)
+- Theologically accurate and verified, based on the authoritative ${name} Bible: ${bible}
+- Use Bible names/terms exactly as they appear in that ${name} version
+- easy: solvable by a 7-year-old; hard: seminary level
+- Write "question", "options", "hint", "explanation" in natural, native ${name}${avoidBlock}`;
   } else {
     const avoidBlock = avoidStems.length
       ? `\n\n[중복 금지] 아래 질문들과 의미가 겹치지 않는 새로운 문제만 만드세요:\n${avoidStems.slice(0, 60).map(s => `- ${s}`).join("\n")}`
@@ -202,7 +242,7 @@ ${schema}
   return extractJsonArray(text);
 }
 
-async function fillBook(book: string, have: number, target: number, existingStems: string[], remainingBudget: number, lang: "ko" | "en" | "th" | "lo"): Promise<number> {
+async function fillBook(book: string, have: number, target: number, existingStems: string[], remainingBudget: number, lang: string): Promise<number> {
   const need = Math.min(target - have, remainingBudget);
   if (need <= 0) {
     console.log(`⏭️  ${book}: 이미 ${have}/${target}개 — 건너뜀`);
@@ -255,7 +295,8 @@ async function fillBook(book: string, have: number, target: number, existingStem
 
 async function main() {
   const { plan, book: onlyBook, limit, lang } = args();
-  console.log(`🌐 언어: ${lang.toUpperCase()}${lang === "en" ? " (NIV)" : lang === "th" ? " (TSV)" : lang === "lo" ? " (Lao Standard Version 2015)" : " (개역개정)"}\n`);
+  const label = lang === "en" ? " (NIV)" : lang === "th" ? " (TSV)" : lang === "lo" ? " (Lao Standard Version 2015)" : LANG_BIBLE[lang] ? ` (${LANG_BIBLE[lang].bible})` : " (개역개정)";
+  console.log(`🌐 언어: ${lang.toUpperCase()}${label}\n`);
 
   if (plan && onlyBook === undefined) {
     let totalTarget = 0;
