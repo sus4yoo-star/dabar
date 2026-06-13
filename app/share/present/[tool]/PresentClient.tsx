@@ -126,7 +126,7 @@ export default function PresentClient() {
         </div>
       ) : (
         <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", color: theme.textMuted }}>
-          <p>아직 이 언어의 콘텐츠가 없어요.</p>
+          <p>{ui(myLang, "noContent")}</p>
           <button onClick={reset} style={{ marginTop: 16, color: theme.gold, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>{ui(myLang, "home")}</button>
         </div>
       )}

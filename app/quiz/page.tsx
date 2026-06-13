@@ -70,6 +70,7 @@ function QuizInner() {
   const [lastGain, setLastGain] = useState(0);
   const [reported, setReported] = useState(false);
   const [retryMode, setRetryMode] = useState(false);
+  const [autoTranslated, setAutoTranslated] = useState(false); // 런타임 자동번역이 실제로 적용됐을 때만 배너 표시
   const pointsRef = useRef(0);
   const syncedRef = useRef(false);
   const { user } = useAuth();
@@ -109,6 +110,7 @@ function QuizInner() {
           const m = await translateMany(strings, lang, "quiz");
           const tr = (s?: string) => (s && m[s]) ? m[s] : (s ?? "");
           arr = arr.map(q => ({ ...q, question: tr(q.question), options: q.options.map(o => tr(o)), explanation: tr(q.explanation), hint: q.hint ? tr(q.hint) : q.hint }));
+          setAutoTranslated(true); // 실제 자동번역된 경우에만 배너 표시 (생성된 정식 문제는 표시 안 함)
         }
         const prepared = prepare(arr);
         if (complete) {
@@ -254,8 +256,8 @@ function QuizInner() {
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, fontWeight: 600, color: theme.textMuted, background: "none", border: "none", cursor: "pointer", padding: "2px 4px" }}>{t("cat.exit")}</button>
       </div>
-      {!!lang && !["ko", "en", "th"].includes(lang) && (
-        <p style={{ margin: "0 0 10px", fontSize: 11, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "5px 9px", textAlign: "center" }}>⚠ 자동 번역 (현지 검수 권장)</p>
+      {autoTranslated && (
+        <p style={{ margin: "0 0 10px", fontSize: 11, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "5px 9px", textAlign: "center" }}>{t("c.autoTrans")}</p>
       )}
       {/* 전체 진행바 */}
       <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>

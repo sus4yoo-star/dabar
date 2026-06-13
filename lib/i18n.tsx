@@ -62,6 +62,8 @@ const DICT: Dict = {
   "c.retry":    { ko: "다시 풀기 →", en: "Try again →", th: "ลองอีกครั้ง →", lo: "ລອງອີກຄັ້ງ →" },
   "c.answer":   { ko: "정답", en: "Answer", th: "คำตอบ", lo: "ຄຳຕອບ" },
   "c.me":       { ko: "(나)", en: "(me)", th: "(ฉัน)", lo: "(ຂ້ອຍ)" },
+  "c.autoTrans":   { ko: "⚠ 자동 번역 (현지 검수 권장)", en: "⚠ Auto-translated (review advised)", th: "⚠ แปลอัตโนมัติ (ควรตรวจทาน)", lo: "⚠ ແປອັດຕະໂນມັດ (ຄວນກວດທານ)" },
+  "c.autoTransing":{ ko: "⚠ 자동 번역 중…", en: "⚠ Translating…", th: "⚠ กำลังแปล…", lo: "⚠ ກຳລັງແປ…" },
 
   // 퀴즈
   "q.loading":  { ko: "문제를 불러오는 중...", en: "Loading questions...", th: "กำลังโหลดคำถาม...", lo: "ກຳລັງໂຫຼດຄຳຖາມ..." },
