@@ -83,8 +83,9 @@ export const CATEGORY_I18N: Record<string, Tri> = {
   "지명": { en: "Place", th: "สถานที่", lo: "ສະຖານທີ່" },
 };
 
+// ko 는 원문(한국어 키) 사용, th/lo 는 해당 언어, 그 외(es/pt/zh/…)는 영어 책 이름으로 폴백
 const STATIC = (lang: string): keyof Tri | null =>
-  lang === "en" ? "en" : lang === "th" ? "th" : lang === "lo" ? "lo" : null;
+  lang === "ko" ? null : lang === "th" ? "th" : lang === "lo" ? "lo" : "en";
 
 // 표시용 권 이름 (한국어 키 → 현재 언어). 매핑 없으면 원문 유지.
 export function bookLabel(koBook: string, lang: string): string {

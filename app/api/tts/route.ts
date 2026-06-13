@@ -14,6 +14,22 @@ const VOICE: Record<string, { voice: string; lang: string }> = {
   ko: { voice: "ko-KR-SunHiNeural", lang: "ko-KR" },
   en: { voice: "en-US-AriaNeural", lang: "en-US" },
   th: { voice: "th-TH-PremwadeeNeural", lang: "th-TH" },
+  es: { voice: "es-ES-ElviraNeural", lang: "es-ES" },
+  pt: { voice: "pt-BR-FranciscaNeural", lang: "pt-BR" },
+  zh: { voice: "zh-CN-XiaoxiaoNeural", lang: "zh-CN" },
+  hi: { voice: "hi-IN-SwaraNeural", lang: "hi-IN" },
+  ar: { voice: "ar-SA-ZariyahNeural", lang: "ar-SA" },
+  fa: { voice: "fa-IR-DilaraNeural", lang: "fa-IR" },
+  ms: { voice: "ms-MY-YasminNeural", lang: "ms-MY" },
+  vi: { voice: "vi-VN-HoaiMyNeural", lang: "vi-VN" },
+  id: { voice: "id-ID-GadisNeural", lang: "id-ID" },
+  bn: { voice: "bn-IN-TanishaaNeural", lang: "bn-IN" },
+  ja: { voice: "ja-JP-NanamiNeural", lang: "ja-JP" },
+  ur: { voice: "ur-PK-UzmaNeural", lang: "ur-PK" },
+  fr: { voice: "fr-FR-DeniseNeural", lang: "fr-FR" },
+  ru: { voice: "ru-RU-SvetlanaNeural", lang: "ru-RU" },
+  sw: { voice: "sw-KE-ZuriNeural", lang: "sw-KE" },
+  // ※ 미얀마어(my)는 Azure TTS 미지원 — 기기 음성 없으면 무음일 수 있음
 };
 
 const TRUSTED = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
