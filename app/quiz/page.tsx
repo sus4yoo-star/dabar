@@ -195,7 +195,13 @@ function QuizInner() {
     if (complete) {
       // 완주 모드: 문제별 정답/오답 기록 (로컬 + 로그인 시 DB 동기화)
       saveResult({ ...result, [questions[idx].id]: correct ? "o" : "x" });
-      if (user) upsertQuizProgress(user.id, questions[idx].id, correct);
+      if (user) {
+        const cq = questions[idx];
+        upsertQuizProgress(user.id, cq.id, correct);
+        // 오답노트(/history) 일원화: 틀리면 등록, 맞히면 제거 (중복 방지)
+        supabase.from("wrong_answers").delete().eq("user_id", user.id).eq("question_id", cq.id)
+          .then(() => { if (!correct) supabase.from("wrong_answers").insert({ user_id: user.id, question_id: cq.id, book: cq.book, category: cq.category, question: cq.question, correct_answer: cq.options[cq.answer] }).then(() => {}); });
+      }
     }
     if (correct) {
       const newStreak = streak + 1;

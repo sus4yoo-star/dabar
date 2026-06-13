@@ -87,7 +87,7 @@ function ChipGroup({ items, value, onChange }: { items: { value: string; label: 
       {items.map(item => {
         const on = value === item.value;
         return (
-          <button key={item.value} onClick={() => onChange(item.value)} style={{ flex: 1, padding: "15px 4px", borderRadius: 13, fontSize: 16, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 800 : 600 }}>{item.label}</button>
+          <button key={item.value} onClick={() => onChange(item.value)} style={{ flex: 1, minWidth: 0, padding: "13px 6px", borderRadius: 13, fontSize: 15, lineHeight: 1.25, whiteSpace: "normal", wordBreak: "keep-all", cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 800 : 600 }}>{item.label}</button>
         );
       })}
     </div>

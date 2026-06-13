@@ -160,6 +160,7 @@ export default function ResultPage() {
         <button onClick={() => router.push("/")} style={{ flex: 1, padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>{t("r.home")}</button>
         <button onClick={() => { sessionStorage.removeItem("quizResult"); sessionStorage.removeItem("quizResultSaved"); router.back(); }} style={{ flex: 1, padding: 14, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{t("r.again")}</button>
       </div>
+      <button onClick={() => router.push("/play")} style={{ width: "100%", marginTop: 14, padding: "12px 14px", fontSize: 13.5, fontWeight: 700, background: theme.primaryBg, color: theme.primarySoft, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, cursor: "pointer", lineHeight: 1.4 }}>{t("r.tryComplete")}</button>
       <p style={{ textAlign: "center", fontSize: 11, color: theme.textFaint, marginTop: "2rem", letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
     </main>
   );

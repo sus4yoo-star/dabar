@@ -193,7 +193,7 @@ export default function VoiceTranslator() {
         <span style={{ fontSize: 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)}{busy === side ? " · 번역 중…" : ""}</span>
         <div style={{ display: "flex", gap: 6 }}>
           {/* 마이크 (크게, 가변폭) */}
-          <button onClick={() => micFor(code)} disabled={!micAvailable} aria-label="말하기"
+          <button onClick={() => micFor(code)} disabled={!micAvailable} aria-label={ui(myLang, "micSpeak")}
             style={{ flex: 1, minWidth: 0, height: 54, borderRadius: 14, border: "none", cursor: micAvailable ? "pointer" : "default",
               background: on ? "#e25555" : bgSoft, color: on ? "#fff" : accent, fontSize: 24, fontWeight: 800,
               display: "grid", placeItems: "center", boxShadow: on ? "0 0 0 6px rgba(226,85,85,0.15)" : "none",
@@ -201,7 +201,7 @@ export default function VoiceTranslator() {
             {on ? "■" : "🎤"}
           </button>
           {/* 재생 (크게) */}
-          <button onClick={() => has && speak(value, code)} disabled={!has} aria-label="듣기"
+          <button onClick={() => has && speak(value, code)} disabled={!has} aria-label={ui(myLang, "micListen")}
             style={{ width: 54, height: 54, flexShrink: 0, borderRadius: 14, border: `1px solid ${has ? "transparent" : border}`, cursor: has ? "pointer" : "default",
               background: has ? bgSoft : theme.card, color: has ? accent : theme.textFaint, fontSize: 22,
               display: "grid", placeItems: "center" }}>
@@ -236,7 +236,7 @@ export default function VoiceTranslator() {
           <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: "#ffffff", padding: "10px 16px 14px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "48dvh", overflowY: "auto" }}>
             <div style={{ marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 16, fontWeight: 700, color: theme.text, margin: 0 }}>🎤 {ui(myLang, "voice")}</h2>
-              <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>닫기 ✕</button>
+              <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>{ui(myLang, "close")} ✕</button>
             </div>
 
             {/* 언어별: [ 큰 마이크 | 큰 재생 ] + 원문·번역 (직접 입력도 가능) */}

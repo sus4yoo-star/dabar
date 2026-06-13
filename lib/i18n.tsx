@@ -20,6 +20,8 @@ const DICT: Dict = {
   "common.logout":    { ko: "로그아웃", en: "Logout", th: "ออกจากระบบ", lo: "ອອກຈາກລະບົບ" },
   "common.save":      { ko: "저장", en: "Save", th: "บันทึก", lo: "ບັນທຶກ" },
   "common.home":      { ko: "← 홈", en: "← Home", th: "← หน้าแรก", lo: "← ໜ້າຫຼັກ" },
+  "common.nickFail":  { ko: "닉네임을 바꾸지 못했어요.", en: "Couldn't change nickname.", th: "เปลี่ยนชื่อเล่นไม่สำเร็จ", lo: "ປ່ຽນຊື່ຫຼິ້ນບໍ່ສຳເລັດ" },
+  "common.langSwitched": { ko: "이 언어로 화면·콘텐츠·음성이 표시돼요", en: "Screen, content & audio are now in this language", th: "หน้าจอ เนื้อหา และเสียงจะเป็นภาษานี้", lo: "ໜ້າຈໍ ເນື້ອຫາ ແລະ ສຽງຈະເປັນພາສານີ້" },
 
   "home.tagline":     { ko: "다바르 · 말씀 — 무엇부터 시작할까요?", en: "DABAR · The Word — where to begin?", th: "ดาบาร์ · พระวจนะ — เริ่มจากตรงไหนดี?", lo: "ດາບາ · ພຣະທຳ — ເລີ່ມຈາກໃສດີ?" },
   "home.greeting":    { ko: "{name}님, 오늘도 말씀과 함께해요 👋", en: "{name}, walk with the Word today 👋", th: "{name} วันนี้มาเดินกับพระวจนะกัน 👋", lo: "{name} ມື້ນີ້ມາຍ່າງກັບພຣະທຳນຳກັນ 👋" },
@@ -52,6 +54,7 @@ const DICT: Dict = {
   "login.google":     { ko: "구글(Gmail)로 시작하기", en: "Continue with Google", th: "ดำเนินการต่อด้วย Google", lo: "ດຳເນີນຕໍ່ດ້ວຍ Google" },
   "login.redirecting":{ ko: "이동 중...", en: "Redirecting...", th: "กำลังนำทาง...", lo: "ກຳລັງນຳທາງ..." },
   "login.free":       { ko: "가입은 무료예요. 카카오·구글 계정으로 3초 만에 시작할 수 있어요.", en: "Free to join — start in 3 seconds with Kakao or Google.", th: "สมัครฟรี เริ่มได้ใน 3 วินาทีด้วย Kakao หรือ Google", lo: "ສະໝັກຟຣີ ເລີ່ມໄດ້ໃນ 3 ວິນາທີດ້ວຍ Kakao ຫຼື Google" },
+  "login.fail":       { ko: "로그인을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.", en: "Couldn't start login. Please try again shortly.", th: "เริ่มเข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", lo: "ເລີ່ມເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່" },
   // 로그인 화면 말씀 (시편 119:105 · NIV / Thai / Lao)
   "login.verse":      { ko: "주의 말씀은 내 발에 등이요 내 길에 빛이니이다", en: "Your word is a lamp for my feet, a light on my path.", th: "พระวจนะของพระองค์เป็นโคมสำหรับเท้าของข้าพระองค์ และเป็นความสว่างแก่ทางของข้าพระองค์", lo: "ພຣະທຳຂອງພຣະອົງເປັນໂຄມສຳລັບຕີນຂອງຂ້ານ້ອຍ ແລະ ເປັນແສງສະຫວ່າງແກ່ທາງຂອງຂ້ານ້ອຍ" },
   "login.verseRef":   { ko: "시편 119:105", en: "Psalm 119:105 (NIV)", th: "สดุดี 119:105", lo: "ເພງສັນລະເສີນ 119:105" },
@@ -106,6 +109,7 @@ const DICT: Dict = {
   "r.myNotes":  { ko: "📒 내 오답노트", en: "📒 My notes", th: "📒 สมุดของฉัน", lo: "📒 ປຶ້ມຂອງຂ້ອຍ" },
   "r.home":     { ko: "홈으로", en: "Home", th: "หน้าแรก", lo: "ໜ້າຫຼັກ" },
   "r.again":    { ko: "다시 도전 →", en: "Play again →", th: "เล่นอีก →", lo: "ຫຼິ້ນອີກ →" },
+  "r.tryComplete": { ko: "📚 신학생·목회자라면 ‘빠짐없이 풀기’로 전 문제 완주", en: "📚 Students & pastors — complete every question", th: "📚 นักศึกษา·ศิษยาภิบาล — ทำครบทุกข้อ", lo: "📚 ນັກສຶກສາ·ສິດຍາພິບານ — ເຮັດຄົບທຸກຂໍ້" },
 
   // 랭킹
   "rk.title":   { ko: "🏆 랭킹", en: "🏆 Ranking", th: "🏆 อันดับ", lo: "🏆 ອັນດັບ" },
@@ -250,6 +254,7 @@ export const useI18n = () => useContext(I18nCtx);
 export function LangSelector() {
   const { lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -272,12 +277,17 @@ export function LangSelector() {
           {LANGS.map(l => {
             const on = l.code === lang;
             return (
-              <button key={l.code} role="option" aria-selected={on} onClick={() => { setLang(l.code); setOpen(false); }}
+              <button key={l.code} role="option" aria-selected={on} onClick={() => { const changed = l.code !== lang; setLang(l.code); setOpen(false); if (changed) { setToast(DICT["common.langSwitched"]?.[l.code] ?? ""); setTimeout(() => setToast(null), 3500); } }}
                 style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", gap: 10, fontSize: 14, fontWeight: on ? 800 : 500, color: on ? "#1f9bef" : "#173249", background: on ? "rgba(31,155,239,0.10)" : "transparent", border: "none", borderRadius: 10, padding: "10px 12px", cursor: "pointer", textAlign: "left" }}>
                 {l.label}{on && <span>✓</span>}
               </button>
             );
           })}
+        </div>
+      )}
+      {toast && (
+        <div style={{ position: "fixed", left: "50%", bottom: 24, transform: "translateX(-50%)", zIndex: 100, background: "#173249", color: "#fff", fontSize: 13, fontWeight: 600, padding: "10px 16px", borderRadius: 12, boxShadow: "0 8px 24px rgba(0,0,0,0.25)", maxWidth: "86vw", textAlign: "center", lineHeight: 1.4 }}>
+          🌐 {toast}
         </div>
       )}
     </div>
