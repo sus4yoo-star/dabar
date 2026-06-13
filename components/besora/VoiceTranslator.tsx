@@ -22,7 +22,7 @@ const LOCALE: Record<string, string> = {
 };
 
 export default function VoiceTranslator() {
-  const { myLang, seekerLang, languages } = useLang();
+  const { myLang, seekerLang, languages, rtlFor } = useLang();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -190,8 +190,9 @@ export default function VoiceTranslator() {
                 side: "L" | "R", accent: string, bgSoft: string, border: string) => {
     const on = listening === code;
     const has = !!value.trim();
+    const dir = rtlFor(code) ? "rtl" : "ltr";
     return (
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
+      <div dir={dir} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
         <span style={{ fontSize: 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)}{busy === side ? " · 번역 중…" : ""}</span>
         <div style={{ display: "flex", gap: 6 }}>
           {/* 마이크 (크게, 가변폭) */}

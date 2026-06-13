@@ -9,11 +9,13 @@ import { ui } from "@/lib/besora/i18n";
 import { fetchUnreadTotal } from "@/lib/besora/companions";
 
 export default function AppShell({ children }: { children: ReactNode }) {
-  const { myLang } = useLang();
+  const { myLang, rtlFor } = useLang();
   const [unread, setUnread] = useState(0);
   useEffect(() => { fetchUnreadTotal().then(setUnread).catch(() => {}); }, []);
+  // 전도자(내) 언어가 RTL(아랍어·페르시아어·우르두어)이면 전도 도구 UI 전체를 오른쪽→왼쪽으로.
+  // (콘텐츠 카드는 상대 언어 기준으로 StepView 가 따로 방향을 잡는다.)
   return (
-    <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+    <div dir={rtlFor(myLang) ? "rtl" : "ltr"} style={{ maxWidth: 480, margin: "0 auto", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <header
         style={{
           position: "sticky", top: 0, zIndex: 40,
@@ -36,7 +38,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             style={{ position: "relative", display: "flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "6px 12px", textDecoration: "none", whiteSpace: "nowrap" }}>
             🤝 {ui(myLang, "companionsNav")}
             {unread > 0 && (
-              <span style={{ position: "absolute", top: -5, right: -5, minWidth: 17, height: 17, padding: "0 5px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 10, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{unread > 99 ? "99+" : unread}</span>
+              <span style={{ position: "absolute", top: -5, insetInlineEnd: -5, minWidth: 17, height: 17, padding: "0 5px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 10, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{unread > 99 ? "99+" : unread}</span>
             )}
           </Link>
           <LanguageToggle />
