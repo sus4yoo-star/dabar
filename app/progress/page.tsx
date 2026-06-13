@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { ALL_BOOKS } from "@/lib/bible";
 import { fetchQuizProgress } from "@/lib/quizProgress";
+import { bookLabel } from "@/lib/bookNames";
 
 type Stat = { a: number; o: number; t: number };
 
@@ -90,7 +91,7 @@ export default function ProgressPage() {
               return (
                 <div key={book} style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "10px 13px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 5 }}>
-                    <span style={{ fontWeight: 700, color: theme.text }}>{book}</span>
+                    <span style={{ fontWeight: 700, color: theme.text }}>{bookLabel(book, lang)}</span>
                     <span style={{ color: p === 100 ? theme.correct : theme.textMuted, fontWeight: 700 }}>{s.a}/{s.t}{p === 100 ? " ✓" : ""}</span>
                   </div>
                   <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, overflow: "hidden" }}>
