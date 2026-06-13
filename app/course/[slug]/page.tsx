@@ -58,7 +58,7 @@ export default function CoursePage() {
         <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{course.subtitle}</p>
         {auto && (
           <p style={{ marginTop: 8, fontSize: 11.5, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "6px 10px", display: "inline-block" }}>
-            ⚠ {loading ? "자동 번역 중…" : "자동 번역 (현지 검수 권장)"}
+            {loading ? t("c.autoTransing") : t("c.autoTrans")}
           </p>
         )}
       </div>
