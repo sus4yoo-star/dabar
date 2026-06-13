@@ -25,7 +25,7 @@ export default function LoginPage() {
       await signIn(provider); // 카카오/구글 동의 화면으로 이동
     } catch (e) {
       setBusy(null);
-      alert("로그인을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.");
+      alert(t("login.fail"));
     }
   }
 

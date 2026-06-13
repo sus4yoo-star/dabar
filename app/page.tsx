@@ -68,7 +68,7 @@ export default function Home() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, margin: "0 0 8px" }}>
               <input value={nickDraft} onChange={e => setNickDraft(e.target.value)} maxLength={20} autoFocus
                 style={{ width: 150, fontSize: 14, padding: "6px 10px", borderRadius: 14, border: `1px solid ${theme.gold}`, background: theme.card, color: theme.text, outline: "none" }} />
-              <button onClick={async () => { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else alert("닉네임을 바꾸지 못했어요."); }}
+              <button onClick={async () => { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else alert(t("common.nickFail")); }}
                 style={{ fontSize: 12, fontWeight: 700, color: "#08263a", background: theme.gold, border: "none", borderRadius: 14, padding: "6px 12px", cursor: "pointer" }}>{t("common.save")}</button>
               <button onClick={() => setEditingNick(false)} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>✕</button>
             </div>
