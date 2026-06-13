@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { useI18n } from "@/lib/i18n";
 import { translateMany } from "@/lib/autoTranslate";
 import { fetchQuizProgress, upsertQuizProgress, clearQuizProgress } from "@/lib/quizProgress";
+import { bookLabel, categoryLabel } from "@/lib/bookNames";
 
 const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: theme.gold, hard: theme.wrong };
 
@@ -26,7 +27,7 @@ function Center({ children }: { children: React.ReactNode }) {
 }
 
 // 권별 완주 진도율 (예: 창세기 80/100)
-function BookProgressList({ allQ, result }: { allQ: Question[]; result: Record<string, "o" | "x"> }) {
+function BookProgressList({ allQ, result, lang }: { allQ: Question[]; result: Record<string, "o" | "x">; lang: string }) {
   const byBook = new Map<string, { a: number; t: number }>();
   allQ.forEach(q => { const b = byBook.get(q.book) ?? { a: 0, t: 0 }; b.t++; if (result[q.id]) b.a++; byBook.set(q.book, b); });
   return (
@@ -36,7 +37,7 @@ function BookProgressList({ allQ, result }: { allQ: Question[]; result: Record<s
         return (
           <div key={book} style={{ margin: "7px 0" }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: theme.text, marginBottom: 3 }}>
-              <span style={{ fontWeight: 600 }}>{book}</span>
+              <span style={{ fontWeight: 600 }}>{bookLabel(book, lang)}</span>
               <span style={{ color: pct === 100 ? theme.correct : theme.textMuted, fontWeight: 700 }}>{s.a}/{s.t}{pct === 100 ? " ✓" : ""}</span>
             </div>
             <div style={{ height: 5, background: "rgba(13,52,84,0.12)", borderRadius: 3, overflow: "hidden" }}>
@@ -245,7 +246,7 @@ function QuizInner() {
         <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 18px" }}>{t("q.studyScore", { o: oCount, x: xCount, t: allQ.length })}</p>
         {xCount > 0 && <button onClick={startWrong} style={btn(theme.wrongBg, theme.wrong, `1px solid ${theme.wrong}`)}>{t("q.retryWrong", { n: xCount })}</button>}
         <p style={{ fontSize: 12, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "16px 0 8px" }}>{t("q.bookProg")}</p>
-        <BookProgressList allQ={allQ} result={result} />
+        <BookProgressList allQ={allQ} result={result} lang={lang} />
         <div style={{ height: 14 }} />
         <button onClick={restartComplete} style={btn(theme.primary, "#fff", "none")}>{t("q.restart")}</button>
         <button onClick={() => router.push("/")} style={btn("transparent", theme.text, `1px solid ${theme.border}`)}>{t("r.home")}</button>
@@ -290,7 +291,7 @@ function QuizInner() {
       {complete && showProgress && (
         <div style={{ marginBottom: 14 }}>
           <p style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "0 0 6px 2px" }}>{t("q.bookProg")}</p>
-          <BookProgressList allQ={allQ} result={result} />
+          <BookProgressList allQ={allQ} result={result} lang={lang} />
         </div>
       )}
       {!complete && (
@@ -299,7 +300,7 @@ function QuizInner() {
         </div>
       )}
       <div key={idx} className="fade-in">
-        <p style={{ fontSize: 12, color: theme.gold, fontWeight: 700, margin: "0 0 8px", letterSpacing: 0.5 }}>{q.book} · {q.category}</p>
+        <p style={{ fontSize: 12, color: theme.gold, fontWeight: 700, margin: "0 0 8px", letterSpacing: 0.5 }}>{bookLabel(q.book, lang)} · {categoryLabel(q.category, lang)}</p>
         <p style={{ fontSize: 19, fontWeight: 600, lineHeight: 1.65, color: theme.text, marginBottom: "1.5rem" }}>{q.question}</p>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: "1.25rem" }}>

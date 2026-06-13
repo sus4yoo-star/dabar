@@ -6,11 +6,12 @@ import { theme } from "@/lib/theme";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
+import { bookLabel, categoryLabel } from "@/lib/bookNames";
 import { WrongAnswer } from "@/lib/types";
 
 export default function HistoryPage() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { user, loading } = useAuth();
   const [rows, setRows] = useState<WrongAnswer[] | null>(null);
   const [error, setError] = useState(false);
@@ -59,7 +60,7 @@ export default function HistoryPage() {
             <p style={{ fontSize: 13, color: theme.text, margin: "0 0 6px", fontWeight: 700 }}>{t("h.total", { n: rows.length })}</p>
             {topBooks.length > 0 && (
               <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>
-                {t("h.topBooks", { b: topBooks.map(([b, n]) => `${b}(${n})`).join(" · ") })}
+                {t("h.topBooks", { b: topBooks.map(([b, n]) => `${bookLabel(b, lang)}(${n})`).join(" · ") })}
               </p>
             )}
           </div>
@@ -82,7 +83,7 @@ export default function HistoryPage() {
           {rows.map(r => (
             <div key={r.id} style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderLeft: `3px solid ${theme.wrong}`, borderRadius: 12, padding: "13px 15px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                <span style={{ fontSize: 12, color: theme.gold, fontWeight: 700 }}>{r.book ?? ""}{r.category ? ` · ${r.category}` : ""}</span>
+                <span style={{ fontSize: 12, color: theme.gold, fontWeight: 700 }}>{r.book ? bookLabel(r.book, lang) : ""}{r.category ? ` · ${categoryLabel(r.category, lang)}` : ""}</span>
                 <span style={{ fontSize: 11, color: theme.textFaint }}>{new Date(r.created_at).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })}</span>
               </div>
               <p style={{ fontSize: 14, color: theme.text, margin: "0 0 7px", lineHeight: 1.55 }}>{r.question}</p>
