@@ -128,6 +128,17 @@ export default function Home() {
         <span style={{ fontSize: 18, color: theme.textMuted }}>→</span>
       </button>
 
+      {/* 성경 읽기 — 권/장/절 목차로 빠르게 찾아 읽기 */}
+      <button onClick={() => router.push("/read")} className="fade-in-2"
+        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "16px 18px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, marginBottom: "1.25rem" }}>
+        <span style={{ fontSize: 28, lineHeight: 1 }}>📕</span>
+        <span style={{ flex: 1 }}>
+          <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.text }}>{t("home.readTitle")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>{t("home.readSub")}</span>
+        </span>
+        <span style={{ fontSize: 18, color: theme.textMuted }}>→</span>
+      </button>
+
       {isAdmin && <button onClick={() => router.push("/admin")} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: theme.goldLight, color: theme.gold, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer", marginBottom: 10 }}>{t("home.admin")}</button>}
       <button onClick={() => router.push("/guide")} style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700, background: "transparent", color: theme.textMuted, border: `1px solid ${theme.border}`, borderRadius: 12, cursor: "pointer", marginBottom: 10 }}>{t("home.guide")}</button>
       {user && (
