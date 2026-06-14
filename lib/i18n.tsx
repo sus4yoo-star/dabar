@@ -252,6 +252,19 @@ const DICT: Dict = {
   "prog.login":   { ko: "로그인하면 권별 완주 진도를 볼 수 있어요.", en: "Log in to see your progress by book.", th: "เข้าสู่ระบบเพื่อดูความคืบหน้าตามเล่ม", lo: "ເຂົ້າສູ່ລະບົບເພື່ອເບິ່ງຄວາມຄືບໜ້າຕາມຫົວ" },
   "prog.overall": { ko: "전체 {a} / {t} ({p}%)", en: "Total {a} / {t} ({p}%)", th: "ทั้งหมด {a} / {t} ({p}%)", lo: "ທັງໝົດ {a} / {t} ({p}%)" },
   "prog.empty":   { ko: "아직 푼 문제가 없어요. ‘빠짐없이 풀기’로 시작해 보세요!", en: "No questions answered yet. Try Complete mode!", th: "ยังไม่ได้ทำข้อใด ลองโหมดทำครบทุกข้อ!", lo: "ຍັງບໍ່ໄດ້ເຮັດຂໍ້ໃດ ລອງໂໝດເຮັດຄົບທຸກຂໍ້!" },
+  "home.readTitle": { ko: "성경 읽기", en: "Read the Bible", th: "อ่านพระคัมภีร์", lo: "ອ່ານພະຄຳພີ" },
+  "home.readSub":   { ko: "권·장·절로 빠르게 찾아 읽기", en: "Find by book, chapter & verse", th: "ค้นตามเล่ม บท และข้อ", lo: "ຄົ້ນຕາມຫົວ ບົດ ແລະຂໍ້" },
+  "read.title":     { ko: "성경 읽기", en: "Read the Bible", th: "อ่านพระคัมภีร์", lo: "ອ່ານພະຄຳພີ" },
+  "read.toc":       { ko: "목차", en: "Contents", th: "สารบัญ", lo: "ສາລະບານ" },
+  "read.search":    { ko: "권 이름 검색 (창세기 / John / 시)", en: "Search book (Genesis / 창세기 / 시)", th: "ค้นชื่อเล่ม", lo: "ຄົ້ນຊື່ຫົວ" },
+  "read.chapter":   { ko: "장", en: "Ch.", th: "บท", lo: "ບົດ" },
+  "read.verse":     { ko: "절", en: "v.", th: "ข้อ", lo: "ຂໍ້" },
+  "read.open":      { ko: "읽기 →", en: "Read →", th: "อ่าน →", lo: "ອ່ານ →" },
+  "read.prevCh":    { ko: "← 이전 장", en: "← Prev", th: "← ก่อนหน้า", lo: "← ກ່ອນໜ້າ" },
+  "read.nextCh":    { ko: "다음 장 →", en: "Next →", th: "ถัดไป →", lo: "ຕໍ່ໄປ →" },
+  "read.noText":    { ko: "본문 준비 중이에요", en: "Text coming soon", th: "เนื้อหากำลังจัดเตรียม", lo: "ເນື້ອໃນກຳລັງກະກຽມ" },
+  "read.noTextSub": { ko: "개역개정 라이선스 본문을 넣으면 여기에서 바로 읽을 수 있어요.", en: "Add the licensed text and it will appear here.", th: "เพิ่มเนื้อหาที่มีลิขสิทธิ์แล้วจะแสดงที่นี่", lo: "ເພີ່ມເນື້ອໃນທີ່ມີລິຂະສິດແລ້ວຈະສະແດງທີ່ນີ້" },
+  "read.pickVerseHint": { ko: "본문이 들어오면 절도 고를 수 있어요", en: "Verses selectable once text is loaded", th: "เลือกข้อได้เมื่อมีเนื้อหา", lo: "ເລືອກຂໍ້ໄດ້ເມື່ອມີເນື້ອໃນ" },
 };
 
 interface I18n { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; }
