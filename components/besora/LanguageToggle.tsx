@@ -41,7 +41,7 @@ export default function LanguageToggle() {
               onClick={() => { open === "my" ? setMyLang(l.code) : setSeekerLang(l.code); setOpen(null); }}
               style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", borderRadius: 12, padding: "8px 12px", textAlign: "left", fontSize: 14, color: theme.text, background: "transparent", border: "none", cursor: "pointer" }}
             >
-              <span>{l.name_native}</span>
+              <span>{l.name_native} ({l.code})</span>
               <span style={{ fontSize: 11, color: theme.textMuted }}>{l.name_en}</span>
             </button>
           ))}
