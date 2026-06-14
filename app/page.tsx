@@ -48,8 +48,8 @@ export default function Home() {
             {t("common.companions")}
             {unread > 0 && <span style={{ position: "absolute", top: -5, right: -5, minWidth: 16, height: 16, padding: "0 4px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 9.5, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{unread > 99 ? "99+" : unread}</span>}
           </button>
+          <button onClick={() => router.push("/groups")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 18, padding: "6px 9px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.groups")}</button>
           <button onClick={() => router.push("/ranking")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 18, padding: "6px 9px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.ranking")}</button>
-          {user && <button onClick={() => router.push("/history")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 18, padding: "6px 9px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.wrongnote")}</button>}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
           <LangSelector />

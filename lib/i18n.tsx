@@ -36,6 +36,7 @@ type Dict = Record<string, Record<"ko" | "en" | "th" | "lo", string>>;
 const DICT: Dict = {
   "common.ranking":   { ko: "🏆 랭킹", en: "🏆 Ranking", th: "🏆 อันดับ", lo: "🏆 ອັນດັບ" },
   "common.companions": { ko: "🤝 동행", en: "🤝 Companions", th: "🤝 เพื่อนร่วมทาง", lo: "🤝 ເພື່ອນຮ່ວມທາງ" },
+  "common.groups":    { ko: "👥 소그룹", en: "👥 Groups", th: "👥 กลุ่ม", lo: "👥 ກຸ່ມ" },
   "common.wrongnote": { ko: "📒 오답", en: "📒 Notes", th: "📒 ข้อผิด", lo: "📒 ຂໍ້ຜິດ" },
   "common.login":     { ko: "로그인", en: "Login", th: "เข้าสู่ระบบ", lo: "ເຂົ້າສູ່ລະບົບ" },
   "common.logout":    { ko: "로그아웃", en: "Logout", th: "ออกจากระบบ", lo: "ອອກຈາກລະບົບ" },
@@ -282,9 +283,9 @@ const DICT: Dict = {
   "read.parallelHint": { ko: "데이터가 들어온 언어끼리 절 단위로 나란히 표시돼요. (개역개정 본문은 허가 후)", en: "Languages with text appear verse by verse. (Korean text after licensing)", th: "ภาษาที่มีเนื้อหาจะแสดงทีละข้อ (ภาษาเกาหลีหลังได้รับอนุญาต)", lo: "ພາສາທີ່ມີເນື້ອໃນຈະສະແດງເທື່ອລະຂໍ້ (ພາສາເກົາຫຼີຫຼັງໄດ້ຮັບອະນຸຍາດ)" },
 
   // 나눔 모임 (오프라인)
-  "home.groupsTitle": { ko: "나눔 모임", en: "Sharing Groups", th: "กลุ่มแบ่งปัน", lo: "ກຸ່ມແບ່ງປັນ" },
+  "home.groupsTitle": { ko: "소그룹 모임", en: "Small Groups", th: "กลุ่มย่อย", lo: "ກຸ່ມຍ່ອຍ" },
   "home.groupsSub":   { ko: "오프라인에서 만나 함께 나누고 전도해요", en: "Meet in person to share & evangelize", th: "พบกันจริงเพื่อแบ่งปันและประกาศ", lo: "ພົບກັນຈິງເພື່ອແບ່ງປັນ ແລະ ປະກາດ" },
-  "grp.title":     { ko: "나눔 모임", en: "Sharing Groups", th: "กลุ่มแบ่งปัน", lo: "ກຸ່ມແບ່ງປັນ" },
+  "grp.title":     { ko: "소그룹 모임", en: "Small Groups", th: "กลุ่มย่อย", lo: "ກຸ່ມຍ່ອຍ" },
   "grp.create":    { ko: "＋ 모임 만들기", en: "＋ New group", th: "＋ สร้างกลุ่ม", lo: "＋ ສ້າງກຸ່ມ" },
   "grp.mine":      { ko: "내 모임", en: "My groups", th: "กลุ่มของฉัน", lo: "ກຸ່ມຂອງຂ້ອຍ" },
   "grp.public":    { ko: "공개 모임", en: "Open groups", th: "กลุ่มเปิด", lo: "ກຸ່ມເປີດ" },
