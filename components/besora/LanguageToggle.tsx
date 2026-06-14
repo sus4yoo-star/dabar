@@ -31,7 +31,7 @@ export default function LanguageToggle() {
       </div>
 
       {open && (
-        <div style={{ position: "absolute", right: 0, zIndex: 50, marginTop: 8, maxHeight: 288, width: 224, overflow: "auto", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: "#ffffff", padding: 8, boxShadow: "0 16px 40px rgba(23,50,73,0.18)" }}>
+        <div style={{ position: "absolute", right: 0, zIndex: 50, marginTop: 8, maxHeight: 220, width: 224, overflow: "auto", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: "#ffffff", padding: 8, boxShadow: "0 16px 40px rgba(23,50,73,0.18)" }}>
           <p style={{ padding: "4px 8px", fontSize: 11, color: theme.textMuted, margin: 0 }}>
             {open === "my" ? ui(myLang, "myLanguage") : ui(myLang, "seekerLanguage")}
           </p>
