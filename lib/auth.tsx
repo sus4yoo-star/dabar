@@ -48,9 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // 아바타/공급자만 갱신한다. (사용자가 바꾼 닉네임을 덮어쓰지 않도록)
   const ensureProfile = useCallback(async (u: User) => {
     const provider = u.app_metadata?.provider ?? null;
-    // is_leader 컬럼이 아직 없는 환경(SQL 미적용)에서도 깨지지 않게 폴백
+    // is_admin/is_leader 컬럼이 없는 환경에서도 프로필 로드가 통째로 깨지지 않게 단계적 폴백
     let res = await supabase.from("profiles").select("nickname, is_admin, is_leader").eq("id", u.id).maybeSingle();
     if (res.error) res = await supabase.from("profiles").select("nickname, is_admin").eq("id", u.id).maybeSingle();
+    if (res.error) res = await supabase.from("profiles").select("nickname").eq("id", u.id).maybeSingle();
     const data = res.data as { nickname?: string; is_admin?: boolean; is_leader?: boolean } | null;
     if (data) {
       setNickname(data.nickname || pickNickname(u));
