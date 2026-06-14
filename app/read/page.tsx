@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 import { BOOK_BY_CODE, BookMeta, adjacentBook, groupedBooks, searchBooks } from "@/lib/bibleData";
-import { BIBLE_VERSION_LABEL, BookText, loadBook } from "@/lib/bibleText";
+import { BIBLE_VERSION_LABEL, BookText, SECONDARY_VERSIONS, loadBook } from "@/lib/bibleText";
 
 export default function ReadPage() {
   const router = useRouter();
@@ -15,17 +15,30 @@ export default function ReadPage() {
   const [pickerOpen, setPickerOpen] = useState(true); // 처음 들어오면 목차부터
   const [book, setBook] = useState<BookText | null>(null);
   const [loading, setLoading] = useState(true);
+  // 장 전체 병렬(두 언어) — 개역개정 + 상대 언어. 데이터(JSON) 적재 시 활성화.
+  const [parallel, setParallel] = useState(false);
+  const [secondVer, setSecondVer] = useState<string | null>(null);
+  const [book2, setBook2] = useState<BookText | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
 
   const meta = BOOK_BY_CODE[code];
+  const sv = SECONDARY_VERSIONS.find(v => v.id === secondVer) ?? null;
 
-  // 현재 권 본문 로드
+  // 현재 권 본문 로드 (1열: 개역개정)
   useEffect(() => {
     let alive = true;
     setLoading(true);
     loadBook(code).then(b => { if (alive) { setBook(b); setLoading(false); } });
     return () => { alive = false; };
   }, [code]);
+
+  // 2열(상대 언어) 본문 로드
+  useEffect(() => {
+    if (!parallel || !secondVer) { setBook2(null); return; }
+    let alive = true;
+    loadBook(code, secondVer).then(b => { if (alive) setBook2(b); });
+    return () => { alive = false; };
+  }, [code, parallel, secondVer]);
 
   // 장 바뀌면 위로, 특정 절 타깃이면 스크롤
   useEffect(() => {
@@ -53,6 +66,7 @@ export default function ReadPage() {
   }
 
   const verses = book?.chapters?.[chapter - 1] ?? null;
+  const verses2 = book2?.chapters?.[chapter - 1] ?? null;
 
   return (
     <main style={{ maxWidth: 560, margin: "0 auto", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
@@ -79,9 +93,66 @@ export default function ReadPage() {
             {t("read.toParallel")}
           </button>
         </div>
+        {/* 보기 모드: 혼자 읽기 / 장 전체 병렬 */}
+        <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+          <button onClick={() => setParallel(false)} style={modeBtn(!parallel)}>{t("read.solo")}</button>
+          <button onClick={() => setParallel(true)} style={modeBtn(parallel)}>{t("read.parallel")}</button>
+        </div>
+
+        {parallel && (
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {SECONDARY_VERSIONS.map(v => {
+                const on = v.id === secondVer;
+                return (
+                  <button key={v.id} onClick={() => setSecondVer(v.id)}
+                    style={{ fontSize: 12.5, fontWeight: on ? 800 : 600, padding: "6px 10px", borderRadius: 10, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.gold : theme.card, color: on ? "#fff" : theme.text }}>{v.label}</button>
+                );
+              })}
+            </div>
+            <p style={{ fontSize: 11, color: theme.textFaint, margin: "7px 2px 0", lineHeight: 1.5 }}>{t("read.parallelHint")}</p>
+          </div>
+        )}
+
         <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: "2px 0 14px" }}>{meta?.ko} {chapter}{t("read.chapter")}</h2>
+
         {loading ? (
           <p style={{ color: theme.textMuted, textAlign: "center", padding: "3rem 0" }}>…</p>
+        ) : parallel ? (
+          !secondVer ? (
+            <div style={{ textAlign: "center", padding: "2.5rem 1rem", color: theme.textMuted }}>
+              <div style={{ fontSize: 34, marginBottom: 10 }}>🔀</div>
+              <p style={{ fontSize: 14, margin: 0 }}>{t("read.pickLang2")}</p>
+            </div>
+          ) : (verses && verses.length) || (verses2 && verses2.length) ? (
+            <div>
+              {/* 열 머리글 */}
+              <div style={{ display: "grid", gridTemplateColumns: "26px 1fr 1fr", gap: 8, paddingBottom: 6, borderBottom: `1px solid ${theme.cardBorder}`, marginBottom: 6 }}>
+                <span />
+                <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.primarySoft }}>{BIBLE_VERSION_LABEL}</span>
+                <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.gold }}>{sv?.label}</span>
+              </div>
+              {Array.from({ length: Math.max(verses?.length ?? 0, verses2?.length ?? 0) }, (_, i) => i + 1).map(n => {
+                const heading = book?.headings?.[`${chapter}:${n}`];
+                return (
+                  <div key={n}>
+                    {heading && <div style={{ fontSize: 13, fontWeight: 800, color: theme.primarySoft, margin: "14px 0 4px" }}>{heading}</div>}
+                    <div id={`v-${n}`} style={{ display: "grid", gridTemplateColumns: "26px 1fr 1fr", gap: 8, padding: "7px 0", borderBottom: `1px solid ${theme.cardBorder}`, scrollMarginTop: 70 }}>
+                      <sup style={{ fontSize: 11, fontWeight: 800, color: theme.gold }}>{n}</sup>
+                      <p dir="ltr" style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7, color: theme.text, textAlign: "start" }}>{verses?.[n - 1] ?? ""}</p>
+                      <p dir={sv?.rtl ? "rtl" : "ltr"} style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7, color: theme.text, textAlign: "start" }}>{verses2?.[n - 1] ?? ""}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", padding: "3rem 1rem", color: theme.textMuted }}>
+              <div style={{ fontSize: 40, marginBottom: 10 }}>📖</div>
+              <p style={{ fontWeight: 800, color: theme.text, margin: "0 0 6px" }}>{t("read.noText")}</p>
+              <p style={{ fontSize: 13, lineHeight: 1.6, margin: 0 }}>{t("read.noTextSub")}</p>
+            </div>
+          )
         ) : verses && verses.length ? (
           <div style={{ fontSize: 17, lineHeight: 1.95, color: theme.text }}>
             {verses.map((vt, i) => {
@@ -232,5 +303,6 @@ function BookRow({ b, on, onClick }: { b: BookMeta; on: boolean; onClick: () => 
   );
 }
 
+const modeBtn = (on: boolean): React.CSSProperties => ({ flex: 1, fontSize: 13, fontWeight: on ? 800 : 600, padding: "8px", borderRadius: 10, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text });
 const iconBtn: React.CSSProperties = { fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 10, padding: "7px 10px", cursor: "pointer", whiteSpace: "nowrap" };
 const navBtn: React.CSSProperties = { flex: 1, fontSize: 14, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "11px", cursor: "pointer" };
