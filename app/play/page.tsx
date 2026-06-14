@@ -15,6 +15,7 @@ export default function PlaySetup() {
   const [count, setCount]         = useState(10);
   const [books, setBooks]         = useState<string[]>([]);
   const [complete, setComplete]   = useState(false);
+  const [order, setOrder]         = useState<"bible" | "random">("bible");
 
   const TESTAMENTS = [
     { value: "전체", label: t("pl.all") },
@@ -34,7 +35,7 @@ export default function PlaySetup() {
   }
   function start() {
     const q = new URLSearchParams({ level, testament });
-    if (complete) q.set("complete", "1");
+    if (complete) { q.set("complete", "1"); q.set("order", order); }
     else q.set("count", String(count));
     if (books.length) q.set("books", books.join(","));
     router.push(`/quiz?${q.toString()}`);
@@ -63,7 +64,16 @@ export default function PlaySetup() {
           <span>{t("pl.complete")}</span>
           <span style={{ fontSize: 18 }}>{complete ? "✓" : ""}</span>
         </button>
-        {complete && <p style={{ fontSize: 11.5, color: theme.textMuted, margin: "6px 2px 0", lineHeight: 1.5 }}>{t("pl.completeHint")}</p>}
+        {complete && (
+          <div style={{ marginTop: 8 }}>
+            <ChipGroup
+              items={[{ value: "bible", label: t("pl.orderBible") }, { value: "random", label: t("pl.orderRandom") }]}
+              value={order}
+              onChange={v => setOrder(v as "bible" | "random")}
+            />
+            <p style={{ fontSize: 11.5, color: theme.textMuted, margin: "6px 2px 0", lineHeight: 1.5 }}>{t("pl.completeHint")}</p>
+          </div>
+        )}
       </div>
 
       <div style={{ height: "1.2rem" }} />
