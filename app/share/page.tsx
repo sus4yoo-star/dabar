@@ -9,8 +9,10 @@ import { fetchTools } from "@/lib/besora/content";
 import type { Tool } from "@/lib/besora/types";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
+import { useI18n } from "@/lib/i18n";
 
 export default function ShareHome() {
+  const { t } = useI18n();
   const { myLang, seekerLang, setMyLang, setSeekerLang, languages, ready } = useLang();
   const [tools, setTools] = useState<Tool[]>([]);
   const [err, setErr] = useState<string | null>(null);
@@ -67,6 +69,16 @@ export default function ShareHome() {
           <span style={{ marginTop: 4, display: "block", fontSize: 12, color: theme.textMuted }}>{err}</span>
         </div>
       )}
+
+      {/* 말씀 나란히 보기 — 내 언어 + 상대 언어 병렬 리더 */}
+      <Link href="/share/verses" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", marginBottom: 12, padding: "13px 15px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card }}>
+        <span style={{ fontSize: 24, lineHeight: 1 }}>📖</span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: "block", fontSize: 15.5, fontWeight: 800, color: theme.text }}>{t("pv.title")}</span>
+          <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{t("pv.entrySub")}</span>
+        </span>
+        <span style={{ fontSize: 16, color: theme.gold }}>→</span>
+      </Link>
 
       {/* 도구 5개: 2+2+1(와이드) */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

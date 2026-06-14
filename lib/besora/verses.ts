@@ -210,3 +210,18 @@ export function versesFor(ref: string | null | undefined, lang: string): VersePa
   }
   return out;
 }
+
+// 복음 전하기 핵심 구절 전체를 한 언어로 — 병렬(나란히) 읽기용. 정의 순서(대략 정경순).
+export function gospelPassages(lang: string): VersePassage[] {
+  const isBase = BASE_LANGS.has(lang);
+  const L: VLang = isBase ? (lang as VLang) : "en";
+  return Object.keys(VERSES).map((key) => {
+    const sp = key.indexOf(" ");
+    const code = key.slice(0, sp);
+    const cv = key.slice(sp + 1);
+    const v = VERSES[key];
+    const bn = BOOK_NAMES[code]?.[L] ?? code;
+    const text = isBase ? v[L] : (VERSES_EXT[key]?.[lang] ?? v.en);
+    return { key, label: `${bn} ${cv}`, text };
+  });
+}
