@@ -12,14 +12,14 @@ export default function LoginPage() {
   const router = useRouter();
   const { user, loading, signIn } = useAuth();
   const { t } = useI18n();
-  const [busy, setBusy] = useState<"google" | "kakao" | null>(null);
+  const [busy, setBusy] = useState<"google" | "kakao" | "apple" | null>(null);
 
   // 이미 로그인돼 있으면 홈으로
   useEffect(() => {
     if (!loading && user) router.replace("/");
   }, [loading, user, router]);
 
-  async function handle(provider: "google" | "kakao") {
+  async function handle(provider: "google" | "kakao" | "apple") {
     try {
       setBusy(provider);
       await signIn(provider); // 카카오/구글 동의 화면으로 이동
@@ -100,6 +100,21 @@ export default function LoginPage() {
 
         {/* 로그인 버튼 */}
         <button
+          onClick={() => handle("apple")}
+          disabled={busy !== null}
+          style={{
+            width: "100%", padding: 15, fontSize: 16, fontWeight: 700,
+            background: "#000000", color: "#ffffff", border: "none", borderRadius: 14,
+            cursor: busy ? "default" : "pointer", marginBottom: 11,
+            opacity: busy && busy !== "apple" ? 0.55 : 1,
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+          }}
+        >
+          <span style={{ fontSize: 18, lineHeight: 1, marginTop: -2 }}></span>
+          {busy === "apple" ? t("login.redirecting") : t("login.apple")}
+        </button>
+
+        <button
           onClick={() => handle("kakao")}
           disabled={busy !== null}
           style={{
@@ -133,7 +148,11 @@ export default function LoginPage() {
           {t("login.free")}
         </p>
 
-        <p style={{ fontSize: 11, color: "#9ab4c6", marginTop: "2.5rem", letterSpacing: 1.5 }}>
+        <p style={{ fontSize: 11.5, marginTop: 16 }}>
+          <a href="/privacy" style={{ color: "#54718a", textDecoration: "underline" }}>{t("privacy.title")}</a>
+        </p>
+
+        <p style={{ fontSize: 11, color: "#9ab4c6", marginTop: "2rem", letterSpacing: 1.5 }}>
           DABAR by AMOV · Love Creates Value
         </p>
       </div>

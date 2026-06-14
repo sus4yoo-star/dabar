@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
-export type Provider = "google" | "kakao";
+export type Provider = "google" | "kakao" | "apple";
 
 interface AuthState {
   user: User | null;
