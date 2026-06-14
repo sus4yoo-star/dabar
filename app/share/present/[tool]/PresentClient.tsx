@@ -14,11 +14,12 @@ import { needsServerTTS, prefetchTTS } from "@/lib/besora/speak";
 import { versesFor } from "@/lib/besora/verses";
 
 // 콘텐츠 좌우 중앙에 떠 있는 원형 화살표 버튼 스타일
-function sideNav(side: "left" | "right"): CSSProperties {
+// insetInlineStart/End 로 잡아 RTL(아랍어 등)에서 좌우가 자동으로 뒤집히게 한다.
+function sideNav(side: "start" | "end"): CSSProperties {
   return {
     position: "absolute",
     top: "50%",
-    [side]: -6,
+    [side === "start" ? "insetInlineStart" : "insetInlineEnd"]: -6,
     transform: "translateY(-50%)",
     zIndex: 30,
     width: 44,
@@ -79,7 +80,7 @@ export default function PresentClient() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           {languages.map((l) => (
             <button key={l.code} onClick={() => setSeekerLang(l.code)}
-              style={{ borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: 16, textAlign: "left", cursor: "pointer" }}>
+              style={{ borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: 16, textAlign: "start", cursor: "pointer" }}>
               <span style={{ display: "block", fontWeight: 700, color: theme.text }}>{l.name_native}</span>
               <span style={{ fontSize: 12, color: theme.textMuted }}>{l.name_en}</span>
             </button>
@@ -114,15 +115,15 @@ export default function PresentClient() {
         <DecisionFlow toolSlug={slug} onAgain={() => router.push("/share")} />
       ) : current ? (
         <div style={{ position: "relative", flex: 1, display: "flex", flexDirection: "column" }}>
-          {/* 좌우 중앙 화살표 — 이전/다음 */}
+          {/* 좌우 중앙 화살표 — 이전/다음 (RTL이면 방향·글리프가 자동으로 뒤집힘) */}
           {idx > 0 && (
             <button onClick={() => setIdx((i) => Math.max(0, i - 1))} aria-label={ui(myLang, "prev")} title={ui(myLang, "prev")}
-              style={sideNav("left")}>‹</button>
+              style={sideNav("start")}>{rtlFor(myLang) ? "›" : "‹"}</button>
           )}
           <button onClick={next} aria-label={atEnd ? ui(myLang, "toDecision") : ui(myLang, "next")} title={atEnd ? ui(myLang, "toDecision") : ui(myLang, "next")}
-            style={sideNav("right")}>›</button>
+            style={sideNav("end")}>{rtlFor(myLang) ? "‹" : "›"}</button>
 
-          <StepView step={current} seekerLang={seekerLang} myLang={myLang} rtl={rtlFor(seekerLang)} onDecision={() => setInDecision(true)} />
+          <StepView step={current} seekerLang={seekerLang} myLang={myLang} rtl={rtlFor(seekerLang)} myRtl={rtlFor(myLang)} onDecision={() => setInDecision(true)} />
         </div>
       ) : (
         <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", color: theme.textMuted }}>
