@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
+import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/besora/supabase";
 import { Group, createGroup, fetchMyGroupIds, fetchPublicGroups, joinGroup } from "@/lib/besora/groups";
 
 export default function GroupsPage() {
@@ -18,6 +20,33 @@ export default function GroupsPage() {
   const [creating, setCreating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: "", place: "", schedule: "", description: "" });
+  const [diag, setDiag] = useState<string[]>([]);
+
+  // 권한 진단 — 앱이 실제로 읽는 값을 그대로 보여줌
+  async function runDiag() {
+    const out: string[] = [];
+    out.push(`앱 권한값: isAdmin=${isAdmin} · isLeader=${isLeader}`);
+    try {
+      const { data: au } = await supabase.auth.getUser();
+      const uid = au.user?.id ?? null;
+      out.push(`로그인 uid: ${uid ?? "(로그인 안 됨)"}`);
+      if (uid) {
+        const r = await supabase.from("profiles").select("is_admin, is_leader").eq("id", uid).maybeSingle();
+        if (r.error) out.push(`profiles 조회 오류: ${r.error.message}`);
+        else if (!r.data) out.push("이 uid의 profiles 행이 없음");
+        else out.push(`DB 직접 읽기: is_admin=${r.data.is_admin} · is_leader=${(r.data as { is_leader?: boolean }).is_leader}`);
+      }
+    } catch (e) { out.push("auth/profiles 예외: " + ((e as Error)?.message ?? e)); }
+    try {
+      const g = await getSupabase().from("groups").select("id").limit(1);
+      out.push(g.error ? `groups 테이블: ${g.error.message}` : "groups 테이블: OK");
+    } catch (e) { out.push("groups 예외: " + ((e as Error)?.message ?? e)); }
+    try {
+      const rp = await getSupabase().rpc("create_group", { p_name: "", p_place: "", p_schedule: "", p_desc: "" });
+      out.push(rp.error ? `create_group RPC: ${rp.error.message}` : "create_group RPC: (빈 이름 통과?!)");
+    } catch (e) { out.push("rpc 예외: " + ((e as Error)?.message ?? e)); }
+    setDiag(out);
+  }
 
   async function load() {
     setLoading(true);
@@ -59,7 +88,13 @@ export default function GroupsPage() {
         <button onClick={() => setCreating(true)} style={{ width: "100%", padding: 13, marginBottom: 14, fontSize: 15, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 14, cursor: "pointer" }}>{t("grp.create")}</button>
       )}
       {user && !canCreate && (
-        <p style={{ fontSize: 12.5, color: theme.textMuted, textAlign: "center", margin: "0 0 14px", padding: "10px", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, lineHeight: 1.5 }}>{t("grp.leaderOnly")}</p>
+        <div style={{ margin: "0 0 14px", padding: "10px 12px", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10 }}>
+          <p style={{ fontSize: 12.5, color: theme.textMuted, textAlign: "center", margin: 0, lineHeight: 1.5 }}>{t("grp.leaderOnly")}</p>
+          <button onClick={runDiag} style={{ display: "block", margin: "8px auto 0", fontSize: 12, fontWeight: 700, color: theme.primarySoft, background: "transparent", border: `1px solid ${theme.cardBorder}`, borderRadius: 8, padding: "5px 12px", cursor: "pointer" }}>🔧 권한 진단</button>
+          {diag.length > 0 && (
+            <pre style={{ marginTop: 10, fontSize: 11, lineHeight: 1.6, color: theme.text, background: theme.bg, border: `1px solid ${theme.cardBorder}`, borderRadius: 8, padding: 10, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{diag.join("\n")}</pre>
+          )}
+        </div>
       )}
 
       {creating && (
