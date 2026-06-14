@@ -276,6 +276,10 @@ const DICT: Dict = {
   "pv.pickSeeker":{ ko: "상대(태신자) 언어를 골라주세요", en: "Pick the other person's language", th: "เลือกภาษาของอีกฝ่าย", lo: "ເລືອກພາສາຂອງອີກຝ່າຍ" },
   "pv.swap":      { ko: "↔ 서로 바꾸기", en: "↔ Swap", th: "↔ สลับ", lo: "↔ ສະຫຼັບ" },
   "read.toParallel": { ko: "복음 핵심구절 나란히 보기 →", en: "Key gospel verses side by side →", th: "อ่านข้อพระคัมภีร์หลักคู่กัน →", lo: "ອ່ານຂໍ້ພຣະຄຳພີຫຼັກຄຽງຄູ່ກັນ →" },
+  "read.parallel":  { ko: "🔀 장 전체 나란히", en: "🔀 Parallel (chapter)", th: "🔀 คู่กันทั้งบท", lo: "🔀 ຄຽງຄູ່ກັນທັງບົດ" },
+  "read.solo":      { ko: "혼자 읽기", en: "Single", th: "อ่านเดี่ยว", lo: "ອ່ານດ່ຽວ" },
+  "read.pickLang2": { ko: "나란히 볼 언어를 골라주세요", en: "Pick a language to compare", th: "เลือกภาษาที่จะอ่านคู่กัน", lo: "ເລືອກພາສາທີ່ຈະອ່ານຄຽງຄູ່" },
+  "read.parallelHint": { ko: "데이터가 들어온 언어끼리 절 단위로 나란히 표시돼요. (개역개정 본문은 허가 후)", en: "Languages with text appear verse by verse. (Korean text after licensing)", th: "ภาษาที่มีเนื้อหาจะแสดงทีละข้อ (ภาษาเกาหลีหลังได้รับอนุญาต)", lo: "ພາສາທີ່ມີເນື້ອໃນຈະສະແດງເທື່ອລະຂໍ້ (ພາສາເກົາຫຼີຫຼັງໄດ້ຮັບອະນຸຍາດ)" },
 };
 
 interface I18n { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; }
