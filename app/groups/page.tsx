@@ -58,6 +58,9 @@ export default function GroupsPage() {
       {canCreate && !creating && (
         <button onClick={() => setCreating(true)} style={{ width: "100%", padding: 13, marginBottom: 14, fontSize: 15, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 14, cursor: "pointer" }}>{t("grp.create")}</button>
       )}
+      {user && !canCreate && (
+        <p style={{ fontSize: 12.5, color: theme.textMuted, textAlign: "center", margin: "0 0 14px", padding: "10px", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, lineHeight: 1.5 }}>{t("grp.leaderOnly")}</p>
+      )}
 
       {creating && (
         <div style={{ marginBottom: 16, padding: 14, borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card }}>
