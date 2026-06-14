@@ -9,8 +9,21 @@ import { useI18n } from "@/lib/i18n";
 import { translateMany } from "@/lib/autoTranslate";
 import { fetchQuizProgress, upsertQuizProgress, clearQuizProgress } from "@/lib/quizProgress";
 import { bookLabel, categoryLabel } from "@/lib/bookNames";
+import { ALL_BOOKS } from "@/lib/bible";
 
 const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: theme.gold, hard: theme.wrong };
+
+// 완주 모드 출제 순서: 성경 순서대로(권 정경순 → 생성순) 정렬
+const bibleRank = (b: string) => { const i = ALL_BOOKS.indexOf(b); return i < 0 ? 999 : i; };
+function sortBible(qs: Question[]): Question[] {
+  return [...qs].sort((a, b) => bibleRank(a.book) - bibleRank(b.book)
+    || (a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0));
+}
+function shuffleArr<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
 
 // 보기 순서를 매번 섞고 정답 인덱스를 다시 계산 (정답이 한 위치에 몰리지 않게)
 function shuffleOptions(q: Question): Question {
@@ -56,6 +69,8 @@ function QuizInner() {
   const params = useSearchParams();
   // 빠짐없이 풀기(완주) 모드 — 범위 내 전 문제를 순서대로, 타이머 없이, 이어풀기
   const complete = params.get("complete") === "1";
+  // 출제 순서: 성경 순서대로(기본) / 랜덤. 진도(이어풀기)는 순서와 무관하게 문제 id로 저장되므로 progressKey엔 미포함.
+  const order = params.get("order") === "random" ? "random" : "bible";
   const progressKey = `dabar_complete|${lang}|${params.get("testament") || "전체"}|${params.get("level") || "전체"}|${params.get("books") || ""}`;
   const [doneAll, setDoneAll] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -115,12 +130,13 @@ function QuizInner() {
         }
         const prepared = prepare(arr);
         if (complete) {
-          setAllQ(prepared);
+          const ordered = sortBible(prepared); // allQ는 항상 성경 순서(권별 진도 패널용)
+          setAllQ(ordered);
           let r: Record<string, "o" | "x"> = {};
           try { const p = JSON.parse(localStorage.getItem(progressKey) || "{}"); if (p && typeof p === "object" && !Array.isArray(p)) r = p; } catch { /* */ }
           setResult(r);
-          const active = prepared.filter(q => !r[q.id]); // 이어풀기: 아직 안 푼 문제만
-          setQuestions(active);
+          const active = ordered.filter(q => !r[q.id]); // 이어풀기: 아직 안 푼 문제만
+          setQuestions(order === "random" ? shuffleArr(active) : active);
           setIdx(0);
           if (!active.length) setDoneAll(true); // 이미 다 풀었으면 완주 화면
         } else {
@@ -140,7 +156,7 @@ function QuizInner() {
       const merged = { ...result, ...db };
       saveResult(merged);
       const active = allQ.filter(qq => !merged[qq.id]);
-      setQuestions(active);
+      setQuestions(order === "random" ? shuffleArr(active) : active);
       setIdx(0);
       if (!active.length) setDoneAll(true);
     });
@@ -223,7 +239,7 @@ function QuizInner() {
   function restartComplete() {
     try { localStorage.removeItem(progressKey); } catch { /* */ }
     if (user) { syncedRef.current = true; clearQuizProgress(user.id, allQ.map(qq => qq.id)); } // 이 범위 DB 진도도 초기화
-    setResult({}); setMode("all"); setQuestions(allQ); setIdx(0);
+    setResult({}); setMode("all"); setQuestions(order === "random" ? shuffleArr(allQ) : allQ); setIdx(0);
     setSelected(null); setShowHint(false); setReported(false); setDoneAll(false);
   }
   function startWrong() {
