@@ -72,7 +72,13 @@ export default function ReadPage() {
       {/* 본문 */}
       <div ref={scroller} style={{ flex: 1, overflowY: "auto", padding: "16px 18px 90px" }}>
         {/* 컨셉: 혼자 읽기 + 상대 언어와 나란히 함께 읽기 */}
-        <p style={{ fontSize: 12, color: theme.textMuted, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "9px 12px", margin: "0 0 14px", lineHeight: 1.55, textAlign: "center" }}>🙏 {t("read.concept")}</p>
+        <div style={{ background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "10px 12px", margin: "0 0 14px" }}>
+          <p style={{ fontSize: 12, color: theme.textMuted, lineHeight: 1.55, textAlign: "center", margin: 0 }}>🙏 {t("read.concept")}</p>
+          <button onClick={() => router.push("/share/verses")}
+            style={{ width: "100%", marginTop: 9, padding: "9px", fontSize: 13, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 10, cursor: "pointer" }}>
+            {t("read.toParallel")}
+          </button>
+        </div>
         <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: "2px 0 14px" }}>{meta?.ko} {chapter}{t("read.chapter")}</h2>
         {loading ? (
           <p style={{ color: theme.textMuted, textAlign: "center", padding: "3rem 0" }}>…</p>
