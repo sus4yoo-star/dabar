@@ -19,6 +19,7 @@ export default function ReadPage() {
   const [parallel, setParallel] = useState(false);
   const [secondVer, setSecondVer] = useState<string | null>(null);
   const [book2, setBook2] = useState<BookText | null>(null);
+  const [restored, setRestored] = useState(false); // 이어 읽기 복원 완료 여부
   const scroller = useRef<HTMLDivElement>(null);
 
   const meta = BOOK_BY_CODE[code];
@@ -39,6 +40,25 @@ export default function ReadPage() {
     loadBook(code, secondVer).then(b => { if (alive) setBook2(b); });
     return () => { alive = false; };
   }, [code, parallel, secondVer]);
+
+  // 이어 읽기: 마지막 위치 복원 (있으면 바로 그 장, 없으면 목차)
+  useEffect(() => {
+    const p = readPos();
+    if (p && BOOK_BY_CODE[p.code]) {
+      setCode(p.code);
+      setChapter(Math.min(Math.max(1, p.chapter || 1), BOOK_BY_CODE[p.code].chapters));
+      if (p.parallel) setParallel(true);
+      if (p.secondVer) setSecondVer(p.secondVer);
+      setPickerOpen(false);
+    }
+    setRestored(true);
+  }, []);
+
+  // 위치 저장 (복원 이후의 변경만)
+  useEffect(() => {
+    if (!restored) return;
+    savePos({ code, chapter, parallel, secondVer });
+  }, [restored, code, chapter, parallel, secondVer]);
 
   // 장 바뀌면 위로, 특정 절 타깃이면 스크롤
   useEffect(() => {
@@ -301,6 +321,16 @@ function BookRow({ b, on, onClick }: { b: BookMeta; on: boolean; onClick: () => 
       </span>
     </button>
   );
+}
+
+// 이어 읽기 — 마지막 읽은 위치(권·장 + 병렬 설정) 저장/복원
+const POS_KEY = "dabar_read_pos";
+type ReadPos = { code: string; chapter: number; parallel?: boolean; secondVer?: string | null };
+function readPos(): ReadPos | null {
+  try { const r = localStorage.getItem(POS_KEY); if (!r) return null; const p = JSON.parse(r); return p && typeof p.code === "string" ? p : null; } catch { return null; }
+}
+function savePos(p: ReadPos) {
+  try { localStorage.setItem(POS_KEY, JSON.stringify(p)); } catch { /* */ }
 }
 
 const modeBtn = (on: boolean): React.CSSProperties => ({ flex: 1, fontSize: 13, fontWeight: on ? 800 : 600, padding: "8px", borderRadius: 10, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text });
