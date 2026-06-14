@@ -3,6 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
 import { AuthGate } from "@/lib/AuthGate";
 import { I18nProvider } from "@/lib/i18n";
+import ChunkGuard from "./ChunkGuard";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dabar.theamov.com"),
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <head><link rel="apple-touch-icon" href="/icons/icon-192.png" /></head>
       <body>
+        <ChunkGuard />
         <I18nProvider>
           <AuthProvider>
             <AuthGate>{children}</AuthGate>
