@@ -268,6 +268,13 @@ const DICT: Dict = {
   "read.noTextSub": { ko: "개역개정 저작권 허가를 진행 중이에요. 허가가 완료되면 여기에서 바로 읽을 수 있어요.", en: "Licensing for the Korean text is in progress. It will appear here once approved.", th: "กำลังขออนุญาตลิขสิทธิ์ เนื้อหาจะแสดงเมื่อได้รับอนุมัติ", lo: "ກຳລັງຂໍອະນຸຍາດລິຂະສິດ ເນື້ອໃນຈະສະແດງເມື່ອໄດ້ຮັບອະນຸມັດ" },
   "read.licensing": { ko: "허가 진행중", en: "licensing", th: "ขออนุญาต", lo: "ຂໍອະນຸຍາດ" },
   "read.pickVerseHint": { ko: "본문이 들어오면 절도 고를 수 있어요", en: "Verses selectable once text is loaded", th: "เลือกข้อได้เมื่อมีเนื้อหา", lo: "ເລືອກຂໍ້ໄດ້ເມື່ອມີເນື້ອໃນ" },
+  "pv.entry":     { ko: "📖 말씀 나란히 보기", en: "📖 Read verses side by side", th: "📖 อ่านพระวจนะคู่กัน", lo: "📖 ອ່ານພຣະທຳຄຽງຄູ່ກັນ" },
+  "pv.entrySub":  { ko: "내 언어와 상대 언어로 같은 말씀을 함께", en: "Same verse in my language and theirs", th: "พระวจนะเดียวกันในภาษาของฉันและของเขา", lo: "ພຣະທຳດຽວກັນໃນພາສາຂອງຂ້ອຍ ແລະ ຂອງເຂົາ" },
+  "pv.title":     { ko: "말씀 나란히 보기", en: "Verses side by side", th: "พระวจนะคู่กัน", lo: "ພຣະທຳຄຽງຄູ່ກັນ" },
+  "pv.myLang":    { ko: "내 언어", en: "My language", th: "ภาษาของฉัน", lo: "ພາສາຂອງຂ້ອຍ" },
+  "pv.seekerLang":{ ko: "상대 언어", en: "Their language", th: "ภาษาของเขา", lo: "ພາສາຂອງເຂົາ" },
+  "pv.pickSeeker":{ ko: "상대(태신자) 언어를 골라주세요", en: "Pick the other person's language", th: "เลือกภาษาของอีกฝ่าย", lo: "ເລືອກພາສາຂອງອີກຝ່າຍ" },
+  "pv.swap":      { ko: "↔ 서로 바꾸기", en: "↔ Swap", th: "↔ สลับ", lo: "↔ ສະຫຼັບ" },
 };
 
 interface I18n { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; }
