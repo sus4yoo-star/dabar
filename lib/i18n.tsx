@@ -74,6 +74,7 @@ const DICT: Dict = {
   "login.tagline2":   { ko: "남녀노소 누구나 함께해요.", en: "For everyone, all ages.", th: "สำหรับทุกเพศทุกวัย", lo: "ສຳລັບທຸກເພດທຸກໄວ" },
   "login.kakao":      { ko: "카카오로 시작하기", en: "Start with Kakao", th: "เริ่มด้วย Kakao", lo: "ເລີ່ມດ້ວຍ Kakao" },
   "login.google":     { ko: "구글(Gmail)로 시작하기", en: "Continue with Google", th: "ดำเนินการต่อด้วย Google", lo: "ດຳເນີນຕໍ່ດ້ວຍ Google" },
+  "login.apple":      { ko: "Apple로 시작하기", en: "Continue with Apple", th: "ดำเนินการต่อด้วย Apple", lo: "ດຳເນີນຕໍ່ດ້ວຍ Apple" },
   "login.redirecting":{ ko: "이동 중...", en: "Redirecting...", th: "กำลังนำทาง...", lo: "ກຳລັງນຳທາງ..." },
   "login.free":       { ko: "가입은 무료예요. 카카오·구글 계정으로 3초 만에 시작할 수 있어요.", en: "Free to join — start in 3 seconds with Kakao or Google.", th: "สมัครฟรี เริ่มได้ใน 3 วินาทีด้วย Kakao หรือ Google", lo: "ສະໝັກຟຣີ ເລີ່ມໄດ້ໃນ 3 ວິນາທີດ້ວຍ Kakao ຫຼື Google" },
   "login.fail":       { ko: "로그인을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.", en: "Couldn't start login. Please try again shortly.", th: "เริ่มเข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", lo: "ເລີ່ມເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່" },
@@ -322,6 +323,18 @@ const DICT: Dict = {
   "grp.joinToChat":{ ko: "참여하면 나눔 채팅을 할 수 있어요.", en: "Join to start the group chat.", th: "เข้าร่วมเพื่อเริ่มแชท", lo: "ເຂົ້າຮ່ວມເພື່ອເລີ່ມແຊັດ" },
   "grp.membersTitle": { ko: "참여자", en: "Members", th: "สมาชิก", lo: "ສະມາຊິກ" },
   "grp.notReady":  { ko: "모임 기능을 사용하려면 DB 설정(besora-groups.sql)이 필요해요.", en: "Group DB setup (besora-groups.sql) is required.", th: "ต้องตั้งค่าฐานข้อมูลกลุ่มก่อน", lo: "ຕ້ອງຕັ້ງຄ່າຖານຂໍ້ມູນກຸ່ມກ່ອນ" },
+
+  // 계정 / 개인정보
+  "home.account":  { ko: "⚙️ 계정 · 개인정보", en: "⚙️ Account & privacy", th: "⚙️ บัญชีและความเป็นส่วนตัว", lo: "⚙️ ບັນຊີ ແລະ ຄວາມເປັນສ່ວນຕົວ" },
+  "privacy.title": { ko: "개인정보 처리방침", en: "Privacy Policy", th: "นโยบายความเป็นส่วนตัว", lo: "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ" },
+  "acct.title":    { ko: "계정", en: "Account", th: "บัญชี", lo: "ບັນຊີ" },
+  "acct.logout":   { ko: "로그아웃", en: "Log out", th: "ออกจากระบบ", lo: "ອອກຈາກລະບົບ" },
+  "acct.delete":   { ko: "계정 삭제", en: "Delete account", th: "ลบบัญชี", lo: "ລຶບບັນຊີ" },
+  "acct.deleteDesc": { ko: "계정과 모든 데이터(기록·모임·채팅·사진)가 영구 삭제되며 되돌릴 수 없어요.", en: "Your account and all data (records, groups, chats, photos) are permanently deleted and cannot be undone.", th: "บัญชีและข้อมูลทั้งหมดจะถูกลบถาวรและกู้คืนไม่ได้", lo: "ບັນຊີ ແລະ ຂໍ້ມູນທັງໝົດຈະຖືກລຶບຖາວอน ແລະ ກູ້ຄືນບໍ່ໄດ້" },
+  "acct.deleteConfirm": { ko: "정말 계정을 삭제할까요? 되돌릴 수 없습니다.", en: "Delete your account? This cannot be undone.", th: "ลบบัญชีของคุณ? ไม่สามารถย้อนกลับได้", lo: "ລຶບບັນຊີຂອງທ່ານ? ບໍ່ສາມາດກູ້ຄືນ" },
+  "acct.deleting": { ko: "삭제 중…", en: "Deleting…", th: "กำลังลบ…", lo: "ກຳລັງລຶບ…" },
+  "acct.deleteFail": { ko: "삭제하지 못했어요. 잠시 후 다시 시도해 주세요.", en: "Couldn't delete. Please try again later.", th: "ลบไม่สำเร็จ ลองใหม่ภายหลัง", lo: "ລຶບບໍ່ສຳເລັດ ລອງໃໝ່" },
+  "acct.deleted":  { ko: "계정이 삭제되었습니다.", en: "Your account has been deleted.", th: "ลบบัญชีแล้ว", lo: "ລຶບບັນຊີແລ້ວ" },
 };
 
 interface I18n { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; }
