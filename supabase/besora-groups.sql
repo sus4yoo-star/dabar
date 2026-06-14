@@ -15,12 +15,14 @@ create table if not exists besora.groups (
   place        text,            -- 오프라인 장소 (예: ○○카페 / △△교회)
   schedule     text,            -- 일정 (예: 매주 화 19:00)
   description  text,
+  notice       text,            -- 리더가 올리는 모임 공지
   is_public    boolean not null default true,
   member_count int  not null default 0,
   created_at   timestamptz not null default now(),
   last_at      timestamptz not null default now()   -- 최근 활동(메시지) 시각
 );
 create index if not exists idx_groups_public on besora.groups(is_public, last_at desc);
+alter table besora.groups add column if not exists notice text;  -- 기존 설치 보강
 
 -- ---------- 2) 멤버 ----------
 create table if not exists besora.group_members (
@@ -60,6 +62,10 @@ alter table besora.group_messages enable row level security;
 drop policy if exists grp_sel on besora.groups;
 create policy grp_sel on besora.groups for select
   using (is_public or besora.is_member(id));
+-- 리더만 자기 모임 수정(공지 등)
+drop policy if exists grp_upd on besora.groups;
+create policy grp_upd on besora.groups for update
+  using (leader = auth.uid()) with check (leader = auth.uid());
 
 -- 멤버: 같은 모임의 멤버끼리 명단 조회. 본인 참여(insert)/탈퇴(delete)는 직접.
 drop policy if exists gm_sel on besora.group_members;
@@ -138,7 +144,8 @@ create trigger trg_touch_group after insert on besora.group_messages
 --  권한 (GRANT)
 -- =====================================================================
 grant usage on schema besora to anon, authenticated;
-grant select                 on besora.groups         to anon, authenticated;
+grant select, update         on besora.groups         to authenticated;
+grant select                 on besora.groups         to anon;
 grant select, insert, delete on besora.group_members  to authenticated;
 grant select, insert         on besora.group_messages to authenticated;
 grant execute on function besora.create_group(text, text, text, text) to authenticated;

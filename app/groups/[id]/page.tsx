@@ -7,7 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import {
   Group, GroupMember, GroupMessage, MAX_MEMBERS,
   fetchGroup, fetchGroupMessages, fetchMembers, joinGroup, leaveGroup,
-  sendGroupMessage, subscribeGroupMessages,
+  sendGroupMessage, subscribeGroupMessages, updateNotice,
 } from "@/lib/besora/groups";
 
 export default function GroupDetailPage() {
@@ -21,11 +21,22 @@ export default function GroupDetailPage() {
   const [messages, setMessages] = useState<GroupMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [text, setText] = useState("");
+  const [editingNotice, setEditingNotice] = useState(false);
+  const [noticeDraft, setNoticeDraft] = useState("");
   const bottom = useRef<HTMLDivElement>(null);
 
   const isMember = !!user && members.some(m => m.user_id === user.id);
+  const amLeader = !!user && !!group && group.leader === user.id;
   const full = !!group && !isMember && group.member_count >= MAX_MEMBERS;
   const nameById = Object.fromEntries(members.map(m => [m.user_id, m.nickname]));
+
+  async function saveNotice() {
+    try {
+      await updateNotice(id, noticeDraft);
+      setGroup(g => g ? { ...g, notice: noticeDraft.trim() || null } : g);
+    } catch { /* */ }
+    setEditingNotice(false);
+  }
 
   async function load() {
     setLoading(true);
@@ -76,12 +87,41 @@ export default function GroupDetailPage() {
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", padding: "14px 16px 16px" }}>
+        {/* 공지 (리더 작성) */}
+        {(group.notice || amLeader) && (
+          <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+              <span style={{ fontSize: 12, fontWeight: 800, color: theme.gold }}>📌 {t("grp.notice")}</span>
+              {amLeader && !editingNotice && (
+                <button onClick={() => { setNoticeDraft(group.notice ?? ""); setEditingNotice(true); }} style={{ fontSize: 11.5, fontWeight: 700, color: theme.primarySoft, background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>✏️ {t("grp.noticeEdit")}</button>
+              )}
+            </div>
+            {editingNotice ? (
+              <div>
+                <textarea value={noticeDraft} onChange={e => setNoticeDraft(e.target.value)} placeholder={t("grp.noticePh")} rows={3}
+                  style={{ width: "100%", boxSizing: "border-box", fontSize: 13.5, padding: "9px 11px", borderRadius: 10, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none", resize: "vertical", lineHeight: 1.5 }} />
+                <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                  <button onClick={() => setEditingNotice(false)} style={{ flex: 1, padding: 9, fontSize: 13, fontWeight: 700, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 9, cursor: "pointer" }}>{t("grp.cancel")}</button>
+                  <button onClick={saveNotice} style={{ flex: 2, padding: 9, fontSize: 13, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 9, cursor: "pointer" }}>{t("grp.save")}</button>
+                </div>
+              </div>
+            ) : (
+              <p style={{ margin: 0, fontSize: 13.5, color: group.notice ? theme.text : theme.textFaint, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{group.notice || t("grp.noNotice")}</p>
+            )}
+          </div>
+        )}
+
         {/* 오프라인 모임 정보 */}
         <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card, marginBottom: 14 }}>
           {group.place && <p style={{ margin: "0 0 5px", fontSize: 13.5, color: theme.text }}>📍 {group.place}</p>}
           {group.schedule && <p style={{ margin: "0 0 5px", fontSize: 13.5, color: theme.text }}>🕒 {group.schedule}</p>}
           {group.description && <p style={{ margin: "6px 0 0", fontSize: 13, color: theme.textMuted, lineHeight: 1.6 }}>{group.description}</p>}
         </div>
+
+        {/* 전도 도구 바로가기 (멤버) */}
+        {isMember && (
+          <button onClick={() => router.push("/share")} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px", marginBottom: 14, fontSize: 14, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("grp.evangelize")}</button>
+        )}
 
         {/* 참여자 */}
         {members.length > 0 && (

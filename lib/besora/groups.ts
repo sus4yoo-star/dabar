@@ -11,6 +11,7 @@ export type Group = {
   place: string | null;
   schedule: string | null;
   description: string | null;
+  notice: string | null;
   is_public: boolean;
   member_count: number;
   created_at: string;
@@ -65,6 +66,12 @@ export async function joinGroup(groupId: string): Promise<void> {
 export async function leaveGroup(groupId: string): Promise<void> {
   const id = await myId(); if (!id) return;
   try { await getSupabase().from("group_members").delete().eq("group_id", groupId).eq("user_id", id); } catch { /* */ }
+}
+
+// 모임 공지 수정 (리더만 — RLS로 강제)
+export async function updateNotice(groupId: string, notice: string): Promise<void> {
+  const { error } = await getSupabase().from("groups").update({ notice: notice.trim() || null }).eq("id", groupId);
+  if (error) throw error;
 }
 
 export async function fetchGroup(groupId: string): Promise<Group | null> {
