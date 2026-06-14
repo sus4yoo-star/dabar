@@ -106,6 +106,17 @@ export default function Home() {
         <span style={{ fontSize: 18, color: theme.gold }}>→</span>
       </button>
 
+      {/* 나눔 모임 (오프라인) — 비중 있는 메인 카드 */}
+      <button onClick={() => router.push("/groups")} className="fade-in-2"
+        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "18px 18px", borderRadius: 18, border: `1px solid ${theme.primary}`, background: theme.primaryBg, cursor: "pointer", color: theme.text, marginBottom: "1.1rem" }}>
+        <span style={{ fontSize: 30, lineHeight: 1 }}>🤝</span>
+        <span style={{ flex: 1 }}>
+          <span style={{ display: "block", fontSize: 18, fontWeight: 800, color: theme.primarySoft }}>{t("home.groupsTitle")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>{t("home.groupsSub")}</span>
+        </span>
+        <span style={{ fontSize: 18, color: theme.primarySoft }}>→</span>
+      </button>
+
       {/* 양육 · 교육 과정 — 긴 바(누르면 과정 목록으로) */}
       <button onClick={() => router.push("/learn")} className="fade-in-2"
         style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "16px 18px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, marginBottom: "0.7rem" }}>

@@ -12,6 +12,7 @@ interface AuthState {
   nickname: string;
   avatarUrl: string | null;
   isAdmin: boolean;
+  isLeader: boolean;
   signIn: (provider: Provider) => Promise<void>;
   signOut: () => Promise<void>;
   updateNickname: (name: string) => Promise<boolean>;
@@ -41,15 +42,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [nickname, setNickname] = useState<string>("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLeader, setIsLeader] = useState(false);
 
   // 프로필 보장: 없으면 생성(소셜 이름으로), 있으면 닉네임은 유지하고
   // 아바타/공급자만 갱신한다. (사용자가 바꾼 닉네임을 덮어쓰지 않도록)
   const ensureProfile = useCallback(async (u: User) => {
     const provider = u.app_metadata?.provider ?? null;
-    const { data } = await supabase.from("profiles").select("nickname, is_admin").eq("id", u.id).maybeSingle();
+    // is_leader 컬럼이 아직 없는 환경(SQL 미적용)에서도 깨지지 않게 폴백
+    let res = await supabase.from("profiles").select("nickname, is_admin, is_leader").eq("id", u.id).maybeSingle();
+    if (res.error) res = await supabase.from("profiles").select("nickname, is_admin").eq("id", u.id).maybeSingle();
+    const data = res.data as { nickname?: string; is_admin?: boolean; is_leader?: boolean } | null;
     if (data) {
       setNickname(data.nickname || pickNickname(u));
       setIsAdmin(!!data.is_admin);
+      setIsLeader(!!data.is_leader);
       supabase.from("profiles").update({ avatar_url: pickAvatar(u), provider, updated_at: new Date().toISOString() }).eq("id", u.id).then(() => {});
     } else {
       const nn = pickNickname(u);
@@ -89,6 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
     setNickname("");
     setIsAdmin(false);
+    setIsLeader(false);
   }, []);
 
   // 앱에서 닉네임 변경
@@ -111,6 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         nickname: nickname || pickNickname(user),
         avatarUrl: pickAvatar(user),
         isAdmin,
+        isLeader,
         signIn,
         signOut,
         updateNickname,

@@ -1,0 +1,123 @@
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { theme } from "@/lib/theme";
+import { useAuth } from "@/lib/auth";
+import { useI18n } from "@/lib/i18n";
+import { Group, createGroup, fetchMyGroupIds, fetchPublicGroups, joinGroup } from "@/lib/besora/groups";
+
+export default function GroupsPage() {
+  const router = useRouter();
+  const { t } = useI18n();
+  const { user, isLeader, isAdmin } = useAuth();
+  const canCreate = !!user && (isLeader || isAdmin);
+
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [myIds, setMyIds] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ name: "", place: "", schedule: "", description: "" });
+
+  async function load() {
+    setLoading(true);
+    const [gs, ids] = await Promise.all([fetchPublicGroups(), fetchMyGroupIds()]);
+    setGroups(gs); setMyIds(ids); setLoading(false);
+  }
+  useEffect(() => { load(); }, [user]);
+
+  async function submitCreate() {
+    if (!form.name.trim() || saving) return;
+    setSaving(true);
+    try {
+      const id = await createGroup(form);
+      router.push(`/groups/${id}`);
+    } catch (e: any) {
+      alert(/leader/.test(e?.message) ? t("grp.leaderOnly") : t("grp.notReady"));
+      setSaving(false);
+    }
+  }
+
+  async function join(id: string) {
+    if (!user) { router.push("/login"); return; }
+    try { await joinGroup(id); } catch { /* */ }
+    router.push(`/groups/${id}`);
+  }
+
+  const mine = groups.filter(g => myIds.has(g.id));
+  const others = groups.filter(g => !myIds.has(g.id));
+
+  return (
+    <main style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer" }}>{t("common.home")}</button>
+        <h1 style={{ fontSize: 18, fontWeight: 800, color: theme.primarySoft, margin: 0 }}>🤝 {t("grp.title")}</h1>
+        <span style={{ width: 52 }} />
+      </div>
+
+      {canCreate && !creating && (
+        <button onClick={() => setCreating(true)} style={{ width: "100%", padding: 13, marginBottom: 14, fontSize: 15, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 14, cursor: "pointer" }}>{t("grp.create")}</button>
+      )}
+
+      {creating && (
+        <div style={{ marginBottom: 16, padding: 14, borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card }}>
+          <Field v={form.name} ph={t("grp.namePh")} on={v => setForm(f => ({ ...f, name: v }))} />
+          <Field v={form.place} ph={t("grp.placePh")} on={v => setForm(f => ({ ...f, place: v }))} />
+          <Field v={form.schedule} ph={t("grp.schedulePh")} on={v => setForm(f => ({ ...f, schedule: v }))} />
+          <Field v={form.description} ph={t("grp.descPh")} on={v => setForm(f => ({ ...f, description: v }))} />
+          <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+            <button onClick={() => { setCreating(false); setForm({ name: "", place: "", schedule: "", description: "" }); }} style={{ flex: 1, padding: 11, fontSize: 14, fontWeight: 700, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 10, cursor: "pointer" }}>{t("grp.cancel")}</button>
+            <button onClick={submitCreate} disabled={!form.name.trim() || saving} style={{ flex: 2, padding: 11, fontSize: 14, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 10, cursor: "pointer", opacity: form.name.trim() ? 1 : 0.5 }}>{t("grp.make")}</button>
+          </div>
+        </div>
+      )}
+
+      {!user && <p style={{ fontSize: 12.5, color: theme.textMuted, textAlign: "center", margin: "0 0 14px", padding: "8px", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10 }}>{t("grp.loginNeeded")}</p>}
+
+      {loading ? (
+        <p style={{ textAlign: "center", color: theme.textMuted, padding: "2rem" }}>…</p>
+      ) : (
+        <>
+          {mine.length > 0 && (
+            <Section title={t("grp.mine")}>
+              {mine.map(g => <GroupCard key={g.id} g={g} member onOpen={() => router.push(`/groups/${g.id}`)} t={t} />)}
+            </Section>
+          )}
+          <Section title={t("grp.public")}>
+            {others.length === 0 && mine.length === 0
+              ? <p style={{ fontSize: 13, color: theme.textFaint, textAlign: "center", padding: "1.5rem 0" }}>{t("grp.empty")}</p>
+              : others.map(g => <GroupCard key={g.id} g={g} onOpen={() => join(g.id)} t={t} />)}
+          </Section>
+        </>
+      )}
+    </main>
+  );
+}
+
+function Field({ v, ph, on }: { v: string; ph: string; on: (v: string) => void }) {
+  return <input value={v} onChange={e => on(e.target.value)} placeholder={ph}
+    style={{ width: "100%", boxSizing: "border-box", fontSize: 14, padding: "10px 12px", marginBottom: 8, borderRadius: 10, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" }} />;
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <p style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.8, textTransform: "uppercase", margin: "0 0 8px 2px" }}>{title}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>{children}</div>
+    </div>
+  );
+}
+
+function GroupCard({ g, member, onOpen, t }: { g: Group; member?: boolean; onOpen: () => void; t: (k: string) => string }) {
+  return (
+    <button onClick={onOpen} style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "14px 15px", borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer" }}>
+      <span style={{ flex: 1, minWidth: 0 }}>
+        <span style={{ display: "block", fontSize: 15.5, fontWeight: 800, color: theme.text, marginBottom: 3 }}>{g.name}</span>
+        {g.place && <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted }}>📍 {g.place}</span>}
+        {g.schedule && <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted }}>🕒 {g.schedule}</span>}
+        <span style={{ display: "block", fontSize: 11.5, color: theme.textFaint, marginTop: 3 }}>👥 {g.member_count}{t("grp.members")}</span>
+      </span>
+      <span style={{ flexShrink: 0, fontSize: 13, fontWeight: 800, color: "#fff", background: member ? theme.gold : theme.primary, borderRadius: 10, padding: "8px 14px" }}>{member ? t("grp.enter") : t("grp.join")}</span>
+    </button>
+  );
+}
