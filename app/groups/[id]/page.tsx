@@ -5,7 +5,7 @@ import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import {
-  Group, GroupMember, GroupMessage,
+  Group, GroupMember, GroupMessage, MAX_MEMBERS,
   fetchGroup, fetchGroupMessages, fetchMembers, joinGroup, leaveGroup,
   sendGroupMessage, subscribeGroupMessages,
 } from "@/lib/besora/groups";
@@ -24,6 +24,7 @@ export default function GroupDetailPage() {
   const bottom = useRef<HTMLDivElement>(null);
 
   const isMember = !!user && members.some(m => m.user_id === user.id);
+  const full = !!group && !isMember && group.member_count >= MAX_MEMBERS;
   const nameById = Object.fromEntries(members.map(m => [m.user_id, m.nickname]));
 
   async function load() {
@@ -46,7 +47,8 @@ export default function GroupDetailPage() {
 
   async function handleJoin() {
     if (!user) { router.push("/login"); return; }
-    try { await joinGroup(id); await load(); } catch { /* */ }
+    try { await joinGroup(id); await load(); }
+    catch (e) { if ((e as Error)?.message === "full") { alert(t("grp.fullMsg")); await load(); } }
   }
   async function handleLeave() {
     await leaveGroup(id);
@@ -69,7 +71,7 @@ export default function GroupDetailPage() {
         <button onClick={() => router.push("/groups")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 10, padding: "6px 10px", cursor: "pointer", whiteSpace: "nowrap" }}>←</button>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ display: "block", fontSize: 15.5, fontWeight: 800, color: theme.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{group.name}</span>
-          <span style={{ display: "block", fontSize: 11, color: theme.textFaint }}>👥 {group.member_count}{t("grp.members")}</span>
+          <span style={{ display: "block", fontSize: 11, color: theme.textFaint }}>👥 {group.member_count}/{MAX_MEMBERS}{t("grp.members")}{full ? ` · ${t("grp.full")}` : ""}</span>
         </span>
       </div>
 
@@ -99,8 +101,8 @@ export default function GroupDetailPage() {
         <p style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "0 0 8px 2px" }}>💬 {t("grp.chat")}</p>
         {!isMember ? (
           <div style={{ textAlign: "center", padding: "1.5rem 1rem", color: theme.textMuted }}>
-            <p style={{ fontSize: 13.5, margin: "0 0 12px" }}>{t("grp.joinToChat")}</p>
-            <button onClick={handleJoin} style={{ padding: "12px 28px", fontSize: 15, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 12, cursor: "pointer" }}>{t("grp.join")}</button>
+            <p style={{ fontSize: 13.5, margin: "0 0 12px" }}>{full ? t("grp.fullMsg") : t("grp.joinToChat")}</p>
+            <button onClick={handleJoin} disabled={full} style={{ padding: "12px 28px", fontSize: 15, fontWeight: 800, color: "#fff", background: full ? theme.textFaint : theme.primary, border: "none", borderRadius: 12, cursor: full ? "default" : "pointer", opacity: full ? 0.7 : 1 }}>{full ? t("grp.full") : t("grp.join")}</button>
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
