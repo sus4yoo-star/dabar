@@ -17,6 +17,9 @@ export type Group = {
   last_at: string;
 };
 
+// 한 모임 최대 인원 (오프라인 나눔 — 6명 이하)
+export const MAX_MEMBERS = 6;
+
 export type GroupMessage = { id: string; group_id: string; sender: string; body: string; created_at: string };
 export type GroupMember = { user_id: string; role: string; joined_at: string; nickname: string; avatarUrl: string | null };
 
@@ -52,6 +55,9 @@ export async function createGroup(p: { name: string; place: string; schedule: st
 
 export async function joinGroup(groupId: string): Promise<void> {
   const id = await myId(); if (!id) throw new Error("login required");
+  // 정원 체크 (6명 이하)
+  const g = await fetchGroup(groupId);
+  if (g && g.member_count >= MAX_MEMBERS) throw new Error("full");
   const { error } = await getSupabase().from("group_members").insert({ group_id: groupId, user_id: id, role: "member" });
   if (error && !/duplicate|unique/i.test(error.message)) throw error;
 }

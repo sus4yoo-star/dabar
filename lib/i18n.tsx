@@ -293,6 +293,8 @@ const DICT: Dict = {
   "grp.leave":     { ko: "모임 나가기", en: "Leave group", th: "ออกจากกลุ่ม", lo: "ອອກຈາກກຸ່ມ" },
   "grp.members":   { ko: "명", en: "members", th: "คน", lo: "ຄົນ" },
   "grp.leader":    { ko: "리더", en: "Leader", th: "ผู้นำ", lo: "ຫົວໜ້າ" },
+  "grp.full":      { ko: "정원 마감", en: "Full", th: "เต็มแล้ว", lo: "ເຕັມແລ້ວ" },
+  "grp.fullMsg":   { ko: "정원이 찼어요 (최대 6명)", en: "This group is full (max 6)", th: "กลุ่มเต็มแล้ว (สูงสุด 6)", lo: "ກຸ່ມເຕັມແລ້ວ (ສູງສຸດ 6)" },
   "grp.empty":     { ko: "아직 공개된 모임이 없어요.", en: "No open groups yet.", th: "ยังไม่มีกลุ่มเปิด", lo: "ຍັງບໍ່ມີກຸ່ມເປີດ" },
   "grp.loginNeeded": { ko: "로그인하면 모임에 참여할 수 있어요.", en: "Log in to join groups.", th: "เข้าสู่ระบบเพื่อเข้าร่วมกลุ่ม", lo: "ເຂົ້າສູ່ລະບົບເພື່ອເຂົ້າຮ່ວມ" },
   "grp.leaderOnly":  { ko: "모임 개설은 리더 권한이 필요해요 (관리자에게 요청).", en: "Creating a group needs leader permission.", th: "การสร้างกลุ่มต้องมีสิทธิ์ผู้นำ", lo: "ການສ້າງກຸ່ມຕ້ອງມີສິດຫົວໜ້າ" },

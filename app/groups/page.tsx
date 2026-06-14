@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { getSupabase } from "@/lib/besora/supabase";
-import { Group, createGroup, fetchMyGroupIds, fetchPublicGroups, joinGroup } from "@/lib/besora/groups";
+import { Group, MAX_MEMBERS, createGroup, fetchMyGroupIds, fetchPublicGroups, joinGroup } from "@/lib/besora/groups";
 
 export default function GroupsPage() {
   const router = useRouter();
@@ -69,7 +69,8 @@ export default function GroupsPage() {
 
   async function join(id: string) {
     if (!user) { router.push("/login"); return; }
-    try { await joinGroup(id); } catch { /* */ }
+    try { await joinGroup(id); }
+    catch (e) { if ((e as Error)?.message === "full") { alert(t("grp.fullMsg")); await load(); return; } }
     router.push(`/groups/${id}`);
   }
 
@@ -147,15 +148,16 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function GroupCard({ g, member, onOpen, t }: { g: Group; member?: boolean; onOpen: () => void; t: (k: string) => string }) {
+  const full = !member && g.member_count >= MAX_MEMBERS;
   return (
-    <button onClick={onOpen} style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "14px 15px", borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer" }}>
+    <button onClick={full ? undefined : onOpen} disabled={full} style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "14px 15px", borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: full ? "default" : "pointer", opacity: full ? 0.6 : 1 }}>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 15.5, fontWeight: 800, color: theme.text, marginBottom: 3 }}>{g.name}</span>
         {g.place && <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted }}>📍 {g.place}</span>}
         {g.schedule && <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted }}>🕒 {g.schedule}</span>}
-        <span style={{ display: "block", fontSize: 11.5, color: theme.textFaint, marginTop: 3 }}>👥 {g.member_count}{t("grp.members")}</span>
+        <span style={{ display: "block", fontSize: 11.5, color: theme.textFaint, marginTop: 3 }}>👥 {g.member_count}/{MAX_MEMBERS}{t("grp.members")}</span>
       </span>
-      <span style={{ flexShrink: 0, fontSize: 13, fontWeight: 800, color: "#fff", background: member ? theme.gold : theme.primary, borderRadius: 10, padding: "8px 14px" }}>{member ? t("grp.enter") : t("grp.join")}</span>
+      <span style={{ flexShrink: 0, fontSize: 13, fontWeight: 800, color: "#fff", background: member ? theme.gold : full ? theme.textFaint : theme.primary, borderRadius: 10, padding: "8px 14px" }}>{member ? t("grp.enter") : full ? t("grp.full") : t("grp.join")}</span>
     </button>
   );
 }
