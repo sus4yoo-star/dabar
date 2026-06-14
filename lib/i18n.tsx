@@ -275,7 +275,7 @@ const DICT: Dict = {
   "pv.seekerLang":{ ko: "상대 언어", en: "Their language", th: "ภาษาของเขา", lo: "ພາສາຂອງເຂົາ" },
   "pv.pickSeeker":{ ko: "상대(태신자) 언어를 골라주세요", en: "Pick the other person's language", th: "เลือกภาษาของอีกฝ่าย", lo: "ເລືອກພາສາຂອງອີກຝ່າຍ" },
   "pv.swap":      { ko: "↔ 서로 바꾸기", en: "↔ Swap", th: "↔ สลับ", lo: "↔ ສະຫຼັບ" },
-  "read.toParallel": { ko: "상대 언어와 나란히 보기 →", en: "Read side by side with another language →", th: "อ่านคู่กับอีกภาษา →", lo: "ອ່ານຄຽງຄູ່ກັບອີກພາສາ →" },
+  "read.toParallel": { ko: "복음 핵심구절 나란히 보기 →", en: "Key gospel verses side by side →", th: "อ่านข้อพระคัมภีร์หลักคู่กัน →", lo: "ອ່ານຂໍ້ພຣະຄຳພີຫຼັກຄຽງຄູ່ກັນ →" },
 };
 
 interface I18n { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; }
