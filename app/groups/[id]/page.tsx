@@ -5,9 +5,9 @@ import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import {
-  Group, GroupMember, GroupMessage, MAX_MEMBERS,
-  fetchGroup, fetchGroupMessages, fetchMembers, joinGroup, leaveGroup,
-  sendGroupMessage, subscribeGroupMessages, updateNotice,
+  Group, GroupMember, GroupMessage, GroupPhoto, MAX_MEMBERS,
+  fetchGroup, fetchGroupMessages, fetchMembers, fetchPhotos, joinGroup, leaveGroup,
+  sendGroupMessage, subscribeGroupMessages, updateNotice, uploadPhoto, deletePhoto,
 } from "@/lib/besora/groups";
 
 export default function GroupDetailPage() {
@@ -23,6 +23,9 @@ export default function GroupDetailPage() {
   const [text, setText] = useState("");
   const [editingNotice, setEditingNotice] = useState(false);
   const [noticeDraft, setNoticeDraft] = useState("");
+  const [photos, setPhotos] = useState<GroupPhoto[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
 
   const isMember = !!user && members.some(m => m.user_id === user.id);
@@ -42,8 +45,27 @@ export default function GroupDetailPage() {
     setLoading(true);
     const [g, ms] = await Promise.all([fetchGroup(id), fetchMembers(id)]);
     setGroup(g); setMembers(ms);
-    if (user && ms.some(m => m.user_id === user.id)) setMessages(await fetchGroupMessages(id));
+    if (user && ms.some(m => m.user_id === user.id)) {
+      const [msgs, phs] = await Promise.all([fetchGroupMessages(id), fetchPhotos(id)]);
+      setMessages(msgs); setPhotos(phs);
+    }
     setLoading(false);
+  }
+
+  async function onPickPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { alert(t("grp.photoBig")); return; }
+    setUploading(true);
+    try { await uploadPhoto(id, file); setPhotos(await fetchPhotos(id)); }
+    catch { alert(t("grp.notReady")); }
+    setUploading(false);
+  }
+  async function onDeletePhoto(p: GroupPhoto) {
+    if (!confirm(t("grp.delPhoto"))) return;
+    await deletePhoto(p);
+    setPhotos(prev => prev.filter(x => x.id !== p.id));
   }
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [id, user]);
 
@@ -121,6 +143,32 @@ export default function GroupDetailPage() {
         {/* 전도 도구 바로가기 (멤버) */}
         {isMember && (
           <button onClick={() => router.push("/share")} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px", marginBottom: 14, fontSize: 14, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("grp.evangelize")}</button>
+        )}
+
+        {/* 사진 (멤버) */}
+        {isMember && (
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0 0 7px 2px" }}>
+              <span style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>📷 {t("grp.photos")}{photos.length ? ` · ${photos.length}` : ""}</span>
+              <button onClick={() => fileRef.current?.click()} disabled={uploading} style={{ fontSize: 12, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 8, padding: "5px 11px", cursor: "pointer" }}>{uploading ? t("grp.uploading") : t("grp.addPhoto")}</button>
+            </div>
+            <input ref={fileRef} type="file" accept="image/*" onChange={onPickPhoto} style={{ display: "none" }} />
+            {photos.length > 0 && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+                {photos.map(p => {
+                  const canDel = (user && p.uploader === user.id) || amLeader;
+                  return (
+                    <div key={p.id} style={{ position: "relative", aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", border: `1px solid ${theme.cardBorder}` }}>
+                      <img src={p.url} alt="" onClick={() => window.open(p.url, "_blank")} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer", display: "block" }} />
+                      {canDel && (
+                        <button onClick={() => onDeletePhoto(p)} aria-label="delete" style={{ position: "absolute", top: 4, insetInlineEnd: 4, width: 22, height: 22, borderRadius: 999, border: "none", background: "rgba(0,0,0,0.55)", color: "#fff", fontSize: 13, lineHeight: "22px", cursor: "pointer", padding: 0 }}>×</button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         )}
 
         {/* 참여자 */}

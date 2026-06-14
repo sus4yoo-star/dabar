@@ -106,6 +106,38 @@ export async function sendGroupMessage(groupId: string, body: string): Promise<v
   if (error) throw error;
 }
 
+// ───────── 모임 사진 (Supabase Storage: group-photos 버킷) ─────────
+export type GroupPhoto = { id: string; group_id: string; uploader: string; path: string; created_at: string; url: string };
+const PHOTO_BUCKET = "group-photos";
+
+export async function fetchPhotos(groupId: string): Promise<GroupPhoto[]> {
+  try {
+    const sb = getSupabase();
+    const { data, error } = await sb.from("group_photos").select("*").eq("group_id", groupId).order("created_at", { ascending: false });
+    if (error) return [];
+    const rows = (data ?? []) as Omit<GroupPhoto, "url">[];
+    return rows.map(r => ({ ...r, url: sb.storage.from(PHOTO_BUCKET).getPublicUrl(r.path).data.publicUrl }));
+  } catch { return []; }
+}
+
+export async function uploadPhoto(groupId: string, file: File): Promise<void> {
+  const uid = await myId(); if (!uid) throw new Error("login required");
+  const sb = getSupabase();
+  const ext = ((file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "")) || "jpg";
+  const rand = (globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  const path = `${groupId}/${rand}.${ext}`;
+  const up = await sb.storage.from(PHOTO_BUCKET).upload(path, file, { upsert: false, contentType: file.type || undefined });
+  if (up.error) throw up.error;
+  const ins = await sb.from("group_photos").insert({ group_id: groupId, uploader: uid, path });
+  if (ins.error) throw ins.error;
+}
+
+export async function deletePhoto(p: GroupPhoto): Promise<void> {
+  const sb = getSupabase();
+  try { await sb.storage.from(PHOTO_BUCKET).remove([p.path]); } catch { /* */ }
+  try { await sb.from("group_photos").delete().eq("id", p.id); } catch { /* */ }
+}
+
 export function subscribeGroupMessages(groupId: string, onInsert: (m: GroupMessage) => void): () => void {
   const sb = getSupabase();
   const ch = sb
