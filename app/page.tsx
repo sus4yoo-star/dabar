@@ -133,8 +133,11 @@ export default function Home() {
         style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "16px 18px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, marginBottom: "1.25rem" }}>
         <span style={{ fontSize: 28, lineHeight: 1 }}>📕</span>
         <span style={{ flex: 1 }}>
-          <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.text }}>{t("home.readTitle")}</span>
-          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>{t("home.readSub")}</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 17, fontWeight: 800, color: theme.text }}>{t("home.readTitle")}</span>
+            <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "2px 8px", whiteSpace: "nowrap" }}>{t("home.readTag")}</span>
+          </span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 3 }}>{t("home.readSub")}</span>
         </span>
         <span style={{ fontSize: 18, color: theme.textMuted }}>→</span>
       </button>

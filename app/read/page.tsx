@@ -63,11 +63,16 @@ export default function ReadPage() {
           <span style={{ fontSize: 15.5, fontWeight: 800, color: theme.text }}>📖 {meta?.ko} {chapter}{t("read.chapter")}</span>
           <span style={{ fontSize: 11, fontWeight: 700, color: theme.gold }}>▾</span>
         </button>
-        <span style={{ fontSize: 10.5, fontWeight: 700, color: theme.textFaint, whiteSpace: "nowrap" }}>{BIBLE_VERSION_LABEL}</span>
+        <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", lineHeight: 1.2 }}>
+          <span style={{ fontSize: 10.5, fontWeight: 700, color: theme.textFaint, whiteSpace: "nowrap" }}>{BIBLE_VERSION_LABEL}</span>
+          <span style={{ fontSize: 9, fontWeight: 700, color: theme.gold, whiteSpace: "nowrap" }}>· {t("read.licensing")}</span>
+        </span>
       </div>
 
       {/* 본문 */}
       <div ref={scroller} style={{ flex: 1, overflowY: "auto", padding: "16px 18px 90px" }}>
+        {/* 컨셉: 혼자 읽기 + 상대 언어와 나란히 함께 읽기 */}
+        <p style={{ fontSize: 12, color: theme.textMuted, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "9px 12px", margin: "0 0 14px", lineHeight: 1.55, textAlign: "center" }}>🙏 {t("read.concept")}</p>
         <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: "2px 0 14px" }}>{meta?.ko} {chapter}{t("read.chapter")}</h2>
         {loading ? (
           <p style={{ color: theme.textMuted, textAlign: "center", padding: "3rem 0" }}>…</p>
