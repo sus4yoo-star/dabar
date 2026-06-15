@@ -87,3 +87,18 @@ export async function notifyPeer(companionId: string, title: string, body: strin
     });
   } catch { /* ignore */ }
 }
+
+// 소그룹 모임의 다른 멤버들에게 푸시 (그룹 메시지 전송 후 호출)
+export async function notifyGroup(groupId: string, title: string, body: string): Promise<void> {
+  try {
+    const sb = getSupabase();
+    const { data } = await sb.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) return;
+    await fetch("/api/push/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ groupId, title, body, url: `/groups/${groupId}` }),
+    });
+  } catch { /* ignore */ }
+}
