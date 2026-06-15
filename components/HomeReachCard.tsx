@@ -23,8 +23,8 @@ export default function HomeReachCard() {
 
   return (
     <button onClick={() => router.push("/reach")} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 12, padding: "15px 16px", borderRadius: 16, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, cursor: "pointer", color: theme.text }}>
-      <span style={{ fontSize: 26, lineHeight: 1 }}>🌱</span>
+      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 9, padding: "12px 16px", borderRadius: 16, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, cursor: "pointer", color: theme.text }}>
+      <span style={{ fontSize: 24, lineHeight: 1 }}>🌱</span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: theme.gold }}>{t("home.reachTitle")}</span>
         <span style={{ display: "block", fontSize: 12, color: due > 0 ? theme.primarySoft : theme.textMuted, fontWeight: due > 0 ? 700 : 400, marginTop: 2 }}>

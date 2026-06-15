@@ -54,7 +54,7 @@ export default function Home() {
       </div>
 
       {/* 히어로 (compact) */}
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: 14 }}>
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: 11 }}>
         <img src="/icons/icon-192.png" alt="DABAR" width={44} height={44} style={{ borderRadius: 12, boxShadow: "0 6px 18px rgba(0,0,0,0.25)" }} />
         <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 26, fontWeight: 700, color: theme.gold, letterSpacing: 4, margin: "6px 0 2px" }}>DABAR</h1>
         <p style={{ fontSize: 12, color: theme.textMuted, margin: 0 }}>{t("home.tagline")}</p>
@@ -82,8 +82,8 @@ export default function Home() {
 
       {/* 복음 전하기 — 메인 CTA (강조) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "15px 16px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, cursor: "pointer", color: theme.text }}>
-        <span style={{ fontSize: 28, lineHeight: 1 }}>🕊️</span>
+        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 16px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, cursor: "pointer", color: theme.text }}>
+        <span style={{ fontSize: 26, lineHeight: 1 }}>🕊️</span>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ display: "block", fontSize: 16.5, fontWeight: 800, color: theme.gold }}>{t("home.shareTitle")}</span>
           <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{t("home.shareSub")}</span>
@@ -95,7 +95,7 @@ export default function Home() {
       <HomeReachCard />
 
       {/* 4개 기능 — 2×2 그리드 */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 11 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 9 }}>
         <Tile icon="🤝" title={t("home.groupsTitle")} accent onClick={() => router.push("/groups")} />
         <Tile icon="📕" title={t("home.readTitle")} tag={t("home.readTag")} onClick={() => router.push("/read")} />
         <Tile icon="📚" title={t("home.growSection")} onClick={() => router.push("/learn")} />
@@ -103,7 +103,7 @@ export default function Home() {
       </div>
 
       {/* 빠른 이동 — 동행 / 랭킹 / 오답 */}
-      <div style={{ display: "flex", gap: 8, marginTop: 11 }}>
+      <div style={{ display: "flex", gap: 8, marginTop: 9 }}>
         <QuickChip label={t("common.companions")} onClick={() => router.push("/share/me")} badge={unread} />
         <QuickChip label={t("common.ranking")} onClick={() => router.push("/ranking")} />
         {user && <QuickChip label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
@@ -128,8 +128,8 @@ export default function Home() {
 function Tile({ icon, title, tag, accent, onClick }: { icon: string; title: string; tag?: string; accent?: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} className="fade-in-2"
-      style={{ display: "flex", flexDirection: "column", gap: 9, alignItems: "flex-start", textAlign: "left", padding: "15px 14px", borderRadius: 16, minHeight: 96, border: `1px solid ${accent ? theme.primary : theme.cardBorder}`, background: accent ? theme.primaryBg : theme.card, color: theme.text, cursor: "pointer" }}>
-      <span style={{ fontSize: 26, lineHeight: 1 }}>{icon}</span>
+      style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-start", textAlign: "left", padding: "11px 13px", borderRadius: 15, minHeight: 70, border: `1px solid ${accent ? theme.primary : theme.cardBorder}`, background: accent ? theme.primaryBg : theme.card, color: theme.text, cursor: "pointer" }}>
+      <span style={{ fontSize: 22, lineHeight: 1 }}>{icon}</span>
       <span style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
         <span style={{ fontSize: 14.5, fontWeight: 800, color: accent ? theme.primarySoft : theme.text }}>{title}</span>
         {tag && <span style={{ fontSize: 9.5, fontWeight: 800, color: theme.primarySoft, background: "rgba(31,155,239,0.10)", border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "1px 6px" }}>{tag}</span>}
