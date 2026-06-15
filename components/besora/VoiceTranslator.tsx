@@ -200,35 +200,36 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
 
   function close() { if (listening) stopMic(); setOpen(false); }
 
-  // 한 언어 칸 — 라벨 + [ 큰 마이크 | 큰 재생 ] + 원문·번역 텍스트
+  // 한 언어 칸 — 라벨 + [ 큰 마이크 | 큰 재생 ] + 원문·번역 텍스트. big=세로(크게) 모드
   const pane = (code: string, value: string, onType: (v: string) => void,
-                side: "L" | "R", accent: string, bgSoft: string, border: string) => {
+                side: "L" | "R", accent: string, bgSoft: string, border: string, big = false) => {
     const on = listening === code;
     const has = !!value.trim();
     const dir = rtlFor(code) ? "rtl" : "ltr";
+    const micH = big ? 66 : 54;
     return (
       <div dir={dir} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
-        <span style={{ fontSize: 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)} <span style={{ opacity: 0.7 }}>({code.toUpperCase()})</span>{busy === side ? " · 번역 중…" : ""}</span>
+        <span style={{ fontSize: big ? 13.5 : 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)} <span style={{ opacity: 0.7 }}>({code.toUpperCase()})</span>{busy === side ? " · 번역 중…" : ""}</span>
         <div style={{ display: "flex", gap: 6 }}>
           {/* 마이크 (크게, 가변폭) */}
           <button onClick={() => micFor(code)} disabled={!micAvailable} aria-label={ui(myLang, "micSpeak")}
-            style={{ flex: 1, minWidth: 0, height: 54, borderRadius: 14, border: "none", cursor: micAvailable ? "pointer" : "default",
-              background: on ? "#e25555" : bgSoft, color: on ? "#fff" : accent, fontSize: 24, fontWeight: 800,
+            style={{ flex: 1, minWidth: 0, height: micH, borderRadius: 14, border: "none", cursor: micAvailable ? "pointer" : "default",
+              background: on ? "#e25555" : bgSoft, color: on ? "#fff" : accent, fontSize: big ? 28 : 24, fontWeight: 800,
               display: "grid", placeItems: "center", boxShadow: on ? "0 0 0 6px rgba(226,85,85,0.15)" : "none",
               transition: "background .2s", opacity: micAvailable ? 1 : 0.5 }}>
             {on ? "■" : "🎤"}
           </button>
           {/* 재생 (크게) */}
           <button onClick={() => has && speak(value, code)} disabled={!has} aria-label={ui(myLang, "micListen")}
-            style={{ width: 54, height: 54, flexShrink: 0, borderRadius: 14, border: `1px solid ${has ? "transparent" : border}`, cursor: has ? "pointer" : "default",
-              background: has ? bgSoft : theme.card, color: has ? accent : theme.textFaint, fontSize: 22,
+            style={{ width: micH, height: micH, flexShrink: 0, borderRadius: 14, border: `1px solid ${has ? "transparent" : border}`, cursor: has ? "pointer" : "default",
+              background: has ? bgSoft : theme.card, color: has ? accent : theme.textFaint, fontSize: big ? 24 : 22,
               display: "grid", placeItems: "center" }}>
             ▶
           </button>
         </div>
         <textarea value={value} onChange={(e) => onType(e.target.value)} rows={2}
           placeholder={nameOf(code)}
-          style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bgSoft, padding: "8px 10px", fontSize: 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: 52, lineHeight: 1.45 }} />
+          style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bgSoft, padding: "10px 12px", fontSize: big ? 16 : 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: big ? 88 : 52, lineHeight: 1.5 }} />
       </div>
     );
   };
@@ -256,9 +257,9 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
   );
 
   const panes = (
-    <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-      {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder)}
-      {twoWay && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder)}
+    <div style={{ display: "flex", flexDirection: inline ? "column" : "row", gap: inline ? 12 : 8, alignItems: "stretch" }}>
+      {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder, inline)}
+      {twoWay && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder, inline)}
     </div>
   );
   const hint = (
@@ -270,8 +271,8 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
   // 인라인 모드 — 페이지에 그냥 박아두기 (플로팅/포털 없음, 항상 보임)
   if (inline) {
     return (
-      <div style={{ marginTop: 14, padding: "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: "#ffffff" }}>
-        <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 15, fontWeight: 700, color: theme.text, margin: "0 0 8px" }}>🎤 {ui(myLang, "voice")}</h2>
+      <div style={{ marginTop: 12, padding: "16px 16px 18px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: "#ffffff" }}>
+        <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 17, fontWeight: 700, color: theme.text, margin: "0 0 12px" }}>🎤 {ui(myLang, "voice")}</h2>
         {langBar}
         {panes}
         {hint}
