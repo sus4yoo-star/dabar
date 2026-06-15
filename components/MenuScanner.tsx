@@ -4,7 +4,7 @@
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, LANGS } from "@/lib/i18n";
 
 type Item = { box: { x: number; y: number; w: number; h: number }; original: string; translated: string };
 
@@ -37,6 +37,7 @@ export default function MenuScanner() {
   const [open, setOpen] = useState(false);
   const [imgH, setImgH] = useState(0);
   const [flip, setFlip] = useState<Record<number, boolean>>({});
+  const [target, setTarget] = useState<string>(lang); // 번역 결과 언어 (선택 가능)
 
   async function handle(file: File) {
     setErr(""); setLoading(true); setItems(null); setFlip({});
@@ -44,7 +45,7 @@ export default function MenuScanner() {
       const { base64, dataUrl } = await processImage(file);
       if (!base64) { setErr(t("scan.fail")); setLoading(false); return; }
       setImgUrl(dataUrl);
-      const r = await fetch("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: base64, lang }) });
+      const r = await fetch("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: base64, lang: target }) });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) setErr(d?.error === "no-key" ? t("scan.noKey") : (d?.detail ? `${t("scan.fail")}\n(${String(d.detail).slice(0, 140)})` : t("scan.fail")));
       else if (!d.items?.length) { setItems([]); setOpen(true); }
@@ -63,6 +64,15 @@ export default function MenuScanner() {
         <span style={{ fontSize: 14, fontWeight: 800, color: theme.gold }}>{t("scan.title")}</span>
       </div>
       <p style={{ margin: "0 0 10px", fontSize: 11.5, color: theme.textMuted, lineHeight: 1.4 }}>{t("scan.sub")}</p>
+
+      {/* 번역 언어 선택 */}
+      <label style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 9 }}>
+        <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.textMuted, flexShrink: 0 }}>{t("scan.toLang")}</span>
+        <select value={target} onChange={(e) => setTarget(e.target.value)}
+          style={{ flex: 1, minWidth: 0, fontSize: 12.5, fontWeight: 700, color: theme.text, background: theme.bg, border: `1px solid ${theme.border}`, borderRadius: 9, padding: "6px 8px", outline: "none", appearance: "none", WebkitAppearance: "none", cursor: "pointer" }}>
+          {LANGS.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
+        </select>
+      </label>
 
       <input ref={camRef} type="file" accept="image/*" capture="environment" onChange={onPick} style={{ display: "none" }} />
       <input ref={galRef} type="file" accept="image/*" onChange={onPick} style={{ display: "none" }} />
