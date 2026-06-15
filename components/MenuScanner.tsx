@@ -46,7 +46,7 @@ export default function MenuScanner() {
       setImgUrl(dataUrl);
       const r = await fetch("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: base64, lang }) });
       const d = await r.json().catch(() => ({}));
-      if (!r.ok) setErr(d?.error === "no-key" ? t("scan.noKey") : t("scan.fail"));
+      if (!r.ok) setErr(d?.error === "no-key" ? t("scan.noKey") : (d?.detail ? `${t("scan.fail")}\n(${String(d.detail).slice(0, 140)})` : t("scan.fail")));
       else if (!d.items?.length) { setItems([]); setOpen(true); }
       else { setItems(d.items as Item[]); setOpen(true); }
     } catch { setErr(t("scan.fail")); }
@@ -75,7 +75,7 @@ export default function MenuScanner() {
           <button onClick={() => galRef.current?.click()} style={{ ...btn, background: theme.primaryBg, color: theme.primarySoft, border: `1px solid ${theme.cardBorder}` }}>{t("scan.attach")}</button>
         </div>
       )}
-      {err && <p style={{ margin: "8px 0 0", fontSize: 12.5, color: theme.wrong, textAlign: "center" }}>{err}</p>}
+      {err && <p style={{ margin: "8px 0 0", fontSize: 12, color: theme.wrong, textAlign: "center", whiteSpace: "pre-wrap", lineHeight: 1.4 }}>{err}</p>}
 
       {open && imgUrl && typeof document !== "undefined" && createPortal(
         <div style={{ position: "fixed", inset: 0, zIndex: 80, background: "rgba(8,16,28,0.92)", display: "flex", flexDirection: "column", overflowY: "auto" }}>
