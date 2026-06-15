@@ -22,7 +22,7 @@ const LOCALE: Record<string, string> = {
 };
 
 export default function VoiceTranslator({ inline = false }: { inline?: boolean } = {}) {
-  const { myLang, seekerLang, languages, rtlFor } = useLang();
+  const { myLang, seekerLang, languages, rtlFor, setMyLang, setSeekerLang } = useLang();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -225,6 +225,26 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
 
   const twoWay = seeker !== myLang;
 
+  // 언어 선택 줄 — 내 언어 ↔ 상대 언어 (어느 화면에서든 직접 고를 수 있게)
+  const selStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", fontSize: 14, fontWeight: 700, padding: "8px 10px", borderRadius: 10, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, outline: "none", appearance: "none", WebkitAppearance: "none" };
+  const langBar = (
+    <div style={{ display: "flex", gap: 8, alignItems: "flex-end", marginBottom: 10 }}>
+      <label style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
+        <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.primarySoft }}>{ui(myLang, "myLanguage")}</span>
+        <select value={myLang} onChange={(e) => setMyLang(e.target.value)} style={selStyle}>
+          {languages.map((l) => <option key={l.code} value={l.code}>{l.name_native}</option>)}
+        </select>
+      </label>
+      <span style={{ paddingBottom: 9, color: theme.textFaint, fontSize: 15, fontWeight: 800 }}>↔</span>
+      <label style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
+        <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.gold }}>{ui(myLang, "seekerLanguage")}</span>
+        <select value={seeker} onChange={(e) => setSeekerLang(e.target.value)} style={selStyle}>
+          {languages.map((l) => <option key={l.code} value={l.code}>{l.name_native}</option>)}
+        </select>
+      </label>
+    </div>
+  );
+
   const panes = (
     <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
       {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder)}
@@ -242,6 +262,7 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
     return (
       <div style={{ marginTop: 14, padding: "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: "#ffffff" }}>
         <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 15, fontWeight: 700, color: theme.text, margin: "0 0 8px" }}>🎤 {ui(myLang, "voice")}</h2>
+        {langBar}
         {panes}
         {hint}
         {err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
@@ -270,6 +291,7 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
               <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 16, fontWeight: 700, color: theme.text, margin: 0 }}>🎤 {ui(myLang, "voice")}</h2>
               <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>{ui(myLang, "close")} ✕</button>
             </div>
+            {langBar}
             {panes}
             {hint}
             {err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
