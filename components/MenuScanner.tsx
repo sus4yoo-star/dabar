@@ -9,7 +9,7 @@ import { useI18n } from "@/lib/i18n";
 type Item = { box: { x: number; y: number; w: number; h: number }; original: string; translated: string };
 
 // 사진을 긴 변 1280px·JPEG 로 정규화(EXIF 회전 반영) → 화면표시용 dataUrl + 전송용 base64.
-async function processImage(file: File, maxDim = 1280, quality = 0.72): Promise<{ base64: string; dataUrl: string }> {
+async function processImage(file: File, maxDim = 1024, quality = 0.7): Promise<{ base64: string; dataUrl: string }> {
   let bmp: ImageBitmap | HTMLImageElement;
   try {
     bmp = await createImageBitmap(file, { imageOrientation: "from-image" } as ImageBitmapOptions);
@@ -45,8 +45,8 @@ export default function MenuScanner() {
       if (!base64) { setErr(t("scan.fail")); setLoading(false); return; }
       setImgUrl(dataUrl);
       const r = await fetch("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: base64, lang }) });
-      const d = await r.json();
-      if (!r.ok) setErr(t("scan.fail"));
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) setErr(d?.error === "no-key" ? t("scan.noKey") : t("scan.fail"));
       else if (!d.items?.length) { setItems([]); setOpen(true); }
       else { setItems(d.items as Item[]); setOpen(true); }
     } catch { setErr(t("scan.fail")); }
@@ -57,7 +57,7 @@ export default function MenuScanner() {
   const btn: React.CSSProperties = { width: "100%", padding: "11px 8px", fontSize: 13.5, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 12, cursor: "pointer", whiteSpace: "nowrap" };
 
   return (
-    <div className="fade-in-3" style={{ marginTop: 9, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "12px 13px" }}>
+    <div className="fade-in-3" style={{ height: "100%", display: "flex", flexDirection: "column", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "12px 13px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 3 }}>
         <span style={{ fontSize: 16 }}>📷</span>
         <span style={{ fontSize: 14, fontWeight: 800, color: theme.gold }}>{t("scan.title")}</span>

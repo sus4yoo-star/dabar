@@ -62,6 +62,7 @@ const DICT: Dict = {
   "scan.loading": { ko: "사진을 읽는 중…", en: "Reading the photo…", th: "กำลังอ่านรูป…", lo: "ກຳລັງອ່ານຮູບ…" },
   "scan.none":    { ko: "사진에서 글자를 찾지 못했어요.", en: "No text found in the photo.", th: "ไม่พบข้อความในรูป", lo: "ບໍ່ພົບຂໍ້ຄວາມໃນຮູບ" },
   "scan.fail":    { ko: "번역에 실패했어요. 다시 시도해 주세요.", en: "Couldn't translate. Please try again.", th: "แปลไม่สำเร็จ ลองใหม่อีกครั้ง", lo: "ແປບໍ່ສຳເລັດ ລອງໃໝ່" },
+  "scan.noKey":   { ko: "AI 번역 키가 설정되지 않았어요. (Netlify 환경변수 ANTHROPIC_API_KEY 필요)", en: "AI key not set. (ANTHROPIC_API_KEY needed)", th: "ยังไม่ได้ตั้งค่าคีย์ AI (ANTHROPIC_API_KEY)", lo: "ຍັງບໍ່ໄດ້ຕັ້ງຄ່າຄີ AI (ANTHROPIC_API_KEY)" },
   "scan.hint":    { ko: "글자 위에 번역이 겹쳐 표시돼요. 탭하면 원문↔번역", en: "Translation overlays the text. Tap to toggle original↔translation", th: "คำแปลซ้อนบนข้อความ แตะเพื่อสลับ", lo: "ຄຳແປວາງທັບຂໍ້ຄວາມ ແຕະເພື່ອສະຫຼັບ" },
   "scan.close":   { ko: "닫기", en: "Close", th: "ปิด", lo: "ປິດ" },
 
