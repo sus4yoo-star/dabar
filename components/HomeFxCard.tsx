@@ -1,6 +1,6 @@
 "use client";
 
-// 💱 환율 계산기 — 태국 바트(THB) ↔ 대한민국 원(KRW). 양방향 입력.
+// 💱 환율 계산기 — 태국 바트(THB) ↔ 대한민국 원(KRW). 양방향 입력. (좁은 반칸에서도 안 깨지게 컴팩트)
 // 환율은 /api/fx 에서 매일 오전 9시(KST) 기준으로 갱신된 값을 사용.
 import { useEffect, useState } from "react";
 import { theme } from "@/lib/theme";
@@ -25,7 +25,6 @@ export default function HomeFxCard() {
       .catch(() => {});
   }, []);
 
-  // 환율이 들어오면 현재 입력 기준으로 한 번 계산
   useEffect(() => {
     if (rate == null) return;
     if (last === "thb") setKrw(thb === "" ? "" : String(Math.round(num(thb) * rate)));
@@ -47,39 +46,31 @@ export default function HomeFxCard() {
     : "—";
 
   return (
-    <div className="fade-in-3" style={{ marginTop: 9, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "12px 14px" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 9 }}>
-        <span style={{ fontSize: 14.5, fontWeight: 800, color: theme.gold }}>💱 {t("fx.title")}</span>
-        <span style={{ fontSize: 11, color: theme.textMuted, fontWeight: 700 }}>
-          {rate != null ? t("fx.per", { n: rate.toFixed(2) }) : t("fx.loading")}
-        </span>
-      </div>
+    <div className="fade-in-3" style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "12px 11px" }}>
+      <div style={{ fontSize: 13.5, fontWeight: 800, color: theme.gold, marginBottom: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>💱 {t("fx.title")}</div>
 
-      <Row flag="🇹🇭" label={t("fx.baht")} code="THB" value={last === "thb" ? thb : group(thb)} onChange={onThb} />
-      <div style={{ textAlign: "center", margin: "4px 0", color: theme.textFaint, fontSize: 15, fontWeight: 800 }}>⇅</div>
-      <Row flag="🇰🇷" label={t("fx.won")} code="KRW" value={last === "krw" ? krw : group(krw)} onChange={onKrw} />
+      <Row flag="🇹🇭" code="THB" value={last === "thb" ? thb : group(thb)} onChange={onThb} />
+      <div style={{ textAlign: "center", margin: "3px 0", color: theme.textFaint, fontSize: 14, fontWeight: 800 }}>⇅</div>
+      <Row flag="🇰🇷" code="KRW" value={last === "krw" ? krw : group(krw)} onChange={onKrw} />
 
-      <p style={{ margin: "10px 2px 0", fontSize: 10.5, color: theme.textFaint, textAlign: "center" }}>
-        {t("fx.note", { d: dateStr })}
+      <p style={{ margin: "9px 1px 0", fontSize: 10, color: theme.textFaint, lineHeight: 1.4 }}>
+        {rate != null ? t("fx.per", { n: rate.toFixed(2) }) : t("fx.loading")}<br />{t("fx.note", { d: dateStr })}
       </p>
     </div>
   );
 }
 
-function Row({ flag, label, code, value, onChange }: { flag: string; label: string; code: string; value: string; onChange: (v: string) => void }) {
+function Row({ flag, code, value, onChange }: { flag: string; code: string; value: string; onChange: (v: string) => void }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, background: theme.bg, border: `1px solid ${theme.border}`, borderRadius: 13, padding: "9px 12px" }}>
-      <span style={{ fontSize: 20, lineHeight: 1 }}>{flag}</span>
-      <span style={{ display: "flex", flexDirection: "column", minWidth: 64 }}>
-        <span style={{ fontSize: 12.5, fontWeight: 800, color: theme.text }}>{code}</span>
-        <span style={{ fontSize: 10, color: theme.textMuted }}>{label}</span>
-      </span>
+    <div style={{ display: "flex", alignItems: "center", gap: 6, background: theme.bg, border: `1px solid ${theme.border}`, borderRadius: 12, padding: "8px 9px" }}>
+      <span style={{ fontSize: 16, lineHeight: 1, flexShrink: 0 }}>{flag}</span>
+      <span style={{ fontSize: 12, fontWeight: 800, color: theme.text, flexShrink: 0 }}>{code}</span>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         inputMode="decimal"
         placeholder="0"
-        style={{ flex: 1, minWidth: 0, textAlign: "right", fontSize: 18, fontWeight: 800, color: theme.text, background: "transparent", border: "none", outline: "none" }}
+        style={{ flex: 1, minWidth: 0, width: "100%", textAlign: "right", fontSize: 15, fontWeight: 800, color: theme.text, background: "transparent", border: "none", outline: "none" }}
       />
     </div>
   );

@@ -93,10 +93,19 @@ export default function Home() {
       {/* 🌱 전도 여정 — 복음 전하기 바로 아래 (내가 전하는 사람들) */}
       <HomeReachCard />
 
-      {/* 4개 기능 — 2×2 그리드 */}
+      {/* 🤝 소그룹 모임 — 한 줄 (리더 개설·최대 6명·오프라인) */}
+      <button onClick={() => router.push("/groups")} className="fade-in-2"
+        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 9, padding: "12px 16px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.primaryBg, cursor: "pointer", color: theme.text }}>
+        <span style={{ fontSize: 24, lineHeight: 1 }}>🤝</span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: theme.primarySoft }}>{t("home.groupsTitle")}</span>
+          <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{t("home.groupsSub")}</span>
+        </span>
+        <span style={{ fontSize: 18, color: theme.primarySoft }}>→</span>
+      </button>
+
+      {/* 2개 기능 — 양육 / 퀴즈 */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 9 }}>
-        <Tile icon="🤝" title={t("home.groupsTitle")} accent onClick={() => router.push("/groups")} />
-        <Tile icon="📕" title={t("home.readTitle")} tag={t("home.readTag")} onClick={() => router.push("/read")} />
         <Tile icon="📚" title={t("home.growSection")} onClick={() => router.push("/learn")} />
         <Tile icon="📖" title={t("menu.quiz.t")} onClick={() => router.push("/play")} />
       </div>
