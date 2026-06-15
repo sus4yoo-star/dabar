@@ -4,6 +4,7 @@ import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 import HomeFxCard from "@/components/HomeFxCard";
 import MenuScanner from "@/components/MenuScanner";
+import SosButton from "@/components/SosButton";
 import VoiceTranslator from "@/components/besora/VoiceTranslator";
 import { LanguageProvider } from "@/lib/besora/LanguageContext";
 
@@ -27,6 +28,9 @@ export default function ReachPage() {
 
       {/* 음성 통역 — 크게(세로 배치): 내 언어 한 줄, 상대 언어 한 줄 */}
       <LanguageProvider><VoiceTranslator inline big /></LanguageProvider>
+
+      {/* 🆘 긴급 SOS — 동행 문자 + 긴급기관 전화 */}
+      <SosButton />
     </main>
   );
 }
