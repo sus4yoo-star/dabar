@@ -1,5 +1,7 @@
 * { box-sizing: border-box; }
 html, body { min-height: 100%; }
+/* iOS/모바일: 입력창 포커스·회전 시 글자 자동 확대 방지 */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   margin: 0;
   padding: 0;
