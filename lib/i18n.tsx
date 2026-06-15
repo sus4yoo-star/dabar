@@ -365,9 +365,9 @@ const DICT: Dict = {
   "cf.e5":         { ko: "용기가 필요해요", en: "Need courage", th: "ต้องการกำลังใจ", lo: "ຕ້ອງການກຳລັງໃຈ" },
   "cf.e6":         { ko: "감사해요", en: "Grateful", th: "ขอบคุณ", lo: "ຂອບໃຈ" },
   // 전도 여정 (내가 전하는 사람들)
-  "home.reachTitle": { ko: "사역 · 선교 · 전도 여정", en: "Ministry · Mission · Outreach", th: "พันธกิจ · มิชชัน · ประกาศ", lo: "ພັນທະກິດ · ມິຊັນ · ປະກາດ" },
-  "home.reachSub":   { ko: "내가 전하는 사람들 · 단계와 기도", en: "People I'm reaching · stages & prayer", th: "คนที่ฉันประกาศ · ขั้นตอนและคำอธิษฐาน", lo: "ຄົນທີ່ຂ້ອຍປະກາດ" },
-  "reach.title":   { ko: "사역 · 선교 · 전도 여정", en: "Ministry · Mission · Outreach", th: "พันธกิจ · มิชชัน · ประกาศ", lo: "ພັນທະກິດ · ມິຊັນ · ປະກາດ" },
+  "home.reachTitle": { ko: "선교 여정", en: "Mission", th: "พันธกิจ", lo: "ມິຊັນ" },
+  "home.reachSub":   { ko: "환율 계산 · 번역 도구", en: "Exchange & translation tools", th: "อัตราแลกเปลี่ยน · แปลภาษา", lo: "ອັດຕາແລກປ່ຽນ · ແປພາສາ" },
+  "reach.title":   { ko: "선교 여정", en: "Mission", th: "พันธกิจ", lo: "ມິຊັນ" },
   "reach.add":     { ko: "＋ 사람 추가", en: "＋ Add person", th: "＋ เพิ่มคน", lo: "＋ ເພີ່ມຄົນ" },
   "reach.namePh":  { ko: "이름 (예: 김OO, 카페 사장님)", en: "Name (a friend, neighbor…)", th: "ชื่อ", lo: "ຊື່" },
   "reach.notePh":  { ko: "기도제목·메모 (예: 건강 문제로 마음이 열림)", en: "Prayer / note", th: "คำอธิษฐาน / บันทึก", lo: "ຄຳອະທິຖານ / ບັນທຶກ" },
@@ -505,12 +505,13 @@ export function LangSelector() {
   }, [open]);
 
   const current = LANGS.find(l => l.code === lang) ?? LANGS[0];
+  const currentName = current.label.replace(/\s*\([^)]*\)\s*$/, ""); // 버튼엔 코드 "(ko)" 빼고 이름만
 
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button onClick={() => setOpen(o => !o)} aria-haspopup="listbox" aria-expanded={open}
         style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, fontWeight: 600, color: "#173249", background: "rgba(13,52,84,0.05)", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 16, padding: "6px 10px", cursor: "pointer", whiteSpace: "nowrap" }}>
-        🌐 {current.label}<span style={{ fontSize: 9, opacity: 0.55, marginLeft: 1 }}>▼</span>
+        🌐 {currentName}<span style={{ fontSize: 9, opacity: 0.55, marginLeft: 1 }}>▼</span>
       </button>
       {open && (
         <div role="listbox" style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 50, minWidth: 150, maxHeight: 200, overflowY: "auto", background: "#fff", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 14, boxShadow: "0 12px 32px rgba(23,50,73,0.18)", padding: 4 }}>
