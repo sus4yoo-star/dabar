@@ -1,4 +1,35 @@
-// 다바르 푸시 알림 서비스워커
+// 다바르 서비스워커 — 푸시 알림 + 페이지 항상 최신(network-first)
+// iOS에 앱으로 설치하면 옛 HTML이 캐시되어 새 화면이 안 뜨는 문제를 막는다.
+const SW_VERSION = "2026-06-15-1";
+
+self.addEventListener("install", () => {
+  // 새 서비스워커를 즉시 활성화 (대기 없이)
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    // 혹시 남아있는 옛 캐시 모두 제거
+    try {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((k) => caches.delete(k)));
+    } catch (e) { /* ignore */ }
+    await self.clients.claim();
+  })());
+});
+
+// 페이지(HTML) 이동 요청은 항상 네트워크 우선 → 배포 후 최신 화면이 바로 뜨도록.
+// (API·정적자원은 건드리지 않음)
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  if (req.mode === "navigate") {
+    event.respondWith(
+      fetch(req).catch(() => caches.match(req))
+    );
+  }
+});
+
+// ── 푸시 알림 ───────────────────────────────────────────
 self.addEventListener("push", (event) => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch (e) { data = {}; }

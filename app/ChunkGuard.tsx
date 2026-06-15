@@ -28,6 +28,17 @@ export default function ChunkGuard() {
     window.addEventListener("unhandledrejection", onReject);
     // 정상적으로 떴으면 가드 해제 → 다음 배포 때 다시 1회 새로고침 허용
     const t = window.setTimeout(() => { try { sessionStorage.removeItem(RELOAD_KEY); } catch { /* */ } }, 5000);
+
+    // 서비스워커 등록 — 페이지를 network-first 로 받아 배포 후 최신 화면이 바로 뜨게.
+    // 새 워커가 제어를 잡으면(=새 버전 배포) 1회 자동 새로고침.
+    if ("serviceWorker" in navigator) {
+      let refreshing = false;
+      const hadController = !!navigator.serviceWorker.controller; // 첫 설치(컨트롤러 없음)면 새로고침 안 함
+      const onCtrl = () => { if (refreshing || !hadController) return; refreshing = true; location.reload(); };
+      navigator.serviceWorker.addEventListener("controllerchange", onCtrl);
+      navigator.serviceWorker.register("/sw.js").then((reg) => { reg.update().catch(() => {}); }).catch(() => {});
+    }
+
     return () => {
       window.removeEventListener("error", onError);
       window.removeEventListener("unhandledrejection", onReject);
