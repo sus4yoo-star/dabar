@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 import HomeFxCard from "@/components/HomeFxCard";
+import MenuScanner from "@/components/MenuScanner";
 import VoiceTranslator from "@/components/besora/VoiceTranslator";
 import { LanguageProvider } from "@/lib/besora/LanguageContext";
 
@@ -20,6 +21,9 @@ export default function ReachPage() {
 
       {/* 환율 계산기 (바트 ↔ 원) */}
       <HomeFxCard />
+
+      {/* 📷 메뉴·간판 번역 (사진 → 글자 읽어 설정 언어로) */}
+      <MenuScanner />
 
       {/* 음성 통역 — 크게(세로 배치): 내 언어 한 줄, 상대 언어 한 줄 */}
       <LanguageProvider><VoiceTranslator inline big /></LanguageProvider>

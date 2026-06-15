@@ -54,6 +54,17 @@ const DICT: Dict = {
   "fx.note":   { ko: "매일 오전 9시 기준 환율 · {d}", en: "Reference rate, updated daily 9 AM · {d}", th: "อัตราอ้างอิง อัปเดตทุกวัน 9 โมงเช้า · {d}", lo: "ອັດຕາອ້າງອີງ ອັບເດດທຸກວັນ 9 ໂມງເຊົ້າ · {d}" },
   "fx.loading":{ ko: "환율 불러오는 중…", en: "Loading rate…", th: "กำลังโหลดอัตรา…", lo: "ກຳລັງໂຫຼດອັດຕາ…" },
 
+  // 📷 메뉴·간판 번역 (사진 → 글자 읽어 설정 언어로 번역)
+  "scan.title":   { ko: "메뉴·간판 번역", en: "Menu & Sign Translate", th: "แปลเมนู·ป้าย", lo: "ແປເມນູ·ປ້າຍ" },
+  "scan.sub":     { ko: "사진을 찍으면 설정한 언어로 번역해 드려요", en: "Snap a photo — we translate it into your language", th: "ถ่ายรูป แล้วเราจะแปลเป็นภาษาของคุณ", lo: "ຖ່າຍຮູບ ແລ້ວເຮົາຈະແປເປັນພາສາຂອງທ່ານ" },
+  "scan.take":    { ko: "📷 사진 찍기 · 올리기", en: "📷 Take / upload photo", th: "📷 ถ่าย / อัปโหลดรูป", lo: "📷 ຖ່າຍ / ອັບໂຫຼດຮູບ" },
+  "scan.again":   { ko: "📷 다른 사진", en: "📷 Another photo", th: "📷 รูปอื่น", lo: "📷 ຮູບອື່ນ" },
+  "scan.loading": { ko: "사진을 읽는 중…", en: "Reading the photo…", th: "กำลังอ่านรูป…", lo: "ກຳລັງອ່ານຮູບ…" },
+  "scan.none":    { ko: "사진에서 글자를 찾지 못했어요.", en: "No text found in the photo.", th: "ไม่พบข้อความในรูป", lo: "ບໍ່ພົບຂໍ້ຄວາມໃນຮູບ" },
+  "scan.fail":    { ko: "번역에 실패했어요. 다시 시도해 주세요.", en: "Couldn't translate. Please try again.", th: "แปลไม่สำเร็จ ลองใหม่อีกครั้ง", lo: "ແປບໍ່ສຳເລັດ ລອງໃໝ່" },
+  "scan.showOrig":{ ko: "원문 보기", en: "Show original", th: "ดูต้นฉบับ", lo: "ເບິ່ງຕົ້ນສະບັບ" },
+  "scan.hideOrig":{ ko: "원문 숨기기", en: "Hide original", th: "ซ่อนต้นฉบับ", lo: "ເຊື່ອງຕົ້ນສະບັບ" },
+
   "home.tagline":     { ko: "다바르 · 말씀 — 무엇부터 시작할까요?", en: "DABAR · The Word — where to begin?", th: "ดาบาร์ · พระวจนะ — เริ่มจากตรงไหนดี?", lo: "ດາບາ · ພຣະທຳ — ເລີ່ມຈາກໃສດີ?" },
   "home.greeting":    { ko: "{name}님, 오늘도 말씀과 함께해요 👋", en: "{name}, walk with the Word today 👋", th: "{name} วันนี้มาเดินกับพระวจนะกัน 👋", lo: "{name} ມື້ນີ້ມາຍ່າງກັບພຣະທຳນຳກັນ 👋" },
   "home.streakToday": { ko: "🔥 {n}일 연속 출석!", en: "🔥 {n}-day streak!", th: "🔥 ต่อเนื่อง {n} วัน!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້!" },
