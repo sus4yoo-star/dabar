@@ -90,6 +90,9 @@ export default function Home() {
         <span style={{ fontSize: 18, color: theme.gold }}>→</span>
       </button>
 
+      {/* 🌱 전도 여정 — 복음 전하기 바로 아래 (내가 전하는 사람들) */}
+      <HomeReachCard />
+
       {/* 4개 기능 — 2×2 그리드 */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 11 }}>
         <Tile icon="🤝" title={t("home.groupsTitle")} accent onClick={() => router.push("/groups")} />
@@ -104,9 +107,6 @@ export default function Home() {
         <QuickChip label={t("common.ranking")} onClick={() => router.push("/ranking")} />
         {user && <QuickChip label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
       </div>
-
-      {/* 🌱 전도 여정 — 내가 전하는 사람들 (단계·기도) */}
-      <HomeReachCard />
 
       {/* 하단 보조 링크 */}
       <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>

@@ -81,6 +81,16 @@ export default function ShareHome() {
         <span style={{ fontSize: 16, color: theme.gold }}>→</span>
       </Link>
 
+      {/* 전도 여정에 바로 추가 — 만난 분 기록 */}
+      <Link href="/reach?add=1" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", marginBottom: 12, padding: "13px 15px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card }}>
+        <span style={{ fontSize: 24, lineHeight: 1 }}>🌱</span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: "block", fontSize: 15.5, fontWeight: 800, color: theme.text }}>{t("home.reachTitle")}</span>
+          <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{t("home.reachSub")}</span>
+        </span>
+        <span style={{ fontSize: 16, color: theme.gold }}>＋</span>
+      </Link>
+
       {/* 도구 5개: 2+2+1(와이드) */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {tools.slice(0, 4).map((t) => <ToolCard key={t.id} tool={t} />)}

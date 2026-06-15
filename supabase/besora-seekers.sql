@@ -10,9 +10,16 @@ create table if not exists besora.seekers (
   name        text not null,
   stage       text not null default 'interest',   -- interest | heard | decided | settled
   note        text,                                -- 기도제목·메모
+  phone       text,                                -- 연락처(선택)
+  next_action text,                                -- 다음 할 일(연락/초대 등)
+  next_at     date,                                -- 다음 액션 날짜
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
+-- 기존 설치 보강
+alter table besora.seekers add column if not exists phone       text;
+alter table besora.seekers add column if not exists next_action text;
+alter table besora.seekers add column if not exists next_at     date;
 create index if not exists idx_seekers_owner on besora.seekers(owner, updated_at desc);
 
 alter table besora.seekers enable row level security;

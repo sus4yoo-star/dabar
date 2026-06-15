@@ -46,6 +46,16 @@ export async function fetchMyGroupIds(): Promise<Set<string>> {
   } catch { return new Set(); }
 }
 
+// 내가 속한 모임 전체(전도 여정 기도 공유 등에서 사용)
+export async function fetchMyGroups(): Promise<Group[]> {
+  try {
+    const ids = [...(await fetchMyGroupIds())];
+    if (!ids.length) return [];
+    const { data } = await getSupabase().from("groups").select("*").in("id", ids).order("last_at", { ascending: false });
+    return (data ?? []) as Group[];
+  } catch { return []; }
+}
+
 export async function createGroup(p: { name: string; place: string; schedule: string; description: string }): Promise<string> {
   const { data, error } = await getSupabase().rpc("create_group", {
     p_name: p.name, p_place: p.place, p_schedule: p.schedule, p_desc: p.description,
