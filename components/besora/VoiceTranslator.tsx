@@ -38,6 +38,11 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
   const rightTimer = useRef<any>(null);
   useEffect(() => setMounted(true), []);
 
+  // 전도 도구 진행 화면에서는 통역 패널을 바로 펼쳐 띄운다 (마이크 버튼 없이)
+  useEffect(() => {
+    if (pathname?.startsWith("/share/present")) setOpen(true);
+  }, [pathname]);
+
   // 패널이 열리면 본문에 아래 여백을 줘서, 전도 도구의 '이전/다음' 버튼을
   // 패널 위로 스크롤해 올려 누를 수 있게 한다. (패널이 가려 막던 문제 해결)
   useEffect(() => {
@@ -250,11 +255,11 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
 
   return (
     <>
-      {/* 플로팅 마이크 버튼 — 통역 패널이 열려 있지 않을 때만 */}
+      {/* 닫았을 때만 보이는 슬림 재열기 바 (큰 마이크 버튼 대신) */}
       {!open && (
         <button onClick={() => setOpen(true)} aria-label={ui(myLang, "voice")}
-          style={{ position: "fixed", right: 16, bottom: 22, zIndex: 55, width: 62, height: 62, borderRadius: 999, border: "none", cursor: "pointer", background: "linear-gradient(135deg,#3CAFFF,#92D700)", color: "#fff", fontSize: 27, boxShadow: "0 10px 28px rgba(23,50,73,0.35)", display: "grid", placeItems: "center" }}>
-          🎤
+          style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", bottom: 14, zIndex: 55, padding: "9px 18px", borderRadius: 999, border: "none", cursor: "pointer", background: "linear-gradient(135deg,#3CAFFF,#92D700)", color: "#fff", fontSize: 13, fontWeight: 800, boxShadow: "0 8px 22px rgba(23,50,73,0.3)" }}>
+          🎤 {ui(myLang, "voice")} ▲
         </button>
       )}
 

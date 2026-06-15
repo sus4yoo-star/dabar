@@ -17,11 +17,14 @@ export async function POST(req: NextRequest) {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return NextResponse.json({ error: "no-key" }, { status: 500 });
 
-  let body: { feeling?: string; lang?: string };
+  let body: { feeling?: string; lang?: string; images?: string[] };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "bad-request" }, { status: 400 }); }
   const feeling = (body.feeling ?? "").trim().slice(0, 600);
+  const images = (Array.isArray(body.images) ? body.images : [])
+    .filter((s) => typeof s === "string" && s.length > 0 && s.length < 5_000_000)
+    .slice(0, 4);
   const lang = body.lang && LANG_NAME[body.lang] ? body.lang : "ko";
-  if (!feeling) return NextResponse.json({ error: "bad-request" }, { status: 400 });
+  if (!feeling && images.length === 0) return NextResponse.json({ error: "bad-request" }, { status: 400 });
   const langName = LANG_NAME[lang];
 
   const system =
@@ -33,7 +36,14 @@ export async function POST(req: NextRequest) {
     (lang === "ko"
       ? `For "text", quote the verse EXACTLY as written in the 성경전서 개역개정판 (Korean Revised Version, NKRV) — word for word, including its spacing and endings. Do NOT paraphrase, modernize, or shorten it. For "ref" use the standard Korean book name (예: "시편 23:4", "여호수아 1:9"). `
       : `For "text", quote a well-known standard ${langName} Bible translation accurately, word for word. `) +
+    `If image(s) are attached, interpret them (a photo, a scene, or a screenshot of a conversation) and let them — together with any text — guide which verses bring comfort. ` +
     `Keep notes to one short sentence. Tone: gentle and personal, never preachy. Return strictly valid JSON.`;
+
+  const content: unknown[] = [];
+  if (images.length) {
+    for (const data of images) content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data } });
+  }
+  content.push({ type: "text", text: feeling || "(여기 첨부한 이미지를 보고 지금 상황과 마음을 헤아려, 위로가 되는 말씀을 찾아주세요.)" });
 
   try {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
@@ -44,7 +54,7 @@ export async function POST(req: NextRequest) {
         max_tokens: 1400,
         temperature: 0.4,
         system,
-        messages: [{ role: "user", content: feeling }],
+        messages: [{ role: "user", content }],
       }),
     });
     if (!r.ok) {

@@ -345,6 +345,7 @@ const DICT: Dict = {
   "cf.again":      { ko: "↺ 다른 마음 적기", en: "↺ Write something else", th: "↺ เขียนใหม่", lo: "↺ ຂຽນໃໝ່" },
   "cf.prev":       { ko: "이전 말씀", en: "Previous", th: "ก่อนหน้า", lo: "ກ່ອນໜ້າ" },
   "cf.next":       { ko: "다음 말씀", en: "Next", th: "ถัดไป", lo: "ຕໍ່ໄປ" },
+  "cf.addImage":   { ko: "📷 사진 첨부", en: "📷 Add photos", th: "📷 แนบรูป", lo: "📷 ແນບຮູບ" },
   "cf.last":       { ko: "마지막 말씀이에요 🙏", en: "That's the last Word 🙏", th: "นี่คือพระวจนะสุดท้าย 🙏", lo: "ນີ້ແມ່ນພຣະທຳສຸດທ້າຍ 🙏" },
   "cf.err":        { ko: "말씀을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.", en: "Couldn't load. Please try again shortly.", th: "โหลดไม่สำเร็จ ลองใหม่อีกครั้ง", lo: "ໂຫຼດບໍ່ສຳເລັດ ລອງໃໝ່" },
   "cf.errKey":     { ko: "AI 설정이 필요해요 (ANTHROPIC_API_KEY)", en: "AI not configured (ANTHROPIC_API_KEY)", th: "ยังไม่ได้ตั้งค่า AI", lo: "ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ AI" },
