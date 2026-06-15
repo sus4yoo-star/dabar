@@ -29,6 +29,8 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   const [listening, setListening] = useState<null | string>(null); // 듣는 중인 언어코드
   const [leftText, setLeftText] = useState("");   // 내 언어 칸
   const [rightText, setRightText] = useState(""); // 상대 언어 칸
+  const [leftPron, setLeftPron] = useState("");   // 왼쪽 번역문 발음 표기
+  const [rightPron, setRightPron] = useState(""); // 오른쪽 번역문 발음 표기
   const [busy, setBusy] = useState<"" | "L" | "R">(""); // 번역 중인 도착 칸
   const [err, setErr] = useState("");
   const recRef = useRef<any>(null);           // Web Speech 인스턴스
@@ -68,10 +70,25 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     return { ok: r.ok, d: await r.json() };
   }
 
-  // q(source 언어) → 반대 칸(dest)에 target 언어로 번역·재생
+  // 번역문(target 언어)을, 말한 사람 언어(scriptLang)의 글자로 어떻게 읽는지 발음 표기를 가져온다
+  async function fetchPron(text: string, lang: string, scriptLang: string, dest: "L" | "R") {
+    if (!text.trim() || !scriptLang || lang === scriptLang) return;
+    try {
+      const r = await fetch("/api/pronounce", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, lang, script: scriptLang }),
+      });
+      const d = await r.json();
+      const p = (d?.pron ?? "").trim();
+      if (dest === "R") setRightPron(p); else setLeftPron(p);
+    } catch { /* 발음은 부가기능 — 실패해도 무시 */ }
+  }
+
+  // q(source 언어) → 반대 칸(dest)에 target 언어로 번역·재생 + 발음 표기
   async function translateInto(q: string, source: string, target: string, dest: "L" | "R") {
     if (!q.trim()) return;
     setBusy(dest); setErr("");
+    if (dest === "R") setRightPron(""); else setLeftPron("");
     try {
       const { ok, d } = await callApi(q, target, source);
       if (!ok || !d.text) {
@@ -81,6 +98,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
       } else {
         if (dest === "R") setRightText(d.text); else setLeftText(d.text);
         speak(d.text, target);
+        fetchPron(d.text, target, source, dest); // 발음(말한 사람 언어 글자로)
       }
     } catch { setErr("네트워크 오류예요."); }
     setBusy("");
@@ -90,13 +108,13 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   function onLeftType(v: string) {
     setLeftText(v);
     clearTimeout(leftTimer.current);
-    if (!v.trim()) { setRightText(""); return; }
+    if (!v.trim()) { setRightText(""); setRightPron(""); return; }
     leftTimer.current = setTimeout(() => translateInto(v, myLang, seeker, "R"), 400);
   }
   function onRightType(v: string) {
     setRightText(v);
     clearTimeout(rightTimer.current);
-    if (!v.trim()) { setLeftText(""); return; }
+    if (!v.trim()) { setLeftText(""); setLeftPron(""); return; }
     rightTimer.current = setTimeout(() => translateInto(v, seeker, myLang, "L"), 400);
   }
 
@@ -118,7 +136,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   function startSR(lang: string) {
     const isLeft = lang === myLang;
     setErr(""); finalRef.current = "";
-    if (isLeft) setLeftText(""); else setRightText("");
+    if (isLeft) { setLeftText(""); setRightPron(""); } else { setRightText(""); setLeftPron(""); }
     const rec = new SR();
     recRef.current = rec;
     rec.lang = LOCALE[lang] ?? lang;
@@ -149,7 +167,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   async function startRecorder(lang: string) {
     const isLeft = lang === myLang;
     setErr("");
-    if (isLeft) setLeftText(""); else setRightText("");
+    if (isLeft) { setLeftText(""); setRightPron(""); } else { setRightText(""); setLeftPron(""); }
     setListening(lang); // 즉시 "녹음 중" 표시 — 권한 대기 중에도 바로 반응
     try {
       recorderRef.current = await startRecording();
@@ -187,8 +205,10 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
       if (isLeft) setLeftText(d.text); else setRightText(d.text);
       if (d.translated) {
         // 서버가 번역까지 끝냄 — 추가 왕복 없이 바로 표시·재생
+        const dest = isLeft ? "R" : "L";
         if (isLeft) setRightText(d.translated); else setLeftText(d.translated);
         speak(d.translated, target);
+        fetchPron(d.translated, target, lang, dest); // 발음(말한 사람 언어 글자로)
         setBusy("");
       } else {
         await translateInto(d.text, lang, target, isLeft ? "R" : "L");
@@ -202,7 +222,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
 
   // 한 언어 칸 — 라벨 + [ 큰 마이크 | 큰 재생 ] + 원문·번역 텍스트. big=세로(크게) 모드
   const pane = (code: string, value: string, onType: (v: string) => void,
-                side: "L" | "R", accent: string, bgSoft: string, border: string, big = false) => {
+                side: "L" | "R", accent: string, bgSoft: string, border: string, big = false, pron = "") => {
     const on = listening === code;
     const has = !!value.trim();
     const dir = rtlFor(code) ? "rtl" : "ltr";
@@ -230,6 +250,12 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
         <textarea value={value} onChange={(e) => onType(e.target.value)} rows={2}
           placeholder={nameOf(code)}
           style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bgSoft, padding: big ? "10px 12px" : "8px 10px", fontSize: big ? 16 : 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: big ? 88 : 52, lineHeight: big ? 1.5 : 1.45 }} />
+        {pron && (
+          <div dir="ltr" style={{ display: "flex", alignItems: "flex-start", gap: 5, fontSize: big ? 13.5 : 12, color: theme.textMuted, lineHeight: 1.4, padding: "0 2px" }}>
+            <span style={{ flexShrink: 0 }}>🗣️</span>
+            <span>{pron}</span>
+          </div>
+        )}
       </div>
     );
   };
@@ -258,8 +284,8 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
 
   const panes = (
     <div style={{ display: "flex", flexDirection: big ? "column" : "row", gap: big ? 12 : 8, alignItems: big ? "stretch" : "flex-start" }}>
-      {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder, big)}
-      {twoWay && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder, big)}
+      {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder, big, leftPron)}
+      {twoWay && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder, big, rightPron)}
     </div>
   );
   const hint = (
