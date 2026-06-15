@@ -10,11 +10,12 @@ import {
   fetchGroup, fetchGroupMessages, fetchMembers, fetchPhotos, joinGroup, leaveGroup,
   sendGroupMessage, subscribeGroupMessages, updateNotice, uploadPhoto, deletePhoto,
 } from "@/lib/besora/groups";
+import { PushState, disablePush, enablePush, getPushState, notifyGroup } from "@/lib/besora/push";
 
 export default function GroupDetailPage() {
   const router = useRouter();
   const { t } = useI18n();
-  const { user } = useAuth();
+  const { user, nickname } = useAuth();
   const { show, view } = useToast();
   const id = String(useParams().id);
 
@@ -28,6 +29,7 @@ export default function GroupDetailPage() {
   const [photos, setPhotos] = useState<GroupPhoto[]>([]);
   const [uploading, setUploading] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [push, setPush] = useState<PushState>("off");
   const fileRef = useRef<HTMLInputElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
 
@@ -56,14 +58,20 @@ export default function GroupDetailPage() {
   }
 
   async function onPickPhoto(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const files = Array.from(e.target.files ?? []);
     e.target.value = "";
-    if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { show(t("grp.photoBig")); return; }
+    if (!files.length) return;
+    const ok = files.filter(f => f.size <= 10 * 1024 * 1024);
+    if (ok.length < files.length) show(t("grp.photoBig"));
+    if (!ok.length) return;
     setUploading(true);
-    try { await uploadPhoto(id, file); setPhotos(await fetchPhotos(id)); }
+    try { for (const f of ok) await uploadPhoto(id, f); setPhotos(await fetchPhotos(id)); }
     catch { show(t("grp.notReady")); }
     setUploading(false);
+  }
+  async function togglePush() {
+    if (push === "on") { await disablePush(); setPush("off"); }
+    else { const st = await enablePush(); setPush(st); if (st === "denied") show(t("grp.notReady")); }
   }
   async function onDeletePhoto(p: GroupPhoto) {
     if (!confirm(t("grp.delPhoto"))) return;
@@ -80,6 +88,12 @@ export default function GroupDetailPage() {
     return off;
   }, [id, isMember]);
 
+  // 알림 상태 — 멤버일 때 1회 조회
+  useEffect(() => {
+    if (!isMember) return;
+    getPushState().then(setPush).catch(() => {});
+  }, [isMember]);
+
   useEffect(() => { bottom.current?.scrollIntoView({ behavior: "smooth" }); }, [messages.length]);
 
   async function handleJoin() {
@@ -95,7 +109,10 @@ export default function GroupDetailPage() {
     const body = text.trim();
     if (!body) return;
     setText("");
-    try { await sendGroupMessage(id, body); } catch { setText(body); }
+    try {
+      await sendGroupMessage(id, body);
+      if (group) notifyGroup(id, group.name, `${nickname}: ${body}`.slice(0, 120));
+    } catch { setText(body); }
   }
 
   if (loading) return <Center>…</Center>;
@@ -156,7 +173,7 @@ export default function GroupDetailPage() {
               <span style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>📷 {t("grp.photos")}{photos.length ? ` · ${photos.length}` : ""}</span>
               <button onClick={() => fileRef.current?.click()} disabled={uploading} style={{ fontSize: 12, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 8, padding: "5px 11px", cursor: "pointer" }}>{uploading ? t("grp.uploading") : t("grp.addPhoto")}</button>
             </div>
-            <input ref={fileRef} type="file" accept="image/*" onChange={onPickPhoto} style={{ display: "none" }} />
+            <input ref={fileRef} type="file" accept="image/*" multiple onChange={onPickPhoto} style={{ display: "none" }} />
             {photos.length > 0 && (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
                 {photos.map((p, idx) => {
@@ -190,7 +207,12 @@ export default function GroupDetailPage() {
         )}
 
         {/* 나눔 채팅 */}
-        <p style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "0 0 8px 2px" }}>💬 {t("grp.chat")}</p>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0 0 8px 2px" }}>
+          <span style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>💬 {t("grp.chat")}</span>
+          {isMember && push !== "unsupported" && (
+            <button onClick={togglePush} style={{ fontSize: 11.5, fontWeight: 700, color: push === "on" ? theme.gold : theme.textMuted, background: push === "on" ? theme.goldLight : theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "4px 11px", cursor: "pointer" }}>{push === "on" ? t("grp.notifOn") : t("grp.notifOff")}</button>
+          )}
+        </div>
         {!isMember ? (
           <div style={{ textAlign: "center", padding: "1.5rem 1rem", color: theme.textMuted }}>
             <p style={{ fontSize: 13.5, margin: "0 0 12px" }}>{full ? t("grp.fullMsg") : t("grp.joinToChat")}</p>
@@ -201,13 +223,21 @@ export default function GroupDetailPage() {
             {messages.length === 0 && (
               <p style={{ fontSize: 13, color: theme.textFaint, textAlign: "center", padding: "1.25rem 0" }}>{t("grp.chatEmpty")}</p>
             )}
-            {messages.map(m => {
+            {messages.map((m, i) => {
               const mine = user && m.sender === user.id;
+              const showDay = i === 0 || new Date(m.created_at).toDateString() !== new Date(messages[i - 1].created_at).toDateString();
               return (
-                <div key={m.id} style={{ alignSelf: mine ? "flex-end" : "flex-start", maxWidth: "82%", display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start" }}>
+                <div key={m.id} style={{ display: "contents" }}>
+                {showDay && (
+                  <div style={{ alignSelf: "center", margin: "8px 0 2px" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "3px 12px" }}>{fmtDay(m.created_at, t)}</span>
+                  </div>
+                )}
+                <div style={{ alignSelf: mine ? "flex-end" : "flex-start", maxWidth: "82%", display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start" }}>
                   {!mine && <span style={{ display: "block", fontSize: 10.5, color: theme.textFaint, margin: "0 0 2px 4px" }}>{nameById[m.sender] ?? "익명"}</span>}
                   <span style={{ display: "inline-block", fontSize: 14, lineHeight: 1.5, padding: "8px 12px", borderRadius: 14, background: mine ? theme.primary : theme.card, color: mine ? "#fff" : theme.text, border: mine ? "none" : `1px solid ${theme.cardBorder}`, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{m.body}</span>
                   <span style={{ fontSize: 9.5, color: theme.textFaint, margin: "2px 4px 0" }}>{fmtTime(m.created_at)}</span>
+                </div>
                 </div>
               );
             })}
@@ -270,6 +300,18 @@ function Lightbox({ photos, index, onIndex, onClose }: { photos: GroupPhoto[]; i
 
 function fmtTime(iso: string): string {
   try { return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); } catch { return ""; }
+}
+
+function fmtDay(iso: string, t: (k: string) => string): string {
+  try {
+    const d = new Date(iso); const now = new Date();
+    const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diff = Math.round((today.getTime() - day.getTime()) / 86400000);
+    if (diff === 0) return t("grp.today");
+    if (diff === 1) return t("grp.yesterday");
+    return d.toLocaleDateString([], { year: "numeric", month: "long", day: "numeric" });
+  } catch { return ""; }
 }
 
 function Center({ children }: { children: React.ReactNode }) {

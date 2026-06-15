@@ -17,10 +17,10 @@ export async function POST(req: NextRequest) {
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
   if (!token) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  let body: { companionId?: string; title?: string; body?: string; url?: string };
+  let body: { companionId?: string; groupId?: string; title?: string; body?: string; url?: string };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "bad-request" }, { status: 400 }); }
-  const { companionId, title, body: text, url } = body;
-  if (!companionId) return NextResponse.json({ error: "bad-request" }, { status: 400 });
+  const { companionId, groupId, title, body: text, url } = body;
+  if (!companionId && !groupId) return NextResponse.json({ error: "bad-request" }, { status: 400 });
 
   const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -31,13 +31,16 @@ export async function POST(req: NextRequest) {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  const { data: subs, error } = await sb.rpc("peer_push_subs", { p_companion: companionId });
+  const { data: subs, error } = groupId
+    ? await sb.rpc("group_push_subs", { p_group: groupId })
+    : await sb.rpc("peer_push_subs", { p_companion: companionId });
   if (error) return NextResponse.json({ error: "rpc-failed", detail: error.message }, { status: 502 });
   const list = (subs ?? []) as { endpoint: string; p256dh: string; auth: string }[];
   if (list.length === 0) return NextResponse.json({ ok: true, sent: 0 });
 
   webpush.setVapidDetails(subject, VAPID_PUBLIC, priv);
-  const payload = JSON.stringify({ title: title || "다바르", body: text || "", url: url || "/share/me", tag: `chat-${companionId}` });
+  const tag = groupId ? `group-${groupId}` : `chat-${companionId}`;
+  const payload = JSON.stringify({ title: title || "다바르", body: text || "", url: url || "/share/me", tag });
 
   let sent = 0;
   await Promise.all(
