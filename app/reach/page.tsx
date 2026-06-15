@@ -7,6 +7,10 @@ import { useI18n } from "@/lib/i18n";
 import { useToast } from "@/components/Toast";
 import { Seeker, STAGES, Stage, addSeeker, deleteSeeker, fetchSeekers, updateSeeker } from "@/lib/besora/seekers";
 import { Group, fetchMyGroups, sendGroupMessage } from "@/lib/besora/groups";
+import { MinistryEvent, MinistryNotice, fetchEvents, addEvent, deleteEvent, fetchNotices, addNotice, deleteNotice } from "@/lib/besora/ministry";
+import HomeFxCard from "@/components/HomeFxCard";
+import VoiceTranslator from "@/components/besora/VoiceTranslator";
+import { LanguageProvider } from "@/lib/besora/LanguageContext";
 
 const STAGE_COLOR: Record<Stage, string> = { interest: theme.textMuted, heard: theme.primarySoft, decided: theme.gold, settled: theme.correct };
 const TODAY = () => new Date().toLocaleDateString("en-CA");
@@ -16,8 +20,9 @@ function ReachInner() {
   const router = useRouter();
   const params = useSearchParams();
   const { t } = useI18n();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isAdmin, isLeader } = useAuth();
   const { show, view } = useToast();
+  const canManage = isAdmin || isLeader;
 
   const [seekers, setSeekers] = useState<Seeker[]>([]);
   const [loading, setLoading] = useState(true);
@@ -106,9 +111,22 @@ function ReachInner() {
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer" }}>{t("common.home")}</button>
-        <h1 style={{ fontSize: 18, fontWeight: 800, color: theme.gold, margin: 0 }}>{t("reach.title")}</h1>
+        <h1 style={{ fontSize: 17, fontWeight: 800, color: theme.gold, margin: 0, textAlign: "center", flex: 1 }}>{t("reach.title")}</h1>
         <span style={{ width: 52 }} />
       </div>
+
+      {/* 1) 사역 일정  2) 사역 공지사항 — 관리자·리더 등록, 전체 열람 */}
+      {user && <MinistrySchedule canManage={canManage} notify={show} />}
+      {user && <MinistryNoticesSection canManage={canManage} notify={show} />}
+
+      {/* 3) 환율 계산기 (바트 ↔ 원) */}
+      <HomeFxCard />
+
+      {/* 4) 번역 도구 */}
+      <LanguageProvider><VoiceTranslator inline /></LanguageProvider>
+
+      {/* 5) 전도 여정 — 내가 전하는 사람들 */}
+      <h2 style={{ fontSize: 14.5, fontWeight: 800, color: theme.gold, margin: "18px 0 10px" }}>{t("min.outreachTitle")}</h2>
 
       {!authLoading && !user ? (
         <p style={{ fontSize: 13, color: theme.textMuted, textAlign: "center", padding: "8px", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10 }}>{t("reach.loginNeeded")}</p>
@@ -206,6 +224,127 @@ function ReachInner() {
 
 const inp: React.CSSProperties = { width: "100%", boxSizing: "border-box", fontSize: 14, padding: "10px 12px", marginBottom: 8, borderRadius: 10, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" };
 const act: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 9, padding: "6px 11px", cursor: "pointer", whiteSpace: "nowrap" };
+
+// ── 사역 허브 공통 스타일 ────────────────────────────────────────────
+const secHead: React.CSSProperties = { fontSize: 14.5, fontWeight: 800, color: theme.gold, margin: 0 };
+const addBtn: React.CSSProperties = { fontSize: 12.5, fontWeight: 800, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 12px", cursor: "pointer", whiteSpace: "nowrap" };
+const formBox: React.CSSProperties = { marginBottom: 10, padding: 12, borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: theme.card };
+const btnGhost: React.CSSProperties = { flex: 1, padding: 10, fontSize: 13, fontWeight: 700, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 9, cursor: "pointer" };
+const btnPrimary: React.CSSProperties = { flex: 2, padding: 10, fontSize: 13, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 9, cursor: "pointer" };
+const itemCard: React.CSSProperties = { padding: "11px 13px", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: theme.card };
+const emptyP: React.CSSProperties = { fontSize: 12.5, color: theme.textFaint, textAlign: "center", padding: "10px 0" };
+const delX: React.CSSProperties = { flexShrink: 0, fontSize: 12, color: theme.textFaint, background: "transparent", border: "none", cursor: "pointer", padding: "0 2px" };
+const fmtWhen = (iso: string) => new Date(iso).toLocaleString([], { month: "short", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" });
+const fmtDay = (iso: string) => new Date(iso).toLocaleDateString([], { month: "short", day: "numeric" });
+
+function MinistrySchedule({ canManage, notify }: { canManage: boolean; notify: (m: string) => void }) {
+  const { t } = useI18n();
+  const [list, setList] = useState<MinistryEvent[]>([]);
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState(""); const [at, setAt] = useState(""); const [place, setPlace] = useState(""); const [note, setNote] = useState("");
+  useEffect(() => { fetchEvents().then(setList).catch(() => {}); }, []);
+  async function submit() {
+    if (!title.trim() || !at) return;
+    try {
+      const e = await addEvent({ title, starts_at: new Date(at).toISOString(), place, note });
+      if (e) setList((p) => [...p, e].sort((a, b) => a.starts_at.localeCompare(b.starts_at)));
+      setTitle(""); setAt(""); setPlace(""); setNote(""); setOpen(false);
+    } catch { notify(t("min.notReady")); }
+  }
+  async function del(id: string) {
+    if (!confirm(t("min.delConfirm"))) return;
+    setList((p) => p.filter((x) => x.id !== id));
+    try { await deleteEvent(id); } catch { notify(t("min.notReady")); }
+  }
+  return (
+    <section style={{ marginBottom: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 9 }}>
+        <h2 style={secHead}>{t("min.schedule")}</h2>
+        {canManage && !open && <button onClick={() => setOpen(true)} style={addBtn}>{t("min.addEvent")}</button>}
+      </div>
+      {canManage && open && (
+        <div style={formBox}>
+          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("min.titlePh")} autoFocus style={inp} />
+          <input type="datetime-local" value={at} onChange={(e) => setAt(e.target.value)} style={inp} />
+          <input value={place} onChange={(e) => setPlace(e.target.value)} placeholder={t("min.placePh")} style={inp} />
+          <input value={note} onChange={(e) => setNote(e.target.value)} placeholder={t("min.eventNotePh")} style={inp} />
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={() => setOpen(false)} style={btnGhost}>{t("reach.cancel")}</button>
+            <button onClick={submit} disabled={!title.trim() || !at} style={{ ...btnPrimary, opacity: title.trim() && at ? 1 : 0.5 }}>{t("reach.save")}</button>
+          </div>
+        </div>
+      )}
+      {list.length === 0 ? <p style={emptyP}>{t("min.noEvents")}</p> : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {list.map((e) => (
+            <div key={e.id} style={itemCard}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                <span style={{ fontSize: 14.5, fontWeight: 800, color: theme.text }}>{e.title}</span>
+                {canManage && <button onClick={() => del(e.id)} aria-label="delete" style={delX}>✕</button>}
+              </div>
+              <div style={{ fontSize: 12.5, color: theme.primarySoft, fontWeight: 700, marginTop: 3 }}>🗓️ {fmtWhen(e.starts_at)}</div>
+              {e.place && <div style={{ fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>📍 {e.place}</div>}
+              {e.note && <div style={{ fontSize: 12.5, color: theme.textMuted, marginTop: 2, whiteSpace: "pre-wrap" }}>{e.note}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function MinistryNoticesSection({ canManage, notify }: { canManage: boolean; notify: (m: string) => void }) {
+  const { t } = useI18n();
+  const [list, setList] = useState<MinistryNotice[]>([]);
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState(""); const [body, setBody] = useState("");
+  useEffect(() => { fetchNotices().then(setList).catch(() => {}); }, []);
+  async function submit() {
+    if (!title.trim()) return;
+    try {
+      const n = await addNotice({ title, body });
+      if (n) setList((p) => [n, ...p]);
+      setTitle(""); setBody(""); setOpen(false);
+    } catch { notify(t("min.notReady")); }
+  }
+  async function del(id: string) {
+    if (!confirm(t("min.delConfirm"))) return;
+    setList((p) => p.filter((x) => x.id !== id));
+    try { await deleteNotice(id); } catch { notify(t("min.notReady")); }
+  }
+  return (
+    <section style={{ marginBottom: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 9 }}>
+        <h2 style={secHead}>{t("min.notices")}</h2>
+        {canManage && !open && <button onClick={() => setOpen(true)} style={addBtn}>{t("min.addNotice")}</button>}
+      </div>
+      {canManage && open && (
+        <div style={formBox}>
+          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("min.titlePh")} autoFocus style={inp} />
+          <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder={t("min.bodyPh")} rows={3} style={{ ...inp, resize: "none", lineHeight: 1.5 }} />
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={() => setOpen(false)} style={btnGhost}>{t("reach.cancel")}</button>
+            <button onClick={submit} disabled={!title.trim()} style={{ ...btnPrimary, opacity: title.trim() ? 1 : 0.5 }}>{t("reach.save")}</button>
+          </div>
+        </div>
+      )}
+      {list.length === 0 ? <p style={emptyP}>{t("min.noNotices")}</p> : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {list.map((n) => (
+            <div key={n.id} style={itemCard}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                <span style={{ fontSize: 14, fontWeight: 800, color: theme.text }}>📢 {n.title}</span>
+                {canManage && <button onClick={() => del(n.id)} aria-label="delete" style={delX}>✕</button>}
+              </div>
+              {n.body && <p style={{ margin: "5px 0 0", fontSize: 12.5, color: theme.textMuted, lineHeight: 1.55, whiteSpace: "pre-wrap" }}>{n.body}</p>}
+              <p style={{ margin: "6px 0 0", fontSize: 10.5, color: theme.textFaint }}>{fmtDay(n.created_at)}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
 
 export default function ReachPage() {
   return (
