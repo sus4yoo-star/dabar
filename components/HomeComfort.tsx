@@ -1,8 +1,8 @@
 "use client";
 
 // 💛 마음에 닿는 말씀 — 지금 감정/상황을 적으면 위로·치유·용기가 되는 말씀이 나오고,
-// 탭하면 연관된 다음 말씀이 최대 10개까지 이어진다.
-import { useState } from "react";
+// 양옆 ‹ › 버튼으로 연관된 이전/다음 말씀을 오간다 (최대 10개).
+import { useState, type CSSProperties } from "react";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 
@@ -23,22 +23,31 @@ export default function HomeComfort() {
     const f = feeling.trim();
     if (!f || loading) return;
     setLoading(true); setErr(""); setVerses([]);
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 30000);
     try {
-      const r = await fetch("/api/comfort", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ feeling: f, lang }) });
+      const r = await fetch("/api/comfort", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ feeling: f, lang }), signal: ctrl.signal });
       const d = await r.json();
       if (!r.ok || !d.verses?.length) setErr(d.error === "no-key" ? t("cf.errKey") : t("cf.err"));
       else { setVerses(d.verses as Verse[]); setIdx(0); }
     } catch { setErr(t("cf.err")); }
-    setLoading(false);
+    finally { clearTimeout(to); setLoading(false); }
   }
   function reset() { setVerses([]); setIdx(0); setInput(""); setErr(""); }
-  function next() { setIdx((i) => Math.min(i + 1, verses.length - 1)); }
 
-  const card: React.CSSProperties = { marginTop: 12, padding: "13px 14px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card };
+  const card: CSSProperties = { marginTop: 12, padding: "13px 14px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card };
+  const arrow = (side: "start" | "end"): CSSProperties => ({
+    position: "absolute", top: "50%", transform: "translateY(-50%)", zIndex: 2,
+    [side === "start" ? "insetInlineStart" : "insetInlineEnd"]: -2,
+    width: 30, height: 30, borderRadius: 999, display: "grid", placeItems: "center",
+    background: "#fff", border: `1px solid ${theme.goldBorder}`, color: theme.gold,
+    fontSize: 19, lineHeight: 1, fontWeight: 800, cursor: "pointer", boxShadow: "0 3px 10px rgba(23,50,73,0.14)",
+  });
 
-  // 결과 보기
+  // 결과 보기 — 양옆 이전/다음
   if (verses.length > 0) {
     const v = verses[idx];
+    const atFirst = idx === 0;
     const atLast = idx >= verses.length - 1;
     return (
       <div style={card}>
@@ -47,22 +56,21 @@ export default function HomeComfort() {
           <button onClick={reset} style={{ fontSize: 11.5, fontWeight: 700, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "4px 11px", cursor: "pointer" }}>{t("cf.again")}</button>
         </div>
 
-        <button onClick={atLast ? undefined : next} disabled={atLast}
-          style={{ display: "block", width: "100%", textAlign: dir === "rtl" ? "right" : "left", cursor: atLast ? "default" : "pointer", background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 14, padding: "15px 16px" }}>
-          <p key={idx} dir={dir} className="fade-in" style={{ margin: 0, fontSize: 17, lineHeight: 1.7, fontWeight: 600, color: theme.text }}>“{v.text}”</p>
-          {v.ref && <p dir={dir} style={{ margin: "8px 0 0", fontSize: 12.5, fontWeight: 800, color: theme.gold }}>— {v.ref}</p>}
-          {v.note && <p dir={dir} style={{ margin: "8px 0 0", fontSize: 12.5, lineHeight: 1.6, color: theme.textMuted }}>{v.note}</p>}
-        </button>
+        <div style={{ position: "relative" }}>
+          {!atFirst && <button onClick={() => setIdx((i) => Math.max(0, i - 1))} aria-label={t("cf.prev")} style={arrow("start")}>{dir === "rtl" ? "›" : "‹"}</button>}
+          <div style={{ background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 14, padding: "15px 36px", minHeight: 92 }}>
+            <p key={idx} dir={dir} className="fade-in" style={{ margin: 0, fontSize: 17, lineHeight: 1.7, fontWeight: 600, color: theme.text, textAlign: dir === "rtl" ? "right" : "left" }}>“{v.text}”</p>
+            {v.ref && <p dir={dir} style={{ margin: "8px 0 0", fontSize: 12.5, fontWeight: 800, color: theme.gold, textAlign: dir === "rtl" ? "right" : "left" }}>— {v.ref}</p>}
+            {v.note && <p dir={dir} style={{ margin: "8px 0 0", fontSize: 12.5, lineHeight: 1.6, color: theme.textMuted, textAlign: dir === "rtl" ? "right" : "left" }}>{v.note}</p>}
+          </div>
+          {!atLast && <button onClick={() => setIdx((i) => Math.min(verses.length - 1, i + 1))} aria-label={t("cf.next")} style={arrow("end")}>{dir === "rtl" ? "‹" : "›"}</button>}
+        </div>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
-          <span className={atLast ? "" : "anim-pop"} style={{ fontSize: 12, fontWeight: 700, color: atLast ? theme.textFaint : theme.primarySoft }}>
-            {atLast ? t("cf.last") : t("cf.tapNext")}
-          </span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 9 }}>
           <span style={{ display: "flex", gap: 4 }}>
-            {verses.map((_, i) => (
-              <span key={i} style={{ width: i === idx ? 16 : 6, height: 6, borderRadius: 999, background: i === idx ? theme.gold : "rgba(13,52,84,0.18)", transition: "width .2s" }} />
-            ))}
+            {verses.map((_, i) => <span key={i} style={{ width: i === idx ? 16 : 6, height: 6, borderRadius: 999, background: i === idx ? theme.gold : "rgba(13,52,84,0.18)", transition: "width .2s" }} />)}
           </span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: theme.textFaint }}>{idx + 1} / {verses.length}</span>
         </div>
       </div>
     );

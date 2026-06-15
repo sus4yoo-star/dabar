@@ -27,10 +27,13 @@ export async function POST(req: NextRequest) {
   const system =
     `You are a warm, compassionate Christian companion who comforts people with Scripture. ` +
     `A person shares how they feel or what they are going through. Respond with Bible verses that bring genuine comfort, healing, courage, or hope for THAT specific feeling. ` +
-    `Output ONLY a JSON array (no markdown, no prose) of up to 10 objects, ordered from the most fitting verse to related ones that naturally follow. ` +
+    `Output ONLY a JSON array (no markdown, no prose) of 6 to 8 objects, ordered from the most fitting verse to related ones that naturally follow. ` +
     `Each object: {"ref": "<book chapter:verse>", "text": "<the verse text>", "note": "<one short, warm, personal sentence connecting this verse to their feeling>"}. ` +
-    `Write "ref", "text", and "note" ALL in ${langName}. Quote well-known, widely recognized verses and quote them accurately; keep each verse text concise. ` +
-    `Tone: gentle and personal, never preachy. Return strictly valid JSON.`;
+    `Write "ref", "text", and "note" ALL in ${langName}. ` +
+    (lang === "ko"
+      ? `For "text", quote the verse EXACTLY as written in the 성경전서 개역개정판 (Korean Revised Version, NKRV) — word for word, including its spacing and endings. Do NOT paraphrase, modernize, or shorten it. For "ref" use the standard Korean book name (예: "시편 23:4", "여호수아 1:9"). `
+      : `For "text", quote a well-known standard ${langName} Bible translation accurately, word for word. `) +
+    `Keep notes to one short sentence. Tone: gentle and personal, never preachy. Return strictly valid JSON.`;
 
   try {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
@@ -38,8 +41,8 @@ export async function POST(req: NextRequest) {
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 1800,
-        temperature: 0.5,
+        max_tokens: 1400,
+        temperature: 0.4,
         system,
         messages: [{ role: "user", content: feeling }],
       }),
