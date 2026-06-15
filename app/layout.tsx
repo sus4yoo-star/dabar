@@ -33,6 +33,8 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1, // iOS Safari: 입력창 탭 시 자동 확대(줌) 방지
+  userScalable: false,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
