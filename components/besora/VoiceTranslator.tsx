@@ -12,7 +12,7 @@ import { theme } from "@/lib/theme";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
 import { speak } from "@/lib/besora/speak";
-import { startRecording, canRecord, type Recorder } from "@/lib/besora/recorder";
+import { startRecording, canRecord, primeAudio, type Recorder } from "@/lib/besora/recorder";
 
 const LOCALE: Record<string, string> = {
   ko: "ko-KR", en: "en-US", es: "es-ES", zh: "zh-CN",
@@ -103,6 +103,7 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
   // 화면 마이크 탭 — 듣는 중이면 멈추고, 아니면 그 칸 언어로 받아쓰기 시작
   function micFor(lang: string) {
     if (listening) { stopMic(); return; }
+    primeAudio(); // 제스처 시점에 오디오 컨텍스트를 미리 깨움 (iOS 첫 녹음 실패 방지)
     if (SR) startSR(lang);
     else if (canRecord()) startRecorder(lang);
     else setErr("이 브라우저에서는 음성 입력을 지원하지 않아요. 직접 입력해 주세요.");
@@ -149,11 +150,12 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
     const isLeft = lang === myLang;
     setErr("");
     if (isLeft) setLeftText(""); else setRightText("");
+    setListening(lang); // 즉시 "녹음 중" 표시 — 권한 대기 중에도 바로 반응
     try {
       recorderRef.current = await startRecording();
-      setListening(lang);
     } catch {
       recorderRef.current = null;
+      setListening(null);
       setErr("마이크 권한이 필요해요. 권한을 허용해 주세요.");
     }
   }
