@@ -55,7 +55,7 @@ const DICT: Dict = {
   "fx.loading":{ ko: "환율 불러오는 중…", en: "Loading rate…", th: "กำลังโหลดอัตรา…", lo: "ກຳລັງໂຫຼດອັດຕາ…" },
 
   // 📷 메뉴·간판 번역 (사진 → 글자 읽어 설정 언어로 번역)
-  "scan.title":   { ko: "메뉴·간판 번역", en: "Menu & Sign Translate", th: "แปลเมนู·ป้าย", lo: "ແປເມນູ·ປ້າຍ" },
+  "scan.title":   { ko: "이미지 번역", en: "Image Translate", th: "แปลรูปภาพ", lo: "ແປຮູບພາບ" },
   "scan.sub":     { ko: "사진을 찍으면 설정한 언어로 번역해 드려요", en: "Snap a photo — we translate it into your language", th: "ถ่ายรูป แล้วเราจะแปลเป็นภาษาของคุณ", lo: "ຖ່າຍຮູບ ແລ້ວເຮົາຈະແປເປັນພາສາຂອງທ່ານ" },
   "scan.camera":  { ko: "📷 사진 찍기", en: "📷 Take photo", th: "📷 ถ่ายรูป", lo: "📷 ຖ່າຍຮູບ" },
   "scan.attach":  { ko: "🖼 첨부하기", en: "🖼 Attach", th: "🖼 แนบรูป", lo: "🖼 ແນບຮູບ" },
@@ -305,7 +305,7 @@ const DICT: Dict = {
 
   // 나눔 모임 (오프라인)
   "home.groupsTitle": { ko: "소그룹 모임", en: "Small Groups", th: "กลุ่มย่อย", lo: "ກຸ່ມຍ່ອຍ" },
-  "home.groupsSub":   { ko: "오프라인에서 만나 함께 나누고 전도해요", en: "Meet in person to share & evangelize", th: "พบกันจริงเพื่อแบ่งปันและประกาศ", lo: "ພົບກັນຈິງເພື່ອແບ່ງປັນ ແລະ ປະກາດ" },
+  "home.groupsSub":   { ko: "리더가 개설 · 최대 6명 · 정한 시간·장소에서 오프라인 모임", en: "Leader-created · up to 6 · offline at a set time & place", th: "ผู้นำเปิดกลุ่ม · สูงสุด 6 คน · พบออฟไลน์ตามเวลา·สถานที่", lo: "ຜູ້ນຳເປີດກຸ່ມ · ສູງສຸດ 6 ຄົນ · ພົບແບບອອບໄລນ໌" },
   "grp.title":     { ko: "소그룹 모임", en: "Small Groups", th: "กลุ่มย่อย", lo: "ກຸ່ມຍ່ອຍ" },
   "grp.create":    { ko: "＋ 모임 만들기", en: "＋ New group", th: "＋ สร้างกลุ่ม", lo: "＋ ສ້າງກຸ່ມ" },
   "grp.mine":      { ko: "내 모임", en: "My groups", th: "กลุ่มของฉัน", lo: "ກຸ່ມຂອງຂ້ອຍ" },
@@ -377,7 +377,7 @@ const DICT: Dict = {
   "cf.e6":         { ko: "감사해요", en: "Grateful", th: "ขอบคุณ", lo: "ຂອບໃຈ" },
   // 전도 여정 (내가 전하는 사람들)
   "home.reachTitle": { ko: "선교 여정", en: "Mission", th: "พันธกิจ", lo: "ມິຊັນ" },
-  "home.reachSub":   { ko: "환율 계산 · 번역 도구", en: "Exchange & translation tools", th: "อัตราแลกเปลี่ยน · แปลภาษา", lo: "ອັດຕາແລກປ່ຽນ · ແປພາສາ" },
+  "home.reachSub":   { ko: "환율 계산 · 이미지 번역 · 음성 통역", en: "Exchange · image translate · voice", th: "อัตราแลกเปลี่ยน · แปลรูป · เสียง", lo: "ອັດຕາ · ແປຮູບ · ສຽງ" },
   "reach.title":   { ko: "선교 여정", en: "Mission", th: "พันธกิจ", lo: "ມິຊັນ" },
   "reach.add":     { ko: "＋ 사람 추가", en: "＋ Add person", th: "＋ เพิ่มคน", lo: "＋ ເພີ່ມຄົນ" },
   "reach.namePh":  { ko: "이름 (예: 김OO, 카페 사장님)", en: "Name (a friend, neighbor…)", th: "ชื่อ", lo: "ຊື່" },
