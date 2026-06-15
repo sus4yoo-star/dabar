@@ -336,6 +336,10 @@ const DICT: Dict = {
 
   // 계정 / 개인정보
   "home.account":  { ko: "⚙️ 계정 · 개인정보", en: "⚙️ Account & privacy", th: "⚙️ บัญชีและความเป็นส่วนตัว", lo: "⚙️ ບັນຊີ ແລະ ຄວາມເປັນສ່ວນຕົວ" },
+  "home.adminShort":  { ko: "🔧 현황판", en: "🔧 Dashboard", th: "🔧 แดชบอร์ด", lo: "🔧 ກະດານ" },
+  "home.guideShort":  { ko: "📋 안내", en: "📋 Guide", th: "📋 คู่มือ", lo: "📋 ຄູ່ມື" },
+  "home.inviteShort": { ko: "👋 초대", en: "👋 Invite", th: "👋 เชิญ", lo: "👋 ເຊີນ" },
+  "home.accountShort":{ ko: "⚙️ 계정", en: "⚙️ Account", th: "⚙️ บัญชี", lo: "⚙️ ບັນຊີ" },
   "privacy.title": { ko: "개인정보 처리방침", en: "Privacy Policy", th: "นโยบายความเป็นส่วนตัว", lo: "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ" },
   "acct.title":    { ko: "계정", en: "Account", th: "บัญชี", lo: "ບັນຊີ" },
   "acct.logout":   { ko: "로그아웃", en: "Log out", th: "ออกจากระบบ", lo: "ອອກຈາກລະບົບ" },
