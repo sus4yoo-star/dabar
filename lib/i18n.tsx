@@ -57,6 +57,7 @@ const DICT: Dict = {
   // 📷 메뉴·간판 번역 (사진 → 글자 읽어 설정 언어로 번역)
   "scan.title":   { ko: "이미지 번역", en: "Image Translate", th: "แปลรูปภาพ", lo: "ແປຮູບພາບ" },
   "scan.sub":     { ko: "사진을 찍으면 설정한 언어로 번역해 드려요", en: "Snap a photo — we translate it into your language", th: "ถ่ายรูป แล้วเราจะแปลเป็นภาษาของคุณ", lo: "ຖ່າຍຮູບ ແລ້ວເຮົາຈະແປເປັນພາສາຂອງທ່ານ" },
+  "scan.toLang":  { ko: "번역 언어", en: "Translate to", th: "แปลเป็น", lo: "ແປເປັນ" },
   "scan.camera":  { ko: "📷 사진 찍기", en: "📷 Take photo", th: "📷 ถ่ายรูป", lo: "📷 ຖ່າຍຮູບ" },
   "scan.attach":  { ko: "🖼 첨부하기", en: "🖼 Attach", th: "🖼 แนบรูป", lo: "🖼 ແນບຮູບ" },
   "scan.loading": { ko: "사진을 읽는 중…", en: "Reading the photo…", th: "กำลังอ่านรูป…", lo: "ກຳລັງອ່ານຮູບ…" },
