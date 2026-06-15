@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MODEL = "claude-haiku-4-5-20251001"; // 최신·빠른 모델 (구 sonnet-4-20250514 폐기 대응)
+const MODEL = "claude-sonnet-4-6"; // 음차 품질을 위해 Sonnet 4.6 (Haiku는 태국어→한글 음차 부정확)
 
 const LANG_NAME: Record<string, string> = {
   ko: "Korean", en: "English", th: "Thai", lo: "Lao", es: "Spanish", pt: "Portuguese",
@@ -30,9 +30,11 @@ export async function POST(req: NextRequest) {
   const langName = LANG_NAME[lang];
   const scriptName = LANG_NAME[script];
   const system =
-    `You write pronunciation guides. Given a phrase written in ${langName}, write how it SOUNDS using ${scriptName} script/letters ONLY, ` +
-    `so that a ${scriptName} speaker can read it out loud and be understood by a ${langName} speaker. ` +
-    `Output ONLY the pronunciation in ${scriptName} letters — no original text, no quotes, no romanization (unless ${scriptName} is English), no notes, no extra words.`;
+    `You are a pronunciation transcriber. The user message is a phrase in ${langName}. ` +
+    `Transcribe ONLY how it SOUNDS, written purely in ${scriptName} characters, so a ${scriptName} reader can say it aloud. ` +
+    `Hard rules: (1) Output MUST be in ${scriptName} characters only. (2) Do NOT repeat or include the original ${langName} text or its script. ` +
+    `(3) No "=", no quotes, no parentheses, no notes, no romanization (unless ${scriptName} is English). ` +
+    `(4) Separate words with spaces. Reply with the transcription and nothing else.`;
 
   try {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
@@ -41,7 +43,6 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 200,
-        temperature: 0,
         system,
         messages: [{ role: "user", content: text }],
       }),
