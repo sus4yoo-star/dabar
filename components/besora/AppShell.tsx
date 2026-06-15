@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 import { theme } from "@/lib/theme";
-import LanguageToggle from "@/components/besora/LanguageToggle";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
 import { fetchUnreadTotal } from "@/lib/besora/companions";
@@ -34,14 +33,14 @@ export default function AppShell({ children }: { children: ReactNode }) {
           </Link>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-          <Link href="/share/me" aria-label={ui(myLang, "companions")} title={ui(myLang, "companions")}
-            style={{ position: "relative", display: "flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "6px 12px", textDecoration: "none", whiteSpace: "nowrap" }}>
-            🤝 {ui(myLang, "companionsNav")}
+          {/* 좌상단 언어선택 자리에 '나의 전도 기록' (언어 선택은 아래 음성 통역에서) */}
+          <Link href="/share/me" aria-label={ui(myLang, "myRecords")} title={ui(myLang, "myRecords")}
+            style={{ position: "relative", display: "flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 20, padding: "6px 13px", textDecoration: "none", whiteSpace: "nowrap" }}>
+            📖 {ui(myLang, "myRecords")}
             {unread > 0 && (
               <span style={{ position: "absolute", top: -5, insetInlineEnd: -5, minWidth: 17, height: 17, padding: "0 5px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 10, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{unread > 99 ? "99+" : unread}</span>
             )}
           </Link>
-          <LanguageToggle />
         </div>
       </header>
       <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 18px 24px" }}>{children}</main>
