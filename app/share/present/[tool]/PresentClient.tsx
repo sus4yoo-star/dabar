@@ -6,7 +6,6 @@ import { theme } from "@/lib/theme";
 import AppShell from "@/components/besora/AppShell";
 import StepView from "@/components/besora/StepView";
 import DecisionFlow from "@/components/besora/DecisionFlow";
-import VoiceTranslator from "@/components/besora/VoiceTranslator";
 import { fetchTool, fetchRenderedSteps } from "@/lib/besora/content";
 import type { Tool, RenderedStep } from "@/lib/besora/types";
 import { useLang } from "@/lib/besora/LanguageContext";
@@ -132,9 +131,6 @@ export default function PresentClient() {
           <button onClick={reset} style={{ marginTop: 16, color: theme.gold, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>{ui(myLang, "home")}</button>
         </div>
       )}
-
-      {/* 🎤 음성 통역 — 도구 진행 중에도 항상 고정(인라인). 플로팅 버튼 대체 */}
-      {!inDecision && <VoiceTranslator inline />}
     </AppShell>
   );
 }
