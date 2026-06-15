@@ -1,0 +1,14 @@
+{
+  "appId": "com.theamov.dabar",
+  "appName": "DABAR",
+  "webDir": "public",
+  "server": {
+    "url": "https://dabar.theamov.com",
+    "cleartext": false
+  },
+  "backgroundColor": "#ffffff",
+  "ios": {
+    "contentInset": "always",
+    "limitsNavigationsToAppBoundDomains": false
+  }
+}
