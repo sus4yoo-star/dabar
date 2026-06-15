@@ -4,7 +4,7 @@ import { getSupabase } from "@/lib/besora/supabase";
 
 // 공개 VAPID 키(비밀 아님). 서버는 짝이 되는 비밀키(VAPID_PRIVATE_KEY)를 환경변수로 사용.
 export const VAPID_PUBLIC_KEY =
-  "BITYYMQXCwSrfln-Hlcf5_67p2LvUVVpVBkEM7xAzKChuld5sr4nWF8nwHzWaSZql-Z-6ZOytgAoBMW5FMbCyPo";
+  "BIpALnramBB_b99FS7kdN54QsUOZIvbSh64qx77NxwJQ119mWsg6btsPAH7dkW_ExQx0VL-xd8kN2vLVcwy_ieo";
 
 export function pushSupported(): boolean {
   return typeof window !== "undefined" &&

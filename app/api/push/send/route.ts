@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const VAPID_PUBLIC =
-  "BITYYMQXCwSrfln-Hlcf5_67p2LvUVVpVBkEM7xAzKChuld5sr4nWF8nwHzWaSZql-Z-6ZOytgAoBMW5FMbCyPo";
+  "BIpALnramBB_b99FS7kdN54QsUOZIvbSh64qx77NxwJQ119mWsg6btsPAH7dkW_ExQx0VL-xd8kN2vLVcwy_ieo";
 
 export async function POST(req: NextRequest) {
   const priv = process.env.VAPID_PRIVATE_KEY;
