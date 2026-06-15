@@ -105,6 +105,21 @@ export default function GroupDetailPage() {
     await leaveGroup(id);
     router.push("/groups");
   }
+  async function inviteKakao() {
+    if (!group) return;
+    const url = `https://dabar.theamov.com/groups/${id}`;
+    const lines = [
+      `${group.name} ${t("grp.inviteTitle")}`,
+      group.place ? `📍 ${group.place}` : "",
+      group.schedule ? `🕒 ${group.schedule}` : "",
+      `${t("grp.inviteJoin")} → ${url}`,
+    ].filter(Boolean);
+    const textMsg = lines.join("\n");
+    try {
+      if (navigator.share) await navigator.share({ title: group.name, text: textMsg, url });
+      else { await navigator.clipboard.writeText(textMsg); show(t("grp.inviteCopied")); }
+    } catch { /* 취소됨 */ }
+  }
   async function send() {
     const body = text.trim();
     if (!body) return;
@@ -161,9 +176,9 @@ export default function GroupDetailPage() {
           {group.description && <p style={{ margin: "6px 0 0", fontSize: 13, color: theme.textMuted, lineHeight: 1.6 }}>{group.description}</p>}
         </div>
 
-        {/* 전도 도구 바로가기 (멤버) */}
+        {/* 카카오톡으로 초대하기 (멤버) — 링크 공유 → 받은 사람이 열면 참여 */}
         {isMember && (
-          <button onClick={() => router.push("/share")} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px", marginBottom: 14, fontSize: 14, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("grp.evangelize")}</button>
+          <button onClick={inviteKakao} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px", marginBottom: 14, fontSize: 14, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("grp.invite")}</button>
         )}
 
         {/* 사진 (멤버) */}
@@ -249,7 +264,7 @@ export default function GroupDetailPage() {
       {/* 입력 / 나가기 */}
       {isMember && (
         <div style={{ position: "sticky", bottom: 0, background: theme.bg, borderTop: `1px solid ${theme.cardBorder}`, padding: "10px 12px", display: "flex", gap: 8, alignItems: "center" }}>
-          <input value={text} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === "Enter") send(); }} placeholder={t("grp.msgPh")}
+          <input value={text} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }} placeholder={t("grp.msgPh")}
             style={{ flex: 1, fontSize: 14, padding: "10px 13px", borderRadius: 20, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" }} />
           <button onClick={send} disabled={!text.trim()} style={{ flexShrink: 0, fontSize: 14, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 20, padding: "10px 16px", cursor: "pointer", opacity: text.trim() ? 1 : 0.5 }}>{t("grp.send")}</button>
         </div>
