@@ -14,11 +14,30 @@ export function canRecord(): boolean {
     !!(window.AudioContext || (window as any).webkitAudioContext);
 }
 
-export async function startRecording(): Promise<Recorder> {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+// 오디오 컨텍스트는 한 번만 만들어 재사용한다. 매번 생성·종료하면 느리고,
+// iOS 사파리는 권한 팝업 이후(=제스처 밖에서) 만든 컨텍스트가 suspended 로 남아
+// 첫 녹음이 무음으로 잡히는 버그가 있다.
+let _ctx: AudioContext | null = null;
+function getCtx(): AudioContext | null {
+  if (typeof window === "undefined") return null;
   const AC = (window.AudioContext || (window as any).webkitAudioContext);
-  const ctx = new AC();
+  if (!AC) return null;
+  if (!_ctx || _ctx.state === "closed") _ctx = new AC();
+  return _ctx;
+}
+
+// 사용자 탭(제스처) 안에서 "동기"로 호출 — 컨텍스트를 미리 깨워 둔다.
+// (resume 이 권한 팝업 이후로 밀리면 iOS 가 첫 녹음을 무음으로 잡음)
+export function primeAudio(): void {
+  const ctx = getCtx();
+  if (ctx && ctx.state === "suspended") { ctx.resume().catch(() => {}); }
+}
+
+export async function startRecording(): Promise<Recorder> {
+  const ctx = getCtx();
+  if (!ctx) throw new Error("no-audio-context");
   try { await ctx.resume(); } catch { /* ignore */ }
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const inRate = ctx.sampleRate;
   const source = ctx.createMediaStreamSource(stream);
   const processor = ctx.createScriptProcessor(4096, 1, 1);
@@ -33,7 +52,7 @@ export async function startRecording(): Promise<Recorder> {
     try { processor.disconnect(); } catch { /* ignore */ }
     try { source.disconnect(); } catch { /* ignore */ }
     stream.getTracks().forEach((t) => t.stop());
-    try { ctx.close(); } catch { /* ignore */ }
+    // 컨텍스트는 닫지 않고 재사용 — 다음 녹음이 빠르고 안정적.
   };
 
   return {
