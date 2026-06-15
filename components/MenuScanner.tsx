@@ -1,14 +1,14 @@
 "use client";
 
-// 📷 메뉴·간판 번역 — 사진 찍기/첨부 → 글자 위치 인식 → 원문 위에 번역을 겹쳐 표시(전체화면).
+// 📷 이미지 번역 — 사진 찍기/첨부 → 글자 읽어 설정 언어로 번역. 결과는 사진 + 깔끔한 번역 목록(전체화면).
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
 import { useI18n, LANGS } from "@/lib/i18n";
 
-type Item = { box: { x: number; y: number; w: number; h: number }; original: string; translated: string };
+type Item = { original: string; translated: string };
 
-// 사진을 긴 변 1280px·JPEG 로 정규화(EXIF 회전 반영) → 화면표시용 dataUrl + 전송용 base64.
+// 사진을 긴 변 1024px·JPEG 로 정규화(EXIF 회전 반영) → 화면표시용 dataUrl + 전송용 base64.
 async function processImage(file: File, maxDim = 1024, quality = 0.7): Promise<{ base64: string; dataUrl: string }> {
   let bmp: ImageBitmap | HTMLImageElement;
   try {
@@ -35,12 +35,10 @@ export default function MenuScanner() {
   const [imgUrl, setImgUrl] = useState("");
   const [items, setItems] = useState<Item[] | null>(null);
   const [open, setOpen] = useState(false);
-  const [imgH, setImgH] = useState(0);
-  const [flip, setFlip] = useState<Record<number, boolean>>({});
   const [target, setTarget] = useState<string>(lang); // 번역 결과 언어 (선택 가능)
 
   async function handle(file: File) {
-    setErr(""); setLoading(true); setItems(null); setFlip({});
+    setErr(""); setLoading(true); setItems(null);
     try {
       const { base64, dataUrl } = await processImage(file);
       if (!base64) { setErr(t("scan.fail")); setLoading(false); return; }
@@ -48,8 +46,7 @@ export default function MenuScanner() {
       const r = await fetch("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: base64, lang: target }) });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) setErr(d?.error === "no-key" ? t("scan.noKey") : (d?.detail ? `${t("scan.fail")}\n(${String(d.detail).slice(0, 140)})` : t("scan.fail")));
-      else if (!d.items?.length) { setItems([]); setOpen(true); }
-      else { setItems(d.items as Item[]); setOpen(true); }
+      else { setItems((d.items ?? []) as Item[]); setOpen(true); }
     } catch { setErr(t("scan.fail")); }
     setLoading(false);
   }
@@ -87,30 +84,29 @@ export default function MenuScanner() {
       )}
       {err && <p style={{ margin: "8px 0 0", fontSize: 12, color: theme.wrong, textAlign: "center", whiteSpace: "pre-wrap", lineHeight: 1.4 }}>{err}</p>}
 
-      {open && imgUrl && typeof document !== "undefined" && createPortal(
-        <div style={{ position: "fixed", inset: 0, zIndex: 80, background: "rgba(8,16,28,0.92)", display: "flex", flexDirection: "column", overflowY: "auto" }}>
-          <div style={{ position: "sticky", top: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: "rgba(8,16,28,0.7)" }}>
-            <span style={{ fontSize: 13, color: "#cfe0ee" }}>{items && items.length > 0 ? t("scan.hint") : t("scan.none")}</span>
-            <button onClick={() => setOpen(false)} style={{ fontSize: 14, fontWeight: 700, color: "#fff", background: "rgba(255,255,255,0.15)", border: "none", borderRadius: 999, padding: "7px 16px", cursor: "pointer" }}>{t("scan.close")} ✕</button>
+      {open && typeof document !== "undefined" && createPortal(
+        <div style={{ position: "fixed", inset: 0, zIndex: 80, background: "#fff", display: "flex", flexDirection: "column" }}>
+          <div style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderBottom: `1px solid ${theme.cardBorder}` }}>
+            <span style={{ fontSize: 15, fontWeight: 800, color: theme.gold }}>📷 {t("scan.title")}</span>
+            <button onClick={() => setOpen(false)} style={{ fontSize: 14, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "7px 16px", cursor: "pointer" }}>{t("scan.close")} ✕</button>
           </div>
-          <div style={{ flex: 1, display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "8px 12px 24px" }}>
-            <div style={{ position: "relative", display: "inline-block", maxWidth: "100%" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imgUrl} alt="scan" onLoad={(e) => setImgH(e.currentTarget.clientHeight)} style={{ display: "block", maxWidth: "100%", maxHeight: "82vh", borderRadius: 8 }} />
-              {(items ?? []).map((it, i) => {
-                const showOrig = flip[i];
-                const fs = Math.max(9, Math.min(it.box.h * imgH * 0.66, 30));
-                return (
-                  <button key={i} onClick={() => setFlip((f) => ({ ...f, [i]: !f[i] }))}
-                    style={{ position: "absolute", left: `${it.box.x * 100}%`, top: `${it.box.y * 100}%`, width: `${it.box.w * 100}%`, height: `${it.box.h * 100}%`,
-                      background: showOrig ? "rgba(255,249,230,0.96)" : "rgba(255,255,255,0.94)", color: "#15212e", border: "none", borderRadius: 3, padding: "0 2px",
-                      display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", fontWeight: 700, fontSize: fs, lineHeight: 1.05,
-                      overflow: "hidden", cursor: "pointer", boxShadow: "0 0 0 1px rgba(0,0,0,0.06)" }}>
-                    {showOrig ? it.original : it.translated}
-                  </button>
-                );
-              })}
-            </div>
+          <div style={{ flex: 1, overflowY: "auto", padding: "14px 16px 28px", maxWidth: 560, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+            {imgUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={imgUrl} alt="scan" style={{ display: "block", width: "100%", maxHeight: "34vh", objectFit: "contain", borderRadius: 10, background: theme.card, marginBottom: 14 }} />
+            )}
+            {!items || items.length === 0 ? (
+              <p style={{ textAlign: "center", color: theme.textMuted, fontSize: 14, padding: "1.5rem 0" }}>{t("scan.none")}</p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {items.map((it, i) => (
+                  <div key={i} style={{ padding: "11px 14px", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: theme.card }}>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: theme.text, lineHeight: 1.4 }}>{it.translated}</div>
+                    {it.original && <div style={{ fontSize: 12.5, color: theme.textMuted, marginTop: 3, lineHeight: 1.4 }}>{it.original}</div>}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>,
         document.body
