@@ -21,7 +21,7 @@ const LOCALE: Record<string, string> = {
   bn: "bn-IN", ja: "ja-JP", ur: "ur-PK", ru: "ru-RU", sw: "sw-KE",
 };
 
-export default function VoiceTranslator({ inline = false }: { inline?: boolean } = {}) {
+export default function VoiceTranslator({ inline = false, big = false }: { inline?: boolean; big?: boolean } = {}) {
   const { myLang, seekerLang, languages, rtlFor, setMyLang, setSeekerLang } = useLang();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -257,9 +257,9 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
   );
 
   const panes = (
-    <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-      {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder)}
-      {twoWay && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder)}
+    <div style={{ display: "flex", flexDirection: big ? "column" : "row", gap: big ? 12 : 8, alignItems: big ? "stretch" : "flex-start" }}>
+      {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder, big)}
+      {twoWay && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder, big)}
     </div>
   );
   const hint = (
@@ -271,8 +271,8 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
   // 인라인 모드 — 페이지에 그냥 박아두기 (플로팅/포털 없음, 항상 보임)
   if (inline) {
     return (
-      <div style={{ marginTop: 14, padding: "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: "#ffffff" }}>
-        <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 15, fontWeight: 700, color: theme.text, margin: "0 0 8px" }}>🎤 {ui(myLang, "voice")}</h2>
+      <div style={{ marginTop: big ? 12 : 14, padding: big ? "16px 16px 18px" : "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: "#ffffff" }}>
+        <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: big ? 17 : 15, fontWeight: 700, color: theme.text, margin: big ? "0 0 12px" : "0 0 8px" }}>🎤 {ui(myLang, "voice")}</h2>
         {langBar}
         {panes}
         {hint}
