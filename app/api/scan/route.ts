@@ -55,9 +55,12 @@ export async function POST(req: NextRequest) {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: MODEL, max_tokens: 2500, temperature: 0.1, system, messages: [{ role: "user", content }] }),
+      body: JSON.stringify({ model: MODEL, max_tokens: 1500, temperature: 0.1, system, messages: [{ role: "user", content }] }),
     });
-    if (!r.ok) return NextResponse.json({ error: "scan-failed" }, { status: 502 });
+    if (!r.ok) {
+      const ed = await r.json().catch(() => null);
+      return NextResponse.json({ error: "scan-failed", detail: ed?.error?.message ?? null }, { status: 502 });
+    }
     const d = await r.json();
     const text = (d?.content?.[0]?.text ?? "").trim();
     const parsed = extractJson(text);
