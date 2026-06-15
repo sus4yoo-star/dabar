@@ -124,7 +124,7 @@ export default function GroupsPage() {
           )}
           <Section title={t("grp.public")}>
             {others.length === 0 && mine.length === 0
-              ? <p style={{ fontSize: 13, color: theme.textFaint, textAlign: "center", padding: "1.5rem 0" }}>{t("grp.empty")}</p>
+              ? <p style={{ fontSize: 13, color: theme.textFaint, textAlign: "center", padding: "1.5rem 0", lineHeight: 1.6 }}>{canCreate ? t("grp.emptyLeader") : t("grp.empty")}</p>
               : others.map(g => <GroupCard key={g.id} g={g} onOpen={() => join(g.id)} t={t} />)}
           </Section>
         </>

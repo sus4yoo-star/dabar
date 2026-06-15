@@ -194,6 +194,9 @@ export default function GroupDetailPage() {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {messages.length === 0 && (
+              <p style={{ fontSize: 13, color: theme.textFaint, textAlign: "center", padding: "1.25rem 0" }}>{t("grp.chatEmpty")}</p>
+            )}
             {messages.map(m => {
               const mine = user && m.sender === user.id;
               return (

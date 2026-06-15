@@ -309,6 +309,8 @@ const DICT: Dict = {
   "grp.delPhoto":  { ko: "이 사진을 삭제할까요?", en: "Delete this photo?", th: "ลบรูปนี้?", lo: "ລຶບຮູບນີ້?" },
   "grp.fullMsg":   { ko: "정원이 찼어요 (최대 6명)", en: "This group is full (max 6)", th: "กลุ่มเต็มแล้ว (สูงสุด 6)", lo: "ກຸ່ມເຕັມແລ້ວ (ສູງສຸດ 6)" },
   "grp.empty":     { ko: "아직 공개된 모임이 없어요.", en: "No open groups yet.", th: "ยังไม่มีกลุ่มเปิด", lo: "ຍັງບໍ່ມີກຸ່ມເປີດ" },
+  "grp.emptyLeader": { ko: "아직 모임이 없어요. ＋ 모임 만들기로 첫 모임을 열어보세요!", en: "No groups yet — create the first one with ＋ New group!", th: "ยังไม่มีกลุ่ม สร้างกลุ่มแรกได้เลย!", lo: "ຍັງບໍ່ມີກຸ່ມ ສ້າງກຸ່ມທຳອິດໄດ້ເລີຍ!" },
+  "grp.chatEmpty": { ko: "첫 나눔을 남겨보세요 🙏", en: "Start the first message 🙏", th: "เริ่มข้อความแรกกันเลย 🙏", lo: "ເລີ່ມຂໍ້ຄວາມທຳອິດ 🙏" },
   "grp.loginNeeded": { ko: "로그인하면 모임에 참여할 수 있어요.", en: "Log in to join groups.", th: "เข้าสู่ระบบเพื่อเข้าร่วมกลุ่ม", lo: "ເຂົ້າສູ່ລະບົບເພື່ອເຂົ້າຮ່ວມ" },
   "grp.leaderOnly":  { ko: "모임 개설은 리더 권한이 필요해요 (관리자에게 요청).", en: "Creating a group needs leader permission.", th: "การสร้างกลุ่มต้องมีสิทธิ์ผู้นำ", lo: "ການສ້າງກຸ່ມຕ້ອງມີສິດຫົວໜ້າ" },
   "grp.namePh":    { ko: "모임 이름 (예: 강남 청년 나눔)", en: "Group name", th: "ชื่อกลุ่ม", lo: "ຊື່ກຸ່ມ" },

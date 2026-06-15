@@ -110,6 +110,37 @@ export async function sendGroupMessage(groupId: string, body: string): Promise<v
 export type GroupPhoto = { id: string; group_id: string; uploader: string; path: string; created_at: string; url: string };
 const PHOTO_BUCKET = "group-photos";
 
+// 업로드 전 이미지 처리: HEIC 등 → JPEG 변환 + 긴 변 최대 1600px 로 축소.
+// (브라우저가 디코드 못 하면 원본 그대로 — iOS Safari 는 HEIC 디코드 가능)
+async function processImage(file: File, maxDim = 1600, quality = 0.85): Promise<File> {
+  if (typeof document === "undefined" || !file.type.startsWith("image/")) return file;
+  try {
+    let w = 0, h = 0;
+    let draw: (ctx: CanvasRenderingContext2D, dw: number, dh: number) => void;
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: "from-image" } as ImageBitmapOptions);
+      w = bmp.width; h = bmp.height; draw = (ctx, dw, dh) => ctx.drawImage(bmp, 0, 0, dw, dh);
+    } catch {
+      const url = URL.createObjectURL(file);
+      const img = await new Promise<HTMLImageElement>((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = url; });
+      URL.revokeObjectURL(url);
+      w = img.naturalWidth; h = img.naturalHeight; draw = (ctx, dw, dh) => ctx.drawImage(img, 0, 0, dw, dh);
+    }
+    if (!w || !h) return file;
+    const scale = Math.min(1, maxDim / Math.max(w, h));
+    const dw = Math.round(w * scale), dh = Math.round(h * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = dw; canvas.height = dh;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    draw(ctx, dw, dh);
+    const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, "image/jpeg", quality));
+    if (!blob) return file;
+    const base = file.name.replace(/\.[^.]+$/, "") || "photo";
+    return new File([blob], `${base}.jpg`, { type: "image/jpeg" });
+  } catch { return file; }
+}
+
 export async function fetchPhotos(groupId: string): Promise<GroupPhoto[]> {
   try {
     const sb = getSupabase();
@@ -123,10 +154,11 @@ export async function fetchPhotos(groupId: string): Promise<GroupPhoto[]> {
 export async function uploadPhoto(groupId: string, file: File): Promise<void> {
   const uid = await myId(); if (!uid) throw new Error("login required");
   const sb = getSupabase();
-  const ext = ((file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "")) || "jpg";
+  const f = await processImage(file); // HEIC→JPEG + 축소
+  const ext = ((f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "")) || "jpg";
   const rand = (globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`);
   const path = `${groupId}/${rand}.${ext}`;
-  const up = await sb.storage.from(PHOTO_BUCKET).upload(path, file, { upsert: false, contentType: file.type || undefined });
+  const up = await sb.storage.from(PHOTO_BUCKET).upload(path, f, { upsert: false, contentType: f.type || undefined });
   if (up.error) throw up.error;
   const ins = await sb.from("group_photos").insert({ group_id: groupId, uploader: uid, path });
   if (ins.error) throw ins.error;
