@@ -7,7 +7,7 @@ import { shareInvite } from "@/lib/share";
 import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
 import { fetchUnreadTotal } from "@/lib/besora/companions";
-import HomeComfort from "@/components/HomeComfort";
+import HomeReachCard from "@/components/HomeReachCard";
 
 export default function Home() {
   const router = useRouter();
@@ -105,8 +105,8 @@ export default function Home() {
         {user && <QuickChip label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
       </div>
 
-      {/* 💛 마음에 닿는 말씀 — 감정/상황 → 위로의 말씀 (탭하면 다음 말씀) */}
-      <HomeComfort />
+      {/* 🌱 전도 여정 — 내가 전하는 사람들 (단계·기도) */}
+      <HomeReachCard />
 
       {/* 하단 보조 링크 */}
       <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
