@@ -9,6 +9,7 @@ import {
   Group, GroupMember, GroupMessage, GroupPhoto, MAX_MEMBERS,
   fetchGroup, fetchGroupMessages, fetchMembers, fetchPhotos, joinGroup, leaveGroup,
   sendGroupMessage, subscribeGroupMessages, updateNotice, uploadPhoto, deletePhoto,
+  setGroupPublic, deleteGroup,
 } from "@/lib/besora/groups";
 import { PushState, disablePush, enablePush, getPushState, notifyGroup } from "@/lib/besora/push";
 
@@ -105,6 +106,17 @@ export default function GroupDetailPage() {
     await leaveGroup(id);
     router.push("/groups");
   }
+  async function toggleVisibility() {
+    if (!group) return;
+    const next = !group.is_public;
+    try { await setGroupPublic(id, next); setGroup(g => g ? { ...g, is_public: next } : g); show(t("grp.visChanged")); }
+    catch { show(t("grp.notReady")); }
+  }
+  async function removeGroup() {
+    if (!confirm(t("grp.delGroupConfirm"))) return;
+    try { await deleteGroup(id); router.push("/groups"); }
+    catch { show(t("grp.notReady")); }
+  }
   async function inviteKakao() {
     if (!group) return;
     const url = `https://dabar.theamov.com/groups/${id}`;
@@ -134,7 +146,7 @@ export default function GroupDetailPage() {
   if (!group) return <Center>{t("grp.notReady")}</Center>;
 
   return (
-    <main style={{ maxWidth: 480, margin: "0 auto", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+    <main style={{ maxWidth: 480, margin: "0 auto", height: "100dvh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
       {/* 헤더 */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: theme.bg, borderBottom: `1px solid ${theme.cardBorder}`, padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
         <button onClick={() => router.push("/groups")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 10, padding: "6px 10px", cursor: "pointer", whiteSpace: "nowrap" }}>←</button>
@@ -181,6 +193,21 @@ export default function GroupDetailPage() {
           <button onClick={inviteKakao} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px", marginBottom: 14, fontSize: 14, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("grp.invite")}</button>
         )}
 
+        {/* 리더 설정 — 공개/비공개 전환 · 모임 삭제 */}
+        {amLeader && (
+          <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+            <button onClick={toggleVisibility} style={{ flex: 1, padding: "9px", fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap" }}>
+              {group.is_public ? t("grp.makePrivate") : t("grp.makePublic")}
+            </button>
+            <button onClick={removeGroup} style={{ flex: 1, padding: "9px", fontSize: 12.5, fontWeight: 700, color: theme.wrong, background: theme.wrongBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap" }}>
+              {t("grp.deleteGroup")}
+            </button>
+          </div>
+        )}
+        {!group.is_public && (
+          <p style={{ margin: "0 0 14px", fontSize: 11.5, color: theme.textMuted, textAlign: "center" }}>🔒 {t("grp.private")}</p>
+        )}
+
         {/* 사진 (멤버) */}
         {isMember && (
           <div style={{ marginBottom: 14 }}>
@@ -218,6 +245,10 @@ export default function GroupDetailPage() {
                 </span>
               ))}
             </div>
+            {/* 모임 나가기 (리더 아닌 멤버) */}
+            {isMember && members.find(m => m.user_id === user?.id)?.role !== "leader" && (
+              <button onClick={handleLeave} style={{ marginTop: 10, padding: "4px 0", fontSize: 12, color: theme.textFaint, background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline" }}>{t("grp.leave")}</button>
+            )}
           </div>
         )}
 
@@ -263,16 +294,12 @@ export default function GroupDetailPage() {
 
       {/* 입력 / 나가기 */}
       {isMember && (
-        <div style={{ position: "sticky", bottom: 0, background: theme.bg, borderTop: `1px solid ${theme.cardBorder}`, padding: "10px 12px", display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ flexShrink: 0, background: theme.bg, borderTop: `1px solid ${theme.cardBorder}`, padding: "10px 12px calc(10px + env(safe-area-inset-bottom))", display: "flex", gap: 8, alignItems: "center" }}>
           <input value={text} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }} placeholder={t("grp.msgPh")}
             style={{ flex: 1, fontSize: 14, padding: "10px 13px", borderRadius: 20, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" }} />
           <button onClick={send} disabled={!text.trim()} style={{ flexShrink: 0, fontSize: 14, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 20, padding: "10px 16px", cursor: "pointer", opacity: text.trim() ? 1 : 0.5 }}>{t("grp.send")}</button>
         </div>
       )}
-      {isMember && members.find(m => m.user_id === user?.id)?.role !== "leader" && (
-        <button onClick={handleLeave} style={{ margin: "0 12px 12px", padding: "8px", fontSize: 12.5, color: theme.textFaint, background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline" }}>{t("grp.leave")}</button>
-      )}
-
       {lightbox !== null && photos[lightbox] && (
         <Lightbox photos={photos} index={lightbox} onIndex={setLightbox} onClose={() => setLightbox(null)} />
       )}
