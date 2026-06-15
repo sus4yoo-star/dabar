@@ -91,13 +91,13 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
     setLeftText(v);
     clearTimeout(leftTimer.current);
     if (!v.trim()) { setRightText(""); return; }
-    leftTimer.current = setTimeout(() => translateInto(v, myLang, seeker, "R"), 700);
+    leftTimer.current = setTimeout(() => translateInto(v, myLang, seeker, "R"), 400);
   }
   function onRightType(v: string) {
     setRightText(v);
     clearTimeout(rightTimer.current);
     if (!v.trim()) { setLeftText(""); return; }
-    rightTimer.current = setTimeout(() => translateInto(v, seeker, myLang, "L"), 700);
+    rightTimer.current = setTimeout(() => translateInto(v, seeker, myLang, "L"), 400);
   }
 
   // 화면 마이크 탭 — 듣는 중이면 멈추고, 아니면 그 칸 언어로 받아쓰기 시작
@@ -166,12 +166,13 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
     setListening(null);
     if (!rec) return;
     const isLeft = lang === myLang;
+    const target = isLeft ? seeker : myLang;
     setBusy(isLeft ? "R" : "L");
     try {
       const { base64, rate } = await rec.stop();
       const r = await fetch("/api/transcribe", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ audio: base64, lang, rate }),
+        body: JSON.stringify({ audio: base64, lang, rate, target }),
       });
       const d = await r.json();
       if (!r.ok || !d.text) {
@@ -184,7 +185,14 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
         setBusy(""); return;
       }
       if (isLeft) setLeftText(d.text); else setRightText(d.text);
-      await translateInto(d.text, lang, isLeft ? seeker : myLang, isLeft ? "R" : "L");
+      if (d.translated) {
+        // 서버가 번역까지 끝냄 — 추가 왕복 없이 바로 표시·재생
+        if (isLeft) setRightText(d.translated); else setLeftText(d.translated);
+        speak(d.translated, target);
+        setBusy("");
+      } else {
+        await translateInto(d.text, lang, target, isLeft ? "R" : "L");
+      }
     } catch {
       setErr("네트워크 오류예요."); setBusy("");
     }
@@ -200,7 +208,7 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
     const dir = rtlFor(code) ? "rtl" : "ltr";
     return (
       <div dir={dir} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
-        <span style={{ fontSize: 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)}{busy === side ? " · 번역 중…" : ""}</span>
+        <span style={{ fontSize: 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)} <span style={{ opacity: 0.7 }}>({code.toUpperCase()})</span>{busy === side ? " · 번역 중…" : ""}</span>
         <div style={{ display: "flex", gap: 6 }}>
           {/* 마이크 (크게, 가변폭) */}
           <button onClick={() => micFor(code)} disabled={!micAvailable} aria-label={ui(myLang, "micSpeak")}
@@ -234,14 +242,14 @@ export default function VoiceTranslator({ inline = false }: { inline?: boolean }
       <label style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
         <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.primarySoft }}>{ui(myLang, "myLanguage")}</span>
         <select value={myLang} onChange={(e) => setMyLang(e.target.value)} style={selStyle}>
-          {languages.map((l) => <option key={l.code} value={l.code}>{l.name_native}</option>)}
+          {languages.map((l) => <option key={l.code} value={l.code}>{l.name_native} ({l.code.toUpperCase()})</option>)}
         </select>
       </label>
       <span style={{ paddingBottom: 9, color: theme.textFaint, fontSize: 15, fontWeight: 800 }}>↔</span>
       <label style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
         <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.gold }}>{ui(myLang, "seekerLanguage")}</span>
         <select value={seeker} onChange={(e) => setSeekerLang(e.target.value)} style={selStyle}>
-          {languages.map((l) => <option key={l.code} value={l.code}>{l.name_native}</option>)}
+          {languages.map((l) => <option key={l.code} value={l.code}>{l.name_native} ({l.code.toUpperCase()})</option>)}
         </select>
       </label>
     </div>

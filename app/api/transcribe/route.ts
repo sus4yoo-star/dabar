@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const key = process.env.GOOGLE_TRANSLATE_API_KEY;
   if (!key) return NextResponse.json({ error: "no-key" }, { status: 500 });
 
-  let body: { audio?: string; lang?: string; rate?: number };
+  let body: { audio?: string; lang?: string; rate?: number; target?: string };
   try {
     body = await req.json();
   } catch {
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
   const audio = (body.audio ?? "").trim();
   const lang = body.lang ?? "ko";
   const rate = body.rate ?? 16000;
+  const target = body.target; // 있으면 음성인식 직후 서버에서 바로 번역까지 (클라이언트 왕복 1회 절약)
   if (!audio) return NextResponse.json({ error: "bad-request" }, { status: 400 });
 
   try {
@@ -59,7 +60,20 @@ export async function POST(req: NextRequest) {
       .map((r: any) => r?.alternatives?.[0]?.transcript ?? "")
       .join(" ")
       .trim();
-    return NextResponse.json({ text });
+
+    // target 이 주어지면 같은 요청 안에서 번역까지 처리 → 모바일 왕복 지연 절감
+    let translated: string | null = null;
+    if (text && target && target !== lang) {
+      try {
+        const tr = await fetch(
+          `https://translation.googleapis.com/language/translate/v2?key=${key}`,
+          { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q: text, target, source: lang, format: "text" }) }
+        );
+        const td = await tr.json();
+        translated = td?.data?.translations?.[0]?.translatedText ?? null;
+      } catch { /* 번역 실패 시 클라이언트가 별도 번역으로 폴백 */ }
+    }
+    return NextResponse.json({ text, translated });
   } catch {
     return NextResponse.json({ error: "network" }, { status: 502 });
   }
