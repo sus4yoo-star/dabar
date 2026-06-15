@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// 📷 메뉴·간판 번역 — 사진 속 글자를 읽어(OCR) 위치(박스)와 함께 설정 언어로 번역.
-// 프론트가 원문 위에 번역을 겹쳐 표시(구글 번역 카메라식). Anthropic(Claude) 비전.
+// 📷 이미지 번역 — 사진 속 글자를 읽어(OCR) 설정 언어로 번역. 읽기 쉬운 "줄 목록"으로 반환.
+// Anthropic(Claude) 비전.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60; // Opus 비전 처리 시간 확보 (지원 플랫폼에서)
+export const maxDuration = 60;
 
-const MODEL = "claude-opus-4-8"; // 빽빽한 메뉴판도 정확히 — 가장 강력한 비전 모델
+const MODEL = "claude-sonnet-4-6"; // 빠르고 정확 — 비전 OCR+번역
 
 const LANG_NAME: Record<string, string> = {
   ko: "Korean", en: "English", th: "Thai", lo: "Lao", es: "Spanish", pt: "Portuguese",
@@ -14,7 +14,7 @@ const LANG_NAME: Record<string, string> = {
   vi: "Vietnamese", id: "Indonesian", bn: "Bengali", ja: "Japanese", ur: "Urdu", fr: "French", ru: "Russian", sw: "Swahili",
 };
 
-type Item = { box: { x: number; y: number; w: number; h: number }; original: string; translated: string };
+type Item = { original: string; translated: string };
 
 function extractJson(s: string): { items?: unknown } | null {
   try { return JSON.parse(s); } catch { /* find block */ }
@@ -22,9 +22,6 @@ function extractJson(s: string): { items?: unknown } | null {
   if (m) { try { return JSON.parse(m[0]); } catch { /* */ } }
   return null;
 }
-
-const num = (v: unknown) => (typeof v === "number" && isFinite(v) ? v : NaN);
-const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 
 export async function POST(req: NextRequest) {
   const key = process.env.ANTHROPIC_API_KEY;
@@ -39,24 +36,22 @@ export async function POST(req: NextRequest) {
   const langName = LANG_NAME[lang];
 
   const system =
-    `You help a traveler/missionary understand a foreign sign, menu, label, or notice from a photo. ` +
-    `Detect each distinct block of text (a line, a heading, or a menu item). For EACH block return: ` +
-    `"box" = its bounding box as fractions of the image: {"x":<left>,"y":<top>,"w":<width>,"h":<height>}, each between 0 and 1 (x,y is the top-left corner); ` +
-    `"original" = the text exactly as printed; "translated" = that text translated into ${langName}. ` +
-    `Keep prices and numbers as printed. Order blocks top-to-bottom. ` +
-    `Output ONLY JSON (no markdown): {"items":[{"box":{"x":0.1,"y":0.2,"w":0.3,"h":0.05},"original":"...","translated":"..."}]}. ` +
-    `If there is no readable text, return {"items":[]}.`;
+    `You help a traveler understand a foreign sign, menu, label, or notice from a photo. ` +
+    `Read the text in reading order (top to bottom, grouping each menu item / line). For each line return ` +
+    `"original" = the text as printed, and "translated" = its ${langName} translation. Keep prices and numbers. ` +
+    `Merge a dish name and its price into ONE line. Output ONLY JSON (no markdown): ` +
+    `{"items":[{"original":"...","translated":"..."}]}. If there is no readable text, {"items":[]}.`;
 
   const content: unknown[] = [
     { type: "image", source: { type: "base64", media_type: "image/jpeg", data: image } },
-    { type: "text", text: `사진 속 글자를 블록별로 위치와 함께 인식하고 ${langName}로 번역해 주세요. JSON만 반환.` },
+    { type: "text", text: `사진 속 글자를 줄 단위로 읽고 ${langName}로 번역해 주세요. JSON만 반환.` },
   ];
 
   try {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: MODEL, max_tokens: 4000, system, messages: [{ role: "user", content }] }),
+      body: JSON.stringify({ model: MODEL, max_tokens: 2000, system, messages: [{ role: "user", content }] }),
     });
     if (!r.ok) {
       const ed = await r.json().catch(() => null);
@@ -68,15 +63,10 @@ export async function POST(req: NextRequest) {
     const raw = Array.isArray(parsed?.items) ? (parsed!.items as unknown[]) : [];
     const items: Item[] = [];
     for (const it of raw) {
-      const o = it as { box?: Record<string, unknown>; original?: unknown; translated?: unknown };
-      const x = num(o.box?.x), y = num(o.box?.y), w = num(o.box?.w), h = num(o.box?.h);
+      const o = it as { original?: unknown; translated?: unknown };
       const translated = typeof o.translated === "string" ? o.translated.trim() : "";
-      if (!translated || [x, y, w, h].some((v) => isNaN(v)) || w <= 0 || h <= 0) continue;
-      items.push({
-        box: { x: clamp01(x), y: clamp01(y), w: clamp01(w), h: clamp01(h) },
-        original: typeof o.original === "string" ? o.original.trim() : "",
-        translated,
-      });
+      if (!translated) continue;
+      items.push({ original: typeof o.original === "string" ? o.original.trim() : "", translated });
     }
     return NextResponse.json({ items });
   } catch {
