@@ -14,10 +14,11 @@ export default function HomeReachCard() {
   const { user } = useAuth();
   const [total, setTotal] = useState<number | null>(null);
   const [decided, setDecided] = useState(0);
+  const [due, setDue] = useState(0);
 
   useEffect(() => {
     if (!user) { setTotal(null); return; }
-    seekerCounts().then((c) => { setTotal(c.total); setDecided(c.byStage.decided + c.byStage.settled); }).catch(() => {});
+    seekerCounts().then((c) => { setTotal(c.total); setDecided(c.byStage.decided + c.byStage.settled); setDue(c.due); }).catch(() => {});
   }, [user]);
 
   return (
@@ -26,10 +27,12 @@ export default function HomeReachCard() {
       <span style={{ fontSize: 26, lineHeight: 1 }}>🌱</span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: theme.gold }}>{t("home.reachTitle")}</span>
-        <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>
-          {total && total > 0
-            ? `${t("reach.count", { n: total })} · ${t("reach.s.decided")} ${decided}`
-            : t("home.reachSub")}
+        <span style={{ display: "block", fontSize: 12, color: due > 0 ? theme.primarySoft : theme.textMuted, fontWeight: due > 0 ? 700 : 400, marginTop: 2 }}>
+          {due > 0
+            ? `🔔 ${t("home.reachToday", { n: due })}`
+            : total && total > 0
+              ? `${t("reach.count", { n: total })} · ${t("reach.s.decided")} ${decided}`
+              : t("home.reachSub")}
         </span>
       </span>
       <span style={{ fontSize: 18, color: theme.gold }}>→</span>
