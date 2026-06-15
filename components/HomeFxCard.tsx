@@ -47,8 +47,8 @@ export default function HomeFxCard() {
     : "—";
 
   return (
-    <div className="fade-in-3" style={{ marginTop: 13, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "14px 15px" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 11 }}>
+    <div className="fade-in-3" style={{ marginTop: 9, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "12px 14px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 9 }}>
         <span style={{ fontSize: 14.5, fontWeight: 800, color: theme.gold }}>💱 {t("fx.title")}</span>
         <span style={{ fontSize: 11, color: theme.textMuted, fontWeight: 700 }}>
           {rate != null ? t("fx.per", { n: rate.toFixed(2) }) : t("fx.loading")}
