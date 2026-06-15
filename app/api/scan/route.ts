@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const MODEL = "claude-sonnet-4-6"; // 빠르고 정확 — 비전 OCR+번역
+const MODEL = "claude-haiku-4-5-20251001"; // 가장 빠른 비전 모델 — OCR+번역 목록
 
 const LANG_NAME: Record<string, string> = {
   ko: "Korean", en: "English", th: "Thai", lo: "Lao", es: "Spanish", pt: "Portuguese",
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: MODEL, max_tokens: 2000, system, messages: [{ role: "user", content }] }),
+      body: JSON.stringify({ model: MODEL, max_tokens: 1500, system, messages: [{ role: "user", content }] }),
     });
     if (!r.ok) {
       const ed = await r.json().catch(() => null);

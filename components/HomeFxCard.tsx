@@ -64,6 +64,13 @@ export default function HomeFxCard() {
     if (rate != null) setFromVal(c === "" ? "" : fmt(num(c) / rate, fromCur));
   }
 
+  // 위아래 통화 교체 (값도 함께 스왑 → 환산값 유지)
+  function swap() {
+    setFromCur(toCur); setToCur(fromCur);
+    setFromVal(toVal); setToVal(fromVal);
+    setLast(last === "from" ? "to" : "from");
+  }
+
   const dateStr = asOf ? new Date(asOf).toLocaleDateString(lang === "ko" ? "ko-KR" : "en-CA", { month: "2-digit", day: "2-digit" }) : "—";
 
   return (
@@ -71,14 +78,24 @@ export default function HomeFxCard() {
       <div style={{ fontSize: 13.5, fontWeight: 800, color: theme.gold, marginBottom: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>💱 {t("fx.title")}</div>
 
       <Row cur={fromCur} onCur={(c) => { setFromCur(c); setLast("from"); }} value={last === "from" ? fromVal : group(fromVal)} onChange={onFrom} />
-      <div style={{ textAlign: "center", margin: "3px 0", color: theme.textFaint, fontSize: 14, fontWeight: 800 }}>⇅</div>
+      <div style={{ display: "flex", justifyContent: "center", margin: "5px 0" }}>
+        <button onClick={swap} aria-label={t("fx.swap")} title={t("fx.swap")}
+          style={{ width: 34, height: 34, borderRadius: 999, border: "none", background: theme.primary, color: "#fff", fontSize: 17, fontWeight: 800, cursor: "pointer", display: "grid", placeItems: "center", boxShadow: "0 2px 8px rgba(31,155,239,0.35)" }}>⇅</button>
+      </div>
       <Row cur={toCur} onCur={(c) => { setToCur(c); setLast("from"); }} value={last === "to" ? toVal : group(toVal)} onChange={onTo} />
 
       <p style={{ margin: "9px 1px 0", fontSize: 10, color: theme.textFaint, lineHeight: 1.4 }}>
-        {rate != null ? `1 ${fromCur} = ${group(fmt(rate, toCur))} ${toCur}` : t("fx.loading")}<br />{t("fx.note", { d: dateStr })}
+        {rate != null ? `1 ${fromCur} = ${fmtRate(rate)} ${toCur}` : t("fx.loading")}<br />{t("fx.note", { d: dateStr })}
       </p>
     </div>
   );
+}
+
+// 환율 표기: 큰 값은 천단위, 1 이상은 소수2, 1 미만은 유효숫자 — "0"으로 안 보이게
+function fmtRate(r: number): string {
+  if (r >= 100) return Math.round(r).toLocaleString("en-US");
+  if (r >= 1) return String(Math.round(r * 100) / 100);
+  return Number(r.toPrecision(2)).toString();
 }
 
 function Row({ cur, onCur, value, onChange }: { cur: string; onCur: (c: string) => void; value: string; onChange: (v: string) => void }) {

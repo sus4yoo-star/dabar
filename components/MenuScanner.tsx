@@ -9,7 +9,7 @@ import { useI18n, LANGS } from "@/lib/i18n";
 type Item = { original: string; translated: string };
 
 // 사진을 긴 변 1024px·JPEG 로 정규화(EXIF 회전 반영) → 화면표시용 dataUrl + 전송용 base64.
-async function processImage(file: File, maxDim = 1024, quality = 0.7): Promise<{ base64: string; dataUrl: string }> {
+async function processImage(file: File, maxDim = 900, quality = 0.68): Promise<{ base64: string; dataUrl: string }> {
   let bmp: ImageBitmap | HTMLImageElement;
   try {
     bmp = await createImageBitmap(file, { imageOrientation: "from-image" } as ImageBitmapOptions);

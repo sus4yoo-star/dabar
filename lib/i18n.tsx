@@ -53,6 +53,7 @@ const DICT: Dict = {
   "fx.per":    { ko: "1 바트 = {n} 원", en: "1 THB = {n} KRW", th: "1 บาท = {n} วอน", lo: "1 ບາດ = {n} ວອນ" },
   "fx.note":   { ko: "매일 오전 9시 기준 환율 · {d}", en: "Reference rate, updated daily 9 AM · {d}", th: "อัตราอ้างอิง อัปเดตทุกวัน 9 โมงเช้า · {d}", lo: "ອັດຕາອ້າງອີງ ອັບເດດທຸກວັນ 9 ໂມງເຊົ້າ · {d}" },
   "fx.loading":{ ko: "환율 불러오는 중…", en: "Loading rate…", th: "กำลังโหลดอัตรา…", lo: "ກຳລັງໂຫຼດອັດຕາ…" },
+  "fx.swap":  { ko: "통화 위아래 바꾸기", en: "Swap currencies", th: "สลับสกุลเงิน", lo: "ສະຫຼັບສະກຸນເງິນ" },
 
   // 📷 메뉴·간판 번역 (사진 → 글자 읽어 설정 언어로 번역)
   "scan.title":   { ko: "이미지 번역", en: "Image Translate", th: "แปลรูปภาพ", lo: "ແປຮູບພາບ" },
