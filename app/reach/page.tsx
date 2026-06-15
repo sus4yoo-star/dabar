@@ -19,8 +19,8 @@ export default function ReachPage() {
         <span style={{ width: 52 }} />
       </div>
 
-      {/* 환율 계산기(왼쪽) + 메뉴·간판 번역(오른쪽) 나란히 */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, alignItems: "start" }}>
+      {/* 환율 계산기(왼쪽) + 메뉴·간판 번역(오른쪽) 반반 — minmax(0,1fr)로 동일 너비 강제 */}
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 10, alignItems: "start" }}>
         <HomeFxCard />
         <MenuScanner />
       </div>
