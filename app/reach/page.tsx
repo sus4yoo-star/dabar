@@ -19,11 +19,11 @@ export default function ReachPage() {
         <span style={{ width: 52 }} />
       </div>
 
-      {/* 환율 계산기 (바트 ↔ 원) */}
-      <HomeFxCard />
-
-      {/* 📷 메뉴·간판 번역 (사진 → 글자 읽어 설정 언어로) */}
-      <MenuScanner />
+      {/* 환율 계산기(왼쪽) + 메뉴·간판 번역(오른쪽) 나란히 */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, alignItems: "start" }}>
+        <HomeFxCard />
+        <MenuScanner />
+      </div>
 
       {/* 음성 통역 — 크게(세로 배치): 내 언어 한 줄, 상대 언어 한 줄 */}
       <LanguageProvider><VoiceTranslator inline big /></LanguageProvider>
