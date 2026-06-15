@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
+import { useToast } from "@/components/Toast";
 import {
   Group, GroupMember, GroupMessage, GroupPhoto, MAX_MEMBERS,
   fetchGroup, fetchGroupMessages, fetchMembers, fetchPhotos, joinGroup, leaveGroup,
@@ -14,6 +15,7 @@ export default function GroupDetailPage() {
   const router = useRouter();
   const { t } = useI18n();
   const { user } = useAuth();
+  const { show, view } = useToast();
   const id = String(useParams().id);
 
   const [group, setGroup] = useState<Group | null>(null);
@@ -25,6 +27,7 @@ export default function GroupDetailPage() {
   const [noticeDraft, setNoticeDraft] = useState("");
   const [photos, setPhotos] = useState<GroupPhoto[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
 
@@ -56,16 +59,17 @@ export default function GroupDetailPage() {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { alert(t("grp.photoBig")); return; }
+    if (file.size > 10 * 1024 * 1024) { show(t("grp.photoBig")); return; }
     setUploading(true);
     try { await uploadPhoto(id, file); setPhotos(await fetchPhotos(id)); }
-    catch { alert(t("grp.notReady")); }
+    catch { show(t("grp.notReady")); }
     setUploading(false);
   }
   async function onDeletePhoto(p: GroupPhoto) {
     if (!confirm(t("grp.delPhoto"))) return;
     await deletePhoto(p);
     setPhotos(prev => prev.filter(x => x.id !== p.id));
+    setLightbox(null);
   }
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [id, user]);
 
@@ -81,7 +85,7 @@ export default function GroupDetailPage() {
   async function handleJoin() {
     if (!user) { router.push("/login"); return; }
     try { await joinGroup(id); await load(); }
-    catch (e) { if ((e as Error)?.message === "full") { alert(t("grp.fullMsg")); await load(); } }
+    catch (e) { if ((e as Error)?.message === "full") { show(t("grp.fullMsg")); await load(); } }
   }
   async function handleLeave() {
     await leaveGroup(id);
@@ -155,13 +159,13 @@ export default function GroupDetailPage() {
             <input ref={fileRef} type="file" accept="image/*" onChange={onPickPhoto} style={{ display: "none" }} />
             {photos.length > 0 && (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
-                {photos.map(p => {
+                {photos.map((p, idx) => {
                   const canDel = (user && p.uploader === user.id) || amLeader;
                   return (
                     <div key={p.id} style={{ position: "relative", aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", border: `1px solid ${theme.cardBorder}` }}>
-                      <img src={p.url} alt="" onClick={() => window.open(p.url, "_blank")} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer", display: "block" }} />
+                      <img src={p.url} alt={t("grp.photos")} onClick={() => setLightbox(idx)} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer", display: "block" }} />
                       {canDel && (
-                        <button onClick={() => onDeletePhoto(p)} aria-label="delete" style={{ position: "absolute", top: 4, insetInlineEnd: 4, width: 22, height: 22, borderRadius: 999, border: "none", background: "rgba(0,0,0,0.55)", color: "#fff", fontSize: 13, lineHeight: "22px", cursor: "pointer", padding: 0 }}>×</button>
+                        <button onClick={() => onDeletePhoto(p)} aria-label={t("acct.delete")} style={{ position: "absolute", top: 4, insetInlineEnd: 4, width: 22, height: 22, borderRadius: 999, border: "none", background: "rgba(0,0,0,0.55)", color: "#fff", fontSize: 13, lineHeight: "22px", cursor: "pointer", padding: 0 }}>×</button>
                       )}
                     </div>
                   );
@@ -200,9 +204,10 @@ export default function GroupDetailPage() {
             {messages.map(m => {
               const mine = user && m.sender === user.id;
               return (
-                <div key={m.id} style={{ alignSelf: mine ? "flex-end" : "flex-start", maxWidth: "82%" }}>
+                <div key={m.id} style={{ alignSelf: mine ? "flex-end" : "flex-start", maxWidth: "82%", display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start" }}>
                   {!mine && <span style={{ display: "block", fontSize: 10.5, color: theme.textFaint, margin: "0 0 2px 4px" }}>{nameById[m.sender] ?? "익명"}</span>}
                   <span style={{ display: "inline-block", fontSize: 14, lineHeight: 1.5, padding: "8px 12px", borderRadius: 14, background: mine ? theme.primary : theme.card, color: mine ? "#fff" : theme.text, border: mine ? "none" : `1px solid ${theme.cardBorder}`, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{m.body}</span>
+                  <span style={{ fontSize: 9.5, color: theme.textFaint, margin: "2px 4px 0" }}>{fmtTime(m.created_at)}</span>
                 </div>
               );
             })}
@@ -222,8 +227,49 @@ export default function GroupDetailPage() {
       {isMember && members.find(m => m.user_id === user?.id)?.role !== "leader" && (
         <button onClick={handleLeave} style={{ margin: "0 12px 12px", padding: "8px", fontSize: 12.5, color: theme.textFaint, background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline" }}>{t("grp.leave")}</button>
       )}
+
+      {lightbox !== null && photos[lightbox] && (
+        <Lightbox photos={photos} index={lightbox} onIndex={setLightbox} onClose={() => setLightbox(null)} />
+      )}
+      {view}
     </main>
   );
+}
+
+// 앱 내 사진 크게 보기 — 좌우 넘기기(버튼·스와이프·키보드), 배경 탭하면 닫기
+function Lightbox({ photos, index, onIndex, onClose }: { photos: GroupPhoto[]; index: number; onIndex: (i: number) => void; onClose: () => void }) {
+  const n = photos.length;
+  const go = useCallback((d: number) => onIndex((index + d + n) % n), [index, n, onIndex]);
+  const touchX = useRef<number | null>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowLeft") go(-1);
+      else if (e.key === "ArrowRight") go(1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [go, onClose]);
+
+  const navBtn: React.CSSProperties = { position: "absolute", top: "50%", transform: "translateY(-50%)", width: 42, height: 42, borderRadius: 999, border: "none", background: "rgba(255,255,255,0.18)", color: "#fff", fontSize: 22, cursor: "pointer", display: "grid", placeItems: "center" };
+
+  return (
+    <div role="dialog" aria-modal="true" onClick={onClose}
+      onTouchStart={e => { touchX.current = e.touches[0].clientX; }}
+      onTouchEnd={e => { const s = touchX.current; if (s == null) return; const dx = e.changedTouches[0].clientX - s; if (Math.abs(dx) > 45) go(dx > 0 ? -1 : 1); touchX.current = null; }}
+      style={{ position: "fixed", inset: 0, zIndex: 400, background: "rgba(0,0,0,0.92)", display: "grid", placeItems: "center" }}>
+      <button onClick={onClose} aria-label="close" style={{ position: "absolute", top: 14, insetInlineEnd: 14, width: 38, height: 38, borderRadius: 999, border: "none", background: "rgba(255,255,255,0.18)", color: "#fff", fontSize: 20, cursor: "pointer" }}>×</button>
+      {n > 1 && <button onClick={e => { e.stopPropagation(); go(-1); }} aria-label="prev" style={{ ...navBtn, insetInlineStart: 10 }}>‹</button>}
+      <img src={photos[index].url} alt="" onClick={e => e.stopPropagation()} style={{ maxWidth: "94vw", maxHeight: "84vh", objectFit: "contain", borderRadius: 8 }} />
+      {n > 1 && <button onClick={e => { e.stopPropagation(); go(1); }} aria-label="next" style={{ ...navBtn, insetInlineEnd: 10 }}>›</button>}
+      {n > 1 && <span style={{ position: "absolute", bottom: 18, left: "50%", transform: "translateX(-50%)", color: "#fff", fontSize: 12.5, opacity: 0.85 }}>{index + 1} / {n}</span>}
+    </div>
+  );
+}
+
+function fmtTime(iso: string): string {
+  try { return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); } catch { return ""; }
 }
 
 function Center({ children }: { children: React.ReactNode }) {

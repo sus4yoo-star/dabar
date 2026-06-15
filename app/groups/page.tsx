@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
+import { useToast } from "@/components/Toast";
 import { supabase } from "@/lib/supabase";
 import { getSupabase } from "@/lib/besora/supabase";
 import { Group, MAX_MEMBERS, createGroup, fetchMyGroupIds, fetchPublicGroups, joinGroup } from "@/lib/besora/groups";
@@ -12,6 +13,7 @@ export default function GroupsPage() {
   const router = useRouter();
   const { t } = useI18n();
   const { user, isLeader, isAdmin } = useAuth();
+  const { show, view } = useToast();
   const canCreate = !!user && (isLeader || isAdmin);
 
   const [groups, setGroups] = useState<Group[]>([]);
@@ -21,6 +23,8 @@ export default function GroupsPage() {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: "", place: "", schedule: "", description: "" });
   const [diag, setDiag] = useState<string[]>([]);
+  const [q, setQ] = useState("");
+  const [sort, setSort] = useState<"recent" | "members">("recent");
 
   // 권한 진단 — 앱이 실제로 읽는 값을 그대로 보여줌
   async function runDiag() {
@@ -62,7 +66,7 @@ export default function GroupsPage() {
       const id = await createGroup(form);
       router.push(`/groups/${id}`);
     } catch (e: any) {
-      alert(/leader/.test(e?.message) ? t("grp.leaderOnly") : t("grp.notReady"));
+      show(/leader/.test(e?.message) ? t("grp.leaderOnly") : t("grp.notReady"));
       setSaving(false);
     }
   }
@@ -70,12 +74,18 @@ export default function GroupsPage() {
   async function join(id: string) {
     if (!user) { router.push("/login"); return; }
     try { await joinGroup(id); }
-    catch (e) { if ((e as Error)?.message === "full") { alert(t("grp.fullMsg")); await load(); return; } }
+    catch (e) { if ((e as Error)?.message === "full") { show(t("grp.fullMsg")); await load(); return; } }
     router.push(`/groups/${id}`);
   }
 
-  const mine = groups.filter(g => myIds.has(g.id));
-  const others = groups.filter(g => !myIds.has(g.id));
+  const ql = q.trim().toLowerCase();
+  const match = (g: Group) => !ql || g.name.toLowerCase().includes(ql) || (g.place ?? "").toLowerCase().includes(ql) || (g.schedule ?? "").toLowerCase().includes(ql);
+  const bySort = (a: Group, b: Group) => sort === "members"
+    ? b.member_count - a.member_count
+    : (a.last_at < b.last_at ? 1 : a.last_at > b.last_at ? -1 : 0);
+  const mine = groups.filter(g => myIds.has(g.id)).filter(match).sort(bySort);
+  const others = groups.filter(g => !myIds.has(g.id)).filter(match).sort(bySort);
+  const totalOthers = groups.filter(g => !myIds.has(g.id)).length;
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
@@ -113,6 +123,18 @@ export default function GroupsPage() {
 
       {!user && <p style={{ fontSize: 12.5, color: theme.textMuted, textAlign: "center", margin: "0 0 14px", padding: "8px", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10 }}>{t("grp.loginNeeded")}</p>}
 
+      {!loading && totalOthers > 1 && (
+        <div style={{ marginBottom: 14 }}>
+          <input value={q} onChange={e => setQ(e.target.value)} placeholder={t("grp.search")} aria-label={t("grp.search")}
+            style={{ width: "100%", boxSizing: "border-box", fontSize: 14, padding: "10px 13px", borderRadius: 12, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" }} />
+          <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+            {(["recent", "members"] as const).map(s => (
+              <button key={s} onClick={() => setSort(s)} style={{ fontSize: 12, fontWeight: sort === s ? 800 : 600, padding: "5px 12px", borderRadius: 999, cursor: "pointer", border: `1px solid ${sort === s ? "transparent" : theme.cardBorder}`, background: sort === s ? theme.primary : theme.card, color: sort === s ? "#fff" : theme.textMuted }}>{t(s === "recent" ? "grp.sortRecent" : "grp.sortMembers")}</button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <p style={{ textAlign: "center", color: theme.textMuted, padding: "2rem" }}>…</p>
       ) : (
@@ -123,12 +145,15 @@ export default function GroupsPage() {
             </Section>
           )}
           <Section title={t("grp.public")}>
-            {others.length === 0 && mine.length === 0
-              ? <p style={{ fontSize: 13, color: theme.textFaint, textAlign: "center", padding: "1.5rem 0", lineHeight: 1.6 }}>{canCreate ? t("grp.emptyLeader") : t("grp.empty")}</p>
-              : others.map(g => <GroupCard key={g.id} g={g} onOpen={() => join(g.id)} t={t} />)}
+            {others.length > 0
+              ? others.map(g => <GroupCard key={g.id} g={g} onOpen={() => join(g.id)} t={t} />)
+              : <p style={{ fontSize: 13, color: theme.textFaint, textAlign: "center", padding: "1.5rem 0", lineHeight: 1.6 }}>
+                  {ql ? t("grp.noMatch") : mine.length === 0 ? (canCreate ? t("grp.emptyLeader") : t("grp.empty")) : ""}
+                </p>}
           </Section>
         </>
       )}
+      {view}
     </main>
   );
 }
