@@ -75,8 +75,8 @@ export default function ShareHome() {
         {tools[4] && <div style={{ gridColumn: "span 2" }}><ToolCard tool={tools[4]} wide /></div>}
       </div>
 
-      {/* 🎤 음성 통역 — 도구 아래에 크게(세로 배치) 박아둠 */}
-      <VoiceTranslator inline big />
+      {/* 🎤 음성 통역 — 가로 2분할(작게) */}
+      <VoiceTranslator inline />
 
       {!ready && <p style={{ marginTop: 24, textAlign: "center", fontSize: 12, color: theme.textMuted }}>…</p>}
     </AppShell>

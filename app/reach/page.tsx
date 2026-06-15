@@ -22,7 +22,7 @@ export default function ReachPage() {
       <HomeFxCard />
 
       {/* 음성 통역 — 크게(세로 배치): 내 언어 한 줄, 상대 언어 한 줄 */}
-      <LanguageProvider><VoiceTranslator inline /></LanguageProvider>
+      <LanguageProvider><VoiceTranslator inline big /></LanguageProvider>
     </main>
   );
 }
