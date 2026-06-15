@@ -44,7 +44,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <LanguageToggle />
         </div>
       </header>
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 18px 100px" }}>{children}</main>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", padding: "16px 18px 24px" }}>{children}</main>
     </div>
   );
 }
