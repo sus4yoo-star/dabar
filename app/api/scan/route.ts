@@ -4,8 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 // 프론트가 원문 위에 번역을 겹쳐 표시(구글 번역 카메라식). Anthropic(Claude) 비전.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60; // Opus 비전 처리 시간 확보 (지원 플랫폼에서)
 
-const MODEL = "claude-haiku-4-5-20251001"; // 최신·빠른 비전 모델 (구 sonnet-4-20250514 폐기 대응)
+const MODEL = "claude-opus-4-8"; // 빽빽한 메뉴판도 정확히 — 가장 강력한 비전 모델
 
 const LANG_NAME: Record<string, string> = {
   ko: "Korean", en: "English", th: "Thai", lo: "Lao", es: "Spanish", pt: "Portuguese",
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: MODEL, max_tokens: 1500, temperature: 0.1, system, messages: [{ role: "user", content }] }),
+      body: JSON.stringify({ model: MODEL, max_tokens: 4000, temperature: 0.1, system, messages: [{ role: "user", content }] }),
     });
     if (!r.ok) {
       const ed = await r.json().catch(() => null);
