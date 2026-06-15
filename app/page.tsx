@@ -7,7 +7,7 @@ import { shareInvite } from "@/lib/share";
 import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
 import { fetchUnreadTotal } from "@/lib/besora/companions";
-import HomeTranslator from "@/components/HomeTranslator";
+import HomeComfort from "@/components/HomeComfort";
 
 export default function Home() {
   const router = useRouter();
@@ -105,8 +105,8 @@ export default function Home() {
         {user && <QuickChip label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
       </div>
 
-      {/* 음성 통역 — 홈에 박아둔 인라인 통역기 */}
-      <HomeTranslator />
+      {/* 💛 마음에 닿는 말씀 — 감정/상황 → 위로의 말씀 (탭하면 다음 말씀) */}
+      <HomeComfort />
 
       {/* 하단 보조 링크 */}
       <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
