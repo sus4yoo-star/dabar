@@ -44,6 +44,15 @@ const DICT: Dict = {
   "common.home":      { ko: "← 홈", en: "← Home", th: "← หน้าแรก", lo: "← ໜ້າຫຼັກ" },
   "common.nickFail":  { ko: "닉네임을 바꾸지 못했어요.", en: "Couldn't change nickname.", th: "เปลี่ยนชื่อเล่นไม่สำเร็จ", lo: "ປ່ຽນຊື່ຫຼິ້ນບໍ່ສຳເລັດ" },
   "common.langSwitched": { ko: "이 언어로 화면·콘텐츠·음성이 표시돼요", en: "Screen, content & audio are now in this language", th: "หน้าจอ เนื้อหา และเสียงจะเป็นภาษานี้", lo: "ໜ້າຈໍ ເນື້ອຫາ ແລະ ສຽງຈະເປັນພາສານີ້" },
+  "common.progress":  { ko: "📊 진도", en: "📊 Progress", th: "📊 ความคืบหน้า", lo: "📊 ຄວາມຄືບໜ້າ" },
+
+  // 환율 계산기 (선교 현장용 — 태국 바트 ↔ 한국 원)
+  "fx.title":  { ko: "환율 계산기", en: "Exchange Calculator", th: "เครื่องคำนวณอัตราแลกเปลี่ยน", lo: "ເຄື່ອງຄິດໄລ່ອັດຕາແລກປ່ຽນ" },
+  "fx.baht":   { ko: "태국 바트", en: "Thai Baht", th: "เงินบาท", lo: "ເງິນບາດໄທ" },
+  "fx.won":    { ko: "대한민국 원", en: "Korean Won", th: "วอนเกาหลี", lo: "ວອນເກົາຫຼີ" },
+  "fx.per":    { ko: "1 바트 = {n} 원", en: "1 THB = {n} KRW", th: "1 บาท = {n} วอน", lo: "1 ບາດ = {n} ວອນ" },
+  "fx.note":   { ko: "매일 오전 9시 기준 환율 · {d}", en: "Reference rate, updated daily 9 AM · {d}", th: "อัตราอ้างอิง อัปเดตทุกวัน 9 โมงเช้า · {d}", lo: "ອັດຕາອ້າງອີງ ອັບເດດທຸກວັນ 9 ໂມງເຊົ້າ · {d}" },
+  "fx.loading":{ ko: "환율 불러오는 중…", en: "Loading rate…", th: "กำลังโหลดอัตรา…", lo: "ກຳລັງໂຫຼດອັດຕາ…" },
 
   "home.tagline":     { ko: "다바르 · 말씀 — 무엇부터 시작할까요?", en: "DABAR · The Word — where to begin?", th: "ดาบาร์ · พระวจนะ — เริ่มจากตรงไหนดี?", lo: "ດາບາ · ພຣະທຳ — ເລີ່ມຈາກໃສດີ?" },
   "home.greeting":    { ko: "{name}님, 오늘도 말씀과 함께해요 👋", en: "{name}, walk with the Word today 👋", th: "{name} วันนี้มาเดินกับพระวจนะกัน 👋", lo: "{name} ມື້ນີ້ມາຍ່າງກັບພຣະທຳນຳກັນ 👋" },

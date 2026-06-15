@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
 import { fetchUnreadTotal } from "@/lib/besora/companions";
 import HomeReachCard from "@/components/HomeReachCard";
+import HomeFxCard from "@/components/HomeFxCard";
 
 export default function Home() {
   const router = useRouter();
@@ -106,7 +107,11 @@ export default function Home() {
         <QuickChip label={t("common.companions")} onClick={() => router.push("/share/me")} badge={unread} />
         <QuickChip label={t("common.ranking")} onClick={() => router.push("/ranking")} />
         {user && <QuickChip label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
+        {user && <QuickChip label={t("common.progress")} onClick={() => router.push("/progress")} />}
       </div>
+
+      {/* 💱 환율 계산기 — 바트 ↔ 원 (선교 현장용) */}
+      <HomeFxCard />
 
       {/* 하단 보조 링크 */}
       <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
