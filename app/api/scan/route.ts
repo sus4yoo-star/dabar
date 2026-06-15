@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: MODEL, max_tokens: 4000, temperature: 0.1, system, messages: [{ role: "user", content }] }),
+      body: JSON.stringify({ model: MODEL, max_tokens: 4000, system, messages: [{ role: "user", content }] }),
     });
     if (!r.ok) {
       const ed = await r.json().catch(() => null);
