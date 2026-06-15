@@ -21,7 +21,7 @@ const LOCALE: Record<string, string> = {
   bn: "bn-IN", ja: "ja-JP", ur: "ur-PK", ru: "ru-RU", sw: "sw-KE",
 };
 
-export default function VoiceTranslator() {
+export default function VoiceTranslator({ inline = false }: { inline?: boolean } = {}) {
   const { myLang, seekerLang, languages, rtlFor } = useLang();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -220,8 +220,33 @@ export default function VoiceTranslator() {
 
   const twoWay = seeker !== myLang;
 
-  // 채팅 화면에서는 입력창과 겹치므로 음성 통역 FAB을 숨긴다
+  const panes = (
+    <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+      {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder)}
+      {twoWay && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder)}
+    </div>
+  );
+  const hint = (
+    <p style={{ marginTop: 8, fontSize: 11.5, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500, textAlign: "center" }}>
+      {listening ? ui(myLang, "listening") : ui(myLang, "twoPaneHint")}
+    </p>
+  );
+
+  // 인라인 모드 — 페이지에 그냥 박아두기 (플로팅/포털 없음, 항상 보임)
+  if (inline) {
+    return (
+      <div style={{ marginTop: 14, padding: "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: "#ffffff" }}>
+        <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 15, fontWeight: 700, color: theme.text, margin: "0 0 8px" }}>🎤 {ui(myLang, "voice")}</h2>
+        {panes}
+        {hint}
+        {err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
+      </div>
+    );
+  }
+
+  // 채팅·허브에서는 플로팅 FAB 숨김 (허브 /share 는 인라인으로 박아둠)
   if (pathname?.startsWith("/share/chat")) return null;
+  if (pathname === "/share") return null;
 
   return (
     <>
@@ -234,23 +259,14 @@ export default function VoiceTranslator() {
       )}
 
       {open && mounted && createPortal(
-        // 배경 오버레이 없음 → 위의 전도 내용이 가려지지 않음
         <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 60, display: "flex", justifyContent: "center", pointerEvents: "none" }}>
           <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: "#ffffff", padding: "10px 16px 14px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "48dvh", overflowY: "auto" }}>
             <div style={{ marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 16, fontWeight: 700, color: theme.text, margin: 0 }}>🎤 {ui(myLang, "voice")}</h2>
               <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>{ui(myLang, "close")} ✕</button>
             </div>
-
-            {/* 언어별: [ 큰 마이크 | 큰 재생 ] + 원문·번역 (직접 입력도 가능) */}
-            <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-              {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder)}
-              {twoWay && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder)}
-            </div>
-
-            <p style={{ marginTop: 8, fontSize: 11.5, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500, textAlign: "center" }}>
-              {listening ? ui(myLang, "listening") : ui(myLang, "twoPaneHint")}
-            </p>
+            {panes}
+            {hint}
             {err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
           </div>
         </div>,

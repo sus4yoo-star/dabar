@@ -5,6 +5,7 @@ import Link from "next/link";
 import { theme } from "@/lib/theme";
 import AppShell from "@/components/besora/AppShell";
 import ToolCard from "@/components/besora/ToolCard";
+import VoiceTranslator from "@/components/besora/VoiceTranslator";
 import { fetchTools } from "@/lib/besora/content";
 import type { Tool } from "@/lib/besora/types";
 import { useLang } from "@/lib/besora/LanguageContext";
@@ -85,6 +86,9 @@ export default function ShareHome() {
         {tools.slice(0, 4).map((t) => <ToolCard key={t.id} tool={t} />)}
         {tools[4] && <div style={{ gridColumn: "span 2" }}><ToolCard tool={tools[4]} wide /></div>}
       </div>
+
+      {/* 🎤 음성 통역 — 도구 아래에 그냥 박아둠 (플로팅 대신 인라인) */}
+      <VoiceTranslator inline />
 
       {!ready && <p style={{ marginTop: 24, textAlign: "center", fontSize: 12, color: theme.textMuted }}>…</p>}
     </AppShell>

@@ -39,10 +39,10 @@ export default function ToolCard({ tool, wide = false }: { tool: Tool; wide?: bo
   }
 
   return (
-    <button onClick={go} style={{ position: "relative", display: "flex", aspectRatio: "6 / 5", width: "100%", flexDirection: "column", justifyContent: "flex-end", overflow: "hidden", borderRadius: 22, background: g.bg, padding: 16, border: "none", cursor: "pointer", textAlign: "left" }}>
-      <span style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.15, color: fg, fontFamily: "'Noto Serif KR',serif" }}>{seekerName}</span>
-      {showBoth && <span style={{ marginTop: 2, fontSize: 12, color: fg, opacity: 0.8 }}>{myName}</span>}
-      {desc && <span style={{ marginTop: 5, fontSize: 11.5, lineHeight: 1.35, color: fg, opacity: 0.82 }}>{desc}</span>}
+    <button onClick={go} style={{ position: "relative", display: "flex", aspectRatio: "16 / 9", minHeight: 78, width: "100%", flexDirection: "column", justifyContent: "flex-end", overflow: "hidden", borderRadius: 18, background: g.bg, padding: "11px 13px", border: "none", cursor: "pointer", textAlign: "left" }}>
+      <span style={{ fontSize: 17, fontWeight: 700, lineHeight: 1.15, color: fg, fontFamily: "'Noto Serif KR',serif" }}>{seekerName}</span>
+      {showBoth && <span style={{ marginTop: 1, fontSize: 11, color: fg, opacity: 0.8 }}>{myName}</span>}
+      {desc && <span style={{ marginTop: 3, fontSize: 10.5, lineHeight: 1.3, color: fg, opacity: 0.82, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "100%" }}>{desc}</span>}
     </button>
   );
 }
