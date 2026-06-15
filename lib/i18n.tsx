@@ -55,6 +55,26 @@ const DICT: Dict = {
   "fx.loading":{ ko: "환율 불러오는 중…", en: "Loading rate…", th: "กำลังโหลดอัตรา…", lo: "ກຳລັງໂຫຼດອັດຕາ…" },
   "fx.swap":  { ko: "통화 위아래 바꾸기", en: "Swap currencies", th: "สลับสกุลเงิน", lo: "ສະຫຼັບສະກຸນເງິນ" },
 
+  // 🆘 긴급 SOS (선교 현장 안전)
+  "sos.button":   { ko: "🆘 긴급 SOS", en: "🆘 Emergency SOS", th: "🆘 ฉุกเฉิน SOS", lo: "🆘 ສຸກເສີນ SOS" },
+  "sos.title":    { ko: "🆘 긴급 SOS", en: "🆘 Emergency SOS", th: "🆘 ฉุกเฉิน SOS", lo: "🆘 ສຸກເສີນ SOS" },
+  "sos.sub":      { ko: "위급할 때 동행에게 알리고 긴급 기관에 연락하세요. 안전이 최고예요.", en: "Alert your companions and call emergency services. Safety first.", th: "แจ้งเพื่อนร่วมทางและโทรหาหน่วยฉุกเฉิน ความปลอดภัยมาก่อน", lo: "ແຈ້ງເພື່ອນຮ່ວມທາງ ແລະ ໂທຫາໜ່ວຍສຸກເສີນ" },
+  "sos.sendSms":  { ko: "📨 동행에게 긴급 문자 보내기", en: "📨 Text companions for help", th: "📨 ส่งข้อความขอความช่วยเหลือ", lo: "📨 ສົ່ງຂໍ້ຄວາມຂໍຄວາມຊ່ວຍ" },
+  "sos.contactsLabel": { ko: "동행 연락처 (쉼표로 구분)", en: "Companions' phone numbers (comma-separated)", th: "เบอร์เพื่อนร่วมทาง (คั่นด้วยจุลภาค)", lo: "ເບີເພື່ອນຮ່ວມທາງ (ຄັ່ນດ້ວຍ ,)" },
+  "sos.contactsPh": { ko: "010-1234-5678, +66...", en: "010-1234-5678, +66...", th: "010-1234-5678, +66...", lo: "010-1234-5678, +66..." },
+  "sos.smsBody":  { ko: "🆘 긴급! 도움이 필요합니다. 제 위치:", en: "🆘 Emergency! I need help. My location:", th: "🆘 ฉุกเฉิน! ฉันต้องการความช่วยเหลือ ตำแหน่งของฉัน:", lo: "🆘 ສຸກເສີນ! ຕ້ອງການຄວາມຊ່ວຍ ຕຳແໜ່ງຂອງຂ້ອຍ:" },
+  "sos.locOn":    { ko: "📍 내 위치 첨부됨", en: "📍 Location attached", th: "📍 แนบตำแหน่งแล้ว", lo: "📍 ແນບຕຳແໜ່ງແລ້ວ" },
+  "sos.locWait":  { ko: "📍 위치 확인 중…", en: "📍 Getting location…", th: "📍 กำลังหาตำแหน่ง…", lo: "📍 ກຳລັງຫາຕຳແໜ່ງ…" },
+  "sos.locOff":   { ko: "📍 위치 권한을 허용하면 위치도 함께 보냅니다", en: "📍 Allow location to include it", th: "📍 อนุญาตตำแหน่งเพื่อแนบ", lo: "📍 ອະນຸຍາດຕຳແໜ່ງເພື່ອແນບ" },
+  "sos.callTitle":{ ko: "긴급 전화 (태국·한국)", en: "Emergency call (Thailand·Korea)", th: "โทรฉุกเฉิน", lo: "ໂທສຸກເສີນ" },
+  "sos.touristPolice": { ko: "관광경찰 (태국·영어)", en: "Tourist Police (Thailand)", th: "ตำรวจท่องเที่ยว", lo: "ຕຳຫຼວດທ່ອງທ່ຽວ" },
+  "sos.police":   { ko: "경찰 (태국)", en: "Police (Thailand)", th: "ตำรวจ", lo: "ຕຳຫຼວດ" },
+  "sos.medical":  { ko: "구급·응급 (태국)", en: "Ambulance (Thailand)", th: "การแพทย์ฉุกเฉิน", lo: "ການແພດສຸກເສີນ" },
+  "sos.fire":     { ko: "소방·화재 (태국)", en: "Fire (Thailand)", th: "ดับเพลิง", lo: "ດັບເພີງ" },
+  "sos.embassy":  { ko: "주태국 한국대사관 긴급", en: "Korean Embassy (Bangkok) 24h", th: "สถานทูตเกาหลี (ฉุกเฉิน)", lo: "ສະຖານທູດເກົາຫຼີ (ສຸກເສີນ)" },
+  "sos.consul":   { ko: "영사콜센터 24시간", en: "Korea Consular Call Center 24h", th: "ศูนย์กงสุลเกาหลี 24 ชม.", lo: "ສູນກົງສຸນເກົາຫຼີ 24 ຊມ" },
+  "sos.close":    { ko: "닫기", en: "Close", th: "ปิด", lo: "ປິດ" },
+
   // 📷 메뉴·간판 번역 (사진 → 글자 읽어 설정 언어로 번역)
   "scan.title":   { ko: "이미지 번역", en: "Image Translate", th: "แปลรูปภาพ", lo: "ແປຮູບພາບ" },
   "scan.sub":     { ko: "사진을 찍으면 설정한 언어로 번역해 드려요", en: "Snap a photo — we translate it into your language", th: "ถ่ายรูป แล้วเราจะแปลเป็นภาษาของคุณ", lo: "ຖ່າຍຮູບ ແລ້ວເຮົາຈະແປເປັນພາສາຂອງທ່ານ" },
