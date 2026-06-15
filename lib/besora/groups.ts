@@ -84,6 +84,18 @@ export async function updateNotice(groupId: string, notice: string): Promise<voi
   if (error) throw error;
 }
 
+// 모임 공개/비공개 전환 (리더만 — RLS로 강제)
+export async function setGroupPublic(groupId: string, isPublic: boolean): Promise<void> {
+  const { error } = await getSupabase().from("groups").update({ is_public: isPublic }).eq("id", groupId);
+  if (error) throw error;
+}
+
+// 모임 삭제 (리더만 — RLS로 강제). 멤버·메시지·사진은 DB cascade 로 정리.
+export async function deleteGroup(groupId: string): Promise<void> {
+  const { error } = await getSupabase().from("groups").delete().eq("id", groupId);
+  if (error) throw error;
+}
+
 export async function fetchGroup(groupId: string): Promise<Group | null> {
   try { const { data } = await getSupabase().from("groups").select("*").eq("id", groupId).maybeSingle(); return (data as Group) ?? null; } catch { return null; }
 }

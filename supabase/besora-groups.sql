@@ -62,10 +62,14 @@ alter table besora.group_messages enable row level security;
 drop policy if exists grp_sel on besora.groups;
 create policy grp_sel on besora.groups for select
   using (is_public or besora.is_member(id));
--- 리더만 자기 모임 수정(공지 등)
+-- 리더만 자기 모임 수정(공지·공개여부 등)
 drop policy if exists grp_upd on besora.groups;
 create policy grp_upd on besora.groups for update
   using (leader = auth.uid()) with check (leader = auth.uid());
+-- 리더만 자기 모임 삭제 (멤버·메시지·사진은 FK on delete cascade 로 정리)
+drop policy if exists grp_del on besora.groups;
+create policy grp_del on besora.groups for delete
+  using (leader = auth.uid());
 
 -- 멤버: 같은 모임의 멤버끼리 명단 조회. 본인 참여(insert)/탈퇴(delete)는 직접.
 drop policy if exists gm_sel on besora.group_members;
@@ -144,7 +148,7 @@ create trigger trg_touch_group after insert on besora.group_messages
 --  권한 (GRANT)
 -- =====================================================================
 grant usage on schema besora to anon, authenticated;
-grant select, update         on besora.groups         to authenticated;
+grant select, update, delete on besora.groups         to authenticated;
 grant select                 on besora.groups         to anon;
 grant select, insert, delete on besora.group_members  to authenticated;
 grant select, insert         on besora.group_messages to authenticated;
