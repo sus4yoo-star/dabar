@@ -30,7 +30,6 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
   const [situation, setSituation] = useState("");   // 현재 상황 (선택, 매번 새로)
   const [situThai, setSituThai] = useState("");       // 상황 태국어 번역
   const [placeThai, setPlaceThai] = useState("");     // 위치(직접입력) 태국어 번역
-  const [showLocal, setShowLocal] = useState(false);  // 현지인 전체화면
   const [copied, setCopied] = useState("");
   const trTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const trTimer2 = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -153,15 +152,10 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
               style={{ width: "100%", padding: "15px", fontSize: 16, fontWeight: 900, color: "#3a1d1d", background: "#FEE500", border: "none", borderRadius: 13, cursor: "pointer", marginBottom: 8 }}>
               {t("sos.kakao")}
             </button>
-            {/* 현지인에게 크게 보여주기 */}
-            <button onClick={() => setShowLocal(true)}
-              style={{ width: "100%", padding: "12px", fontSize: 14.5, fontWeight: 800, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 13, cursor: "pointer", marginBottom: copied ? 6 : 14 }}>
-              {t("sos.showLocal")}
-            </button>
-            {copied && <p style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{copied}</p>}
+            {copied && <p style={{ margin: "8px 0 0", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{copied}</p>}
 
             {/* 긴급 전화 */}
-            <p style={{ margin: "0 0 6px 2px", fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>{t("sos.callTitle")}</p>
+            <p style={{ margin: "14px 0 6px 2px", fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>{t("sos.callTitle")}</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
               {HOTLINES.map((h) => (
                 <a key={h.key} href={`tel:${h.num}`}
@@ -173,39 +167,6 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
             </div>
 
             <p style={{ textAlign: "center", fontSize: 10.5, color: theme.textFaint, letterSpacing: 1, margin: "22px 0 0" }}>DABAR by AMOV · Love Creates Value</p>
-          </div>
-        </div>,
-        document.body
-      )}
-
-      {/* 현지(태국)인에게 보여주는 SOS 화면 — 태국어 크게 + 상황 + 긴급전화 */}
-      {showLocal && typeof document !== "undefined" && createPortal(
-        <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "#fff", display: "flex", flexDirection: "column", overflowY: "auto", padding: "20px 18px calc(20px + env(safe-area-inset-bottom))" }}>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button onClick={() => setShowLocal(false)} style={{ fontSize: 14, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "7px 16px", cursor: "pointer" }}>{t("sos.close")} ✕</button>
-          </div>
-          <div style={{ flex: 1, maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", justifyContent: "center", gap: 10, paddingTop: 8 }}>
-            <p style={{ margin: 0, fontSize: 50, fontWeight: 900, color: RED, textAlign: "center", lineHeight: 1.1 }}>🆘 ช่วยด้วย!</p>
-            <p style={{ margin: "0 0 2px", fontSize: 21, fontWeight: 800, color: theme.text, textAlign: "center", lineHeight: 1.4 }}>ฉันมีเหตุฉุกเฉิน ต้องการความช่วยเหลือด่วน</p>
-            {(data.name.trim() || situThai || locThai) && (
-              <div style={{ padding: "14px 16px", borderRadius: 14, background: "#fff5f5", border: `2px solid ${RED}`, display: "flex", flexDirection: "column", gap: 6 }}>
-                {data.name.trim() && <p style={{ margin: 0, fontSize: 19, fontWeight: 800, color: theme.text, textAlign: "center" }}>ชื่อ: {data.name.trim()}</p>}
-                {situThai && <p style={{ margin: 0, fontSize: 20, fontWeight: 800, color: theme.text, textAlign: "center", lineHeight: 1.4 }}>สถานการณ์: {situThai}</p>}
-                {locThai && <p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: theme.text, textAlign: "center", lineHeight: 1.4, wordBreak: "break-all" }}>สถานที่: {locThai}</p>}
-              </div>
-            )}
-            <p style={{ margin: "2px 0 8px", fontSize: 16, color: theme.textMuted, textAlign: "center", lineHeight: 1.5 }}>ฉันพูดภาษาไทยไม่ได้ 🙏 กรุณาช่วยโทรแจ้ง:</p>
-            {[
-              { th: "🚑 รถพยาบาล / ฉุกเฉิน", num: "1669" },
-              { th: "🚓 ตำรวจ", num: "191" },
-              { th: "👮 ตำรวจท่องเที่ยว", num: "1155" },
-            ].map((x) => (
-              <a key={x.num} href={`tel:${x.num}`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "16px 18px", borderRadius: 16, border: `2px solid ${RED}`, background: "#fff5f5", textDecoration: "none", color: theme.text }}>
-                <span style={{ fontSize: 19, fontWeight: 800 }}>{x.th}</span>
-                <span style={{ fontSize: 24, fontWeight: 900, color: RED }}>📞 {x.num}</span>
-              </a>
-            ))}
-            <p style={{ margin: "4px 0 0", fontSize: 16, fontWeight: 700, color: theme.text, textAlign: "center" }}>ขอบคุณมากค่ะ/ครับ 🙏</p>
           </div>
         </div>,
         document.body
