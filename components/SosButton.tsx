@@ -113,67 +113,61 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
 
       {open && typeof document !== "undefined" && createPortal(
         <div style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(20,8,8,0.5)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }} onClick={() => setOpen(false)}>
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "16px 18px calc(20px + env(safe-area-inset-bottom))", maxHeight: "94dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-              <span style={{ fontSize: 19, fontWeight: 900, color: RED }}>{t("sos.title")}</span>
-              <button onClick={() => setOpen(false)} style={{ fontSize: 14, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "6px 14px", cursor: "pointer" }}>{t("sos.close")} ✕</button>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "12px 15px calc(12px + env(safe-area-inset-bottom))", maxHeight: "96dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <span style={{ fontSize: 18, fontWeight: 900, color: RED }}>{t("sos.title")}</span>
+              <button onClick={() => setOpen(false)} style={{ fontSize: 13, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 13px", cursor: "pointer" }}>{t("sos.close")} ✕</button>
             </div>
-            <p style={{ margin: "0 0 14px", fontSize: 12.5, color: theme.textMuted, lineHeight: 1.5 }}>{t("sos.sub")}</p>
 
             {/* 발신자 본명 */}
-            <label style={{ display: "block", fontSize: 11.5, fontWeight: 800, color: theme.textMuted, marginBottom: 5 }}>{t("sos.senderName")}</label>
-            <input value={data.name} onChange={(e) => save({ ...data, name: e.target.value })} placeholder={t("sos.senderPh")}
-              style={{ ...inp, marginBottom: 14 }} />
+            <label style={lbl}>{t("sos.senderName")}</label>
+            <input value={data.name} onChange={(e) => save({ ...data, name: e.target.value })} placeholder={t("sos.senderPh")} style={{ ...inp, marginBottom: 9 }} />
 
             {/* 동행 연락처 (최대 10) */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-              <span style={{ fontSize: 11.5, fontWeight: 800, color: theme.textMuted }}>{t("sos.contactsTitle")} <span style={{ color: theme.textFaint, fontWeight: 500 }}>· {t("sos.savedHint")}</span></span>
-              <button onClick={addContact} disabled={data.contacts.length >= MAX} style={{ fontSize: 12, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 11px", cursor: data.contacts.length >= MAX ? "default" : "pointer", opacity: data.contacts.length >= MAX ? 0.5 : 1 }}>{t("sos.addContact")}</button>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+              <span style={lbl}>{t("sos.contactsTitle")} <span style={{ color: theme.textFaint, fontWeight: 500 }}>· {t("sos.savedHint")}</span></span>
+              <button onClick={addContact} disabled={data.contacts.length >= MAX} style={{ fontSize: 11.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "4px 10px", cursor: data.contacts.length >= MAX ? "default" : "pointer", opacity: data.contacts.length >= MAX ? 0.5 : 1 }}>{t("sos.addContact")}</button>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 7, marginBottom: 10, maxHeight: 168, overflowY: "auto" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 9, maxHeight: 112, overflowY: "auto" }}>
               {data.contacts.map((c, i) => (
                 <div key={i} style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  <input value={c.name} onChange={(e) => setContact(i, { name: e.target.value })} placeholder={t("sos.namePh")} style={{ ...inp, width: 92, flexShrink: 0, marginBottom: 0 }} />
+                  <input value={c.name} onChange={(e) => setContact(i, { name: e.target.value })} placeholder={t("sos.namePh")} style={{ ...inp, width: 84, flexShrink: 0, marginBottom: 0 }} />
                   <input value={c.phone} onChange={(e) => setContact(i, { phone: e.target.value })} placeholder={t("sos.phonePh")} inputMode="tel" style={{ ...inp, flex: 1, minWidth: 0, marginBottom: 0 }} />
-                  <button onClick={() => removeContact(i)} aria-label="remove" style={{ flexShrink: 0, width: 30, height: 30, borderRadius: 8, border: `1px solid ${theme.border}`, background: theme.card, color: theme.textMuted, fontSize: 15, cursor: "pointer" }}>✕</button>
+                  <button onClick={() => removeContact(i)} aria-label="remove" style={{ flexShrink: 0, width: 28, height: 28, borderRadius: 8, border: `1px solid ${theme.border}`, background: theme.card, color: theme.textMuted, fontSize: 14, cursor: "pointer" }}>✕</button>
                 </div>
               ))}
             </div>
 
-            {/* 현재 상황 (선택) */}
-            <label style={{ display: "block", fontSize: 11.5, fontWeight: 800, color: theme.textMuted, marginBottom: 5 }}>{t("sos.situation")}</label>
-            <textarea value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")} rows={2}
-              style={{ ...inp, resize: "none", lineHeight: 1.5, marginBottom: 4 }} />
-            <p style={{ margin: "0 0 14px", fontSize: 11, color: theme.wrong, fontWeight: 700 }}>{t("sos.situationHint")}</p>
-
-            {/* 위치 — GPS 또는 직접 입력 */}
-            <label style={{ display: "block", fontSize: 11.5, fontWeight: 800, color: theme.textMuted, marginBottom: 5 }}>{t("sos.locTitle")}</label>
-            <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 8 }} />
-            {/* 위치 강조 */}
-            <div style={{ marginBottom: 14, padding: "10px 12px", borderRadius: 12, background: locState === "on" ? "rgba(23,160,94,0.10)" : theme.primaryBg, border: `1px solid ${locState === "on" ? theme.correct : theme.cardBorder}` }}>
-              <p style={{ margin: 0, fontSize: 12.5, fontWeight: 800, color: locState === "on" ? theme.correct : theme.primarySoft }}>{t("sos.locNote")}</p>
-              <p style={{ margin: "3px 0 0", fontSize: 11, color: theme.textMuted }}>{locState === "on" ? t("sos.locOn") : locState === "wait" ? t("sos.locWait") : t("sos.locOff")}</p>
+            {/* 현재 상황 (선택) — 라벨 옆 빨간 안내 */}
+            <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
+              <span style={lbl}>{t("sos.situation")}</span>
+              <span style={{ fontSize: 10.5, fontWeight: 700, color: theme.wrong }}>{t("sos.situationHint")}</span>
             </div>
+            <textarea value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")} rows={2}
+              style={{ ...inp, resize: "none", lineHeight: 1.4, marginBottom: 9 }} />
+
+            {/* 위치 — 직접 입력 + 강조 한 줄 */}
+            <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 5 }} />
+            <p style={{ margin: "0 0 11px", fontSize: 11.5, fontWeight: 800, color: locState === "on" ? theme.correct : theme.primarySoft }}>{t("sos.locNote")}</p>
 
             <button onClick={sendSms} disabled={!phones.length || sending}
-              style={{ width: "100%", padding: "14px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: 8 }}>
+              style={{ width: "100%", padding: "13px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: 7 }}>
               {sending ? t("sos.sending") : t("sos.sendSms")}
             </button>
-            {/* 카카오톡 단톡방 전송 */}
             <button onClick={shareKakao}
-              style={{ width: "100%", padding: "13px", fontSize: 15, fontWeight: 800, color: "#3a1d1d", background: "#FEE500", border: "none", borderRadius: 13, cursor: "pointer", marginBottom: sentMsg ? 6 : 18 }}>
+              style={{ width: "100%", padding: "12px", fontSize: 15, fontWeight: 800, color: "#3a1d1d", background: "#FEE500", border: "none", borderRadius: 13, cursor: "pointer", marginBottom: sentMsg ? 6 : 12 }}>
               {t("sos.kakao")}
             </button>
-            {sentMsg && <p style={{ margin: "0 0 16px", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{sentMsg}</p>}
+            {sentMsg && <p style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{sentMsg}</p>}
 
             {/* 긴급 전화 */}
-            <p style={{ margin: "0 0 8px 2px", fontSize: 11.5, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>{t("sos.callTitle")}</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <p style={{ margin: "0 0 6px 2px", fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>{t("sos.callTitle")}</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
               {HOTLINES.map((h) => (
                 <a key={h.key} href={`tel:${h.num}`}
-                  style={{ display: "flex", flexDirection: "column", gap: 2, padding: "11px 12px", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: theme.card, textDecoration: "none", color: theme.text }}>
-                  <span style={{ fontSize: 12.5, fontWeight: 800 }}>{h.emoji} {t(h.key)}</span>
-                  <span style={{ fontSize: 13.5, fontWeight: 900, color: RED }}>📞 {h.num}</span>
+                  style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 4, padding: "8px 10px", borderRadius: 10, border: `1px solid ${theme.cardBorder}`, background: theme.card, textDecoration: "none", color: theme.text }}>
+                  <span style={{ fontSize: 11.5, fontWeight: 800, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.emoji} {t(h.key)}</span>
+                  <span style={{ fontSize: 12.5, fontWeight: 900, color: RED, flexShrink: 0 }}>📞</span>
                 </a>
               ))}
             </div>
@@ -185,4 +179,5 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
   );
 }
 
-const inp: React.CSSProperties = { width: "100%", boxSizing: "border-box", fontSize: 16, padding: "10px 12px", borderRadius: 11, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" };
+const inp: React.CSSProperties = { width: "100%", boxSizing: "border-box", fontSize: 14, padding: "8px 10px", borderRadius: 10, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" };
+const lbl: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 800, color: theme.textMuted, marginBottom: 4 };
