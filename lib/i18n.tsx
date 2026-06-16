@@ -60,6 +60,8 @@ const DICT: Dict = {
   "sos.title":    { ko: "🆘 긴급 SOS", en: "🆘 Emergency SOS", th: "🆘 ฉุกเฉิน SOS", lo: "🆘 ສຸກເສີນ SOS" },
   "sos.sub":      { ko: "위급할 때 동행에게 알리고 긴급 기관에 연락하세요. 안전이 최고예요.", en: "Alert your companions and call emergency services. Safety first.", th: "แจ้งเพื่อนร่วมทางและโทรหาหน่วยฉุกเฉิน ความปลอดภัยมาก่อน", lo: "ແຈ້ງເພື່ອນຮ່ວມທາງ ແລະ ໂທຫາໜ່ວຍສຸກເສີນ" },
   "sos.sendSms":  { ko: "📨 동행에게 긴급 문자 보내기", en: "📨 Text companions for help", th: "📨 ส่งข้อความขอความช่วยเหลือ", lo: "📨 ສົ່ງຂໍ້ຄວາມຂໍຄວາມຊ່ວຍ" },
+  "sos.sending":  { ko: "보내는 중…", en: "Sending…", th: "กำลังส่ง…", lo: "ກຳລັງສົ່ງ…" },
+  "sos.sent":     { ko: "긴급 문자를 보냈어요 ✅ ({n}명)", en: "Sent ✅ ({n})", th: "ส่งแล้ว ✅ ({n})", lo: "ສົ່ງແລ້ວ ✅ ({n})" },
   "sos.senderName": { ko: "내 이름 (본명)", en: "My name", th: "ชื่อของฉัน", lo: "ຊື່ຂອງຂ້ອຍ" },
   "sos.senderPh":   { ko: "예: 유상철", en: "e.g. John Kim", th: "เช่น สมชาย", lo: "ເຊັ່ນ ສົມຊາຍ" },
   "sos.contactsTitle": { ko: "동행 연락처 (최대 10명)", en: "Companions (up to 10)", th: "เพื่อนร่วมทาง (สูงสุด 10)", lo: "ເພື່ອນຮ່ວມທາງ (ສູງສຸດ 10)" },

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
+import { getSupabase } from "@/lib/besora/supabase";
 
 const LS_KEY = "dabar_sos_v2";
 const RED = "#e23b3b";
@@ -31,6 +32,8 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
   const [data, setData] = useState<SosData>({ name: "", place: "", contacts: [] });
   const [gps, setGps] = useState("");
   const [locState, setLocState] = useState<"off" | "wait" | "on">("off");
+  const [sending, setSending] = useState(false);
+  const [sentMsg, setSentMsg] = useState("");
 
   useEffect(() => {
     try {
@@ -53,11 +56,31 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
   const locText = gps || data.place.trim();
   const phones = data.contacts.map((c) => c.phone.trim()).filter(Boolean);
 
-  function sendSms() {
-    const who = data.name.trim() ? `[${data.name.trim()}] ` : "";
-    const body = `${who}${t("sos.smsBody")}${locText ? " " + locText : ""}`;
+  function openSmsApp(body: string) {
     const sep = isIOS() ? "&" : "?";
     window.location.href = `sms:${phones.join(",")}${sep}body=${encodeURIComponent(body)}`;
+  }
+  async function sendSms() {
+    if (!phones.length || sending) return;
+    const who = data.name.trim() ? `[${data.name.trim()}] ` : "";
+    const body = `${who}${t("sos.smsBody")}${locText ? " " + locText : ""}`;
+    setSentMsg(""); setSending(true);
+    // 1) Twilio 자동 발송 시도 (로그인 토큰 있을 때)
+    try {
+      const token = (await getSupabase().auth.getSession()).data.session?.access_token;
+      if (token) {
+        const r = await fetch("/api/sos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ phones, body }),
+        });
+        const d = await r.json().catch(() => ({}));
+        if (r.ok && d.sent > 0) { setSentMsg(t("sos.sent", { n: d.sent })); setSending(false); return; }
+      }
+    } catch { /* fall back */ }
+    // 2) 폴백: 문자앱 열기 (수신자·내용 채워짐)
+    setSending(false);
+    openSmsApp(body);
   }
 
   function setContact(i: number, patch: Partial<Contact>) {
@@ -109,10 +132,11 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
               {locState === "on" ? t("sos.locOn") : locState === "wait" ? t("sos.locWait") : t("sos.locOff")}
             </p>
 
-            <button onClick={sendSms} disabled={!phones.length}
-              style={{ width: "100%", padding: "14px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length ? "pointer" : "default", marginBottom: 18 }}>
-              {t("sos.sendSms")}
+            <button onClick={sendSms} disabled={!phones.length || sending}
+              style={{ width: "100%", padding: "14px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: sentMsg ? 6 : 18 }}>
+              {sending ? t("sos.sending") : t("sos.sendSms")}
             </button>
+            {sentMsg && <p style={{ margin: "0 0 16px", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{sentMsg}</p>}
 
             {/* 긴급 전화 */}
             <p style={{ margin: "0 0 8px 2px", fontSize: 11.5, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>{t("sos.callTitle")}</p>
