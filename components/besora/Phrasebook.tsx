@@ -15,7 +15,13 @@ function trGet(lang: string, q: string): string {
   try { const m = JSON.parse(localStorage.getItem(TRC) || "{}"); return m[`${lang}|${q}`] || ""; } catch { return ""; }
 }
 function trPut(lang: string, q: string, v: string) {
-  try { const m = JSON.parse(localStorage.getItem(TRC) || "{}"); m[`${lang}|${q}`] = v; localStorage.setItem(TRC, JSON.stringify(m)); } catch { /* */ }
+  try {
+    const m = JSON.parse(localStorage.getItem(TRC) || "{}");
+    m[`${lang}|${q}`] = v;
+    const keys = Object.keys(m);
+    if (keys.length > 300) delete m[keys[0]]; // 무한 증가 방지
+    localStorage.setItem(TRC, JSON.stringify(m));
+  } catch { /* */ }
 }
 
 export default function Phrasebook({ big = false }: { big?: boolean } = {}) {
@@ -53,7 +59,9 @@ export default function Phrasebook({ big = false }: { big?: boolean } = {}) {
       } catch { /* 오프라인 — 영어 폴백 유지 */ }
     })();
     return () => { cancelled = true; };
-  }, [cat, seeker, myLang, cur]);
+    // cur 은 cat 에서 파생되므로 deps 에 cat 만 두어 불필요한 재실행/루프 위험을 없앤다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cat, seeker, myLang]);
 
   const twoWay = seeker !== myLang;
 

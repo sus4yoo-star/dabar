@@ -6,8 +6,9 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
-  // 남용 방지(비용 보호) — 정상 사용/SOS 실시간 번역은 절대 막지 않게 넉넉히
-  const rl = limitByIp(req, "translate", 80, 60_000);
+  // 남용 방지(비용 보호) — SOS는 생명안전 기능이라 공용 IP(교회 와이파이 등)에서도
+  // 막히지 않게 넉넉히. 구글 번역은 호출당 비용이 작아 한도를 높게 둬도 안전.
+  const rl = limitByIp(req, "translate", 120, 60_000);
   if (!rl.ok) return NextResponse.json({ error: "rate-limited" }, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
 
   const key = process.env.GOOGLE_TRANSLATE_API_KEY;
