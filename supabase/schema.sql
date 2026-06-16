@@ -119,7 +119,7 @@ drop view if exists leaderboard;
 drop view if exists leaderboard_weekly;
 
 -- 전체 랭킹 뷰 (누적 포인트 기준)
-create view leaderboard as
+create view leaderboard with (security_invoker = true) as
 select
   p.id                                   as user_id,
   p.nickname,
@@ -135,7 +135,7 @@ left join scores s on s.user_id = p.id
 group by p.id, p.nickname, p.avatar_url;
 
 -- 주간 랭킹 뷰 (최근 7일 점수만)
-create view leaderboard_weekly as
+create view leaderboard_weekly with (security_invoker = true) as
 select
   p.id                                   as user_id,
   p.nickname,
