@@ -35,6 +35,11 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
   const [sending, setSending] = useState(false);
   const [sentMsg, setSentMsg] = useState("");
   const [situation, setSituation] = useState(""); // 현재 상황 (선택, 매번 새로)
+  const [showLocal, setShowLocal] = useState(false); // 현지인에게 보여주는 태국어 화면
+  const [bannerOff, setBannerOff] = useState(true);
+
+  useEffect(() => { try { setBannerOff(localStorage.getItem("dabar_sos_banner_off") === "1"); } catch { /* */ } }, []);
+  function dismissBanner() { setBannerOff(true); try { localStorage.setItem("dabar_sos_banner_off", "1"); } catch { /* */ } }
 
   useEffect(() => {
     try {
@@ -106,6 +111,17 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
 
   return (
     <>
+      {/* 첫 실행 안내 배너 — 출발 전 연락처 미리 등록 (홈, 미등록·미닫힘 시) */}
+      {compact && !bannerOff && phones.length === 0 && (
+        <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}` }}>
+          <button onClick={() => setOpen(true)} style={{ flex: 1, minWidth: 0, textAlign: "left", background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>
+            <span style={{ display: "block", fontSize: 12.5, fontWeight: 800, color: theme.gold }}>{t("sos.banner")}</span>
+            <span style={{ display: "block", fontSize: 12, color: theme.primarySoft, fontWeight: 700, marginTop: 2 }}>{t("sos.bannerCta")}</span>
+          </button>
+          <button onClick={dismissBanner} aria-label="dismiss" style={{ flexShrink: 0, fontSize: 13, color: theme.textFaint, background: "transparent", border: "none", cursor: "pointer", padding: 4 }}>✕</button>
+        </div>
+      )}
+
       <button onClick={() => setOpen(true)}
         style={{ width: "100%", marginTop: compact ? 9 : 12, padding: compact ? "13px" : "15px", fontSize: compact ? 15.5 : 17, fontWeight: 900, letterSpacing: 1, color: "#fff", background: RED, border: "none", borderRadius: 14, cursor: "pointer", boxShadow: "0 6px 18px rgba(226,59,59,0.4)" }}>
         {t("sos.button")}
@@ -159,15 +175,24 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
             </div>
             <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 11 }} />
 
-            <button onClick={sendSms} disabled={!phones.length || sending}
-              style={{ width: "100%", padding: "13px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: 7 }}>
-              {sending ? t("sos.sending") : t("sos.sendSms")}
-            </button>
+            {/* 카카오톡 = 기본(추천, 위) */}
             <button onClick={shareKakao}
-              style={{ width: "100%", padding: "12px", fontSize: 15, fontWeight: 800, color: "#3a1d1d", background: "#FEE500", border: "none", borderRadius: 13, cursor: "pointer", marginBottom: sentMsg ? 6 : 12 }}>
+              style={{ width: "100%", padding: "14px", fontSize: 16, fontWeight: 900, color: "#3a1d1d", background: "#FEE500", border: "none", borderRadius: 13, cursor: "pointer", marginBottom: 6 }}>
               {t("sos.kakao")}
             </button>
+            {/* 문자 = 보조(아래) */}
+            <button onClick={sendSms} disabled={!phones.length || sending}
+              style={{ width: "100%", padding: "12px", fontSize: 15, fontWeight: 800, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: 4 }}>
+              {sending ? t("sos.sending") : t("sos.sendSms")}
+            </button>
+            <p style={{ margin: "0 0 10px", fontSize: 10.5, color: theme.textMuted, textAlign: "center", lineHeight: 1.4 }}>{t("sos.smsNote")}</p>
             {sentMsg && <p style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{sentMsg}</p>}
+
+            {/* 현지인에게 보여주기 (태국어) */}
+            <button onClick={() => setShowLocal(true)}
+              style={{ width: "100%", padding: "12px", fontSize: 14.5, fontWeight: 800, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 13, cursor: "pointer", marginBottom: 14 }}>
+              {t("sos.showLocal")}
+            </button>
 
             {/* 긴급 전화 */}
             <p style={{ margin: "0 0 6px 2px", fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>{t("sos.callTitle")}</p>
@@ -182,6 +207,33 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
             </div>
 
             <p style={{ textAlign: "center", fontSize: 10.5, color: theme.textFaint, letterSpacing: 1, margin: "22px 0 0" }}>DABAR by AMOV · Love Creates Value</p>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* 현지(태국)인에게 보여주는 SOS 화면 — 태국어 크게 + 긴급전화 */}
+      {showLocal && typeof document !== "undefined" && createPortal(
+        <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "#fff", display: "flex", flexDirection: "column", overflowY: "auto", padding: "20px 18px calc(20px + env(safe-area-inset-bottom))" }}>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button onClick={() => setShowLocal(false)} style={{ fontSize: 14, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "7px 16px", cursor: "pointer" }}>{t("sos.close")} ✕</button>
+          </div>
+          <div style={{ flex: 1, maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", justifyContent: "center", gap: 10, paddingTop: 8 }}>
+            <p style={{ margin: 0, fontSize: 52, fontWeight: 900, color: RED, textAlign: "center", lineHeight: 1.1 }}>🆘 ช่วยด้วย!</p>
+            <p style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 800, color: theme.text, textAlign: "center", lineHeight: 1.4 }}>ฉันมีเหตุฉุกเฉิน ต้องการความช่วยเหลือด่วน</p>
+            <p style={{ margin: "0 0 10px", fontSize: 17, color: theme.textMuted, textAlign: "center", lineHeight: 1.5 }}>ฉันพูดภาษาไทยไม่ได้ 🙏 กรุณาช่วยโทรแจ้ง:</p>
+            {[
+              { th: "🚑 รถพยาบาล / ฉุกเฉิน", num: "1669" },
+              { th: "🚓 ตำรวจ", num: "191" },
+              { th: "👮 ตำรวจท่องเที่ยว", num: "1155" },
+            ].map((x) => (
+              <a key={x.num} href={`tel:${x.num}`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "16px 18px", borderRadius: 16, border: `2px solid ${RED}`, background: "#fff5f5", textDecoration: "none", color: theme.text }}>
+                <span style={{ fontSize: 19, fontWeight: 800 }}>{x.th}</span>
+                <span style={{ fontSize: 24, fontWeight: 900, color: RED }}>📞 {x.num}</span>
+              </a>
+            ))}
+            {data.name.trim() && <p style={{ margin: "8px 0 0", fontSize: 15, color: theme.textMuted, textAlign: "center" }}>ชื่อ: {data.name.trim()}</p>}
+            <p style={{ margin: "4px 0 0", fontSize: 16, fontWeight: 700, color: theme.text, textAlign: "center" }}>ขอบคุณมากค่ะ/ครับ 🙏</p>
           </div>
         </div>,
         document.body
