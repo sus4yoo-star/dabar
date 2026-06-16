@@ -147,7 +147,6 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
             </div>
 
             <button onClick={sendSms} disabled={!phones.length || sending}
-<<<<<<< HEAD
               style={{ width: "100%", padding: "14px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: 8 }}>
               {sending ? t("sos.sending") : t("sos.sendSms")}
             </button>
@@ -156,11 +155,6 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
               style={{ width: "100%", padding: "13px", fontSize: 15, fontWeight: 800, color: "#3a1d1d", background: "#FEE500", border: "none", borderRadius: 13, cursor: "pointer", marginBottom: sentMsg ? 6 : 18 }}>
               {t("sos.kakao")}
             </button>
-=======
-              style={{ width: "100%", padding: "14px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: sentMsg ? 6 : 18 }}>
-              {sending ? t("sos.sending") : t("sos.sendSms")}
-            </button>
->>>>>>> origin/main
             {sentMsg && <p style={{ margin: "0 0 16px", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{sentMsg}</p>}
 
             {/* 긴급 전화 */}
