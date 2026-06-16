@@ -152,9 +152,12 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
             <textarea value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")} rows={2}
               style={{ ...inp, resize: "none", lineHeight: 1.4, marginBottom: 9 }} />
 
-            {/* 위치 — 직접 입력 + 강조 한 줄 */}
-            <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 5 }} />
-            <p style={{ margin: "0 0 11px", fontSize: 11.5, fontWeight: 800, color: locState === "on" ? theme.correct : theme.primarySoft }}>{t("sos.locNote")}</p>
+            {/* 내 위치 — 라벨 옆 안내(현재 상황과 동일 형식) */}
+            <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
+              <span style={lbl}>{t("sos.locTitle")}</span>
+              <span style={{ fontSize: 10.5, fontWeight: 700, color: locState === "on" ? theme.correct : theme.primarySoft }}>{t("sos.locNote")}</span>
+            </div>
+            <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 11 }} />
 
             <button onClick={sendSms} disabled={!phones.length || sending}
               style={{ width: "100%", padding: "13px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: 7 }}>
