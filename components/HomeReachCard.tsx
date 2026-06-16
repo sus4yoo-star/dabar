@@ -15,7 +15,9 @@ export default function HomeReachCard() {
       <span style={{ fontSize: 24, lineHeight: 1 }}>🌍</span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: theme.gold }}>{t("home.reachTitle")}</span>
-        <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{t("home.reachSub")}</span>
+        <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>
+          <span style={{ color: theme.wrong, fontWeight: 800 }}>{t("home.sosTag")}</span> · {t("home.reachSub")}
+        </span>
       </span>
       <span style={{ fontSize: 18, color: theme.gold }}>→</span>
     </button>
