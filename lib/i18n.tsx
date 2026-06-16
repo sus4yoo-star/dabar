@@ -112,7 +112,9 @@ const DICT: Dict = {
   "home.guide":       { ko: "📋 학습·세례·입교 절차 안내", en: "📋 Membership steps guide", th: "📋 ขั้นตอนการเป็นสมาชิก", lo: "📋 ຂັ້ນຕອນການເປັນສະມາຊິກ" },
   "home.admin":       { ko: "🔧 목사님 현황판", en: "🔧 Pastor dashboard", th: "🔧 แดชบอร์ดศิษยาภิบาล", lo: "🔧 ກະດານສິດຍາພິບານ" },
   "home.growSection": { ko: "양육 · 교육 과정", en: "Discipleship · Education", th: "การเป็นสาวก · การศึกษา", lo: "ການເປັນສາວົກ · ການສຶກສາ" },
-  "home.growSub":     { ko: "새신자부터 소요리문답까지", en: "From new believer to catechism", th: "ตั้งแต่ผู้เชื่อใหม่ถึงคำสอนสั้น", lo: "ຕັ້ງແຕ່ຜູ້ເຊື່ອໃໝ່ຮອດຄຳສອນສັ້ນ" },
+  "home.growSub":     { ko: "새신자 양육 · 세례·입교 · 소요리문답", en: "New believer · Baptism · Catechism", th: "ผู้เชื่อใหม่ · บัพติศมา · คำสอน", lo: "ຜູ້ເຊື່ອໃໝ່ · ບັບຕິສະມາ · ຄຳສອນ" },
+  "home.quizSub":     { ko: "성경 전권 퀴즈 · 아이부터 신학생까지", en: "Whole-Bible quiz · kids to seminarians", th: "ควิซทั้งพระคัมภีร์ · เด็กถึงนักศึกษา", lo: "ຄິວສ໌ທັງພະຄຳພີ · ເດັກຮອດນັກສຶກສາ" },
+  "home.sosTag":      { ko: "🆘 긴급 SOS", en: "🆘 Emergency SOS", th: "🆘 SOS ฉุกเฉิน", lo: "🆘 SOS ສຸກເສີນ" },
   "home.shareTitle":  { ko: "복음 전하기 · 새신자 영접", en: "Share the Gospel · Lead to Christ", th: "ประกาศข่าวประเสริฐ · นำสู่พระคริสต์", lo: "ປະກາດຂ່າວປະເສີດ · ນຳສູ່ພຣະຄຣິດ" },
   "home.shareSub":    { ko: "다국어·음성으로 복음을 전하고 영접까지", en: "Share in many languages & voice, to decision", th: "ประกาศหลายภาษา·เสียง จนถึงการตัดสินใจ", lo: "ປະກາດຫຼາຍພາສາ·ສຽງ ຈົນຮອດການຕັດສິນໃຈ" },
 
@@ -426,7 +428,7 @@ const DICT: Dict = {
   "cf.e6":         { ko: "감사해요", en: "Grateful", th: "ขอบคุณ", lo: "ຂອບໃຈ" },
   // 전도 여정 (내가 전하는 사람들)
   "home.reachTitle": { ko: "선교 여정", en: "Mission", th: "พันธกิจ", lo: "ມິຊັນ" },
-  "home.reachSub":   { ko: "환율 계산 · 이미지 번역 · 음성 통역", en: "Exchange · image translate · voice", th: "อัตราแลกเปลี่ยน · แปลรูป · เสียง", lo: "ອັດຕາ · ແປຮູບ · ສຽງ" },
+  "home.reachSub":   { ko: "환율 계산 · 이미지 번역 · 음성·문자 통역", en: "Exchange · image translate · voice & text", th: "อัตราแลกเปลี่ยน · แปลรูป · เสียง·ข้อความ", lo: "ອັດຕາ · ແປຮູບ · ສຽງ·ຂໍ້ຄວາມ" },
   "reach.title":   { ko: "선교 여정", en: "Mission", th: "พันธกิจ", lo: "ມິຊັນ" },
   "reach.add":     { ko: "＋ 사람 추가", en: "＋ Add person", th: "＋ เพิ่มคน", lo: "＋ ເພີ່ມຄົນ" },
   "reach.namePh":  { ko: "이름 (예: 김OO, 카페 사장님)", en: "Name (a friend, neighbor…)", th: "ชื่อ", lo: "ຊື່" },

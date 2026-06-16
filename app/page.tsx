@@ -105,11 +105,11 @@ export default function Home() {
         <span style={{ fontSize: 18, color: theme.primarySoft }}>→</span>
       </button>
 
-      {/* 2개 기능 — 양육 / 퀴즈 */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 9 }}>
-        <Tile icon="📚" title={t("home.growSection")} onClick={() => router.push("/learn")} />
-        <Tile icon="📖" title={t("menu.quiz.t")} onClick={() => router.push("/play")} />
-      </div>
+      {/* 📚 양육·교육 과정 — 한 줄 */}
+      <RowCard icon="📚" title={t("home.growSection")} sub={t("home.growSub")} onClick={() => router.push("/learn")} />
+
+      {/* 📖 성경퀴즈 — 한 줄 */}
+      <RowCard icon="📖" title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} />
 
       {/* 빠른 이동 — 동행 / 랭킹 / 오답 */}
       <div style={{ display: "flex", gap: 8, marginTop: 9 }}>
@@ -134,15 +134,16 @@ export default function Home() {
   );
 }
 
-function Tile({ icon, title, tag, accent, onClick }: { icon: string; title: string; tag?: string; accent?: boolean; onClick: () => void }) {
+function RowCard({ icon, title, sub, onClick }: { icon: string; title: string; sub: string; onClick: () => void }) {
   return (
     <button onClick={onClick} className="fade-in-2"
-      style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-start", textAlign: "left", padding: "11px 13px", borderRadius: 15, minHeight: 70, border: `1px solid ${accent ? theme.primary : theme.cardBorder}`, background: accent ? theme.primaryBg : theme.card, color: theme.text, cursor: "pointer" }}>
-      <span style={{ fontSize: 22, lineHeight: 1 }}>{icon}</span>
-      <span style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 14.5, fontWeight: 800, color: accent ? theme.primarySoft : theme.text }}>{title}</span>
-        {tag && <span style={{ fontSize: 9.5, fontWeight: 800, color: theme.primarySoft, background: "rgba(31,155,239,0.10)", border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "1px 6px" }}>{tag}</span>}
+      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 9, padding: "12px 16px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text }}>
+      <span style={{ fontSize: 24, lineHeight: 1 }}>{icon}</span>
+      <span style={{ flex: 1, minWidth: 0 }}>
+        <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: theme.text }}>{title}</span>
+        <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{sub}</span>
       </span>
+      <span style={{ fontSize: 18, color: theme.gold }}>→</span>
     </button>
   );
 }
