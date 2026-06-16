@@ -83,6 +83,18 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
     openSmsApp(body);
   }
 
+  function buildBody() {
+    const who = data.name.trim() ? `[${data.name.trim()}] ` : "";
+    return `${who}${t("sos.smsBody")}${locText ? " " + locText : ""}`;
+  }
+  async function shareKakao() {
+    const body = buildBody();
+    try {
+      if (navigator.share) await navigator.share({ title: "🆘 SOS", text: body });
+      else { await navigator.clipboard.writeText(body); setSentMsg(t("sos.copied")); }
+    } catch { /* canceled */ }
+  }
+
   function setContact(i: number, patch: Partial<Contact>) {
     save({ ...data, contacts: data.contacts.map((c, idx) => idx === i ? { ...c, ...patch } : c) });
   }
@@ -112,7 +124,7 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
 
             {/* 동행 연락처 (최대 10) */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-              <span style={{ fontSize: 11.5, fontWeight: 800, color: theme.textMuted }}>{t("sos.contactsTitle")}</span>
+              <span style={{ fontSize: 11.5, fontWeight: 800, color: theme.textMuted }}>{t("sos.contactsTitle")} <span style={{ color: theme.textFaint, fontWeight: 500 }}>· {t("sos.savedHint")}</span></span>
               <button onClick={addContact} disabled={data.contacts.length >= MAX} style={{ fontSize: 12, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 11px", cursor: data.contacts.length >= MAX ? "default" : "pointer", opacity: data.contacts.length >= MAX ? 0.5 : 1 }}>{t("sos.addContact")}</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7, marginBottom: 10 }}>
@@ -127,14 +139,21 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
 
             {/* 위치 — GPS 또는 직접 입력 */}
             <label style={{ display: "block", fontSize: 11.5, fontWeight: 800, color: theme.textMuted, marginBottom: 5 }}>{t("sos.locTitle")}</label>
-            <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 4 }} />
-            <p style={{ margin: "0 0 14px", fontSize: 11, color: locState === "on" ? theme.correct : theme.textFaint }}>
-              {locState === "on" ? t("sos.locOn") : locState === "wait" ? t("sos.locWait") : t("sos.locOff")}
-            </p>
+            <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 8 }} />
+            {/* 위치 강조 */}
+            <div style={{ marginBottom: 14, padding: "10px 12px", borderRadius: 12, background: locState === "on" ? "rgba(23,160,94,0.10)" : theme.primaryBg, border: `1px solid ${locState === "on" ? theme.correct : theme.cardBorder}` }}>
+              <p style={{ margin: 0, fontSize: 12.5, fontWeight: 800, color: locState === "on" ? theme.correct : theme.primarySoft }}>{t("sos.locNote")}</p>
+              <p style={{ margin: "3px 0 0", fontSize: 11, color: theme.textMuted }}>{locState === "on" ? t("sos.locOn") : locState === "wait" ? t("sos.locWait") : t("sos.locOff")}</p>
+            </div>
 
             <button onClick={sendSms} disabled={!phones.length || sending}
-              style={{ width: "100%", padding: "14px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: sentMsg ? 6 : 18 }}>
+              style={{ width: "100%", padding: "14px", fontSize: 16, fontWeight: 900, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: 8 }}>
               {sending ? t("sos.sending") : t("sos.sendSms")}
+            </button>
+            {/* 카카오톡 단톡방 전송 */}
+            <button onClick={shareKakao}
+              style={{ width: "100%", padding: "13px", fontSize: 15, fontWeight: 800, color: "#3a1d1d", background: "#FEE500", border: "none", borderRadius: 13, cursor: "pointer", marginBottom: sentMsg ? 6 : 18 }}>
+              {t("sos.kakao")}
             </button>
             {sentMsg && <p style={{ margin: "0 0 16px", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{sentMsg}</p>}
 
