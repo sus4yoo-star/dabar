@@ -578,7 +578,7 @@ export function LangSelector() {
         🌐 {currentName}<span style={{ fontSize: 9, opacity: 0.55, marginLeft: 1 }}>▼</span>
       </button>
       {open && (
-        <div role="listbox" style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 50, minWidth: 150, maxHeight: 200, overflowY: "auto", background: "#fff", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 14, boxShadow: "0 12px 32px rgba(23,50,73,0.18)", padding: 4 }}>
+        <div role="listbox" style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 50, minWidth: 168, maxHeight: 340, overflowY: "auto", background: "#fff", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 14, boxShadow: "0 12px 32px rgba(23,50,73,0.18)", padding: 4 }}>
           {LANGS.map(l => {
             const on = l.code === lang;
             return (
