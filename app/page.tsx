@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
 import { fetchUnreadTotal } from "@/lib/besora/companions";
 import HomeReachCard from "@/components/HomeReachCard";
+import SosButton from "@/components/SosButton";
 
 export default function Home() {
   const router = useRouter();
@@ -117,6 +118,9 @@ export default function Home() {
         {user && <QuickChip label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
         {user && <QuickChip label={t("common.progress")} onClick={() => router.push("/progress")} />}
       </div>
+
+      {/* 🆘 긴급 SOS — 한 줄 */}
+      <SosButton compact />
 
       {/* 하단 보조 링크 */}
       <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
