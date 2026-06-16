@@ -1,19 +1,14 @@
 "use client";
 
-// 🆘 긴급 SOS — 발신자 본명 + 동행 연락처(최대 10) 미리 저장 → 한 번에 긴급 문자(위치 포함),
-// 태국/한국 긴급기관 바로 전화. 위치는 GPS 또는 직접 입력. 선교 현장 안전.
-import { useEffect, useState } from "react";
+// 🆘 긴급 SOS — 해외에선 카톡 중심. 상황·위치를 카톡으로 전송하고, 상황을 태국어로 번역해
+// 현지인에게 보여주며, 긴급기관에 바로 전화. (동행 연락처/문자 제거)
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
-import { getSupabase } from "@/lib/besora/supabase";
 
-const LS_KEY = "dabar_sos_v2";
+const LS_KEY = "dabar_sos_v3";
 const RED = "#e23b3b";
-const MAX = 10;
-
-type Contact = { name: string; phone: string };
-type SosData = { name: string; place: string; contacts: Contact[] };
 
 const HOTLINES: { key: string; num: string; emoji: string }[] = [
   { key: "sos.touristPolice", num: "1155", emoji: "👮" },
@@ -24,28 +19,22 @@ const HOTLINES: { key: string; num: string; emoji: string }[] = [
   { key: "sos.consul", num: "+82233210404", emoji: "☎️" },
 ];
 
-const isIOS = () => typeof navigator !== "undefined" && /iphone|ipad|ipod/i.test(navigator.userAgent);
+type SosData = { name: string; place: string };
 
 export default function SosButton({ compact = false }: { compact?: boolean } = {}) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState<SosData>({ name: "", place: "", contacts: [] });
+  const [data, setData] = useState<SosData>({ name: "", place: "" });
   const [gps, setGps] = useState("");
   const [locState, setLocState] = useState<"off" | "wait" | "on">("off");
-  const [sending, setSending] = useState(false);
-  const [sentMsg, setSentMsg] = useState("");
-  const [situation, setSituation] = useState(""); // 현재 상황 (선택, 매번 새로)
-  const [showLocal, setShowLocal] = useState(false); // 현지인에게 보여주는 태국어 화면
-  const [bannerOff, setBannerOff] = useState(true);
-
-  useEffect(() => { try { setBannerOff(localStorage.getItem("dabar_sos_banner_off") === "1"); } catch { /* */ } }, []);
-  function dismissBanner() { setBannerOff(true); try { localStorage.setItem("dabar_sos_banner_off", "1"); } catch { /* */ } }
+  const [situation, setSituation] = useState("");   // 현재 상황 (선택, 매번 새로)
+  const [situThai, setSituThai] = useState("");       // 상황 태국어 번역
+  const [showLocal, setShowLocal] = useState(false);  // 현지인 전체화면
+  const [copied, setCopied] = useState("");
+  const trTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(LS_KEY);
-      if (raw) { const d = JSON.parse(raw); setData({ name: d.name ?? "", place: d.place ?? "", contacts: Array.isArray(d.contacts) ? d.contacts.slice(0, MAX) : [] }); }
-    } catch { /* */ }
+    try { const raw = localStorage.getItem(LS_KEY); if (raw) { const d = JSON.parse(raw); setData({ name: d.name ?? "", place: d.place ?? "" }); } } catch { /* */ }
   }, []);
   function save(next: SosData) { setData(next); try { localStorage.setItem(LS_KEY, JSON.stringify(next)); } catch { /* */ } }
 
@@ -59,9 +48,22 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
     );
   }, [open]);
 
-  // 직접 입력한 위치 + GPS 링크를 함께 (둘 다 메시지에 포함)
+  // 상황 → 태국어 번역 (디바운스). 현지인에게 보여줄 용도.
+  useEffect(() => {
+    const q = situation.trim();
+    if (!q) { setSituThai(""); return; }
+    if (trTimer.current) clearTimeout(trTimer.current);
+    trTimer.current = setTimeout(async () => {
+      try {
+        const r = await fetch("/api/translate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q, target: "th" }) });
+        const d = await r.json();
+        if (d?.text) setSituThai(d.text);
+      } catch { /* */ }
+    }, 600);
+    return () => { if (trTimer.current) clearTimeout(trTimer.current); };
+  }, [situation]);
+
   const locText = [data.place.trim(), gps].filter(Boolean).join(" ");
-  const phones = data.contacts.map((c) => c.phone.trim()).filter(Boolean);
 
   function buildBody() {
     const who = data.name.trim() ? `[${data.name.trim()}] ` : "";
@@ -69,59 +71,16 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
     const loc = locText ? ` ${t("sos.loc")} ${locText}` : "";
     return `${who}${t("sos.smsBody")}${situ}${loc}`;
   }
-  function openSmsApp(body: string) {
-    const sep = isIOS() ? "&" : "?";
-    window.location.href = `sms:${phones.join(",")}${sep}body=${encodeURIComponent(body)}`;
-  }
-  async function sendSms() {
-    if (!phones.length || sending) return;
-    const body = buildBody();
-    setSentMsg(""); setSending(true);
-    // 1) Twilio 자동 발송 시도 (로그인 토큰 있을 때)
-    try {
-      const token = (await getSupabase().auth.getSession()).data.session?.access_token;
-      if (token) {
-        const r = await fetch("/api/sos", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ phones, body }),
-        });
-        const d = await r.json().catch(() => ({}));
-        if (r.ok && d.sent > 0) { setSentMsg(t("sos.sent", { n: d.sent })); setSending(false); return; }
-      }
-    } catch { /* fall back */ }
-    // 2) 폴백: 문자앱 열기 (수신자·내용 채워짐)
-    setSending(false);
-    openSmsApp(body);
-  }
-
   async function shareKakao() {
     const body = buildBody();
     try {
       if (navigator.share) await navigator.share({ title: "🆘 SOS", text: body });
-      else { await navigator.clipboard.writeText(body); setSentMsg(t("sos.copied")); }
+      else { await navigator.clipboard.writeText(body); setCopied(t("sos.copied")); }
     } catch { /* canceled */ }
   }
 
-  function setContact(i: number, patch: Partial<Contact>) {
-    save({ ...data, contacts: data.contacts.map((c, idx) => idx === i ? { ...c, ...patch } : c) });
-  }
-  function addContact() { if (data.contacts.length < MAX) save({ ...data, contacts: [...data.contacts, { name: "", phone: "" }] }); }
-  function removeContact(i: number) { save({ ...data, contacts: data.contacts.filter((_, idx) => idx !== i) }); }
-
   return (
     <>
-      {/* 첫 실행 안내 배너 — 출발 전 연락처 미리 등록 (홈, 미등록·미닫힘 시) */}
-      {compact && !bannerOff && phones.length === 0 && (
-        <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}` }}>
-          <button onClick={() => setOpen(true)} style={{ flex: 1, minWidth: 0, textAlign: "left", background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>
-            <span style={{ display: "block", fontSize: 12.5, fontWeight: 800, color: theme.gold }}>{t("sos.banner")}</span>
-            <span style={{ display: "block", fontSize: 12, color: theme.primarySoft, fontWeight: 700, marginTop: 2 }}>{t("sos.bannerCta")}</span>
-          </button>
-          <button onClick={dismissBanner} aria-label="dismiss" style={{ flexShrink: 0, fontSize: 13, color: theme.textFaint, background: "transparent", border: "none", cursor: "pointer", padding: 4 }}>✕</button>
-        </div>
-      )}
-
       <button onClick={() => setOpen(true)}
         style={{ width: "100%", marginTop: compact ? 9 : 12, padding: compact ? "13px" : "15px", fontSize: compact ? 15.5 : 17, fontWeight: 900, letterSpacing: 1, color: "#fff", background: RED, border: "none", borderRadius: 14, cursor: "pointer", boxShadow: "0 6px 18px rgba(226,59,59,0.4)" }}>
         {t("sos.button")}
@@ -129,70 +88,48 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
 
       {open && typeof document !== "undefined" && createPortal(
         <div style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(20,8,8,0.5)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }} onClick={() => setOpen(false)}>
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "12px 15px calc(30px + env(safe-area-inset-bottom))", maxHeight: "96dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "12px 15px calc(28px + env(safe-area-inset-bottom))", maxHeight: "96dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
               <span style={{ fontSize: 18, fontWeight: 900, color: RED }}>{t("sos.title")}</span>
               <button onClick={() => setOpen(false)} style={{ fontSize: 13, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 13px", cursor: "pointer" }}>{t("sos.close")} ✕</button>
             </div>
 
-            {/* 긴급 연락처 미리 저장 안내 */}
-            <div style={{ marginBottom: 11, padding: "9px 11px", borderRadius: 10, background: theme.goldLight, border: `1px solid ${theme.goldBorder}` }}>
-              <p style={{ margin: 0, fontSize: 12.5, fontWeight: 800, color: theme.gold }}>{t("sos.presave")}</p>
-              <p style={{ margin: "2px 0 0", fontSize: 11, color: theme.textMuted, lineHeight: 1.4 }}>{t("sos.presaveNote")}</p>
-            </div>
-
-            {/* 발신자 본명 */}
+            {/* 내 이름 */}
             <label style={lbl}>{t("sos.senderName")}</label>
-            <input value={data.name} onChange={(e) => save({ ...data, name: e.target.value })} placeholder={t("sos.senderPh")} style={{ ...inp, marginBottom: 9 }} />
-
-            {/* 동행 연락처 (최대 10) */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-              <span style={lbl}>{t("sos.contactsTitle")} <span style={{ color: theme.textFaint, fontWeight: 500 }}>· {t("sos.savedHint")}</span></span>
-              <button onClick={addContact} disabled={data.contacts.length >= MAX} style={{ fontSize: 11.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "4px 10px", cursor: data.contacts.length >= MAX ? "default" : "pointer", opacity: data.contacts.length >= MAX ? 0.5 : 1 }}>{t("sos.addContact")}</button>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 9, maxHeight: 112, overflowY: "auto" }}>
-              {data.contacts.map((c, i) => (
-                <div key={i} style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  <input value={c.name} onChange={(e) => setContact(i, { name: e.target.value })} placeholder={t("sos.namePh")} style={{ ...inp, width: 84, flexShrink: 0, marginBottom: 0 }} />
-                  <input value={c.phone} onChange={(e) => setContact(i, { phone: e.target.value })} placeholder={t("sos.phonePh")} inputMode="tel" style={{ ...inp, flex: 1, minWidth: 0, marginBottom: 0 }} />
-                  <button onClick={() => removeContact(i)} aria-label="remove" style={{ flexShrink: 0, width: 28, height: 28, borderRadius: 8, border: `1px solid ${theme.border}`, background: theme.card, color: theme.textMuted, fontSize: 14, cursor: "pointer" }}>✕</button>
-                </div>
-              ))}
-            </div>
+            <input value={data.name} onChange={(e) => save({ ...data, name: e.target.value })} placeholder={t("sos.senderPh")} style={{ ...inp, marginBottom: 11 }} />
 
             {/* 현재 상황 (선택) — 라벨 옆 빨간 안내 */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
               <span style={lbl}>{t("sos.situation")}</span>
               <span style={{ fontSize: 10.5, fontWeight: 700, color: theme.wrong }}>{t("sos.situationHint")}</span>
             </div>
-            <input value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")}
-              style={{ ...inp, marginBottom: 9 }} />
+            <input value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")} style={{ ...inp, marginBottom: situation.trim() ? 8 : 11 }} />
+            {/* 상황 태국어 — 현지인에게 보여주기 */}
+            {situation.trim() && (
+              <div style={{ marginBottom: 11, padding: "10px 12px", borderRadius: 10, background: theme.goldLight, border: `1px solid ${theme.goldBorder}` }}>
+                <p style={{ margin: 0, fontSize: 10.5, fontWeight: 800, color: theme.gold }}>{t("sos.situThai")}</p>
+                <p style={{ margin: "3px 0 0", fontSize: 15.5, fontWeight: 700, color: theme.text, lineHeight: 1.45 }}>{situThai || "…"}</p>
+              </div>
+            )}
 
-            {/* 내 위치 — 라벨 옆 안내(현재 상황과 동일 형식) */}
+            {/* 내 위치 (선택) — 긴급전화 위 */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
               <span style={lbl}>{t("sos.locTitle")}</span>
               <span style={{ fontSize: 10.5, fontWeight: 700, color: locState === "on" ? theme.correct : theme.primarySoft }}>{t("sos.locNote")}</span>
             </div>
-            <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 11 }} />
+            <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 12 }} />
 
-            {/* 카카오톡 = 기본(추천, 위) */}
+            {/* 카카오톡으로 상황·위치 전송 (해외 기본) */}
             <button onClick={shareKakao}
-              style={{ width: "100%", padding: "14px", fontSize: 16, fontWeight: 900, color: "#3a1d1d", background: "#FEE500", border: "none", borderRadius: 13, cursor: "pointer", marginBottom: 6 }}>
+              style={{ width: "100%", padding: "15px", fontSize: 16, fontWeight: 900, color: "#3a1d1d", background: "#FEE500", border: "none", borderRadius: 13, cursor: "pointer", marginBottom: 8 }}>
               {t("sos.kakao")}
             </button>
-            {/* 문자 = 보조(아래) */}
-            <button onClick={sendSms} disabled={!phones.length || sending}
-              style={{ width: "100%", padding: "12px", fontSize: 15, fontWeight: 800, color: "#fff", background: phones.length ? RED : theme.textFaint, border: "none", borderRadius: 13, cursor: phones.length && !sending ? "pointer" : "default", marginBottom: 4 }}>
-              {sending ? t("sos.sending") : t("sos.sendSms")}
-            </button>
-            <p style={{ margin: "0 0 10px", fontSize: 10.5, color: theme.textMuted, textAlign: "center", lineHeight: 1.4 }}>{t("sos.smsNote")}</p>
-            {sentMsg && <p style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{sentMsg}</p>}
-
-            {/* 현지인에게 보여주기 (태국어) */}
+            {/* 현지인에게 크게 보여주기 */}
             <button onClick={() => setShowLocal(true)}
-              style={{ width: "100%", padding: "12px", fontSize: 14.5, fontWeight: 800, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 13, cursor: "pointer", marginBottom: 14 }}>
+              style={{ width: "100%", padding: "12px", fontSize: 14.5, fontWeight: 800, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 13, cursor: "pointer", marginBottom: copied ? 6 : 14 }}>
               {t("sos.showLocal")}
             </button>
+            {copied && <p style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: theme.correct, textAlign: "center" }}>{copied}</p>}
 
             {/* 긴급 전화 */}
             <p style={{ margin: "0 0 6px 2px", fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>{t("sos.callTitle")}</p>
@@ -212,16 +149,21 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
         document.body
       )}
 
-      {/* 현지(태국)인에게 보여주는 SOS 화면 — 태국어 크게 + 긴급전화 */}
+      {/* 현지(태국)인에게 보여주는 SOS 화면 — 태국어 크게 + 상황 + 긴급전화 */}
       {showLocal && typeof document !== "undefined" && createPortal(
         <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "#fff", display: "flex", flexDirection: "column", overflowY: "auto", padding: "20px 18px calc(20px + env(safe-area-inset-bottom))" }}>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button onClick={() => setShowLocal(false)} style={{ fontSize: 14, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "7px 16px", cursor: "pointer" }}>{t("sos.close")} ✕</button>
           </div>
           <div style={{ flex: 1, maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", justifyContent: "center", gap: 10, paddingTop: 8 }}>
-            <p style={{ margin: 0, fontSize: 52, fontWeight: 900, color: RED, textAlign: "center", lineHeight: 1.1 }}>🆘 ช่วยด้วย!</p>
-            <p style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 800, color: theme.text, textAlign: "center", lineHeight: 1.4 }}>ฉันมีเหตุฉุกเฉิน ต้องการความช่วยเหลือด่วน</p>
-            <p style={{ margin: "0 0 10px", fontSize: 17, color: theme.textMuted, textAlign: "center", lineHeight: 1.5 }}>ฉันพูดภาษาไทยไม่ได้ 🙏 กรุณาช่วยโทรแจ้ง:</p>
+            <p style={{ margin: 0, fontSize: 50, fontWeight: 900, color: RED, textAlign: "center", lineHeight: 1.1 }}>🆘 ช่วยด้วย!</p>
+            <p style={{ margin: "0 0 2px", fontSize: 21, fontWeight: 800, color: theme.text, textAlign: "center", lineHeight: 1.4 }}>ฉันมีเหตุฉุกเฉิน ต้องการความช่วยเหลือด่วน</p>
+            {situThai && (
+              <div style={{ padding: "12px 14px", borderRadius: 14, background: "#fff5f5", border: `2px solid ${RED}` }}>
+                <p style={{ margin: 0, fontSize: 20, fontWeight: 800, color: theme.text, textAlign: "center", lineHeight: 1.45 }}>{situThai}</p>
+              </div>
+            )}
+            <p style={{ margin: "2px 0 8px", fontSize: 16, color: theme.textMuted, textAlign: "center", lineHeight: 1.5 }}>ฉันพูดภาษาไทยไม่ได้ 🙏 กรุณาช่วยโทรแจ้ง:</p>
             {[
               { th: "🚑 รถพยาบาล / ฉุกเฉิน", num: "1669" },
               { th: "🚓 ตำรวจ", num: "191" },
@@ -242,5 +184,5 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
   );
 }
 
-const inp: React.CSSProperties = { width: "100%", boxSizing: "border-box", fontSize: 14, padding: "8px 10px", borderRadius: 10, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" };
+const inp: React.CSSProperties = { width: "100%", boxSizing: "border-box", fontSize: 14, padding: "9px 11px", borderRadius: 10, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" };
 const lbl: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 800, color: theme.textMuted, marginBottom: 4 };
