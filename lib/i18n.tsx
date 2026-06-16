@@ -128,7 +128,17 @@ const DICT: Dict = {
   "home.quizSub":     { ko: "성경 전권 퀴즈 · 아이부터 신학생까지", en: "Whole-Bible quiz · kids to seminarians", th: "ควิซทั้งพระคัมภีร์ · เด็กถึงนักศึกษา", lo: "ຄິວສ໌ທັງພະຄຳພີ · ເດັກຮອດນັກສຶກສາ" },
   "home.sosTag":      { ko: "🆘 긴급 SOS", en: "🆘 Emergency SOS", th: "🆘 SOS ฉุกเฉิน", lo: "🆘 SOS ສຸກເສີນ" },
   "home.shareTitle":  { ko: "복음 전하기 · 새신자 영접", en: "Share the Gospel · Lead to Christ", th: "ประกาศข่าวประเสริฐ · นำสู่พระคริสต์", lo: "ປະກາດຂ່າວປະເສີດ · ນຳສູ່ພຣະຄຣິດ" },
-  "home.shareSub":    { ko: "다국어·음성으로 복음을 전하고 영접까지", en: "Share in many languages & voice, to decision", th: "ประกาศหลายภาษา·เสียง จนถึงการตัดสินใจ", lo: "ປະກາດຫຼາຍພາສາ·ສຽງ ຈົນຮອດການຕັດສິນໃຈ" },
+  "home.shareSub":    { ko: "다국어·음성으로 복음을 전하고 영접까지", en: "Share in many languages & voice, to decision", th: "ประกาศหลายภาษา·เสียง จนถึงการตัดสินใจ", lo: "ປະກາດຫຼາຍພາສາ·ສຽງ ຈົນຮอດການຕັດສິນໃຈ" },
+
+  // 첫 사용자 온보딩 (비로그인 첫 방문 시 1회)
+  "onboard.title":  { ko: "다바르에 오신 걸 환영해요 🙏", en: "Welcome to DABAR 🙏", th: "ยินดีต้อนรับสู่ DABAR 🙏", lo: "ຍິນດີຕ້ອນຮັບສູ່ DABAR 🙏" },
+  "onboard.sub":    { ko: "선교 현장의 동행자 — 이렇게 쓸 수 있어요", en: "Your companion in the mission field — here's what you can do", th: "เพื่อนร่วมทางในสนามมิชชัน — สิ่งที่คุณทำได้", lo: "ເພື່ອນຮ່ວມທາງໃນສະໜາມມິດຊັນ — ສິ່ງທີ່ທ່ານເຮັດໄດ້" },
+  "onboard.f1":     { ko: "🕊️ 다국어·음성으로 복음 전하기", en: "🕊️ Share the gospel in many languages & voice", th: "🕊️ ประกาศข่าวประเสริฐหลายภาษาและเสียง", lo: "🕊️ ປະກາດຂ່າວປະເສີດຫຼາຍພາສາ ແລະ ສຽງ" },
+  "onboard.f2":     { ko: "🎤 실시간 통역 + 오프라인 표현집", en: "🎤 Live interpreting + offline phrasebook", th: "🎤 ล่ามแบบเรียลไทม์ + ประโยคออฟไลน์", lo: "🎤 ແປສົດ + ປະໂຫຍກອອບລາຍ" },
+  "onboard.f3":     { ko: "📖 성경 퀴즈로 말씀과 친해지기", en: "📖 Grow in the Word with Bible quizzes", th: "📖 ใกล้ชิดพระวจนะด้วยควิซพระคัมภีร์", lo: "📖 ໃກ້ຊິດພຣະທຳດ້ວຍຄິວສ໌ພະຄຳພີ" },
+  "onboard.f4":     { ko: "🆘 긴급 SOS · 나라별 긴급번호", en: "🆘 Emergency SOS & local hotlines", th: "🆘 SOS ฉุกเฉิน · เบอร์ฉุกเฉินแต่ละประเทศ", lo: "🆘 SOS ສຸກເສີນ · ເບີສຸກເສີນແຕ່ລະປະເທດ" },
+  "onboard.start":  { ko: "로그인하고 시작하기", en: "Log in to start", th: "เข้าสู่ระบบเพื่อเริ่ม", lo: "ເຂົ້າສູ່ລະບົບເພື່ອເລີ່ມ" },
+  "onboard.browse": { ko: "먼저 둘러볼게요", en: "I'll look around first", th: "ขอดูรอบ ๆ ก่อน", lo: "ຂໍເບິ່ງກ່ອນ" },
 
   "menu.newcomer.t":  { ko: "새신자", en: "New Believer", th: "ผู้เชื่อใหม่", lo: "ຜູ້ເຊື່ອໃໝ່" },
   "menu.newcomer.s":  { ko: "예수님을 처음 만난 분", en: "Just met Jesus", th: "เพิ่งพบพระเยซู", lo: "ຫາກໍພົບພຣະເຢຊູ" },
