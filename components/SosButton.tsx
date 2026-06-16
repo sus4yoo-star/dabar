@@ -113,7 +113,7 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
 
       {open && typeof document !== "undefined" && createPortal(
         <div style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(20,8,8,0.5)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }} onClick={() => setOpen(false)}>
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "12px 15px calc(12px + env(safe-area-inset-bottom))", maxHeight: "96dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "12px 15px calc(30px + env(safe-area-inset-bottom))", maxHeight: "96dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
               <span style={{ fontSize: 18, fontWeight: 900, color: RED }}>{t("sos.title")}</span>
               <button onClick={() => setOpen(false)} style={{ fontSize: 13, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 13px", cursor: "pointer" }}>{t("sos.close")} ✕</button>
@@ -149,8 +149,8 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
               <span style={lbl}>{t("sos.situation")}</span>
               <span style={{ fontSize: 10.5, fontWeight: 700, color: theme.wrong }}>{t("sos.situationHint")}</span>
             </div>
-            <textarea value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")} rows={2}
-              style={{ ...inp, resize: "none", lineHeight: 1.4, marginBottom: 9 }} />
+            <input value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")}
+              style={{ ...inp, marginBottom: 9 }} />
 
             {/* 내 위치 — 라벨 옆 안내(현재 상황과 동일 형식) */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
@@ -180,6 +180,8 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
                 </a>
               ))}
             </div>
+
+            <p style={{ textAlign: "center", fontSize: 10.5, color: theme.textFaint, letterSpacing: 1, margin: "22px 0 0" }}>DABAR by AMOV · Love Creates Value</p>
           </div>
         </div>,
         document.body
