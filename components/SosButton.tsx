@@ -119,6 +119,12 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
               <button onClick={() => setOpen(false)} style={{ fontSize: 13, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 13px", cursor: "pointer" }}>{t("sos.close")} ✕</button>
             </div>
 
+            {/* 긴급 연락처 미리 저장 안내 */}
+            <div style={{ marginBottom: 11, padding: "9px 11px", borderRadius: 10, background: theme.goldLight, border: `1px solid ${theme.goldBorder}` }}>
+              <p style={{ margin: 0, fontSize: 12.5, fontWeight: 800, color: theme.gold }}>{t("sos.presave")}</p>
+              <p style={{ margin: "2px 0 0", fontSize: 11, color: theme.textMuted, lineHeight: 1.4 }}>{t("sos.presaveNote")}</p>
+            </div>
+
             {/* 발신자 본명 */}
             <label style={lbl}>{t("sos.senderName")}</label>
             <input value={data.name} onChange={(e) => save({ ...data, name: e.target.value })} placeholder={t("sos.senderPh")} style={{ ...inp, marginBottom: 9 }} />
