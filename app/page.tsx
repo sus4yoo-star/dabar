@@ -18,6 +18,14 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [playedToday, setPlayedToday] = useState(false);
   const [unread, setUnread] = useState(0);
+  const [showOnboard, setShowOnboard] = useState(false);
+
+  // 첫 방문(비로그인) 1회 온보딩 안내
+  useEffect(() => {
+    if (loading || user) { setShowOnboard(false); return; }
+    try { if (!localStorage.getItem("dabar_onboarded")) setShowOnboard(true); } catch { /* */ }
+  }, [user, loading]);
+  function dismissOnboard() { setShowOnboard(false); try { localStorage.setItem("dabar_onboarded", "1"); } catch { /* */ } }
 
   useEffect(() => {
     if (!user) { setUnread(0); return; }
@@ -59,13 +67,33 @@ export default function Home() {
         ))}
       </div>
 
+      {/* 첫 사용자 온보딩 (비로그인 첫 방문 1회) */}
+      {showOnboard && (
+        <div className="fade-in" style={{ marginBottom: 12, padding: "16px 17px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+            <span style={{ fontSize: 17, fontWeight: 800, color: theme.gold, lineHeight: 1.3 }}>{t("onboard.title")}</span>
+            <button onClick={dismissOnboard} aria-label="close" style={{ flexShrink: 0, fontSize: 16, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer", padding: 4, lineHeight: 1 }}>✕</button>
+          </div>
+          <p style={{ fontSize: 13.5, color: theme.textMuted, margin: "4px 0 12px", lineHeight: 1.5 }}>{t("onboard.sub")}</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {["onboard.f1", "onboard.f2", "onboard.f3", "onboard.f4"].map((k) => (
+              <span key={k} style={{ fontSize: 14.5, fontWeight: 600, color: theme.text, lineHeight: 1.4 }}>{t(k)}</span>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+            <button onClick={() => router.push("/login")} style={{ flex: 1, padding: "13px", fontSize: 15, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 13, cursor: "pointer" }}>{t("onboard.start")}</button>
+            <button onClick={dismissOnboard} style={{ flex: 1, padding: "13px", fontSize: 15, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 13, cursor: "pointer" }}>{t("onboard.browse")}</button>
+          </div>
+        </div>
+      )}
+
       {/* 히어로 (compact) */}
       <div className="fade-in" style={{ textAlign: "center", marginBottom: 11 }}>
         <img src="/icons/icon-192.png" alt="DABAR" width={44} height={44} style={{ borderRadius: 12, boxShadow: "0 6px 18px rgba(0,0,0,0.25)" }} />
         <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 26, fontWeight: 700, color: theme.gold, letterSpacing: 4, margin: "6px 0 2px" }}>DABAR</h1>
-        <p style={{ fontSize: 12, color: theme.textMuted, margin: 0 }}>{t("home.tagline")}</p>
+        <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0 }}>{t("home.tagline")}</p>
         {user && (
-          <div style={{ marginTop: 8, fontSize: 12.5, color: theme.primarySoft, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: 6 }}>
+          <div style={{ marginTop: 8, fontSize: 13.5, color: theme.primarySoft, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: 6 }}>
             {editingNick ? (
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <input value={nickDraft} onChange={e => setNickDraft(e.target.value)} maxLength={20} autoFocus
@@ -91,8 +119,8 @@ export default function Home() {
         style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 16px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, cursor: "pointer", color: theme.text }}>
         <span style={{ fontSize: 26, lineHeight: 1 }}>🕊️</span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 16.5, fontWeight: 800, color: theme.gold }}>{t("home.shareTitle")}</span>
-          <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{t("home.shareSub")}</span>
+          <span style={{ display: "block", fontSize: 18, fontWeight: 800, color: theme.gold }}>{t("home.shareTitle")}</span>
+          <span style={{ display: "block", fontSize: 13.5, color: theme.textMuted, marginTop: 2 }}>{t("home.shareSub")}</span>
         </span>
         <span style={{ fontSize: 18, color: theme.gold }}>→</span>
       </button>
@@ -105,8 +133,8 @@ export default function Home() {
         style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 9, padding: "12px 16px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.primaryBg, cursor: "pointer", color: theme.text }}>
         <span style={{ fontSize: 24, lineHeight: 1 }}>🤝</span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: theme.primarySoft }}>{t("home.groupsTitle")}</span>
-          <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{t("home.groupsSub")}</span>
+          <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.primarySoft }}>{t("home.groupsTitle")}</span>
+          <span style={{ display: "block", fontSize: 13.5, color: theme.textMuted, marginTop: 2 }}>{t("home.groupsSub")}</span>
         </span>
         <span style={{ fontSize: 18, color: theme.primarySoft }}>→</span>
       </button>
@@ -146,8 +174,8 @@ function RowCard({ icon, title, sub, onClick }: { icon: string; title: string; s
       style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 9, padding: "12px 16px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text }}>
       <span style={{ fontSize: 24, lineHeight: 1 }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: theme.text }}>{title}</span>
-        <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{sub}</span>
+        <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.text }}>{title}</span>
+        <span style={{ display: "block", fontSize: 13.5, color: theme.textMuted, marginTop: 2 }}>{sub}</span>
       </span>
       <span style={{ fontSize: 18, color: theme.gold }}>→</span>
     </button>
@@ -157,7 +185,7 @@ function RowCard({ icon, title, sub, onClick }: { icon: string; title: string; s
 function QuickChip({ label, onClick, badge }: { label: string; onClick: () => void; badge?: number }) {
   return (
     <button onClick={onClick}
-      style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px 6px", borderRadius: 13, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
+      style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "13px 6px", borderRadius: 13, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 14.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
       {label}
       {badge ? <span style={{ position: "absolute", top: -5, right: 8, minWidth: 16, height: 16, padding: "0 4px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 9.5, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{badge > 99 ? "99+" : badge}</span> : null}
     </button>
@@ -167,7 +195,7 @@ function QuickChip({ label, onClick, badge }: { label: string; onClick: () => vo
 function SmallLink({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
   return (
     <button onClick={onClick}
-      style={{ fontSize: 12.5, fontWeight: 600, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 999, padding: "6px 13px", cursor: "pointer", whiteSpace: "nowrap" }}>
+      style={{ fontSize: 13.5, fontWeight: 600, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 999, padding: "8px 14px", cursor: "pointer", whiteSpace: "nowrap" }}>
       {children}
     </button>
   );
