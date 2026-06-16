@@ -13,6 +13,7 @@ import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
 import { speak } from "@/lib/besora/speak";
 import { startRecording, canRecord, primeAudio, type Recorder } from "@/lib/besora/recorder";
+import Phrasebook from "@/components/besora/Phrasebook";
 
 const LOCALE: Record<string, string> = {
   ko: "ko-KR", en: "en-US", es: "es-ES", zh: "zh-CN",
@@ -26,6 +27,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [tab, setTab] = useState<"talk" | "book">("talk"); // 통역 ↔ 표현집
   const [listening, setListening] = useState<null | string>(null); // 듣는 중인 언어코드
   const [leftText, setLeftText] = useState("");   // 내 언어 칸
   const [rightText, setRightText] = useState(""); // 상대 언어 칸
@@ -294,15 +296,33 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     </p>
   );
 
+  // 🎤 통역 ↔ 📖 표현집 탭
+  const tabBtn = (id: "talk" | "book", label: string) => (
+    <button onClick={() => setTab(id)}
+      style={{ flex: 1, padding: "8px 6px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 800,
+        background: tab === id ? theme.text : "transparent", color: tab === id ? "#fff" : theme.textMuted }}>
+      {label}
+    </button>
+  );
+  const toolTabs = (
+    <div style={{ display: "flex", gap: 4, padding: 3, borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, marginBottom: 10 }}>
+      {tabBtn("talk", `🎤 ${ui(myLang, "tabTalk")}`)}
+      {tabBtn("book", `📖 ${ui(myLang, "phrasebook")}`)}
+    </div>
+  );
+  const mainBody = tab === "book"
+    ? <Phrasebook big={big} />
+    : <>{panes}{hint}</>;
+
   // 인라인 모드 — 페이지에 그냥 박아두기 (플로팅/포털 없음, 항상 보임)
   if (inline) {
     return (
       <div style={{ marginTop: big ? 12 : 14, padding: big ? "16px 16px 18px" : "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: "#ffffff" }}>
         <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: big ? 17 : 15, fontWeight: 700, color: theme.text, margin: big ? "0 0 12px" : "0 0 8px" }}>🎤 {ui(myLang, "voice")}</h2>
         {langBar}
-        {panes}
-        {hint}
-        {err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
+        {toolTabs}
+        {mainBody}
+        {tab === "talk" && err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
       </div>
     );
   }
@@ -329,9 +349,9 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
               <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>{ui(myLang, "close")} ✕</button>
             </div>
             {langBar}
-            {panes}
-            {hint}
-            {err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
+            {toolTabs}
+            {mainBody}
+            {tab === "talk" && err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
           </div>
         </div>,
         document.body

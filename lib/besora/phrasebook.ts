@@ -1,0 +1,59 @@
+// 📖 오프라인 표현집 — 신호 없이도(에어플레인 모드) 쓰는 선교 현장 필수 문장.
+// ko/en/th/lo 는 앱에 내장(완전 오프라인). 그 외 언어는 런타임에 온라인 번역+캐시로 채운다.
+// (i18n-specialist 가 km/vi/my/id/ms/tl 등을 추가·검증할 자리)
+
+export type Phrase = { id: string; t: Record<string, string> };
+export type PhraseCat = { id: string; icon: string; title: Record<string, string>; phrases: Phrase[] };
+
+export const PHRASEBOOK: PhraseCat[] = [
+  {
+    id: "gospel", icon: "✝️",
+    title: { ko: "복음 전하기", en: "Sharing the Gospel", th: "ประกาศข่าวประเสริฐ", lo: "ປະກາດຂ່າວປະເສີດ" },
+    phrases: [
+      { id: "g1", t: { ko: "안녕하세요, 잠깐 이야기 나눌 수 있을까요?", en: "Hello, may I talk with you for a moment?", th: "สวัสดีครับ/ค่ะ ขอคุยด้วยสักครู่ได้ไหม", lo: "ສະບາຍດີ ຂໍລົມນຳແປບໜຶ່ງໄດ້ບໍ່?" } },
+      { id: "g2", t: { ko: "하나님이 당신을 사랑하십니다.", en: "God loves you.", th: "พระเจ้าทรงรักคุณ", lo: "ພະເຈົ້າຮັກທ່ານ" } },
+      { id: "g3", t: { ko: "예수님은 당신을 위해 십자가에서 죽으셨습니다.", en: "Jesus died on the cross for you.", th: "พระเยซูสิ้นพระชนม์บนไม้กางเขนเพื่อคุณ", lo: "ພະເຍຊູໄດ້ສິ້ນຊີວິດເທິງໄມ້ກາງເຂນເພື່ອທ່ານ" } },
+      { id: "g4", t: { ko: "예수님은 죽음에서 다시 살아나셨습니다.", en: "Jesus rose from the dead.", th: "พระเยซูทรงเป็นขึ้นจากความตาย", lo: "ພະເຍຊູໄດ້ເປັນຄືນຈາກຄວາມຕາຍ" } },
+      { id: "g5", t: { ko: "하나님은 당신을 위한 좋은 계획을 가지고 계십니다.", en: "God has a good plan for your life.", th: "พระเจ้าทรงมีแผนการที่ดีสำหรับชีวิตคุณ", lo: "ພະເຈົ້າມີແຜນການທີ່ດີສຳລັບຊີວິດຂອງທ່ານ" } },
+      { id: "g6", t: { ko: "누구든지 예수님을 믿으면 영원한 생명을 얻습니다.", en: "Whoever believes in Jesus has eternal life.", th: "ทุกคนที่เชื่อในพระเยซูจะมีชีวิตนิรันดร์", lo: "ທຸກຄົນທີ່ເຊື່ອໃນພະເຍຊູຈະມີຊີວິດນິລັນດອນ" } },
+      { id: "g7", t: { ko: "함께 기도해 드려도 될까요?", en: "May I pray for you?", th: "ขออธิษฐานเผื่อคุณได้ไหม", lo: "ຂໍອະທິຖານເພື່ອທ່ານໄດ້ບໍ່?" } },
+      { id: "g8", t: { ko: "예수님을 마음에 영접하시겠어요?", en: "Would you like to receive Jesus into your heart?", th: "คุณอยากต้อนรับพระเยซูเข้ามาในใจไหม", lo: "ທ່ານຢາກຕ້ອນຮັບພະເຍຊູເຂົ້າມາໃນໃຈບໍ່?" } },
+      { id: "g9", t: { ko: "교회에 함께 가보시겠어요?", en: "Would you like to come to church with us?", th: "อยากไปโบสถ์กับเราไหม", lo: "ຢາກໄປໂບດກັບພວກເຮົາບໍ່?" } },
+      { id: "g10", t: { ko: "하나님께서 당신을 축복하시길 바랍니다.", en: "May God bless you.", th: "ขอพระเจ้าอวยพรคุณ", lo: "ຂໍພະເຈົ້າອວຍພອນທ່ານ" } },
+    ],
+  },
+  {
+    id: "daily", icon: "💬",
+    title: { ko: "생활·여행 회화", en: "Daily & Travel", th: "ชีวิตประจำวันและท่องเที่ยว", lo: "ຊີວິດປະຈຳວັນ ແລະ ທ່ອງທ່ຽວ" },
+    phrases: [
+      { id: "d1", t: { ko: "안녕하세요", en: "Hello", th: "สวัสดี", lo: "ສະບາຍດີ" } },
+      { id: "d2", t: { ko: "감사합니다", en: "Thank you", th: "ขอบคุณ", lo: "ຂອບໃຈ" } },
+      { id: "d3", t: { ko: "죄송합니다 / 실례합니다", en: "Sorry / Excuse me", th: "ขอโทษ", lo: "ຂໍໂທດ" } },
+      { id: "d4", t: { ko: "네 / 아니요", en: "Yes / No", th: "ใช่ / ไม่", lo: "ແມ່ນ / ບໍ່" } },
+      { id: "d5", t: { ko: "이것은 얼마예요?", en: "How much is this?", th: "อันนี้ราคาเท่าไหร่", lo: "ອັນນີ້ລາຄາເທົ່າໃດ?" } },
+      { id: "d6", t: { ko: "화장실이 어디예요?", en: "Where is the toilet?", th: "ห้องน้ำอยู่ที่ไหน", lo: "ຫ້ອງນ້ຳຢູ່ໃສ?" } },
+      { id: "d7", t: { ko: "도와주시겠어요?", en: "Can you help me?", th: "ช่วยฉันหน่อยได้ไหม", lo: "ຊ່ວຍຂ້ອຍແດ່ໄດ້ບໍ່?" } },
+      { id: "d8", t: { ko: "천천히 말해 주세요", en: "Please speak slowly", th: "พูดช้าๆ หน่อยได้ไหม", lo: "ກະລຸນາເວົ້າຊ້າໆ" } },
+      { id: "d9", t: { ko: "이해하지 못했어요", en: "I don't understand", th: "ฉันไม่เข้าใจ", lo: "ຂ້ອຍບໍ່ເຂົ້າໃຈ" } },
+      { id: "d10", t: { ko: "길을 알려주시겠어요?", en: "Can you show me the way?", th: "ช่วยบอกทางหน่อยได้ไหม", lo: "ຊ່ວຍບອກທາງແດ່ໄດ້ບໍ່?" } },
+      { id: "d11", t: { ko: "이름이 뭐예요?", en: "What is your name?", th: "คุณชื่ออะไร", lo: "ທ່ານຊື່ຫຍັງ?" } },
+      { id: "d12", t: { ko: "만나서 반갑습니다", en: "Nice to meet you", th: "ยินดีที่ได้รู้จัก", lo: "ຍິນດີທີ່ໄດ້ຮູ້ຈັກ" } },
+    ],
+  },
+  {
+    id: "emergency", icon: "🚑",
+    title: { ko: "긴급·의료", en: "Emergency & Medical", th: "ฉุกเฉินและการแพทย์", lo: "ສຸກເສີນ ແລະ ການແພດ" },
+    phrases: [
+      { id: "e1", t: { ko: "도와주세요!", en: "Help!", th: "ช่วยด้วย!", lo: "ຊ່ວຍດ້ວຍ!" } },
+      { id: "e2", t: { ko: "응급상황이에요", en: "It's an emergency", th: "เป็นเหตุฉุกเฉิน", lo: "ເປັນເຫດສຸກເສີນ" } },
+      { id: "e3", t: { ko: "의사가 필요해요", en: "I need a doctor", th: "ฉันต้องการหมอ", lo: "ຂ້ອຍຕ້ອງການໝໍ" } },
+      { id: "e4", t: { ko: "병원이 어디예요?", en: "Where is the hospital?", th: "โรงพยาบาลอยู่ที่ไหน", lo: "ໂຮງໝໍຢູ່ໃສ?" } },
+      { id: "e5", t: { ko: "약국이 어디예요?", en: "Where is the pharmacy?", th: "ร้านขายยาอยู่ที่ไหน", lo: "ຮ້ານຂາຍຢາຢູ່ໃສ?" } },
+      { id: "e6", t: { ko: "아파요", en: "It hurts / I am in pain", th: "ฉันเจ็บ/ปวด", lo: "ຂ້ອຍເຈັບ" } },
+      { id: "e7", t: { ko: "경찰을 불러주세요", en: "Please call the police", th: "กรุณาเรียกตำรวจ", lo: "ກະລຸນາເອີ້ນຕຳຫຼວດ" } },
+      { id: "e8", t: { ko: "길을 잃었어요", en: "I am lost", th: "ฉันหลงทาง", lo: "ຂ້ອຍຫຼົງທາງ" } },
+      { id: "e9", t: { ko: "여권을 잃어버렸어요", en: "I lost my passport", th: "ฉันทำหนังสือเดินทางหาย", lo: "ຂ້ອຍເຮັດໜັງສືຜ່ານແດນເສຍ" } },
+      { id: "e10", t: { ko: "한국 대사관에 연락해 주세요", en: "Please contact the Korean embassy", th: "กรุณาติดต่อสถานทูตเกาหลี", lo: "ກະລຸນາຕິດຕໍ່ສະຖານທູດເກົາຫຼີ" } },
+    ],
+  },
+];

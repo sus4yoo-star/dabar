@@ -30,6 +30,9 @@ export const LANG_META: Record<string, { code: string; name_native: string; name
 
 export const UI = {
   ko: {
+    phrasebook: "표현집",
+    tabTalk: "통역",
+    phraseHint: "탭하면 상대 언어로 보여주고 읽어줘요 · 오프라인에서도 됩니다",
     appName: "복음 전하기",
     tagline: "온 인류를 향한 기쁜 소식",
     start: "전도 시작",
@@ -85,6 +88,9 @@ export const UI = {
     pushDenied: "알림이 차단돼 있어요. 브라우저 설정에서 허용해 주세요.",
   },
   en: {
+    phrasebook: "Phrasebook",
+    tabTalk: "Interpret",
+    phraseHint: "Tap to show & speak in their language · works offline",
     appName: "Share the Gospel",
     tagline: "Good news for all humanity",
     start: "Start sharing",
@@ -140,6 +146,9 @@ export const UI = {
     pushDenied: "Notifications are blocked. Please allow them in browser settings.",
   },
   th: {
+    phrasebook: "ประโยคสำเร็จรูป",
+    tabTalk: "ล่าม",
+    phraseHint: "แตะเพื่อแสดงและอ่านออกเสียงเป็นภาษาของอีกฝ่าย · ใช้งานออฟไลน์ได้",
     appName: "ประกาศข่าวประเสริฐ",
     tagline: "ข่าวดีสำหรับมวลมนุษยชาติ",
     start: "เริ่มประกาศ",
@@ -195,6 +204,9 @@ export const UI = {
     pushDenied: "การแจ้งเตือนถูกบล็อก โปรดอนุญาตในการตั้งค่าเบราว์เซอร์",
   },
   lo: {
+    phrasebook: "ປະໂຫຍກສຳເລັດຮູບ",
+    tabTalk: "ແປພາສາ",
+    phraseHint: "ແຕະເພື່ອສະແດງ ແລະ ອ່ານອອກສຽງເປັນພາສາຂອງອີກຝ່າຍ · ໃຊ້ໄດ້ແບບອອບລາຍ",
     appName: "ປະກາດຂ່າວປະເສີດ",
     tagline: "ຂ່າວດີສຳລັບມວນມະນຸດ",
     start: "ເລີ່ມປະກາດ",
