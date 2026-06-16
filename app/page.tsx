@@ -6,7 +6,6 @@ import { useAuth } from "@/lib/auth";
 import { shareInvite } from "@/lib/share";
 import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
-import { fetchUnreadTotal } from "@/lib/besora/companions";
 import HomeReachCard from "@/components/HomeReachCard";
 import SosButton from "@/components/SosButton";
 
@@ -22,7 +21,14 @@ export default function Home() {
 
   useEffect(() => {
     if (!user) { setUnread(0); return; }
-    fetchUnreadTotal().then(setUnread).catch(() => {});
+    let alive = true;
+    // besora 스택(별도 Supabase 클라이언트·i18n·realtime)을 홈 초기 번들에서 제외하고
+    // 로그인된 사용자에 한해 필요할 때만 지연 로딩 — 첫 화면 로딩이 빨라진다.
+    import("@/lib/besora/companions")
+      .then((m) => m.fetchUnreadTotal())
+      .then((n) => { if (alive) setUnread(n); })
+      .catch(() => {});
+    return () => { alive = false; };
   }, [user]);
 
   useEffect(() => {

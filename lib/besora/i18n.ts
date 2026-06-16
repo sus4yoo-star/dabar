@@ -1,32 +1,15 @@
 // 앱 UI(버튼/안내) 다국어. 전도 콘텐츠는 DB에 있고, 여기는 화면 골격용.
+import { LANGS_BASE } from "@/lib/langs";
 
-// 현재 콘텐츠·이름이 준비된 언어 (선택지에 이 언어들만 노출).
-export const SUPPORTED_LANGS = ["ko", "en", "th", "lo", "es", "pt", "zh", "hi", "ar", "fa", "my", "ms", "vi", "id", "bn", "ja", "ur", "fr", "ru", "sw"];
+// 언어 목록·메타는 lib/langs.ts(단일 출처)에서 파생 — 메인 앱 i18n 과 항상 일치.
+export const SUPPORTED_LANGS = LANGS_BASE.map((l) => l.code);
 
 // 선택지에 항상 뜨도록 언어 메타를 내장 (besora DB 'languages' 테이블이 없어도 동작).
 // DB에 같은 code 가 있으면 그 값으로 덮어씀.
-export const LANG_META: Record<string, { code: string; name_native: string; name_en: string; rtl: boolean; enabled: boolean; sort: number }> = {
-  ko: { code: "ko", name_native: "한국어", name_en: "Korean", rtl: false, enabled: true, sort: 1 },
-  en: { code: "en", name_native: "English", name_en: "English", rtl: false, enabled: true, sort: 2 },
-  th: { code: "th", name_native: "ไทย", name_en: "Thai", rtl: false, enabled: true, sort: 3 },
-  lo: { code: "lo", name_native: "ລາວ", name_en: "Lao", rtl: false, enabled: true, sort: 4 },
-  es: { code: "es", name_native: "Español", name_en: "Spanish", rtl: false, enabled: true, sort: 5 },
-  pt: { code: "pt", name_native: "Português", name_en: "Portuguese", rtl: false, enabled: true, sort: 6 },
-  zh: { code: "zh", name_native: "中文", name_en: "Chinese", rtl: false, enabled: true, sort: 7 },
-  hi: { code: "hi", name_native: "हिन्दी", name_en: "Hindi", rtl: false, enabled: true, sort: 8 },
-  ar: { code: "ar", name_native: "العربية", name_en: "Arabic", rtl: true, enabled: true, sort: 9 },
-  fa: { code: "fa", name_native: "فارسی", name_en: "Persian", rtl: true, enabled: true, sort: 10 },
-  my: { code: "my", name_native: "မြန်မာ", name_en: "Burmese", rtl: false, enabled: true, sort: 11 },
-  ms: { code: "ms", name_native: "Bahasa Melayu", name_en: "Malay", rtl: false, enabled: true, sort: 12 },
-  vi: { code: "vi", name_native: "Tiếng Việt", name_en: "Vietnamese", rtl: false, enabled: true, sort: 13 },
-  id: { code: "id", name_native: "Bahasa Indonesia", name_en: "Indonesian", rtl: false, enabled: true, sort: 14 },
-  bn: { code: "bn", name_native: "বাংলা", name_en: "Bengali", rtl: false, enabled: true, sort: 15 },
-  ja: { code: "ja", name_native: "日本語", name_en: "Japanese", rtl: false, enabled: true, sort: 16 },
-  ur: { code: "ur", name_native: "اردو", name_en: "Urdu", rtl: true, enabled: true, sort: 17 },
-  fr: { code: "fr", name_native: "Français", name_en: "French", rtl: false, enabled: true, sort: 18 },
-  ru: { code: "ru", name_native: "Русский", name_en: "Russian", rtl: false, enabled: true, sort: 19 },
-  sw: { code: "sw", name_native: "Kiswahili", name_en: "Swahili", rtl: false, enabled: true, sort: 20 },
-};
+export const LANG_META: Record<string, { code: string; name_native: string; name_en: string; rtl: boolean; enabled: boolean; sort: number }> =
+  Object.fromEntries(
+    LANGS_BASE.map((l, i) => [l.code, { code: l.code, name_native: l.native, name_en: l.en, rtl: l.rtl, enabled: true, sort: i + 1 }])
+  );
 
 export const UI = {
   ko: {

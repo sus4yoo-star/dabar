@@ -1,33 +1,14 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { LANGS_BASE, type LangCode } from "@/lib/langs";
 
-export type Lang =
-  | "ko" | "en" | "th" | "lo"
-  | "es" | "pt" | "zh" | "hi" | "ar" | "fa" | "my" | "ms"
-  | "vi" | "id" | "bn" | "ja" | "ur" | "fr" | "ru" | "sw";
+// 언어 목록은 lib/langs.ts(단일 출처)에서 파생 — besora i18n 과 항상 일치.
+export type Lang = LangCode;
 // 라벨은 "원어 (코드)" 형식 — 코드로 식별 가능하게.
-export const LANGS: { code: Lang; label: string }[] = [
-  { code: "ko", label: "한국어 (ko)" },
-  { code: "en", label: "English (en)" },
-  { code: "th", label: "ไทย (th)" },
-  { code: "lo", label: "ລາວ (lo)" },
-  { code: "es", label: "Español (es)" },
-  { code: "pt", label: "Português (pt)" },
-  { code: "zh", label: "中文 (zh)" },
-  { code: "hi", label: "हिन्दी (hi)" },
-  { code: "ar", label: "العربية (ar)" },
-  { code: "fa", label: "فارسی (fa)" },
-  { code: "my", label: "မြန်မာ (my)" },
-  { code: "ms", label: "Bahasa Melayu (ms)" },
-  { code: "vi", label: "Tiếng Việt (vi)" },
-  { code: "id", label: "Bahasa Indonesia (id)" },
-  { code: "bn", label: "বাংলা (bn)" },
-  { code: "ja", label: "日本語 (ja)" },
-  { code: "ur", label: "اردو (ur)" },
-  { code: "fr", label: "Français (fr)" },
-  { code: "ru", label: "Русский (ru)" },
-  { code: "sw", label: "Kiswahili (sw)" },
-];
+export const LANGS: { code: Lang; label: string }[] = LANGS_BASE.map((l) => ({
+  code: l.code,
+  label: `${l.native} (${l.code})`,
+}));
 
 // DICT 는 ko/en/th/lo 만 직접 번역. 그 외 언어는 영어로 폴백하고, 콘텐츠는 자동번역됨.
 type Dict = Record<string, Record<"ko" | "en" | "th" | "lo", string>>;
