@@ -34,6 +34,7 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
   const [locState, setLocState] = useState<"off" | "wait" | "on">("off");
   const [sending, setSending] = useState(false);
   const [sentMsg, setSentMsg] = useState("");
+  const [situation, setSituation] = useState(""); // 현재 상황 (선택, 매번 새로)
 
   useEffect(() => {
     try {
@@ -57,14 +58,19 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
   const locText = [data.place.trim(), gps].filter(Boolean).join(" ");
   const phones = data.contacts.map((c) => c.phone.trim()).filter(Boolean);
 
+  function buildBody() {
+    const who = data.name.trim() ? `[${data.name.trim()}] ` : "";
+    const situ = situation.trim() ? ` (${situation.trim()})` : "";
+    const loc = locText ? ` ${t("sos.loc")} ${locText}` : "";
+    return `${who}${t("sos.smsBody")}${situ}${loc}`;
+  }
   function openSmsApp(body: string) {
     const sep = isIOS() ? "&" : "?";
     window.location.href = `sms:${phones.join(",")}${sep}body=${encodeURIComponent(body)}`;
   }
   async function sendSms() {
     if (!phones.length || sending) return;
-    const who = data.name.trim() ? `[${data.name.trim()}] ` : "";
-    const body = `${who}${t("sos.smsBody")}${locText ? " " + locText : ""}`;
+    const body = buildBody();
     setSentMsg(""); setSending(true);
     // 1) Twilio 자동 발송 시도 (로그인 토큰 있을 때)
     try {
@@ -84,10 +90,6 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
     openSmsApp(body);
   }
 
-  function buildBody() {
-    const who = data.name.trim() ? `[${data.name.trim()}] ` : "";
-    return `${who}${t("sos.smsBody")}${locText ? " " + locText : ""}`;
-  }
   async function shareKakao() {
     const body = buildBody();
     try {
@@ -137,6 +139,12 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
                 </div>
               ))}
             </div>
+
+            {/* 현재 상황 (선택) */}
+            <label style={{ display: "block", fontSize: 11.5, fontWeight: 800, color: theme.textMuted, marginBottom: 5 }}>{t("sos.situation")}</label>
+            <textarea value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")} rows={2}
+              style={{ ...inp, resize: "none", lineHeight: 1.5, marginBottom: 4 }} />
+            <p style={{ margin: "0 0 14px", fontSize: 11, color: theme.wrong, fontWeight: 700 }}>{t("sos.situationHint")}</p>
 
             {/* 위치 — GPS 또는 직접 입력 */}
             <label style={{ display: "block", fontSize: 11.5, fontWeight: 800, color: theme.textMuted, marginBottom: 5 }}>{t("sos.locTitle")}</label>
