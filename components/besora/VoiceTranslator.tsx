@@ -226,7 +226,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     const on = listening === code;
     const has = !!value.trim();
     const dir = rtlFor(code) ? "rtl" : "ltr";
-    const micH = big ? 66 : 54;
+    const micH = big ? 54 : 50;
     return (
       <div dir={dir} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
         <span style={{ fontSize: big ? 13.5 : 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)} <span style={{ opacity: 0.7 }}>({code.toUpperCase()})</span>{busy === side ? " · 번역 중…" : ""}</span>
@@ -249,7 +249,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
         </div>
         <textarea value={value} onChange={(e) => onType(e.target.value)} rows={2}
           placeholder={nameOf(code)}
-          style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bgSoft, padding: big ? "10px 12px" : "8px 10px", fontSize: big ? 16 : 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: big ? 88 : 52, lineHeight: big ? 1.5 : 1.45 }} />
+          style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bgSoft, padding: big ? "9px 12px" : "8px 10px", fontSize: big ? 15.5 : 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: big ? 52 : 48, lineHeight: 1.45 }} />
         {pron && (
           <div dir="ltr" style={{ display: "flex", alignItems: "flex-start", gap: 5, fontSize: big ? 15 : 13, fontWeight: 700, color: accent, lineHeight: 1.4, padding: "1px 2px 0" }}>
             <span style={{ flexShrink: 0 }}>🗣️</span>
