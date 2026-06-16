@@ -29,9 +29,11 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
   const [locState, setLocState] = useState<"off" | "wait" | "on">("off");
   const [situation, setSituation] = useState("");   // 현재 상황 (선택, 매번 새로)
   const [situThai, setSituThai] = useState("");       // 상황 태국어 번역
+  const [placeThai, setPlaceThai] = useState("");     // 위치(직접입력) 태국어 번역
   const [showLocal, setShowLocal] = useState(false);  // 현지인 전체화면
   const [copied, setCopied] = useState("");
   const trTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const trTimer2 = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     try { const raw = localStorage.getItem(LS_KEY); if (raw) { const d = JSON.parse(raw); setData({ name: d.name ?? "", place: d.place ?? "" }); } } catch { /* */ }
@@ -63,13 +65,41 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
     return () => { if (trTimer.current) clearTimeout(trTimer.current); };
   }, [situation]);
 
+  // 위치(직접 입력) → 태국어 번역 (디바운스)
+  useEffect(() => {
+    const q = data.place.trim();
+    if (!q) { setPlaceThai(""); return; }
+    if (trTimer2.current) clearTimeout(trTimer2.current);
+    trTimer2.current = setTimeout(async () => {
+      try {
+        const r = await fetch("/api/translate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q, target: "th" }) });
+        const d = await r.json();
+        if (d?.text) setPlaceThai(d.text);
+      } catch { /* */ }
+    }, 600);
+    return () => { if (trTimer2.current) clearTimeout(trTimer2.current); };
+  }, [data.place]);
+
   const locText = [data.place.trim(), gps].filter(Boolean).join(" ");
+  const locThai = [placeThai, gps].filter(Boolean).join(" ");
+
+  // 현지인에게 보여줄 태국어 카드 (이름·상황·위치, 실시간)
+  function thaiCard() {
+    const lines = ["🆘 ฉุกเฉิน! ช่วยด้วย — ต้องการความช่วยเหลือด่วน"];
+    if (data.name.trim()) lines.push(`ชื่อ: ${data.name.trim()}`);
+    if (situThai) lines.push(`สถานการณ์: ${situThai}`);
+    if (locThai) lines.push(`สถานที่: ${locThai}`);
+    lines.push("ฉันพูดภาษาไทยไม่ได้ 🙏 กรุณาช่วยโทร 191 (ตำรวจ) / 1669 (ฉุกเฉิน)");
+    return lines.join("\n");
+  }
 
   function buildBody() {
     const who = data.name.trim() ? `[${data.name.trim()}] ` : "";
     const situ = situation.trim() ? ` (${situation.trim()})` : "";
     const loc = locText ? ` ${t("sos.loc")} ${locText}` : "";
-    return `${who}${t("sos.smsBody")}${situ}${loc}`;
+    const ko = `${who}${t("sos.smsBody")}${situ}${loc}`;
+    // 받는 사람이 현지인에게 보여줄 수 있도록 태국어 카드도 함께
+    return `${ko}\n\n— ${t("sos.situThai")} —\n${thaiCard()}`;
   }
   async function shareKakao() {
     const body = buildBody();
@@ -103,14 +133,7 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
               <span style={lbl}>{t("sos.situation")}</span>
               <span style={{ fontSize: 10.5, fontWeight: 700, color: theme.wrong }}>{t("sos.situationHint")}</span>
             </div>
-            <input value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")} style={{ ...inp, marginBottom: situation.trim() ? 8 : 11 }} />
-            {/* 상황 태국어 — 현지인에게 보여주기 */}
-            {situation.trim() && (
-              <div style={{ marginBottom: 11, padding: "10px 12px", borderRadius: 10, background: theme.goldLight, border: `1px solid ${theme.goldBorder}` }}>
-                <p style={{ margin: 0, fontSize: 10.5, fontWeight: 800, color: theme.gold }}>{t("sos.situThai")}</p>
-                <p style={{ margin: "3px 0 0", fontSize: 15.5, fontWeight: 700, color: theme.text, lineHeight: 1.45 }}>{situThai || "…"}</p>
-              </div>
-            )}
+            <input value={situation} onChange={(e) => setSituation(e.target.value)} placeholder={t("sos.situationPh")} style={{ ...inp, marginBottom: 11 }} />
 
             {/* 내 위치 (선택) — 긴급전화 위 */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
@@ -118,6 +141,12 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
               <span style={{ fontSize: 10.5, fontWeight: 700, color: locState === "on" ? theme.correct : theme.primarySoft }}>{t("sos.locNote")}</span>
             </div>
             <input value={data.place} onChange={(e) => save({ ...data, place: e.target.value })} placeholder={t("sos.manualLocPh")} style={{ ...inp, marginBottom: 12 }} />
+
+            {/* 🇹🇭 현지인에게 보여줄 태국어 카드 (이름·상황·위치, 실시간) */}
+            <div style={{ marginBottom: 12, padding: "11px 13px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}` }}>
+              <p style={{ margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, color: theme.gold }}>{t("sos.situThai")}</p>
+              <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: theme.text, lineHeight: 1.5, whiteSpace: "pre-wrap" }}>{thaiCard()}</p>
+            </div>
 
             {/* 카카오톡으로 상황·위치 전송 (해외 기본) */}
             <button onClick={shareKakao}
@@ -158,9 +187,11 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
           <div style={{ flex: 1, maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", justifyContent: "center", gap: 10, paddingTop: 8 }}>
             <p style={{ margin: 0, fontSize: 50, fontWeight: 900, color: RED, textAlign: "center", lineHeight: 1.1 }}>🆘 ช่วยด้วย!</p>
             <p style={{ margin: "0 0 2px", fontSize: 21, fontWeight: 800, color: theme.text, textAlign: "center", lineHeight: 1.4 }}>ฉันมีเหตุฉุกเฉิน ต้องการความช่วยเหลือด่วน</p>
-            {situThai && (
-              <div style={{ padding: "12px 14px", borderRadius: 14, background: "#fff5f5", border: `2px solid ${RED}` }}>
-                <p style={{ margin: 0, fontSize: 20, fontWeight: 800, color: theme.text, textAlign: "center", lineHeight: 1.45 }}>{situThai}</p>
+            {(data.name.trim() || situThai || locThai) && (
+              <div style={{ padding: "14px 16px", borderRadius: 14, background: "#fff5f5", border: `2px solid ${RED}`, display: "flex", flexDirection: "column", gap: 6 }}>
+                {data.name.trim() && <p style={{ margin: 0, fontSize: 19, fontWeight: 800, color: theme.text, textAlign: "center" }}>ชื่อ: {data.name.trim()}</p>}
+                {situThai && <p style={{ margin: 0, fontSize: 20, fontWeight: 800, color: theme.text, textAlign: "center", lineHeight: 1.4 }}>สถานการณ์: {situThai}</p>}
+                {locThai && <p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: theme.text, textAlign: "center", lineHeight: 1.4, wordBreak: "break-all" }}>สถานที่: {locThai}</p>}
               </div>
             )}
             <p style={{ margin: "2px 0 8px", fontSize: 16, color: theme.textMuted, textAlign: "center", lineHeight: 1.5 }}>ฉันพูดภาษาไทยไม่ได้ 🙏 กรุณาช่วยโทรแจ้ง:</p>
@@ -174,7 +205,6 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
                 <span style={{ fontSize: 24, fontWeight: 900, color: RED }}>📞 {x.num}</span>
               </a>
             ))}
-            {data.name.trim() && <p style={{ margin: "8px 0 0", fontSize: 15, color: theme.textMuted, textAlign: "center" }}>ชื่อ: {data.name.trim()}</p>}
             <p style={{ margin: "4px 0 0", fontSize: 16, fontWeight: 700, color: theme.text, textAlign: "center" }}>ขอบคุณมากค่ะ/ครับ 🙏</p>
           </div>
         </div>,
