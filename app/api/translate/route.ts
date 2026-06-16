@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { limitByIp } from "@/lib/rateLimit";
 
 // 서버에서만 Google 번역 키를 사용 (클라이언트에 노출 안 함)
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  // 남용 방지(비용 보호) — 정상 사용/SOS 실시간 번역은 절대 막지 않게 넉넉히
+  const rl = limitByIp(req, "translate", 80, 60_000);
+  if (!rl.ok) return NextResponse.json({ error: "rate-limited" }, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
+
   const key = process.env.GOOGLE_TRANSLATE_API_KEY;
   if (!key) {
     return NextResponse.json({ error: "no-key" }, { status: 500 });

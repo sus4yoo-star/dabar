@@ -98,6 +98,30 @@ const DICT: Dict = {
   "sos.consul":   { ko: "영사콜센터 24시간", en: "Korea Consular Call Center 24h", th: "ศูนย์กงสุลเกาหลี 24 ชม.", lo: "ສູນກົງສຸນເກົາຫຼີ 24 ຊມ" },
   "sos.close":    { ko: "닫기", en: "Close", th: "ปิด", lo: "ປິດ" },
 
+  // 🆘 국가 선택 + 범용 긴급번호 라벨 (태국 밖에서도 맞는 번호로)
+  "sos.country":  { ko: "현재 국가·지역", en: "Country / region", th: "ประเทศ/ภูมิภาค", lo: "ປະເທດ/ພາກພື້ນ" },
+  "sos.countryNote": { ko: "현지 긴급번호가 이 나라 기준으로 바뀝니다", en: "Local emergency numbers switch to this country", th: "เบอร์ฉุกเฉินจะเปลี่ยนตามประเทศนี้", lo: "ເບີສຸກເສີນຈະປ່ຽນຕາມປະເທດນີ້" },
+  "sos.c.TH": { ko: "🇹🇭 태국", en: "🇹🇭 Thailand", th: "🇹🇭 ไทย", lo: "🇹🇭 ໄທ" },
+  "sos.c.LA": { ko: "🇱🇦 라오스", en: "🇱🇦 Laos", th: "🇱🇦 ลาว", lo: "🇱🇦 ລາວ" },
+  "sos.c.KH": { ko: "🇰🇭 캄보디아", en: "🇰🇭 Cambodia", th: "🇰🇭 กัมพูชา", lo: "🇰🇭 ກຳປູເຈຍ" },
+  "sos.c.VN": { ko: "🇻🇳 베트남", en: "🇻🇳 Vietnam", th: "🇻🇳 เวียดนาม", lo: "🇻🇳 ຫວຽດນາມ" },
+  "sos.c.MM": { ko: "🇲🇲 미얀마", en: "🇲🇲 Myanmar", th: "🇲🇲 เมียนมา", lo: "🇲🇲 ມຽນມາ" },
+  "sos.c.KR": { ko: "🇰🇷 대한민국", en: "🇰🇷 Korea", th: "🇰🇷 เกาหลี", lo: "🇰🇷 ເກົາຫຼີ" },
+  "sos.c.PH": { ko: "🇵🇭 필리핀", en: "🇵🇭 Philippines", th: "🇵🇭 ฟิลิปปินส์", lo: "🇵🇭 ຟິລິບປິນ" },
+  "sos.c.ID": { ko: "🇮🇩 인도네시아", en: "🇮🇩 Indonesia", th: "🇮🇩 อินโดนีเซีย", lo: "🇮🇩 ອິນໂດເນເຊຍ" },
+  "sos.c.MY": { ko: "🇲🇾 말레이시아", en: "🇲🇾 Malaysia", th: "🇲🇾 มาเลเซีย", lo: "🇲🇾 ມາເລເຊຍ" },
+  "sos.c.XX": { ko: "🌐 기타 지역", en: "🌐 Other region", th: "🌐 ภูมิภาคอื่น", lo: "🌐 ພາກພື້ນອື່ນ" },
+  "sos.lblTourist": { ko: "관광경찰", en: "Tourist Police", th: "ตำรวจท่องเที่ยว", lo: "ຕຳຫຼວດທ່ອງທ່ຽວ" },
+  "sos.lblPolice":  { ko: "경찰", en: "Police", th: "ตำรวจ", lo: "ຕຳຫຼວດ" },
+  "sos.lblMedical": { ko: "구급·응급", en: "Ambulance", th: "การแพทย์ฉุกเฉิน", lo: "ການແພດສຸກເສີນ" },
+  "sos.lblFire":    { ko: "소방·화재", en: "Fire", th: "ดับเพลิง", lo: "ດັບເພີງ" },
+  "sos.lblUnified": { ko: "통합 긴급", en: "Emergency", th: "ฉุกเฉิน", lo: "ສຸກເສີນ" },
+  "sos.lblEmbassy": { ko: "한국대사관 긴급", en: "Korean Embassy 24h", th: "สถานทูตเกาหลี", lo: "ສະຖານທູດເກົາຫຼີ" },
+  "sos.lblConsular":{ ko: "영사콜센터 24h", en: "Korea Consular Center 24h", th: "ศูนย์กงสุลเกาหลี 24 ชม.", lo: "ສູນກົງສຸນເກົາຫຼີ 24 ຊມ" },
+  "sos.quickSitu":  { ko: "자주 쓰는 상황 (눌러서 채우기)", en: "Common situations (tap to fill)", th: "สถานการณ์ที่พบบ่อย (แตะเพื่อกรอก)", lo: "ສະຖານະການທີ່ພົບເລື້ອຍ (ແຕະເພື່ອຕື່ມ)" },
+  "sos.localCard":  { ko: "🌏 현지인에게 보여주세요 (현지어)", en: "🌏 Show this to a local", th: "🌏 แสดงให้คนท้องถิ่นดู", lo: "🌏 ສະແດງໃຫ້ຄົນທ້ອງຖິ່ນ" },
+  "sos.offline":    { ko: "📴 오프라인 — 저장된 번역·번호로 동작 중", en: "📴 Offline — using saved translations & numbers", th: "📴 ออฟไลน์ — ใช้ข้อมูลที่บันทึกไว้", lo: "📴 ອອບລາຍ — ໃຊ້ຂໍ້ມູນທີ່ບັນທຶກໄວ້" },
+
   // 📷 메뉴·간판 번역 (사진 → 글자 읽어 설정 언어로 번역)
   "scan.title":   { ko: "이미지 번역", en: "Image Translate", th: "แปลรูปภาพ", lo: "ແປຮູບພາບ" },
   "scan.sub":     { ko: "사진을 찍으면 설정한 언어로 번역해 드려요", en: "Snap a photo — we translate it into your language", th: "ถ่ายรูป แล้วเราจะแปลเป็นภาษาของคุณ", lo: "ຖ່າຍຮູບ ແລ້ວເຮົາຈະແປເປັນພາສາຂອງທ່ານ" },
@@ -146,6 +170,12 @@ const DICT: Dict = {
   "login.redirecting":{ ko: "이동 중...", en: "Redirecting...", th: "กำลังนำทาง...", lo: "ກຳລັງນຳທາງ..." },
   "login.free":       { ko: "가입은 무료예요. 카카오·구글 계정으로 3초 만에 시작할 수 있어요.", en: "Free to join — start in 3 seconds with Kakao or Google.", th: "สมัครฟรี เริ่มได้ใน 3 วินาทีด้วย Kakao หรือ Google", lo: "ສະໝັກຟຣີ ເລີ່ມໄດ້ໃນ 3 ວິນາທີດ້ວຍ Kakao ຫຼື Google" },
   "login.fail":       { ko: "로그인을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.", en: "Couldn't start login. Please try again shortly.", th: "เริ่มเข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", lo: "ເລີ່ມເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່" },
+  // 이메일 매직링크 (카카오·구글이 막혔을 때 백업)
+  "login.orEmail":    { ko: "또는 이메일로 로그인", en: "Or sign in with email", th: "หรือเข้าสู่ระบบด้วยอีเมล", lo: "ຫຼື ເຂົ້າສູ່ລະບົບດ້ວຍອີເມວ" },
+  "login.emailPh":    { ko: "이메일 주소", en: "Email address", th: "ที่อยู่อีเมล", lo: "ທີ່ຢູ່ອີເມວ" },
+  "login.emailSend":  { ko: "로그인 링크 받기", en: "Send login link", th: "ส่งลิงก์เข้าสู่ระบบ", lo: "ສົ່ງລິ້ງເຂົ້າສູ່ລະບົບ" },
+  "login.emailSent":  { ko: "✉️ 메일함을 확인하세요. 보내드린 링크를 누르면 로그인됩니다. (스팸함도 확인)", en: "✉️ Check your inbox — tap the link we sent to sign in. (Check spam too)", th: "✉️ ตรวจกล่องอีเมล แตะลิงก์ที่ส่งไปเพื่อเข้าสู่ระบบ (ตรวจสแปมด้วย)", lo: "✉️ ກວດກ່ອງອີເມວ ແຕະລິ້ງທີ່ສົ່ງໄປເພື່ອເຂົ້າສູ່ລະບົບ" },
+  "login.emailInvalid": { ko: "올바른 이메일 주소를 입력해 주세요.", en: "Please enter a valid email address.", th: "กรุณากรอกอีเมลที่ถูกต้อง", lo: "ກະລຸນາໃສ່ອີເມວທີ່ຖືກຕ້ອງ" },
   // 로그인 화면 말씀 (시편 119:105 · NIV / Thai / Lao)
   "login.verse":      { ko: "주의 말씀은 내 발에 등이요 내 길에 빛이니이다", en: "Your word is a lamp for my feet, a light on my path.", th: "พระวจนะของพระองค์เป็นโคมสำหรับเท้าของข้าพระองค์ และเป็นความสว่างแก่ทางของข้าพระองค์", lo: "ພຣະທຳຂອງພຣະອົງເປັນໂຄມສຳລັບຕີນຂອງຂ້ານ້ອຍ ແລະ ເປັນແສງສະຫວ່າງແກ່ທາງຂອງຂ້ານ້ອຍ" },
   "login.verseRef":   { ko: "시편 119:105", en: "Psalm 119:105 (NIV)", th: "สดุดี 119:105", lo: "ເພງສັນລະເສີນ 119:105" },
@@ -589,7 +619,11 @@ export function LangSelector() {
             return (
               <button key={l.code} role="option" aria-selected={on} onClick={() => { const changed = l.code !== lang; setLang(l.code); setOpen(false); if (changed) { const m = DICT["common.langSwitched"] as Record<string, string> | undefined; setToast(m?.[l.code] ?? m?.en ?? ""); setTimeout(() => setToast(null), 3500); } }}
                 style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", gap: 10, fontSize: 14, fontWeight: on ? 800 : 500, color: on ? "#1f9bef" : "#173249", background: on ? "rgba(31,155,239,0.10)" : "transparent", border: "none", borderRadius: 10, padding: "10px 12px", cursor: "pointer", textAlign: "left" }}>
-                {l.label}{on && <span>✓</span>}
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                  {l.label}
+                  {!STATIC_UI.includes(l.code) && <span style={{ fontSize: 9.5, fontWeight: 700, color: "#8aa3b6", background: "rgba(13,52,84,0.06)", borderRadius: 5, padding: "1px 5px", letterSpacing: 0.3 }}>auto</span>}
+                </span>
+                {on && <span>✓</span>}
               </button>
             );
           })}

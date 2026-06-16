@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { limitByIp } from "@/lib/rateLimit";
 
 // 발음 가이드 — 어떤 언어의 문장을, 읽는 사람 언어의 글자로 "어떻게 소리나는지" 표기.
 // 예) 태국어 "สวัสดี" → 한국어 글자로 "사왓디". (말하는 사람이 보고 따라 말할 수 있게)
@@ -15,6 +16,9 @@ const LANG_NAME: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
+  const rl = limitByIp(req, "pronounce", 80, 60_000);
+  if (!rl.ok) return NextResponse.json({ pron: "" }); // 발음은 부가기능 — 막혀도 빈 값(graceful)
+
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return NextResponse.json({ pron: "" });
 

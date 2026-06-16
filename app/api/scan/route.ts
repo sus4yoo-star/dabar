@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { limitByIp } from "@/lib/rateLimit";
 
 // 📷 이미지 번역 — 사진 속 글자를 읽어(OCR) 설정 언어로 번역. 읽기 쉬운 "줄 목록"으로 반환.
 // Anthropic(Claude) 비전.
@@ -24,6 +25,9 @@ function extractJson(s: string): { items?: unknown } | null {
 }
 
 export async function POST(req: NextRequest) {
+  const rl = limitByIp(req, "scan", 15, 60_000);
+  if (!rl.ok) return NextResponse.json({ error: "rate-limited" }, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
+
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return NextResponse.json({ error: "no-key" }, { status: 500 });
 

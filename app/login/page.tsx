@@ -10,9 +10,12 @@ const GOLD_SOFT = "#79c61d";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, loading, signIn } = useAuth();
+  const { user, loading, signIn, signInWithEmail } = useAuth();
   const { t } = useI18n();
-  const [busy, setBusy] = useState<"google" | "kakao" | null>(null);
+  const [busy, setBusy] = useState<"google" | "kakao" | "email" | null>(null);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
 
   // 이미 로그인돼 있으면 홈으로
   useEffect(() => {
@@ -26,6 +29,21 @@ export default function LoginPage() {
     } catch (e) {
       setBusy(null);
       alert(t("login.fail"));
+    }
+  }
+
+  async function handleEmail(e: React.FormEvent) {
+    e.preventDefault();
+    const addr = email.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(addr)) { alert(t("login.emailInvalid")); return; }
+    try {
+      setBusy("email");
+      await signInWithEmail(addr);
+      setSent(true);
+    } catch {
+      alert(t("login.fail"));
+    } finally {
+      setBusy(null);
     }
   }
 
@@ -128,6 +146,30 @@ export default function LoginPage() {
           <GoogleMark />
           {busy === "google" ? t("login.redirecting") : t("login.google")}
         </button>
+
+        {/* 이메일 매직링크 — 카카오·구글이 막혔을 때 백업 경로 */}
+        {sent ? (
+          <p style={{ fontSize: 13.5, lineHeight: 1.6, color: "#2f7d00", background: "rgba(88,167,0,0.08)", border: "1px solid rgba(88,167,0,0.28)", borderRadius: 12, padding: "12px 14px", marginTop: 14, textAlign: "left" }}>
+            {t("login.emailSent")}
+          </p>
+        ) : emailOpen ? (
+          <form onSubmit={handleEmail} style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+            <input
+              type="email" inputMode="email" autoComplete="email" value={email}
+              onChange={(e) => setEmail(e.target.value)} placeholder={t("login.emailPh")}
+              style={{ width: "100%", boxSizing: "border-box", padding: 14, fontSize: 15.5, border: "1px solid #d8e2ea", borderRadius: 12, outline: "none" }}
+            />
+            <button type="submit" disabled={busy !== null}
+              style={{ width: "100%", padding: 14, fontSize: 15.5, fontWeight: 700, background: GOLD, color: "#fff", border: "none", borderRadius: 12, cursor: busy ? "default" : "pointer", opacity: busy && busy !== "email" ? 0.55 : 1 }}>
+              {busy === "email" ? t("login.redirecting") : t("login.emailSend")}
+            </button>
+          </form>
+        ) : (
+          <button onClick={() => setEmailOpen(true)}
+            style={{ marginTop: 14, background: "none", border: "none", color: "#54718a", fontSize: 13.5, fontWeight: 600, textDecoration: "underline", cursor: "pointer" }}>
+            {t("login.orEmail")}
+          </button>
+        )}
 
         <p style={{ fontSize: 12.5, color: "#85a0b5", marginTop: 20, lineHeight: 1.6 }}>
           {t("login.free")}

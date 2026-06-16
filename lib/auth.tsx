@@ -14,6 +14,7 @@ interface AuthState {
   isAdmin: boolean;
   isLeader: boolean;
   signIn: (provider: Provider) => Promise<void>;
+  signInWithEmail: (email: string) => Promise<void>; // 매직링크(백업 로그인)
   signOut: () => Promise<void>;
   updateNickname: (name: string) => Promise<boolean>;
 }
@@ -90,6 +91,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
   }, []);
 
+  // 백업 로그인 — 카카오/구글이 막혔을 때를 위한 이메일 매직링크.
+  // 입력한 메일로 1회용 로그인 링크가 가고, 그 링크가 /auth/callback 으로 돌아온다.
+  const signInWithEmail = useCallback(async (email: string) => {
+    const emailRedirectTo =
+      (process.env.NEXT_PUBLIC_SITE_URL || window.location.origin) + "/auth/callback";
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { emailRedirectTo },
+    });
+    if (error) throw error;
+  }, []);
+
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -121,6 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAdmin,
         isLeader,
         signIn,
+        signInWithEmail,
         signOut,
         updateNickname,
       }}
