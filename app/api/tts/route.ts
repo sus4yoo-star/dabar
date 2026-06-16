@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import crypto from "node:crypto";
 import WebSocket from "ws";
+import { limitByIp } from "@/lib/rateLimit";
 
 // 서버 TTS — 브라우저에 음성이 없는 언어(라오스어 등)를 위해 같은 출처로 MP3 스트리밍.
 //  1순위: Microsoft Edge TTS (키 불필요, lo-LA 정식 지원, 데이터센터에서도 안정적)
@@ -132,6 +133,9 @@ async function googleTTS(text: string, tl: string): Promise<Buffer | null> {
 }
 
 export async function GET(req: NextRequest) {
+  const rl = limitByIp(req, "tts", 80, 60_000);
+  if (!rl.ok) return new Response("rate-limited", { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
+
   const { searchParams } = new URL(req.url);
   const text = (searchParams.get("text") ?? "").trim().slice(0, 1200);
   const base = (searchParams.get("lang") ?? "").trim().toLowerCase().split("-")[0];

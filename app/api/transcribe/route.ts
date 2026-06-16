@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { limitByIp } from "@/lib/rateLimit";
 
 // 서버에서만 구글 키 사용. 화면 마이크로 녹음한 PCM(LINEAR16)을 받아 음성 → 텍스트.
 // ※ 같은 GOOGLE_TRANSLATE_API_KEY 를 쓰되, 해당 GCP 프로젝트에서 "Cloud Speech-to-Text API"가 사용 설정돼 있어야 함.
@@ -13,6 +14,9 @@ const LANG: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
+  const rl = limitByIp(req, "transcribe", 50, 60_000);
+  if (!rl.ok) return NextResponse.json({ error: "rate-limited" }, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
+
   const key = process.env.GOOGLE_TRANSLATE_API_KEY;
   if (!key) return NextResponse.json({ error: "no-key" }, { status: 500 });
 

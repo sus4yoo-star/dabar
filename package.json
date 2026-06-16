@@ -6,7 +6,8 @@
     "build": "next build",
     "start": "next start",
     "generate": "ts-node --project tsconfig.json scripts/generate-questions.ts",
-    "translate:lo": "tsx scripts/translate-questions-lo.ts"
+    "translate:lo": "tsx scripts/translate-questions-lo.ts",
+    "test": "tsx --test tests/*.test.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",

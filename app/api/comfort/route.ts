@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { limitByIp } from "@/lib/rateLimit";
 
 // 마음의 말씀 — 사용자의 감정/상황을 받아 위로·치유·용기가 되는 성경 구절을 최대 10개 반환.
 // Anthropic(Claude) 서버사이드 호출. 키는 환경변수에만.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MODEL = "claude-sonnet-4-20250514"; // 프로젝트 표준 모델
+const MODEL = "claude-sonnet-4-6"; // 최신 Sonnet (구 claude-sonnet-4-20250514는 폐기 예정 → 교체)
 
 const LANG_NAME: Record<string, string> = {
   ko: "Korean", en: "English", th: "Thai", lo: "Lao", es: "Spanish", pt: "Portuguese",
@@ -14,6 +15,9 @@ const LANG_NAME: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
+  const rl = limitByIp(req, "comfort", 20, 60_000);
+  if (!rl.ok) return NextResponse.json({ error: "rate-limited" }, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
+
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return NextResponse.json({ error: "no-key" }, { status: 500 });
 
@@ -52,7 +56,6 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 1400,
-        temperature: 0.4,
         system,
         messages: [{ role: "user", content }],
       }),

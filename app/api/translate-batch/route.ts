@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { limitByIp } from "@/lib/rateLimit";
 
 // 여러 문자열을 한 번에 번역 (요리문답·교재 등 대량 번역용).
 // Google Translate v2 는 q 배열을 받아 같은 순서로 translations 를 돌려준다.
@@ -6,6 +7,9 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  const rl = limitByIp(req, "translate-batch", 30, 60_000);
+  if (!rl.ok) return NextResponse.json({ error: "rate-limited" }, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
+
   const key = process.env.GOOGLE_TRANSLATE_API_KEY;
   if (!key) return NextResponse.json({ error: "no-key" }, { status: 500 });
 
