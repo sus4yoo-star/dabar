@@ -67,20 +67,20 @@ export default function Phrasebook({ big = false }: { big?: boolean } = {}) {
 
   return (
     <div>
-      {/* 카테고리 탭 */}
-      <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+      {/* 카테고리 탭 — 가로 스크롤 알약형 (한 줄, 글자 안 깨지게) */}
+      <div style={{ display: "flex", gap: 7, marginBottom: 9, overflowX: "auto", paddingBottom: 3, WebkitOverflowScrolling: "touch" }}>
         {PHRASEBOOK.map((c) => {
           const on = c.id === cat;
           return (
             <button key={c.id} onClick={() => setCat(c.id)}
-              style={{ flex: 1, padding: "9px 6px", borderRadius: 11, border: `1px solid ${on ? theme.gold : theme.cardBorder}`, background: on ? theme.goldLight : theme.card, color: on ? theme.gold : theme.textMuted, fontSize: 12.5, fontWeight: 800, cursor: "pointer", lineHeight: 1.2 }}>
+              style={{ flexShrink: 0, padding: "8px 14px", borderRadius: 999, border: `1px solid ${on ? theme.gold : theme.cardBorder}`, background: on ? theme.gold : theme.card, color: on ? "#fff" : theme.textMuted, fontSize: 13.5, fontWeight: 800, cursor: "pointer", whiteSpace: "nowrap" }}>
               {c.icon} {c.title[myLang] || c.title.en}
             </button>
           );
         })}
       </div>
 
-      <p style={{ margin: "0 0 8px 2px", fontSize: 11.5, color: theme.textMuted }}>{ui(myLang, "phraseHint")}</p>
+      <p style={{ margin: "0 0 9px 2px", fontSize: 11.5, color: theme.textFaint }}>{ui(myLang, "phraseHint")}</p>
 
       {/* 문장 목록 */}
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
