@@ -8,23 +8,23 @@ import ChunkGuard from "./ChunkGuard";
 export const metadata: Metadata = {
   metadataBase: new URL("https://dabar.theamov.com"),
   title: "DABAR · 다바르",
-  description: "성경 퀴즈 · 양육 · 복음 전하기 — 말씀을 즐겁게, 함께 자라요 🕊️",
+  description: "복음 전하기 · 다국어 통역 · 이미지 번역 · 성경 퀴즈 · 소그룹 · 긴급 SOS — 선교 현장의 동행자 🕊️",
   manifest: "/manifest.json",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "DABAR" },
   openGraph: {
-    title: "DABAR · 다바르",
-    description: "성경 퀴즈 · 양육 · 복음 전하기 — 말씀을 즐겁게, 함께 자라요 🕊️",
+    title: "DABAR · 다바르 — 선교 현장의 동행자",
+    description: "복음 전하기 · 다국어 통역 · 이미지 번역 · 성경 퀴즈 · 소그룹 · 긴급 SOS",
     url: "https://dabar.theamov.com",
     siteName: "DABAR",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "DABAR · 다바르" }],
+    images: [{ url: "/og.png?v=2", width: 1200, height: 630, alt: "DABAR · 다바르 — 선교 현장의 동행자" }],
     locale: "ko_KR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DABAR · 다바르",
-    description: "성경 퀴즈 · 양육 · 복음 전하기 — 말씀을 즐겁게, 함께 자라요 🕊️",
-    images: ["/og.png"],
+    title: "DABAR · 다바르 — 선교 현장의 동행자",
+    description: "복음 전하기 · 다국어 통역 · 이미지 번역 · 성경 퀴즈 · 소그룹 · 긴급 SOS",
+    images: ["/og.png?v=2"],
   },
 };
 
