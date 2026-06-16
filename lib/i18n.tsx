@@ -79,6 +79,7 @@ const DICT: Dict = {
   "sos.banner":     { ko: "✈️ 출발 전, 긴급 SOS 연락처를 미리 등록해두세요", en: "✈️ Set up emergency SOS contacts before you travel", th: "✈️ ตั้งค่าผู้ติดต่อ SOS ก่อนเดินทาง", lo: "✈️ ຕັ້ງຄ່າຜູ້ຕິດຕໍ່ SOS ກ່ອນເດີນທາງ" },
   "sos.bannerCta":  { ko: "지금 등록 →", en: "Set up now →", th: "ตั้งค่าตอนนี้ →", lo: "ຕັ້ງຄ່າດຽວນີ້ →" },
   "sos.showLocal":  { ko: "🇹🇭 현지인에게 보여주기 (태국어)", en: "🇹🇭 Show to a local (Thai)", th: "🇹🇭 แสดงให้คนท้องถิ่น", lo: "🇹🇭 ສະແດງໃຫ້ຄົນທ້ອງຖິ່ນ" },
+  "sos.situThai":   { ko: "🇹🇭 현지인에게 보여주세요 (태국어 번역)", en: "🇹🇭 Show this to a local (Thai)", th: "🇹🇭 แสดงให้คนท้องถิ่นดู", lo: "🇹🇭 ສະແດງໃຫ້ຄົນທ້ອງຖິ່ນ" },
   "sos.manualLocPh":{ ko: "위치 직접 입력 (예: 방콕 카오산로드)", en: "Type location (e.g. Khaosan Rd, Bangkok)", th: "พิมพ์ตำแหน่ง (เช่น ถนนข้าวสาร)", lo: "ພິມຕຳແໜ່ງ" },
   "sos.smsBody":  { ko: "🆘 긴급! 도움이 필요합니다.", en: "🆘 Emergency! I need help.", th: "🆘 ฉุกเฉิน! ฉันต้องการความช่วยเหลือ", lo: "🆘 ສຸກເສີນ! ຕ້ອງການຄວາມຊ່ວຍ" },
   "sos.loc":      { ko: "📍 제 위치:", en: "📍 My location:", th: "📍 ตำแหน่ง:", lo: "📍 ຕຳແໜ່ງ:" },
