@@ -28,7 +28,13 @@ function trcGet(lang: string, q: string): string {
   try { const m = JSON.parse(localStorage.getItem(TRC_KEY) || "{}"); return m[`${lang}|${q}`] || ""; } catch { return ""; }
 }
 function trcPut(lang: string, q: string, v: string) {
-  try { const m = JSON.parse(localStorage.getItem(TRC_KEY) || "{}"); m[`${lang}|${q}`] = v; localStorage.setItem(TRC_KEY, JSON.stringify(m)); } catch { /* */ }
+  try {
+    const m = JSON.parse(localStorage.getItem(TRC_KEY) || "{}");
+    m[`${lang}|${q}`] = v;
+    const keys = Object.keys(m);
+    if (keys.length > 300) delete m[keys[0]]; // 오래된 항목부터 제거(무한 증가 방지)
+    localStorage.setItem(TRC_KEY, JSON.stringify(m));
+  } catch { /* */ }
 }
 
 export default function SosButton({ compact = false }: { compact?: boolean } = {}) {
