@@ -53,7 +53,8 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
     );
   }, [open]);
 
-  const locText = gps || data.place.trim();
+  // 직접 입력한 위치 + GPS 링크를 함께 (둘 다 메시지에 포함)
+  const locText = [data.place.trim(), gps].filter(Boolean).join(" ");
   const phones = data.contacts.map((c) => c.phone.trim()).filter(Boolean);
 
   function openSmsApp(body: string) {
@@ -127,7 +128,7 @@ export default function SosButton({ compact = false }: { compact?: boolean } = {
               <span style={{ fontSize: 11.5, fontWeight: 800, color: theme.textMuted }}>{t("sos.contactsTitle")} <span style={{ color: theme.textFaint, fontWeight: 500 }}>· {t("sos.savedHint")}</span></span>
               <button onClick={addContact} disabled={data.contacts.length >= MAX} style={{ fontSize: 12, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 11px", cursor: data.contacts.length >= MAX ? "default" : "pointer", opacity: data.contacts.length >= MAX ? 0.5 : 1 }}>{t("sos.addContact")}</button>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 7, marginBottom: 10 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7, marginBottom: 10, maxHeight: 168, overflowY: "auto" }}>
               {data.contacts.map((c, i) => (
                 <div key={i} style={{ display: "flex", gap: 6, alignItems: "center" }}>
                   <input value={c.name} onChange={(e) => setContact(i, { name: e.target.value })} placeholder={t("sos.namePh")} style={{ ...inp, width: 92, flexShrink: 0, marginBottom: 0 }} />
