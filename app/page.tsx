@@ -139,7 +139,7 @@ export default function Home() {
       {/* 복음 전하기 — 메인 CTA (유일한 골드 포인트 · 위계 최상단) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
         style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "16px 18px", borderRadius: 18, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
-        <span style={{ flexShrink: 0, width: 48, height: 48, borderRadius: 15, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="feather" color="var(--t-sacred)" size={24} /></span>
+        <span style={{ flexShrink: 0, width: 48, height: 48, borderRadius: 15, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="megaphone" color="var(--t-sacred)" size={25} /></span>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.shareTitle")}</span>
           <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.shareSub")}</span>
