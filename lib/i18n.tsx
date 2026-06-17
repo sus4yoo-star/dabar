@@ -624,19 +624,19 @@ export function LangSelector() {
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button onClick={() => setOpen(o => !o)} aria-haspopup="listbox" aria-expanded={open}
-        style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, fontWeight: 600, color: "#173249", background: "rgba(13,52,84,0.05)", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 16, padding: "6px 10px", cursor: "pointer", whiteSpace: "nowrap" }}>
+        style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, fontWeight: 600, color: "var(--t-text)", background: "var(--t-card)", border: "1px solid var(--t-border)", borderRadius: 16, padding: "6px 10px", cursor: "pointer", whiteSpace: "nowrap" }}>
         🌐 {currentName}<span style={{ fontSize: 9, opacity: 0.55, marginLeft: 1 }}>▼</span>
       </button>
       {open && (
-        <div role="listbox" style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 50, minWidth: 168, maxHeight: 340, overflowY: "auto", background: "#fff", border: "1px solid rgba(13,52,84,0.15)", borderRadius: 14, boxShadow: "0 12px 32px rgba(23,50,73,0.18)", padding: 4 }}>
+        <div role="listbox" style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 50, minWidth: 168, maxHeight: 340, overflowY: "auto", background: "var(--t-card)", border: "1px solid var(--t-border)", borderRadius: 14, boxShadow: "0 12px 32px rgba(0,0,0,0.22)", padding: 4 }}>
           {LANGS.map(l => {
             const on = l.code === lang;
             return (
               <button key={l.code} role="option" aria-selected={on} onClick={() => { const changed = l.code !== lang; setLang(l.code); setOpen(false); if (changed) { const m = DICT["common.langSwitched"] as Record<string, string> | undefined; setToast(m?.[l.code] ?? m?.en ?? ""); setTimeout(() => setToast(null), 3500); } }}
-                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", gap: 10, fontSize: 14, fontWeight: on ? 800 : 500, color: on ? "#1f9bef" : "#173249", background: on ? "rgba(31,155,239,0.10)" : "transparent", border: "none", borderRadius: 10, padding: "10px 12px", cursor: "pointer", textAlign: "left" }}>
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", gap: 10, fontSize: 14, fontWeight: on ? 800 : 500, color: on ? "var(--t-primary)" : "var(--t-text)", background: on ? "var(--t-primaryBg)" : "transparent", border: "none", borderRadius: 10, padding: "10px 12px", cursor: "pointer", textAlign: "left" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                   {l.label}
-                  {!STATIC_UI.includes(l.code) && <span style={{ fontSize: 9.5, fontWeight: 700, color: "#8aa3b6", background: "rgba(13,52,84,0.06)", borderRadius: 5, padding: "1px 5px", letterSpacing: 0.3 }}>auto</span>}
+                  {!STATIC_UI.includes(l.code) && <span style={{ fontSize: 9.5, fontWeight: 700, color: "var(--t-textFaint)", background: "var(--t-cardBorder)", borderRadius: 5, padding: "1px 5px", letterSpacing: 0.3 }}>auto</span>}
                 </span>
                 {on && <span>✓</span>}
               </button>
