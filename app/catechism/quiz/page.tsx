@@ -7,6 +7,7 @@ import { getCatechism, Catechism } from "@/lib/catechism";
 import { useAutoTranslate } from "@/lib/autoTranslate";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { ACCENT } from "@/lib/ui";
 
 const N = 10; // 한 회 문항 수
 
@@ -90,27 +91,29 @@ export default function CatechismQuiz() {
   if (done) {
     return (
       <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "3rem 1.25rem", minHeight: "100dvh", textAlign: "center" }}>
-        <div style={{ fontSize: 56, marginBottom: 8 }}>{pct >= 80 ? "🏆" : pct >= 50 ? "😊" : "🌱"}</div>
+        <div style={{ width: 72, height: 72, margin: "0 auto 10px", borderRadius: 21, background: ACCENT.green.chip, display: "grid", placeItems: "center", fontSize: 40 }}>{pct >= 80 ? "🏆" : pct >= 50 ? "😊" : "🌱"}</div>
         <h1 style={{ fontSize: 40, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{score} / {quiz.length}</h1>
         <p style={{ fontSize: 15, color: theme.textMuted, margin: "0 0 2rem" }}>{t("cat.quizDone", { n: pct })}</p>
-        <button onClick={restart} style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#a6e02f 0%,#86c40a 100%)", color: "#08263a", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10 }}>{t("c.retry")}</button>
-        <button onClick={() => router.push("/catechism")} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>{t("cat.toCat")}</button>
+        <button onClick={restart} style={{ width: "100%", padding: 16, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#a6e02f 0%,#86c40a 100%)", color: "#08263a", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10, boxShadow: "0 8px 20px rgba(88,167,0,0.20)" }}>{t("c.retry")}</button>
+        <button onClick={() => router.push("/catechism")} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 700, background: theme.card, color: theme.text, border: `1.5px solid ${theme.cardBorder}`, borderRadius: 14, cursor: "pointer" }}>{t("cat.toCat")}</button>
       </main>
     );
   }
 
   return (
-    <main style={{ maxWidth: 560, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>
-      <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
-        <div style={{ height: "100%", width: `${((idx + 1) / quiz.length) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .3s", borderRadius: 3 }} />
+    <main className="fade-in" style={{ maxWidth: 560, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>
+      <div style={{ height: 8, background: "rgba(13,52,84,0.12)", borderRadius: 4, marginBottom: 14, overflow: "hidden" }}>
+        <div style={{ height: "100%", width: `${((idx + 1) / quiz.length) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .3s", borderRadius: 4 }} />
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-        <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>{idx + 1} / {quiz.length}</span>
-        <button onClick={() => router.push("/catechism")} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>{t("cat.exit")}</button>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+        <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 700 }}>{idx + 1} / {quiz.length}</span>
+        <button onClick={() => router.push("/catechism")} style={{ fontSize: 12.5, fontWeight: 600, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>{t("cat.exit")}</button>
       </div>
 
-      <p style={{ fontSize: 12, fontWeight: 800, color: theme.gold, margin: "0 0 6px" }}>{t("cat.qno", { n: cur.item.n })}</p>
-      <p style={{ fontSize: 18, fontWeight: 700, color: theme.text, lineHeight: 1.55, marginBottom: "1.25rem" }}>{cur.item.q}</p>
+      <div className="fade-in-2" style={{ borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: ACCENT.blue.bg, boxShadow: "0 3px 12px rgba(23,50,73,0.05)", padding: "16px 17px", marginBottom: 16 }}>
+        <p style={{ fontSize: 12, fontWeight: 800, color: theme.gold, margin: "0 0 6px" }}>{t("cat.qno", { n: cur.item.n })}</p>
+        <p style={{ fontSize: 18, fontWeight: 700, color: theme.text, lineHeight: 1.6, margin: 0 }}>{cur.item.q}</p>
+      </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {cur.options.map((opt, i) => {
@@ -121,13 +124,13 @@ export default function CatechismQuiz() {
           }
           const anim = selected === null ? "" : i === cur.answer ? "anim-pop" : i === selected ? "anim-shake" : "";
           return (
-            <button key={i} className={anim} onClick={() => choose(i)} style={{ padding: "13px 15px", textAlign: "left", fontSize: 13.5, lineHeight: 1.6, borderRadius: 12, background: bg, border, color, cursor: selected !== null ? "default" : "pointer" }}>{opt}</button>
+            <button key={i} className={anim} onClick={() => choose(i)} style={{ padding: "14px 16px", minHeight: 44, textAlign: "left", fontSize: 14, lineHeight: 1.6, borderRadius: 14, background: bg, border, color, cursor: selected !== null ? "default" : "pointer", boxShadow: selected === null ? "0 3px 12px rgba(23,50,73,0.05)" : "none" }}>{opt}</button>
           );
         })}
       </div>
 
       {selected !== null && (
-        <button onClick={next} className="fade-in" style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer", marginTop: 14 }}>{idx + 1 >= quiz.length ? t("q.result") : t("q.next")}</button>
+        <button onClick={next} className="fade-in" style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 800, background: theme.primary, color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", marginTop: 14, boxShadow: "0 8px 20px rgba(31,155,239,0.22)" }}>{idx + 1 >= quiz.length ? t("q.result") : t("q.next")}</button>
       )}
     </main>
   );

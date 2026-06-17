@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { useAutoCourse } from "@/lib/autoTranslate";
 import { supabase } from "@/lib/supabase";
+import { PageHeader, AccentCard, ACCENT, softCard } from "@/lib/ui";
 
 const STATIC_LANGS = ["ko", "en", "th"];
 
@@ -47,15 +48,16 @@ export default function CoursePage() {
 
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>
-        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("common.home")}</button>
-        <span style={{ fontSize: 13, color: theme.gold, fontWeight: 700 }}>{t("co.done", { a: completed, b: total })}</span>
-      </div>
+      <PageHeader
+        title={t("co.courseTitle", { t: course.title })}
+        onHome={() => router.push("/")}
+        homeLabel={t("common.home")}
+        right={<span style={{ fontSize: 12.5, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 999, padding: "6px 12px", whiteSpace: "nowrap" }}>{t("co.done", { a: completed, b: total })}</span>}
+      />
 
-      <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-        <div style={{ fontSize: 44, marginBottom: 6 }}>{course.emoji}</div>
-        <h1 style={{ fontSize: 26, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{t("co.courseTitle", { t: course.title })}</h1>
-        <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{course.subtitle}</p>
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.25rem" }}>
+        <div style={{ width: 58, height: 58, margin: "0 auto 8px", borderRadius: 17, background: ACCENT.green.chip, display: "grid", placeItems: "center", fontSize: 30 }}>{course.emoji}</div>
+        <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0, lineHeight: 1.5 }}>{course.subtitle}</p>
         {auto && (
           <p style={{ marginTop: 8, fontSize: 11.5, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "6px 10px", display: "inline-block" }}>
             {loading ? t("c.autoTransing") : t("c.autoTrans")}
@@ -69,29 +71,28 @@ export default function CoursePage() {
       </div>
 
       {allDone && (
-        <div style={{ background: "rgba(74,224,168,0.14)", border: `1px solid ${theme.correct}`, borderRadius: 14, padding: "16px", textAlign: "center", marginBottom: "1.25rem" }}>
+        <div className="fade-in" style={{ ...softCard({ background: theme.correctBg, border: `1px solid ${theme.correct}` }), padding: "16px", textAlign: "center", marginBottom: "1.25rem" }}>
           <p style={{ fontSize: 16, fontWeight: 800, color: theme.correct, margin: "0 0 2px" }}>{t("co.allDone", { t: course.title })}</p>
           <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{t("co.allDoneSub")}</p>
         </div>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
         {course.lessons.map((l, i) => {
           const isDoneL = !!done[`${course.slug}/${l.id}`];
           const showSection = l.section && l.section !== course.lessons[i - 1]?.section;
           const prefix = l.label ?? `${l.id}과`;
+          const accent = isDoneL ? ACCENT.green : ACCENT.blue;
           return (
             <Fragment key={l.id}>
-              {showSection && <p style={{ fontSize: 12.5, fontWeight: 800, color: theme.primarySoft, letterSpacing: 0.3, margin: "10px 2px 0" }}>{l.section}</p>}
-              <button onClick={() => router.push(`/course/${course.slug}/${l.id}`)}
-                style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", padding: "15px 16px", borderRadius: 14, border: `1px solid ${isDoneL ? theme.correct : theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, width: "100%" }}>
-                <span style={{ fontSize: 18, minWidth: 26, textAlign: "center" }}>{isDoneL ? "✅" : <span style={{ color: theme.gold, fontWeight: 800 }}>{l.id}</span>}</span>
-                <span style={{ flex: 1 }}>
-                  <span style={{ display: "block", fontSize: 15, fontWeight: 700, color: theme.text }}>{prefix}. {l.title}</span>
-                  <span style={{ display: "block", fontSize: 12, color: theme.textMuted, marginTop: 2 }}>{isDoneL ? t("co.done2") : t("co.learnQuiz")}</span>
-                </span>
-                <span style={{ fontSize: 16, color: theme.gold }}>→</span>
-              </button>
+              {showSection && <p style={{ fontSize: 12.5, fontWeight: 800, color: theme.primarySoft, letterSpacing: 0.3, margin: "12px 2px 0" }}>{l.section}</p>}
+              <AccentCard
+                accent={accent}
+                onClick={() => router.push(`/course/${course.slug}/${l.id}`)}
+                icon={isDoneL ? "✅" : <span style={{ color: theme.primarySoft, fontWeight: 800, fontSize: 19 }}>{l.id}</span>}
+                title={`${prefix}. ${l.title}`}
+                sub={isDoneL ? t("co.done2") : t("co.learnQuiz")}
+              />
             </Fragment>
           );
         })}
