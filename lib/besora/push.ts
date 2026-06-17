@@ -52,6 +52,7 @@ export async function enablePush(): Promise<PushState> {
   }
 
   const json: any = sub.toJSON();
+  if (!json?.keys?.p256dh || !json?.keys?.auth || !json?.endpoint) return "off"; // 일부 브라우저에서 keys 누락 시 크래시 방지
   const sb = getSupabase();
   const { data: auth } = await sb.auth.getUser();
   if (!auth.user) return "off";

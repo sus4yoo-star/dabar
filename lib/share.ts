@@ -7,11 +7,15 @@ function appLink(): string {
   return process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
 }
 
-async function doShare(text: string, url: string): Promise<"shared" | "copied" | "none"> {
+async function doShare(text: string, url: string): Promise<"shared" | "copied" | "none" | "cancelled"> {
   const nav = navigator as Navigator & { share?: (d: any) => Promise<void> };
   if (nav.share) {
     try { await nav.share({ title: "DABAR · 말씀 퀴즈", text, url }); return "shared"; }
-    catch { return "none"; } // 사용자가 취소했거나 미지원
+    catch (e) {
+      // 사용자가 공유시트를 의도적으로 닫은 경우(AbortError)는 복사 폴백을 띄우지 않는다
+      if (e instanceof Error && e.name === "AbortError") return "cancelled";
+      // 그 외(미지원/오류)는 복사 폴백 시도
+    }
   }
   try { await navigator.clipboard.writeText(`${text}\n${url}`); return "copied"; }
   catch { return "none"; }

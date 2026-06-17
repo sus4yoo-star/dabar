@@ -22,17 +22,25 @@ export default function AudioButton({
 
   useEffect(() => {
     // 음성 목록을 미리 깨워둔다(첫 호출에서 비어있는 브라우저 대응)
-    if (typeof window !== "undefined" && window.speechSynthesis) {
-      window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-    }
-    return () => {
-      if (typeof window !== "undefined" && window.speechSynthesis) {
-        window.speechSynthesis.onvoiceschanged = null;
-        window.speechSynthesis.cancel();
-      }
-    };
+    // addEventListener 사용 — 전역 onvoiceschanged 를 덮어쓰면 한 화면의 여러 AudioButton 이 서로의 콜백을 지워 재생이 안 되던 문제 방지
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const synth = window.speechSynthesis;
+    synth.getVoices();
+    const warm = () => synth.getVoices();
+    synth.addEventListener("voiceschanged", warm);
+    return () => synth.removeEventListener("voiceschanged", warm);
   }, []);
+
+  // 같은 인스턴스가 다음 스텝/문장에 재사용될 때: 상태 초기화 + 이전 재생 정지(언마운트 포함)
+  useEffect(() => {
+    setPlaying(false);
+    setPaused(false);
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+      if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+    };
+  }, [text, lang, audioUrl]);
 
   function pickVoice(locale: string): SpeechSynthesisVoice | undefined {
     const vs = window.speechSynthesis.getVoices();
@@ -110,7 +118,7 @@ export default function AudioButton({
       fetchTTS(text, locale).then((url) => {
         if (url) { el.src = url; el.play().catch(() => playClient()); }
         else playClient();
-      });
+      }).catch(() => playClient()); // 오프라인/네트워크 실패 시 버튼이 '‖' 로 멈추지 않도록 폴백
     };
 
     const fireSynth = () => {
@@ -142,9 +150,10 @@ export default function AudioButton({
 
     if (!synth.getVoices().length) {
       let done = false;
-      const go = () => { if (done) return; done = true; decide(); };
-      synth.onvoiceschanged = () => { synth.getVoices(); go(); };
-      setTimeout(go, 350);
+      const finish = () => { if (done) return; done = true; synth.removeEventListener("voiceschanged", onVoices); decide(); };
+      const onVoices = () => { synth.getVoices(); finish(); };
+      synth.addEventListener("voiceschanged", onVoices); // 전역 onvoiceschanged 덮어쓰기 방지
+      setTimeout(finish, 350);
     } else {
       decide();
     }

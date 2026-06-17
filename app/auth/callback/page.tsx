@@ -3,11 +3,13 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { theme } from "@/lib/theme";
+import { useI18n } from "@/lib/i18n";
 
 // 카카오/구글 로그인 후 돌아오는 곳.
 // PKCE 방식이면 주소에 ?code=... 가 붙어 오므로, 그 코드를 세션으로 교환한다.
 function CallbackInner() {
   const router = useRouter();
+  const { t } = useI18n();
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -39,24 +41,29 @@ function CallbackInner() {
     <div style={{ textAlign: "center", padding: "5rem 1.5rem", color: theme.textMuted }}>
       {error ? (
         <>
-          <p style={{ marginBottom: 16 }}>로그인을 마치지 못했어요.</p>
+          <p style={{ marginBottom: 16 }}>{t("auth.cbFail")}</p>
           <button
             onClick={() => router.replace("/login")}
             style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: theme.primary, color: "#fff", fontWeight: 700, cursor: "pointer" }}
           >
-            다시 로그인하기
+            {t("auth.cbRetry")}
           </button>
         </>
       ) : (
-        <p>로그인 중...</p>
+        <p>{t("auth.cbLoading")}</p>
       )}
     </div>
   );
 }
 
+function CallbackFallback() {
+  const { t } = useI18n();
+  return <div style={{ textAlign: "center", padding: "5rem", color: "#aaa" }}>{t("auth.cbLoading")}</div>;
+}
+
 export default function AuthCallbackPage() {
   return (
-    <Suspense fallback={<div style={{ textAlign: "center", padding: "5rem", color: "#aaa" }}>로그인 중...</div>}>
+    <Suspense fallback={<CallbackFallback />}>
       <CallbackInner />
     </Suspense>
   );

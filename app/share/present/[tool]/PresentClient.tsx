@@ -51,15 +51,22 @@ export default function PresentClient() {
   const [inDecision, setInDecision] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { fetchTool(slug).then(setTool).catch(() => setTool(null)); }, [slug]);
+  useEffect(() => {
+    let cancelled = false;
+    fetchTool(slug).then((t) => { if (!cancelled) setTool(t); }).catch(() => { if (!cancelled) setTool(null); });
+    return () => { cancelled = true; };
+  }, [slug]);
 
   useEffect(() => {
     if (!tool || !seekerLang) { setLoading(false); return; }
+    // cancelled 가드: 도구/언어를 빠르게 바꿔도 느린 이전 응답이 새 단계를 덮어쓰지 않게
+    let cancelled = false;
     setLoading(true);
     fetchRenderedSteps(tool.id, seekerLang, myLang)
-      .then((s) => { setSteps(s); setIdx(0); setInDecision(false); })
-      .catch(() => setSteps([]))
-      .finally(() => setLoading(false));
+      .then((s) => { if (cancelled) return; setSteps(s); setIdx(0); setInDecision(false); })
+      .catch(() => { if (!cancelled) setSteps([]); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [tool, seekerLang, myLang]);
 
   // 현재·다음·이전 단계 음성을 미리 받아둠 → ▶ 즉시 재생 (라오스어 등 서버 TTS 언어만)

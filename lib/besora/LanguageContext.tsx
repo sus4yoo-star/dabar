@@ -51,11 +51,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setMyLang = (c: string) => {
     setMyLangState(c);
-    localStorage.setItem("besora.myLang", c);
+    try { localStorage.setItem("besora.myLang", c); } catch { /* Safari 시크릿/저장공간 초과 대비 */ }
   };
   const setSeekerLang = (c: string) => {
     setSeekerLangState(c);
-    localStorage.setItem("besora.seekerLang", c);
+    try { localStorage.setItem("besora.seekerLang", c); } catch { /* */ }
   };
   const rtlFor = (code: string) =>
     languages.find((l) => l.code === code)?.rtl ?? false;
