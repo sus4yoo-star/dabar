@@ -61,13 +61,13 @@ export function AccentCard({ icon, title, sub, onClick, accent, right }: {
 }) {
   return (
     <button onClick={onClick} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", marginTop: 10, padding: "14px 16px", borderRadius: 18, border: `1px solid ${accent.border}`, background: accent.bg, cursor: onClick ? "pointer" : "default", color: theme.text, boxShadow: softShadow }}>
-      <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 14, background: accent.chip, display: "grid", placeItems: "center", fontSize: 23 }}>{icon}</span>
+      style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", marginTop: 11, padding: "15px 17px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: onClick ? "pointer" : "default", color: theme.text, boxShadow: softShadow }}>
+      <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 13, background: accent.chip, display: "grid", placeItems: "center", fontSize: 22 }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ fontFamily: serif, display: "block", fontSize: 17, fontWeight: 700, color: accent.fg }}>{title}</span>
-        {sub && <span style={{ display: "block", fontSize: 13, color: theme.textMuted, marginTop: 3, lineHeight: 1.45 }}>{sub}</span>}
+        <span style={{ fontFamily: serif, display: "block", fontSize: 16.5, fontWeight: 700, color: theme.text, letterSpacing: -0.2 }}>{title}</span>
+        {sub && <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 3, lineHeight: 1.45 }}>{sub}</span>}
       </span>
-      {right ?? (onClick && <span style={{ fontSize: 17, color: accent.fg, opacity: 0.7 }}>→</span>)}
+      {right ?? (onClick && <span style={{ fontSize: 16, color: theme.textFaint }}>›</span>)}
     </button>
   );
 }
