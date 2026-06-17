@@ -25,7 +25,7 @@ export default function DisplayQuickToggle() {
   function toggleNight() { const v = !night; setNight(v); apply("night", "dabar_night", v); }
 
   return (
-    <div style={{ display: "flex", gap: 7, justifyContent: "center", marginBottom: 10 }}>
+    <div className="dq-bar" style={{ display: "flex", flexWrap: "nowrap", gap: 7, justifyContent: "center", marginBottom: 10 }}>
       <Pill icon="🔆" label={t("disp.bigText")} on={big} onClick={toggleBig} />
       <Pill icon="🌙" label={t("disp.night")} on={night} onClick={toggleNight} />
     </div>

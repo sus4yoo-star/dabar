@@ -42,6 +42,8 @@ select:focus-visible, [role="button"]:focus-visible, [tabindex]:focus-visible {
 
 /* ── 화면 설정: 큰 글씨 모드 (어르신용 전역 확대) ── */
 html.big-text { zoom: 1.18; }
+/* 화면 설정 토글 바는 컨트롤이므로 확대 대상에서 제외 — 항상 한 줄 유지(1/1.18≈0.85) */
+html.big-text .dq-bar { zoom: 0.847; }
 
 /* ── 화면 설정: 야간(어두운) 모드 ──────────────
    html 레벨 필터라 fixed 요소의 위치 기준이 뷰포트로 유지된다.
