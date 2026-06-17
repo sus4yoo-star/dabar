@@ -130,14 +130,14 @@ export default function Home() {
       {/* 🌱 전도 여정 — 복음 전하기 바로 아래 (내가 전하는 사람들) */}
       <HomeReachCard />
 
-      {/* 🤝 소그룹 모임 */}
-      <NavCard icon="🤝" title={t("home.groupsTitle")} sub={t("home.groupsSub")} onClick={() => router.push("/groups")} accent={ACCENT.blue} />
-
       {/* 📚 양육·교육 과정 */}
       <NavCard icon="📚" title={t("home.growSection")} sub={t("home.growSub")} onClick={() => router.push("/learn")} accent={ACCENT.green} />
 
       {/* 📖 성경퀴즈 */}
       <NavCard icon="📖" title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} accent={ACCENT.blue} />
+
+      {/* 🤝 소그룹 모임 */}
+      <NavCard icon="🤝" title={t("home.groupsTitle")} sub={t("home.groupsSub")} onClick={() => router.push("/groups")} accent={ACCENT.blue} />
 
       {/* 💛 마음에 닿는 말씀 */}
       <NavCard icon="💛" title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} accent={ACCENT.amber} />
