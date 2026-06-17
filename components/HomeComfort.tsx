@@ -59,16 +59,40 @@ export default function HomeComfort() {
   async function ask(feeling: string) {
     const f = feeling.trim();
     if ((!f && images.length === 0) || loading) return;
-    setLoading(true); setErr(""); setVerses([]);
+    setLoading(true); setErr(""); setVerses([]); setIdx(0);
     const ctrl = new AbortController();
-    const to = setTimeout(() => ctrl.abort(), 40000);
+    const to = setTimeout(() => ctrl.abort(), 45000);
+    let got = 0;
     try {
       const r = await fetch("/api/comfort", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ feeling: f, lang, images }), signal: ctrl.signal });
-      const d = await r.json();
-      if (!r.ok || !d.verses?.length) setErr(d.error === "no-key" ? t("cf.errKey") : t("cf.err"));
-      else { setVerses(d.verses as Verse[]); setIdx(0); }
-    } catch { setErr(t("cf.err")); }
-    finally { clearTimeout(to); setLoading(false); }
+      if (!r.ok || !r.body) {
+        const d = await r.json().catch(() => ({} as { error?: string }));
+        setErr(d.error === "no-key" ? t("cf.errKey") : t("cf.err"));
+        return;
+      }
+      // NDJSON 스트림 — 구절이 도착하는 즉시 한 개씩 화면에 추가
+      const reader = r.body.getReader();
+      const dec = new TextDecoder();
+      let buf = "";
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let nl: number;
+        while ((nl = buf.indexOf("\n")) >= 0) {
+          const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+          if (!line) continue;
+          let obj: Verse & { error?: string };
+          try { obj = JSON.parse(line); } catch { continue; }
+          if (obj.error) continue;
+          setVerses((prev) => [...prev, obj as Verse]);
+          if (++got === 1) setLoading(false); // 첫 구절 도착 → 즉시 표시
+        }
+      }
+      if (got === 0) setErr(t("cf.err"));
+    } catch {
+      if (got === 0) setErr(t("cf.err"));
+    } finally { clearTimeout(to); setLoading(false); }
   }
   function reset() { setVerses([]); setIdx(0); setInput(""); setImages([]); setErr(""); }
 
