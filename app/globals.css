@@ -3,41 +3,43 @@ html, body { min-height: 100%; }
 /* iOS/모바일: 입력창 포커스·회전 시 글자 자동 확대 방지 */
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 
-/* ── 디자인 토큰 — "깊은 동행 (Deep Companion)" 라이트 ─── */
+/* ── 디자인 토큰 — "거룩한 동행" 라이트 (흰 바탕 · 살아있는 블루/그린 · 거룩한 골드) ─── */
 :root {
-  --t-primary:#1c5b8c; --t-primarySoft:#1f6aa0; --t-gold:#2f6e5e; --t-goldSoft:#3e8a74;
-  --t-bg:#f6f4ef; --t-bgGrad:#f6f4ef; --t-card:#ffffff;
-  --t-cardBorder:rgba(26,37,48,0.10); --t-goldBorder:rgba(47,110,94,0.38);
-  --t-primaryBg:rgba(28,91,140,0.08); --t-goldLight:rgba(47,110,94,0.10);
-  --t-text:#1a2530; --t-textMuted:#586872; --t-textFaint:#93a0aa; --t-border:rgba(26,37,48,0.16);
-  --t-correct:#2e7d55; --t-correctBg:rgba(46,125,85,0.12);
-  --t-wrong:#c0584e; --t-wrongBg:rgba(192,88,78,0.12);
-  --t-placeholder:#a9b4bc;
-  --t-glass:rgba(246,244,239,0.85); /* 반투명 헤더/플로팅 컨트롤 배경 (블러용) */
-  /* 강조(ACCENT) 팔레트 — 따뜻한 바탕 위 깔끔한 흰 카드 + 깊은 색조 */
-  --a-green-fg:#2f6e5e;  --a-green-chip:rgba(47,110,94,0.13);  --a-green-bg:linear-gradient(135deg,#eaf1ec 0%,#ffffff 72%); --a-green-border:rgba(47,110,94,0.30);
-  --a-blue-fg:#1c5b8c;   --a-blue-chip:rgba(28,91,140,0.11);   --a-blue-bg:linear-gradient(135deg,#e7f0f7 0%,#ffffff 72%);  --a-blue-border:rgba(28,91,140,0.22);
-  --a-amber-fg:#9a6a1c;  --a-amber-chip:rgba(168,118,28,0.14); --a-amber-bg:linear-gradient(135deg,#f5eee0 0%,#ffffff 72%); --a-amber-border:rgba(168,118,28,0.24);
-  --a-red-fg:#b14a3e;    --a-red-chip:rgba(177,74,62,0.12);    --a-red-bg:linear-gradient(135deg,#f5eae7 0%,#ffffff 72%);   --a-red-border:rgba(177,74,62,0.26);
-  --a-violet-fg:#5b4b86; --a-violet-chip:rgba(91,75,134,0.13); --a-violet-bg:linear-gradient(135deg,#eeebf4 0%,#ffffff 72%); --a-violet-border:rgba(91,75,134,0.22);
+  --t-primary:#1f8fe6; --t-primarySoft:#1573c4; --t-gold:#1ea85a; --t-goldSoft:#34bd72;
+  --t-sacred:#c79a2b; --t-sacredSoft:#e0bb52; --t-sacredLight:rgba(199,154,43,0.14); /* 거룩한 골드 강조 */
+  --t-bg:#ffffff; --t-bgGrad:#ffffff; --t-card:#fbfdff;
+  --t-cardBorder:rgba(16,62,102,0.12); --t-goldBorder:rgba(30,168,90,0.40);
+  --t-primaryBg:rgba(31,143,230,0.09); --t-goldLight:rgba(30,168,90,0.12);
+  --t-text:#14304a; --t-textMuted:#54718a; --t-textFaint:#90a6b8; --t-border:rgba(20,48,74,0.18);
+  --t-correct:#1ea85a; --t-correctBg:rgba(30,168,90,0.12);
+  --t-wrong:#e25555; --t-wrongBg:rgba(226,85,85,0.12);
+  --t-placeholder:#9ab4c6;
+  --t-glass:rgba(255,255,255,0.88); /* 반투명 헤더/플로팅 컨트롤 배경 (블러용) */
+  /* 강조(ACCENT) 팔레트 — 흰 바탕 위 살아있는 색조 + 거룩한 골드(amber) */
+  --a-green-fg:#1ea85a;  --a-green-chip:rgba(30,168,90,0.14);  --a-green-bg:linear-gradient(135deg,#eafaf0 0%,#ffffff 72%); --a-green-border:rgba(30,168,90,0.32);
+  --a-blue-fg:#1573c4;   --a-blue-chip:rgba(31,143,230,0.13);  --a-blue-bg:linear-gradient(135deg,#e9f4fd 0%,#ffffff 72%);  --a-blue-border:rgba(31,143,230,0.26);
+  --a-amber-fg:#b07d12;  --a-amber-chip:rgba(199,154,43,0.18); --a-amber-bg:linear-gradient(135deg,#fbf3df 0%,#ffffff 72%); --a-amber-border:rgba(199,154,43,0.32);
+  --a-red-fg:#c0392b;    --a-red-chip:rgba(226,59,59,0.13);    --a-red-bg:linear-gradient(135deg,#fdeeec 0%,#ffffff 72%);   --a-red-border:rgba(226,59,59,0.28);
+  --a-violet-fg:#7c5cd6; --a-violet-chip:rgba(124,92,214,0.15); --a-violet-bg:linear-gradient(135deg,#f2eefc 0%,#ffffff 72%); --a-violet-border:rgba(124,92,214,0.24);
 }
 
-/* ── 다크(야간) 토큰 — 깊은 동행 ─────────────── */
+/* ── 다크(야간) 토큰 — 거룩한 동행 (깊은 밤하늘) ─────────── */
 html.night {
-  --t-primary:#4fa3dd; --t-primarySoft:#8fc4e8; --t-gold:#5fbfa0; --t-goldSoft:#76cdb0;
-  --t-bg:#121a1f; --t-bgGrad:#121a1f; --t-card:#1b262e;
-  --t-cardBorder:rgba(255,255,255,0.12); --t-goldBorder:rgba(95,191,160,0.45);
-  --t-primaryBg:rgba(79,163,221,0.15); --t-goldLight:rgba(95,191,160,0.15);
-  --t-text:#e8eef1; --t-textMuted:#9fb0ba; --t-textFaint:#6e7f89; --t-border:rgba(255,255,255,0.16);
-  --t-correct:#45c98a; --t-correctBg:rgba(69,201,138,0.16);
-  --t-wrong:#f0857a; --t-wrongBg:rgba(240,133,122,0.16);
-  --t-placeholder:#6e7f89;
-  --t-glass:rgba(18,26,31,0.86);
-  --a-green-fg:#66c9a8;  --a-green-chip:rgba(95,191,160,0.20);  --a-green-bg:linear-gradient(135deg,#15281f 0%,#1b262e 72%);
-  --a-blue-fg:#8fc4e8;   --a-blue-chip:rgba(79,163,221,0.18);   --a-blue-bg:linear-gradient(135deg,#122a3a 0%,#1b262e 72%);
-  --a-amber-fg:#e0b05e;  --a-amber-chip:rgba(200,150,40,0.22);  --a-amber-bg:linear-gradient(135deg,#2f2613 0%,#1b262e 72%);
-  --a-red-fg:#f0958a;    --a-red-chip:rgba(240,133,122,0.20);   --a-red-bg:linear-gradient(135deg,#311a17 0%,#1b262e 72%); --a-red-border:rgba(240,133,122,0.34);
-  --a-violet-fg:#b7a6ec; --a-violet-chip:rgba(140,110,210,0.24); --a-violet-bg:linear-gradient(135deg,#221d36 0%,#1b262e 72%);
+  --t-primary:#43a6f0; --t-primarySoft:#8cc8f2; --t-gold:#36c47e; --t-goldSoft:#54d595;
+  --t-sacred:#e0bb52; --t-sacredSoft:#ecd07e; --t-sacredLight:rgba(224,187,82,0.16);
+  --t-bg:#0e1620; --t-bgGrad:#0e1620; --t-card:#16222e;
+  --t-cardBorder:rgba(255,255,255,0.12); --t-goldBorder:rgba(54,196,126,0.46);
+  --t-primaryBg:rgba(67,166,240,0.15); --t-goldLight:rgba(54,196,126,0.15);
+  --t-text:#e8eef4; --t-textMuted:#a3b6c7; --t-textFaint:#6f8499; --t-border:rgba(255,255,255,0.16);
+  --t-correct:#36c47e; --t-correctBg:rgba(54,196,126,0.16);
+  --t-wrong:#ff6f6f; --t-wrongBg:rgba(255,111,111,0.16);
+  --t-placeholder:#6f8499;
+  --t-glass:rgba(14,22,32,0.86);
+  --a-green-fg:#4fd58f;  --a-green-chip:rgba(54,196,126,0.20);  --a-green-bg:linear-gradient(135deg,#11301f 0%,#16222e 72%);
+  --a-blue-fg:#7cc0f2;   --a-blue-chip:rgba(67,166,240,0.18);   --a-blue-bg:linear-gradient(135deg,#102a3d 0%,#16222e 72%);
+  --a-amber-fg:#e9c460;  --a-amber-chip:rgba(224,187,82,0.22);  --a-amber-bg:linear-gradient(135deg,#2e2710 0%,#16222e 72%);
+  --a-red-fg:#ff9183;    --a-red-chip:rgba(255,111,111,0.20);   --a-red-bg:linear-gradient(135deg,#311a17 0%,#16222e 72%); --a-red-border:rgba(255,111,111,0.34);
+  --a-violet-fg:#bba6f2; --a-violet-chip:rgba(140,110,210,0.24); --a-violet-bg:linear-gradient(135deg,#221d36 0%,#16222e 72%);
 }
 
 body {

@@ -87,7 +87,7 @@ export default function LoginPage() {
         <h1
           style={{
             fontFamily: "'Iowan Old Style','Apple Garamond',Georgia,'Times New Roman',serif",
-            fontSize: 46, fontWeight: 700, color: GOLD, letterSpacing: 7, margin: "6px 0 6px",
+            fontSize: 46, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 7, margin: "6px 0 6px",
           }}
         >
           DABAR
