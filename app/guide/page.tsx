@@ -2,57 +2,64 @@
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
+import { PageHeader, AccentCard, ACCENT, softCard, softShadow } from "@/lib/ui";
 
 const STEPS = [
-  { emoji: "🙌", tk: "g.step1t", dk: "g.step1d" },
-  { emoji: "📖", tk: "g.step2t", dk: "g.step2d" },
-  { emoji: "💧", tk: "g.step3t", dk: "g.step3d" },
-  { emoji: "✝️", tk: "g.step4t", dk: "g.step4d" },
+  { emoji: "🙌", tk: "g.step1t", dk: "g.step1d", accent: ACCENT.green },
+  { emoji: "📖", tk: "g.step2t", dk: "g.step2d", accent: ACCENT.blue },
+  { emoji: "💧", tk: "g.step3t", dk: "g.step3d", accent: ACCENT.blue },
+  { emoji: "✝️", tk: "g.step4t", dk: "g.step4d", accent: ACCENT.amber },
 ];
 
 export default function GuidePage() {
   const router = useRouter();
   const { t } = useI18n();
   return (
-    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
-        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("common.home")}</button>
+    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
+      <PageHeader title={t("g.title")} onHome={() => router.push("/")} homeLabel={t("common.home")} />
+
+      {/* 히어로 — 홈 스타일 아이콘 칩 */}
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+        <div style={{ width: 62, height: 62, margin: "0 auto 10px", borderRadius: 19, background: "linear-gradient(135deg,#e9ffce 0%,#d4eeff 100%)", display: "grid", placeItems: "center", fontSize: 30, boxShadow: "0 12px 26px rgba(31,155,239,0.20)" }}>📋</div>
+        <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0, lineHeight: 1.5 }}>{t("g.sub")}</p>
       </div>
 
-      <div style={{ textAlign: "center", marginBottom: "1.75rem" }}>
-        <div style={{ fontSize: 40, marginBottom: 6 }}>📋</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{t("g.title")}</h1>
-        <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{t("g.sub")}</p>
-      </div>
-
-      <div style={{ position: "relative" }}>
+      {/* 단계 — 홈 메뉴 카드 스타일 (번호 + 컬러 아이콘 칩) */}
+      <div>
         {STEPS.map((s, i) => (
-          <div key={s.tk} style={{ display: "flex", gap: 14, marginBottom: i < STEPS.length - 1 ? 14 : 0 }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div style={{ width: 44, height: 44, borderRadius: "50%", background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{s.emoji}</div>
-              {i < STEPS.length - 1 && <div style={{ width: 2, flex: 1, minHeight: 20, background: theme.cardBorder, marginTop: 4 }} />}
-            </div>
-            <div style={{ flex: 1, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "14px 16px", marginBottom: 2 }}>
-              <p style={{ fontSize: 15.5, fontWeight: 800, color: theme.text, margin: "0 0 5px" }}>{i + 1}. {t(s.tk)}</p>
-              <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0, lineHeight: 1.65 }}>{t(s.dk)}</p>
-            </div>
-          </div>
+          <AccentCard
+            key={s.tk}
+            icon={s.emoji}
+            title={`${i + 1}. ${t(s.tk)}`}
+            sub={t(s.dk)}
+            accent={s.accent}
+            right={<span aria-hidden style={{ flexShrink: 0, fontSize: 14, fontWeight: 800, color: s.accent.fg, opacity: 0.55 }}>{i + 1}/{STEPS.length}</span>}
+          />
         ))}
       </div>
 
-      <div style={{ background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 14, padding: "14px 16px", marginTop: "1.5rem" }}>
+      {/* 콜아웃 */}
+      <div className="fade-in-2" style={{ ...softCard({ marginTop: "1.4rem", padding: "15px 17px", background: ACCENT.green.bg, border: `1px solid ${theme.goldBorder}` }) }}>
         <p style={{ fontSize: 13.5, color: theme.text, margin: 0, lineHeight: 1.7, whiteSpace: "pre-line" }}>
           {t("g.callout")}
         </p>
       </div>
 
-      <div style={{ display: "flex", gap: 10, marginTop: "1.5rem" }}>
-        <button onClick={() => router.push("/course/newcomer")} style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("g.btnNew")}</button>
-        <button onClick={() => router.push("/course/baptism")} style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("g.btnBap")}</button>
-        <button onClick={() => router.push("/course/confirmation")} style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("g.btnConf")}</button>
+      {/* 과정 바로가기 */}
+      <div style={{ display: "flex", gap: 10, marginTop: "1.4rem" }}>
+        {[
+          { tk: "g.btnNew", to: "/course/newcomer" },
+          { tk: "g.btnBap", to: "/course/baptism" },
+          { tk: "g.btnConf", to: "/course/confirmation" },
+        ].map((b) => (
+          <button key={b.tk} onClick={() => router.push(b.to)}
+            style={{ flex: 1, padding: "13px 8px", fontSize: 14, fontWeight: 800, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, cursor: "pointer", boxShadow: softShadow, whiteSpace: "nowrap" }}>
+            {t(b.tk)}
+          </button>
+        ))}
       </div>
 
-      <p style={{ textAlign: "center", fontSize: 11, color: theme.textFaint, marginTop: "2rem" }}>{t("g.footer")}</p>
+      <p style={{ textAlign: "center", fontSize: 11.5, color: theme.textFaint, marginTop: "2rem" }}>{t("g.footer")}</p>
     </main>
   );
 }
