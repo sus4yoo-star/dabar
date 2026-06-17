@@ -89,6 +89,16 @@ const PATHS: Record<string, React.ReactNode> = {
     <circle cx="18" cy="5.5" r="2.8" /><circle cx="6" cy="12" r="2.8" /><circle cx="18" cy="18.5" r="2.8" />
     <path d="m8.4 13.4 7.2 3.9" /><path d="m15.6 6.7-7.2 3.9" />
   </>),
+  // 새신자 — 새싹
+  sprout: (<>
+    <path d="M12 20v-9" />
+    <path d="M12 11c0-3.3 2.2-5.5 5.5-5.5C17.5 8.8 15.3 11 12 11z" />
+    <path d="M12 13C12 10.2 10 8.5 7 8.5c0 2.8 2 4.5 5 4.5z" />
+  </>),
+  // 세례 — 물방울
+  droplet: (<path d="M12 3.2s6 6.4 6 10.3a6 6 0 0 1-12 0c0-3.9 6-10.3 6-10.3z" />),
+  // 입교 — 십자가
+  cross: (<><path d="M12 3v18" /><path d="M6.5 8.5h11" /></>),
   // 현황판 — 대시보드
   dashboard: (<>
     <rect x="3.5" y="3.5" width="7" height="8.5" rx="1.4" />
