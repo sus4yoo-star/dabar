@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 
@@ -15,6 +15,14 @@ export function useConfirm() {
     new Promise<boolean>((resolve) => setState({ ...opts, resolve })), []);
 
   const close = (v: boolean) => { state?.resolve(v); setState(null); };
+
+  // Esc 로 취소(닫기) — 키보드/접근성
+  useEffect(() => {
+    if (!state) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { state.resolve(false); setState(null); } };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [state]);
 
   const view = state ? (
     <div role="dialog" aria-modal="true" onClick={() => close(false)}

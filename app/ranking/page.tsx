@@ -24,7 +24,7 @@ export default function RankingPage() {
 
   const view = tab === "weekly" ? "leaderboard_weekly" : "leaderboard";
 
-  useEffect(() => {
+  function loadBoard() {
     setRows(null); setError(false); setMyRank(null); setMyRow(null);
     supabase
       .from(view)
@@ -36,6 +36,11 @@ export default function RankingPage() {
         if (error) { setError(true); return; }
         setRows((data ?? []) as LeaderboardRow[]);
       });
+  }
+
+  useEffect(() => {
+    loadBoard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view]);
 
   useEffect(() => {
@@ -76,7 +81,12 @@ export default function RankingPage() {
         </div>
       )}
 
-      {error && <p style={{ textAlign: "center", color: theme.wrong, fontSize: 14, padding: "2rem 0" }}>{t("rk.fail")}</p>}
+      {error && (
+        <div style={{ textAlign: "center", padding: "2rem 0" }}>
+          <p style={{ color: theme.wrong, fontSize: 14, margin: "0 0 12px" }}>{t("rk.fail")}</p>
+          <button onClick={loadBoard} style={{ fontSize: 14, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 11, padding: "10px 22px", cursor: "pointer" }}>🔄 {t("common.retry")}</button>
+        </div>
+      )}
       {!error && rows === null && <SkeletonList count={5} />}
       {!error && rows && rows.length === 0 && (
         <div className="fade-in-2" style={{ textAlign: "center", padding: "2.5rem 1.5rem", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: ACCENT.blue.bg, boxShadow: softShadow }}>

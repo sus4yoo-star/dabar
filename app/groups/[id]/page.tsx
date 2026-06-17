@@ -152,7 +152,7 @@ export default function GroupDetailPage() {
     <main style={{ maxWidth: 480, margin: "0 auto", height: "100dvh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
       {/* 헤더 */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: theme.bg, borderBottom: `1px solid ${theme.cardBorder}`, padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
-        <button onClick={() => router.push("/groups")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 10, padding: "6px 10px", cursor: "pointer", whiteSpace: "nowrap" }}>←</button>
+        <button onClick={() => router.push("/groups")} aria-label={t("common.back")} style={{ fontSize: 14, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 10, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>←</button>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ display: "block", fontSize: 15.5, fontWeight: 800, color: theme.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{group.name}</span>
           <span style={{ display: "block", fontSize: 11, color: theme.textFaint }}>👥 {group.member_count}/{MAX_MEMBERS}{t("grp.members")}{full ? ` · ${t("grp.full")}` : ""}</span>

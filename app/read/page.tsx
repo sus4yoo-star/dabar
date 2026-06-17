@@ -255,7 +255,7 @@ function Picker({ initialCode, initialChapter, onClose, onPick }: {
         <span style={{ fontSize: 14, fontWeight: 800, color: theme.text, whiteSpace: "nowrap" }}>📑 {t("read.toc")}</span>
         <input value={q} onChange={e => setQ(e.target.value)} placeholder={t("read.search")}
           style={{ flex: 1, fontSize: 13.5, padding: "8px 11px", borderRadius: 10, border: `1px solid ${theme.border}`, background: theme.card, color: theme.text, outline: "none" }} />
-        <button onClick={onClose} style={{ ...iconBtn, fontSize: 18, padding: "4px 8px" }}>✕</button>
+        <button onClick={onClose} aria-label={t("common.cancel")} style={{ ...iconBtn, fontSize: 18, padding: "6px 10px" }}>✕</button>
       </div>
 
       {/* 현재 선택 + 읽기 */}
