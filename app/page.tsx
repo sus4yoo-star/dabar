@@ -116,7 +116,7 @@ export default function Home() {
             ) : (
               <>
                 <span>{t("home.greeting", { name: nickname })}
-                  <button onClick={() => { setNickDraft(nickname); setEditingNick(true); }} aria-label={t("common.save")} title="닉네임 바꾸기" style={{ marginLeft: 4, fontSize: 14, background: "none", border: "none", cursor: "pointer", padding: "4px 6px" }}>✏️</button>
+                  <button onClick={() => { setNickDraft(nickname); setEditingNick(true); }} aria-label={t("common.edit")} title={t("common.edit")} style={{ marginLeft: 4, fontSize: 14, background: "none", border: "none", cursor: "pointer", padding: "4px 6px" }}>✏️</button>
                 </span>
                 {streak > 0 && <span style={{ fontSize: 11.5, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "3px 10px" }}>{t(playedToday ? "home.streakToday" : "home.streakGo", { n: streak })}</span>}
               </>
