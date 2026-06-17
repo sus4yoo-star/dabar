@@ -145,6 +145,9 @@ export default function Home() {
       {/* 📖 성경퀴즈 — 한 줄 */}
       <RowCard icon="📖" title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} />
 
+      {/* 💛 마음에 닿는 말씀 — 위로 성구 */}
+      <RowCard icon="💛" title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} />
+
       {/* 빠른 이동 — 동행 / 랭킹 / 오답 */}
       <div style={{ display: "flex", gap: 8, marginTop: 9 }}>
         <QuickChip label={t("common.companions")} onClick={() => router.push("/share/me")} badge={unread} />

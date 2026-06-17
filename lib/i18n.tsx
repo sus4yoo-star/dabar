@@ -126,6 +126,8 @@ const DICT: Dict = {
   "home.growSection": { ko: "양육 · 교육 과정", en: "Discipleship · Education", th: "การเป็นสาวก · การศึกษา", lo: "ການເປັນສາວົກ · ການສຶກສາ" },
   "home.growSub":     { ko: "새신자 양육 · 세례·입교 · 소요리문답", en: "New believer · Baptism · Catechism", th: "ผู้เชื่อใหม่ · บัพติศมา · คำสอน", lo: "ຜູ້ເຊື່ອໃໝ່ · ບັບຕິສະມາ · ຄຳສອນ" },
   "home.quizSub":     { ko: "성경 전권 퀴즈 · 아이부터 신학생까지", en: "Whole-Bible quiz · kids to seminarians", th: "ควิซทั้งพระคัมภีร์ · เด็กถึงนักศึกษา", lo: "ຄິວສ໌ທັງພະຄຳພີ · ເດັກຮອດນັກສຶກສາ" },
+  "home.comfortTitle":{ ko: "마음에 닿는 말씀", en: "A Word for your heart", th: "พระวจนะเพื่อใจคุณ", lo: "ພຣະທຳເພື່ອໃຈເຈົ້າ" },
+  "home.comfortSub":  { ko: "지치고 힘들 때 · 위로·치유·용기의 말씀", en: "When weary · words of comfort, healing, courage", th: "ยามเหนื่อยล้า · ถ้อยคำปลอบใจ เยียวยา ให้กำลังใจ", lo: "ຍາມເມື່ອຍລ້າ · ຄຳປອບໃຈ ປິ່ນປົວ ໃຫ້ກຳລັງໃຈ" },
   "home.sosTag":      { ko: "🆘 긴급 SOS", en: "🆘 Emergency SOS", th: "🆘 SOS ฉุกเฉิน", lo: "🆘 SOS ສຸກເສີນ" },
   "home.shareTitle":  { ko: "복음 전하기 · 새신자 영접", en: "Share the Gospel · Lead to Christ", th: "ประกาศข่าวประเสริฐ · นำสู่พระคริสต์", lo: "ປະກາດຂ່າວປະເສີດ · ນຳສູ່ພຣະຄຣິດ" },
   "home.shareSub":    { ko: "다국어·음성으로 복음을 전하고 영접까지", en: "Share in many languages & voice, to decision", th: "ประกาศหลายภาษา·เสียง จนถึงการตัดสินใจ", lo: "ປະກາດຫຼາຍພາສາ·ສຽງ ຈົນຮอດການຕັດສິນໃຈ" },
