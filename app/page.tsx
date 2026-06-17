@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { shareInvite } from "@/lib/share";
@@ -12,6 +12,7 @@ import { useToast } from "@/components/Toast";
 import DisplayQuickToggle from "@/components/DisplayQuickToggle";
 import InstallHint from "@/components/InstallHint";
 import { serif } from "@/lib/ui";
+import MenuIcon from "@/components/MenuIcon";
 
 export default function Home() {
   const router = useRouter();
@@ -138,7 +139,7 @@ export default function Home() {
       {/* 복음 전하기 — 메인 CTA (유일한 골드 포인트 · 위계 최상단) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
         style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "16px 18px", borderRadius: 18, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
-        <span style={{ flexShrink: 0, width: 48, height: 48, borderRadius: 15, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center", fontSize: 26 }}>🕊️</span>
+        <span style={{ flexShrink: 0, width: 48, height: 48, borderRadius: 15, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="feather" color="var(--t-sacred)" size={24} /></span>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.shareTitle")}</span>
           <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.shareSub")}</span>
@@ -149,24 +150,24 @@ export default function Home() {
       {/* 🌱 선교 여정 — 복음 전하기와 같은 결(골드), 2번째 */}
       <HomeReachCard />
 
-      {/* 📚 양육·교육 과정 — 3번째 */}
-      <NavCard icon="📚" title={t("home.growSection")} sub={t("home.growSub")} onClick={() => router.push("/learn")} accent={ACCENT.green} />
+      {/* 양육·교육 과정 — 3번째 */}
+      <NavCard icon={<MenuIcon name="grad" color="var(--a-green-fg)" />} title={t("home.growSection")} sub={t("home.growSub")} onClick={() => router.push("/learn")} accent={ACCENT.green} />
 
-      {/* 📖 성경퀴즈 */}
-      <NavCard icon="📖" title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} accent={ACCENT.blue} />
+      {/* 성경퀴즈 */}
+      <NavCard icon={<MenuIcon name="book" color="var(--a-blue-fg)" />} title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} accent={ACCENT.blue} />
 
-      {/* 🤝 소그룹 모임 */}
-      <NavCard icon="🤝" title={t("home.groupsTitle")} sub={t("home.groupsSub")} onClick={() => router.push("/groups")} accent={ACCENT.blue} />
+      {/* 소그룹 모임 */}
+      <NavCard icon={<MenuIcon name="users" color="var(--a-blue-fg)" />} title={t("home.groupsTitle")} sub={t("home.groupsSub")} onClick={() => router.push("/groups")} accent={ACCENT.blue} />
 
-      {/* 💛 마음에 닿는 말씀 */}
-      <NavCard icon="💛" title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} accent={ACCENT.amber} />
+      {/* 마음에 닿는 말씀 */}
+      <NavCard icon={<MenuIcon name="heart" color="var(--a-amber-fg)" />} title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} accent={ACCENT.amber} />
 
       {/* 빠른 이동 — 동행 / 랭킹 / 오답 */}
       <div style={{ display: "flex", gap: 8, marginTop: 7 }}>
-        <QuickChip label={t("common.companions")} onClick={() => router.push("/share/me")} badge={unread} />
-        <QuickChip label={t("common.ranking")} onClick={() => router.push("/ranking")} />
-        {user && <QuickChip label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
-        {user && <QuickChip label={t("common.progress")} onClick={() => router.push("/progress")} />}
+        <QuickChip icon="userPlus" label={t("common.companions")} onClick={() => router.push("/share/me")} badge={unread} />
+        <QuickChip icon="trophy" label={t("common.ranking")} onClick={() => router.push("/ranking")} />
+        {user && <QuickChip icon="list" label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
+        {user && <QuickChip icon="chart" label={t("common.progress")} onClick={() => router.push("/progress")} />}
       </div>
 
       {/* 🆘 긴급 SOS — 한 줄 */}
@@ -192,7 +193,7 @@ const ACCENT: Record<"green" | "blue" | "amber", Accent> = {
   amber: { fg: "var(--a-amber-fg)", chip: "var(--a-amber-chip)", bg: "var(--a-amber-bg)", border: "var(--a-amber-border)" },
 };
 
-function NavCard({ icon, title, sub, onClick, accent }: { icon: string; title: string; sub: string; onClick: () => void; accent: Accent }) {
+function NavCard({ icon, title, sub, onClick, accent }: { icon: ReactNode; title: string; sub: string; onClick: () => void; accent: Accent }) {
   return (
     <button onClick={onClick} className="fade-in-2"
       style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 11, padding: "14px 16px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 2px 10px rgba(26,37,48,0.06), 0 1px 3px rgba(26,37,48,0.04)" }}>
@@ -206,11 +207,13 @@ function NavCard({ icon, title, sub, onClick, accent }: { icon: string; title: s
   );
 }
 
-function QuickChip({ label, onClick, badge }: { label: string; onClick: () => void; badge?: number }) {
+function QuickChip({ icon, label, onClick, badge }: { icon: string; label: string; onClick: () => void; badge?: number }) {
+  const text = label.replace(/^\S+\s+/, ""); // 라벨 앞 이모지 제거 (라인 아이콘으로 대체)
   return (
     <button onClick={onClick}
-      style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px 6px", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 14, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
-      {label}
+      style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "11px 6px", borderRadius: 13, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 13.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
+      <MenuIcon name={icon} size={18} color={theme.textMuted} />
+      {text}
       {badge ? <span style={{ position: "absolute", top: -5, right: 8, minWidth: 16, height: 16, padding: "0 4px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 9.5, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{badge > 99 ? "99+" : badge}</span> : null}
     </button>
   );
