@@ -92,7 +92,7 @@ export default function ResultPage() {
 
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: theme.gold, letterSpacing: 3, margin: "0 0 1.25rem", textAlign: "center" }}>DABAR</p>
+      <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 3, margin: "0 0 1.25rem", textAlign: "center" }}>DABAR</p>
 
       {/* 점수 히어로 — 그라데이션 + 아이콘 칩으로 보상감 강조 */}
       <div className="fade-in" style={{ background: `linear-gradient(135deg, ${grade.bg} 0%, #ffffff 88%)`, border: `1px solid ${theme.cardBorder}`, borderRadius: 22, padding: "1.9rem 1.5rem", textAlign: "center", marginBottom: "1rem", boxShadow: cardShadow }}>

@@ -65,7 +65,7 @@ export default function AdminPage() {
   return (
     <main className="fade-in" style={{ maxWidth: 640, margin: "0 auto", padding: "2rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: 0 }}>{t("ad.title")}</h1>
+        <h1 className="serif" style={{ fontSize: 23, fontWeight: 700, color: theme.gold, margin: 0, letterSpacing: -0.2 }}>{t("ad.title")}</h1>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("r.home")}</button>
       </div>
       <p style={{ fontSize: 12.5, color: theme.textMuted, margin: "0 0 1.25rem" }}>{t("ad.desc")}</p>

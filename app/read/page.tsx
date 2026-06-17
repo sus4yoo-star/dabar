@@ -136,7 +136,7 @@ export default function ReadPage() {
           </div>
         )}
 
-        <h2 style={{ fontSize: 23, fontWeight: 800, color: theme.gold, margin: "2px 0 14px", letterSpacing: -0.2 }}>{meta?.ko} {chapter}{t("read.chapter")}</h2>
+        <h2 className="serif" style={{ fontSize: 23, fontWeight: 700, color: theme.gold, margin: "2px 0 14px", letterSpacing: -0.2 }}>{meta?.ko} {chapter}{t("read.chapter")}</h2>
 
         {loading ? (
           <div style={{ padding: "1rem 0" }}>

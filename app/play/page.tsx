@@ -45,7 +45,7 @@ export default function PlaySetup() {
     <main style={{ maxWidth: 440, margin: "0 auto", padding: "1rem 1.1rem 1.5rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("common.home")}</button>
-        <h1 style={{ fontSize: 18, fontWeight: 800, color: theme.gold, margin: 0 }}>{t("pl.title")}</h1>
+        <h1 className="serif" style={{ fontSize: 19, fontWeight: 700, color: theme.gold, margin: 0, letterSpacing: -0.2 }}>{t("pl.title")}</h1>
         <button onClick={() => router.push("/progress")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "6px 11px", cursor: "pointer", whiteSpace: "nowrap" }}>{t("prog.link")}</button>
       </div>
 

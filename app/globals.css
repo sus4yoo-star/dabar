@@ -52,6 +52,8 @@ body {
   text-rendering: optimizeLegibility;
   transition: background-color .2s ease, color .2s ease;
 }
+/* 우아한 세리프 — 제목용 (인라인 스타일 헤딩에 className="serif" 로 적용) */
+.serif { font-family: 'Iowan Old Style','Apple Garamond',Georgia,'Times New Roman','Noto Serif KR',serif; }
 button { font-family: inherit; transition: transform .08s ease, filter .15s ease, opacity .15s ease, background .15s ease; }
 button:not(:disabled):active { transform: scale(0.97); }
 button:not(:disabled):hover { filter: brightness(1.06); }
