@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 import { getCountry, hotlinesFor, detectCountryCode, COUNTRIES, type HotKind } from "@/lib/sosCountries";
 import { emergencyHeader, helpCallLine, COMMON_SITU } from "@/lib/sosPhrases";
 
@@ -59,6 +60,8 @@ export default function SosModal({ onClose }: { onClose: () => void }) {
     try { const raw = localStorage.getItem(LS_KEY); if (raw) { const d = JSON.parse(raw); setData({ name: d.name ?? "", place: d.place ?? "" }); } } catch { /* */ }
     try { const c = localStorage.getItem(LS_COUNTRY); setCountry(c && COUNTRIES.some((x) => x.code === c) ? c : detectCountryCode()); } catch { setCountry(detectCountryCode()); }
   }, []);
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
+
   // Esc 로 닫기 — 키보드/접근성
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -158,7 +161,7 @@ export default function SosModal({ onClose }: { onClose: () => void }) {
   if (typeof document === "undefined") return null;
   return createPortal(
     <div style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(20,8,8,0.5)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }} onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: theme.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "10px 14px calc(16px + env(safe-area-inset-bottom))", maxHeight: "96dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
+      <div ref={trapRef} onClick={(e) => e.stopPropagation()} style={{ background: theme.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "10px 14px calc(16px + env(safe-area-inset-bottom))", maxHeight: "96dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
           <span style={{ fontSize: 17, fontWeight: 900, color: RED }}>{t("sos.title")}</span>
           <button onClick={onClose} style={{ fontSize: 13, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 12px", cursor: "pointer" }}>{t("sos.close")} ✕</button>

@@ -27,6 +27,8 @@ const DICT: Dict = {
   "common.back":      { ko: "뒤로", en: "Back", th: "กลับ", lo: "ກັບຄືນ" },
   "common.retry":     { ko: "다시 시도", en: "Try again", th: "ลองอีกครั้ง", lo: "ລອງອີກຄັ້ງ" },
   "offline.msg":      { ko: "인터넷 연결이 끊겼어요. 일부 기능이 제한될 수 있어요.", en: "You're offline. Some features may be limited.", th: "คุณออฟไลน์อยู่ บางฟังก์ชันอาจถูกจำกัด", lo: "ທ່ານອອບໄລນ໌ຢູ່ ບາງໜ້າທີ່ອາດຖືກຈຳກັດ" },
+  "a2hs.title":       { ko: "홈 화면에 추가", en: "Add to Home Screen", th: "เพิ่มไปยังหน้าจอหลัก", lo: "ເພີ່ມໃສ່ໜ້າຈໍຫຼັກ" },
+  "a2hs.ios":         { ko: "아래 공유 버튼을 누르고 '홈 화면에 추가'를 선택하면 앱처럼 쓸 수 있어요.", en: "Tap the Share button below, then 'Add to Home Screen' to use it like an app.", th: "แตะปุ่มแชร์ด้านล่าง แล้วเลือก 'เพิ่มไปยังหน้าจอหลัก' เพื่อใช้เหมือนแอป", lo: "ກົດປຸ່ມແບ່ງປັນຂ້າງລຸ່ມ ແລ້ວເລືອກ 'ເພີ່ມໃສ່ໜ້າຈໍຫຼັກ' ເພື່ອໃຊ້ຄືແອັບ" },
   "common.confirm":   { ko: "확인", en: "Confirm", th: "ตกลง", lo: "ຕົກລົງ" },
   "disp.title":       { ko: "화면 설정", en: "Display", th: "การแสดงผล", lo: "ການສະແດງຜົນ" },
   "disp.bigText":     { ko: "큰 글씨", en: "Large text", th: "ตัวอักษรใหญ่", lo: "ໂຕໜັງສືໃຫຍ່" },

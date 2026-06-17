@@ -10,6 +10,7 @@ import HomeReachCard from "@/components/HomeReachCard";
 import SosButton from "@/components/SosButton";
 import { useToast } from "@/components/Toast";
 import DisplayQuickToggle from "@/components/DisplayQuickToggle";
+import InstallHint from "@/components/InstallHint";
 
 export default function Home() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function Home() {
   const { show, view: toastView } = useToast();
   const { user, nickname, loading, signOut, updateNickname, isAdmin } = useAuth();
   const [editingNick, setEditingNick] = useState(false);
+  const [savingNick, setSavingNick] = useState(false);
   const [nickDraft, setNickDraft] = useState("");
   const [streak, setStreak] = useState(0);
   const [playedToday, setPlayedToday] = useState(false);
@@ -71,6 +73,9 @@ export default function Home() {
         ))}
       </div>
 
+      {/* iOS 사파리 사용자에게 '홈 화면에 추가' 1회 안내 */}
+      <InstallHint />
+
       {/* 첫 사용자 온보딩 (비로그인 첫 방문 1회) */}
       {showOnboard && (
         <div className="fade-in" style={{ marginBottom: 12, padding: "16px 17px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight }}>
@@ -104,14 +109,14 @@ export default function Home() {
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <input value={nickDraft} onChange={e => setNickDraft(e.target.value)} maxLength={20} autoFocus
                   style={{ width: 130, fontSize: 13, padding: "5px 9px", borderRadius: 12, border: `1px solid ${theme.gold}`, background: theme.card, color: theme.text, outline: "none" }} />
-                <button onClick={async () => { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else show(t("common.nickFail")); }}
-                  style={{ fontSize: 12, fontWeight: 700, color: "#08263a", background: theme.gold, border: "none", borderRadius: 12, padding: "5px 10px", cursor: "pointer" }}>{t("common.save")}</button>
+                <button disabled={savingNick} onClick={async () => { if (savingNick) return; setSavingNick(true); try { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else show(t("common.nickFail")); } finally { setSavingNick(false); } }}
+                  style={{ fontSize: 12, fontWeight: 700, color: "#08263a", background: theme.gold, border: "none", borderRadius: 12, padding: "5px 10px", cursor: savingNick ? "default" : "pointer", opacity: savingNick ? 0.6 : 1 }}>{t("common.save")}</button>
                 <button onClick={() => setEditingNick(false)} aria-label={t("common.cancel")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer", padding: "4px 8px" }}>✕</button>
               </span>
             ) : (
               <>
                 <span>{t("home.greeting", { name: nickname })}
-                  <button onClick={() => { setNickDraft(nickname); setEditingNick(true); }} title="닉네임 바꾸기" style={{ marginLeft: 5, fontSize: 12, background: "none", border: "none", cursor: "pointer", padding: 0 }}>✏️</button>
+                  <button onClick={() => { setNickDraft(nickname); setEditingNick(true); }} aria-label={t("common.save")} title="닉네임 바꾸기" style={{ marginLeft: 4, fontSize: 14, background: "none", border: "none", cursor: "pointer", padding: "4px 6px" }}>✏️</button>
                 </span>
                 {streak > 0 && <span style={{ fontSize: 11.5, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 20, padding: "3px 10px" }}>{t(playedToday ? "home.streakToday" : "home.streakGo", { n: streak })}</span>}
               </>

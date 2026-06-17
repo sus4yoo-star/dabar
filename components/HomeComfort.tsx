@@ -139,7 +139,7 @@ export default function HomeComfort() {
           <span key={i} style={{ position: "relative", width: 40, height: 40, borderRadius: 8, overflow: "hidden", border: `1px solid ${theme.cardBorder}` }}>
             <img src={`data:image/jpeg;base64,${b}`} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             <button onClick={() => setImages((prev) => prev.filter((_, j) => j !== i))} aria-label="remove"
-              style={{ position: "absolute", top: -2, right: -2, width: 16, height: 16, borderRadius: 999, border: "none", background: "rgba(0,0,0,0.6)", color: "#fff", fontSize: 10, lineHeight: "16px", cursor: "pointer", padding: 0 }}>×</button>
+              style={{ position: "absolute", top: -5, right: -5, width: 22, height: 22, borderRadius: 999, border: "none", background: "rgba(0,0,0,0.65)", color: "#fff", fontSize: 13, lineHeight: "22px", cursor: "pointer", padding: 0 }}>×</button>
           </span>
         ))}
       </div>
