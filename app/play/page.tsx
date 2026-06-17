@@ -49,6 +49,8 @@ export default function PlaySetup() {
         <button onClick={() => router.push("/progress")} style={{ fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "6px 11px", cursor: "pointer", whiteSpace: "nowrap" }}>{t("prog.link")}</button>
       </div>
 
+      <p style={{ textAlign: "center", fontSize: 13, color: theme.textMuted, margin: "-0.5rem 0 1.2rem", lineHeight: 1.5 }}>{t("pl.subtitle")}</p>
+
       <Section title={t("pl.testament")}><ChipGroup items={TESTAMENTS} value={testament} onChange={changeTestament} /></Section>
       <BookPicker testament={testament} selected={books} onToggle={toggleBook} onClear={() => setBooks([])} onSelectAll={() => setBooks(booksForTestament(testament))} />
       <Section title={t("pl.level")}><ChipGroup items={LEVELS} value={level} onChange={setLevel} /></Section>
@@ -58,11 +60,14 @@ export default function PlaySetup() {
         </Section>
       )}
 
-      {/* 빠짐없이 풀기(완주) — 신학생·목회자용 */}
+      {/* 🏃 마라톤 퀴즈 — 성경 전권 완주 (눈에 띄는 카드로) */}
       <div style={{ marginBottom: "0.85rem" }}>
-        <button onClick={() => setComplete(c => !c)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 15px", borderRadius: 13, cursor: "pointer", border: `1px solid ${complete ? "transparent" : theme.border}`, background: complete ? theme.primary : theme.card, color: complete ? "#fff" : theme.text, fontWeight: 700, fontSize: 15 }}>
-          <span>{t("pl.complete")}</span>
-          <span style={{ fontSize: 18 }}>{complete ? "✓" : ""}</span>
+        <button onClick={() => setComplete(c => !c)} style={{ width: "100%", textAlign: "left", padding: "15px 16px", borderRadius: 16, cursor: "pointer", border: `1.5px solid ${complete ? "transparent" : theme.goldBorder}`, background: complete ? "linear-gradient(135deg,#1f9bef 0%,#1577c2 100%)" : theme.goldLight, color: complete ? "#fff" : theme.text, boxShadow: complete ? "0 8px 22px rgba(31,155,239,0.28)" : "none" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+            <span style={{ fontWeight: 800, fontSize: 15.5 }}>{t("pl.complete")}</span>
+            <span style={{ flexShrink: 0, fontSize: 16, fontWeight: 800, width: 26, height: 26, borderRadius: 999, display: "grid", placeItems: "center", background: complete ? "rgba(255,255,255,0.22)" : "#fff", color: complete ? "#fff" : theme.gold }}>{complete ? "✓" : "→"}</span>
+          </div>
+          <p style={{ margin: "6px 0 0", fontSize: 12.5, lineHeight: 1.55, color: complete ? "rgba(255,255,255,0.92)" : theme.textMuted }}>{t("pl.completeHint")}</p>
         </button>
         {complete && (
           <div style={{ marginTop: 8 }}>
@@ -71,7 +76,6 @@ export default function PlaySetup() {
               value={order}
               onChange={v => setOrder(v as "bible" | "random")}
             />
-            <p style={{ fontSize: 11.5, color: theme.textMuted, margin: "6px 2px 0", lineHeight: 1.5 }}>{t("pl.completeHint")}</p>
           </div>
         )}
       </div>

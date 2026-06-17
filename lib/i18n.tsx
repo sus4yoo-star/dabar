@@ -298,7 +298,7 @@ const DICT: Dict = {
   "ad.total":   { ko: "총 {n}명", en: "{n} members", th: "{n} คน", lo: "{n} ຄົນ" },
   "ad.empty":   { ko: "아직 등록된 성도가 없어요.", en: "No members yet.", th: "ยังไม่มีสมาชิก", lo: "ຍັງບໍ່ມີສະມາຊິກ" },
   "ad.quizStat":{ ko: "퀴즈 {p}판 · ⭐{pt}", en: "{p} plays · ⭐{pt}", th: "{p} ครั้ง · ⭐{pt}", lo: "{p} ຄັ້ງ · ⭐{pt}" },
-  "ad.quizProg":{ ko: "📖 성경퀴즈 {a}/{t} · 정답 {c}", en: "📖 Bible quiz {a}/{t} · {c} correct", th: "📖 ควิซพระคัมภีร์ {a}/{t} · ถูก {c}", lo: "📖 ຄິວສ໌ພະຄຳພີ {a}/{t} · ຖືກ {c}" },
+  "ad.quizProg":{ ko: "📖 성경퀴즈 {a}문제 · 정답률 {r}%", en: "📖 Bible quiz {a} solved · {r}% correct", th: "📖 ควิซพระคัมภีร์ {a} ข้อ · ถูก {r}%", lo: "📖 ຄິວສ໌ພະຄຳພີ {a} ຂໍ້ · ຖືກ {r}%" },
 
   // 절차 안내
   "g.title":    { ko: "교인 절차 안내", en: "Membership Steps", th: "ขั้นตอนการเป็นสมาชิก", lo: "ຂັ້ນຕອນການເປັນສະມາຊິກ" },
@@ -319,6 +319,7 @@ const DICT: Dict = {
 
   // 퀴즈 설정(play)
   "pl.title":     { ko: "📖 성경 퀴즈", en: "📖 Bible Quiz", th: "📖 ควิซพระคัมภีร์", lo: "📖 ຄິວສ໌ພຣະຄຳພີ" },
+  "pl.subtitle":  { ko: "말씀과 친해지는 즐거운 도전 🌱 오늘 한 판으로 시작해요", en: "A joyful way to grow in the Word 🌱 start with one round today", th: "วิธีสนุกในการเติบโตในพระวจนะ 🌱 เริ่มวันนี้สักรอบ", lo: "ວິທີມ່ວນທີ່ຈະເຕີບໂຕໃນພຣະທຳ 🌱 ເລີ່ມມື້ນີ້ໜຶ່ງຮอบ" },
   "pl.all":       { ko: "전체", en: "All", th: "ทั้งหมด", lo: "ທັງໝົດ" },
   "pl.old":       { ko: "구약", en: "Old Testament", th: "พันธสัญญาเดิม", lo: "ພັນທະສັນຍາເດີມ" },
   "pl.new":       { ko: "신약", en: "New Testament", th: "พันธสัญญาใหม่", lo: "ພັນທະສັນຍາໃໝ່" },
@@ -334,8 +335,8 @@ const DICT: Dict = {
   "pl.selectAll": { ko: "전체 선택", en: "Select all", th: "เลือกทั้งหมด", lo: "ເລືອກທັງໝົດ" },
   "pl.clear":     { ko: "선택 해제", en: "Clear", th: "ล้าง", lo: "ລ້າງ" },
   "pl.start":     { ko: "퀴즈 시작 →", en: "Start quiz →", th: "เริ่มควิซ →", lo: "ເລີ່ມຄິວສ໌ →" },
-  "pl.complete":  { ko: "📚 빠짐없이 풀기 (전 문제)", en: "📚 Complete all", th: "📚 ทำครบทุกข้อ", lo: "📚 ເຮັດຄົບທຸກຂໍ້" },
-  "pl.completeHint": { ko: "신학생·목회자용 — 범위 내 모든 문제를(타이머 없이) 이어풀기 됩니다", en: "For students & pastors — every question in your scope, no timer, resumable", th: "สำหรับนักศึกษา·ศิษยาภิบาล — ทุกข้อในขอบเขต ไม่มีเวลาจับ ทำต่อได้", lo: "ສຳລັບນັກສຶກສາ·ສິດຍາພິບານ — ທຸກຂໍ້ໃນຂອບເຂດ ບໍ່ມີໂມງຈັບ ສືບຕໍ່ໄດ້" },
+  "pl.complete":  { ko: "🏃 마라톤 퀴즈 — 성경 전권 완주", en: "🏃 Marathon — finish the whole Bible", th: "🏃 มาราธอน — พิชิตทั้งพระคัมภีร์", lo: "🏃 ມາລາທອນ — ຜ່ານທັງພະຄຳພີ" },
+  "pl.completeHint": { ko: "선택한 범위의 모든 문제를 한 문제씩 완주해요 · 타이머 없이 · 진도가 저장돼 언제든 이어풀기 🏅", en: "Run through every question in your range, one by one · no timer · progress saved so you can resume anytime 🏅", th: "ลุยทุกข้อในขอบเขตทีละข้อ · ไม่มีจับเวลา · บันทึกความคืบหน้า ทำต่อเมื่อใดก็ได้ 🏅", lo: "ຜ່ານທຸກຂໍ້ໃນຂອບເຂດເທື່ອລະຂໍ້ · ບໍ່ມີໂມງຈັບ · ບັນທຶກຄວາມຄືບໜ້າ ສືບຕໍ່ໄດ້ທຸກເວລາ 🏅" },
   "pl.order":       { ko: "출제 순서", en: "Order", th: "ลำดับข้อ", lo: "ລຳດັບຂໍ້" },
   "pl.orderBible":  { ko: "📖 성경 순서대로", en: "📖 Bible order", th: "📖 ตามลำดับพระคัมภีร์", lo: "📖 ຕາມລຳດັບพระคัมพี" },
   "pl.orderRandom": { ko: "🔀 랜덤", en: "🔀 Random", th: "🔀 สุ่ม", lo: "🔀 ສຸ່ມ" },
