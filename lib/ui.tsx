@@ -26,7 +26,7 @@ export function PageHeader({ title, onHome, homeLabel = "홈", right }: {
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: "1.4rem" }}>
-      <h1 style={{ fontFamily: serif, fontSize: 23, fontWeight: 700, color: theme.gold, margin: 0, letterSpacing: -0.2 }}>{title}</h1>
+      <h1 style={{ fontFamily: serif, fontSize: 23, fontWeight: 700, color: theme.gold, margin: 0, letterSpacing: -0.2 }}>{title.replace(/^\p{Extended_Pictographic}️?\s*/u, "")}</h1>
       <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
         {right}
         <button onClick={onHome}
