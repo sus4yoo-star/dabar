@@ -49,35 +49,73 @@ export async function POST(req: NextRequest) {
   }
   content.push({ type: "text", text: feeling || "(여기 첨부한 이미지를 보고 지금 상황과 마음을 헤아려, 위로가 되는 말씀을 찾아주세요.)" });
 
-  try {
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 900, // 4개 구절 생성에 충분 + 잘림 방지 여유 (생성량은 "정확히 4개" 지시로 줄어듦)
-        system,
-        messages: [{ role: "user", content }],
-      }),
-    });
-    if (!r.ok) {
-      const detail = await r.text().catch(() => "");
-      return NextResponse.json({ error: "api-failed", detail: detail.slice(0, 300) }, { status: 502 });
-    }
-    const d = await r.json();
-    const raw: string = d?.content?.[0]?.text ?? "";
-    const start = raw.indexOf("[");
-    const end = raw.lastIndexOf("]");
-    if (start < 0 || end < 0) return NextResponse.json({ error: "parse-failed" }, { status: 502 });
-    let arr: { ref?: string; text?: string; note?: string }[];
-    try { arr = JSON.parse(raw.slice(start, end + 1)); } catch { return NextResponse.json({ error: "parse-failed" }, { status: 502 }); }
-    const verses = (Array.isArray(arr) ? arr : [])
-      .filter((v) => v && (v.ref || v.text))
-      .slice(0, 10)
-      .map((v) => ({ ref: String(v.ref ?? "").trim(), text: String(v.text ?? "").trim(), note: String(v.note ?? "").trim() }));
-    if (!verses.length) return NextResponse.json({ error: "empty" }, { status: 502 });
-    return NextResponse.json({ verses });
-  } catch {
-    return NextResponse.json({ error: "network" }, { status: 502 });
+  // 스트리밍 — 모델이 구절을 만드는 즉시 한 개씩(NDJSON 한 줄씩) 흘려보낸다.
+  // 화면은 한 구절씩 보는 캐러셀이라, 첫 구절이 도착하자마자 바로 읽을 수 있다.
+  const upstream = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 900, // 4개 구절에 충분 + 잘림 방지 여유 (생성량은 "정확히 4개" 지시로 줄어듦)
+      stream: true,
+      system,
+      messages: [{ role: "user", content }],
+    }),
+  }).catch(() => null);
+
+  if (!upstream || !upstream.ok || !upstream.body) {
+    const detail = upstream ? await upstream.text().catch(() => "") : "";
+    return NextResponse.json({ error: "api-failed", detail: detail.slice(0, 300) }, { status: 502 });
   }
+
+  const reader = upstream.body.getReader();
+  const decoder = new TextDecoder();
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      let sse = "";                                          // SSE 라인 버퍼
+      let txt = "";                                          // 누적된 모델 텍스트(JSON 배열)
+      let scanned = 0, depth = 0, inStr = false, esc = false, objStart = -1, count = 0;
+
+      const emit = (jsonStr: string) => {
+        try {
+          const v = JSON.parse(jsonStr) as { ref?: string; text?: string; note?: string };
+          const out = { ref: String(v.ref ?? "").trim(), text: String(v.text ?? "").trim(), note: String(v.note ?? "").trim() };
+          if (out.ref || out.text) { controller.enqueue(encoder.encode(JSON.stringify(out) + "\n")); count++; }
+        } catch { /* 미완성/이상 객체는 무시 */ }
+      };
+      // 누적 텍스트에서 완성된 최상위 객체 {…} 가 닫힐 때마다 방출 (문자열/이스케이프 인지)
+      const scan = () => {
+        for (; scanned < txt.length; scanned++) {
+          const c = txt[scanned];
+          if (inStr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') inStr = false; continue; }
+          if (c === '"') { inStr = true; continue; }
+          if (c === "{") { if (depth === 0) objStart = scanned; depth++; }
+          else if (c === "}" && depth > 0) { depth--; if (depth === 0 && objStart >= 0) { emit(txt.slice(objStart, scanned + 1)); objStart = -1; } }
+        }
+      };
+
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          sse += decoder.decode(value, { stream: true });
+          let nl: number;
+          while ((nl = sse.indexOf("\n")) >= 0) {
+            const s = sse.slice(0, nl).trim(); sse = sse.slice(nl + 1);
+            if (!s.startsWith("data:")) continue;
+            const data = s.slice(5).trim();
+            if (!data || data === "[DONE]") continue;
+            try { const ev = JSON.parse(data); const t = ev?.delta?.text; if (typeof t === "string") { txt += t; scan(); } } catch { /* */ }
+          }
+        }
+      } catch { /* 업스트림 중단 — 이미 보낸 구절은 유효 */ }
+      if (count === 0) controller.enqueue(encoder.encode(JSON.stringify({ error: "empty" }) + "\n"));
+      controller.close();
+    },
+    cancel() { reader.cancel().catch(() => {}); },
+  });
+
+  return new Response(stream, { headers: { "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store" } });
 }
