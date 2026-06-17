@@ -30,6 +30,24 @@ create policy "본인 진도 읽기" on lesson_progress for select using (auth.u
 grant select on lesson_progress to authenticated;     -- 정책이 본인 행으로 제한
 revoke select on lesson_progress from anon;
 
+-- 1-b) 성경퀴즈 진도 테이블 보장 (없으면 생성 — quiz-progress.sql 과 동일 정의)
+create table if not exists quiz_progress (
+  user_id     uuid    not null references auth.users(id) on delete cascade,
+  question_id uuid    not null,
+  correct     boolean not null default false,
+  updated_at  timestamptz default now(),
+  primary key (user_id, question_id)
+);
+alter table quiz_progress enable row level security;
+drop policy if exists "본인 진도 읽기" on quiz_progress;
+create policy "본인 진도 읽기" on quiz_progress for select using (auth.uid() = user_id);
+drop policy if exists "본인 진도 추가" on quiz_progress;
+create policy "본인 진도 추가" on quiz_progress for insert with check (auth.uid() = user_id);
+drop policy if exists "본인 진도 수정" on quiz_progress;
+create policy "본인 진도 수정" on quiz_progress for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+grant select, insert, update on quiz_progress to authenticated;
+create index if not exists idx_quiz_progress_user on quiz_progress(user_id);
+
 -- 2) 관리자 현황판 집계 (is_admin 만 호출 가능)
 create or replace function public.admin_dashboard()
 returns jsonb
@@ -52,7 +70,9 @@ begin
               from lesson_progress where user_id = p.id group by course) c
       ), '{}'::jsonb) as prog,
       coalesce((select count(*)::int from scores where user_id = p.id), 0)        as plays,
-      coalesce((select sum(points)::int from scores where user_id = p.id), 0)     as points
+      coalesce((select sum(points)::int from scores where user_id = p.id), 0)     as points,
+      coalesce((select count(*)::int from quiz_progress where user_id = p.id), 0) as quiz_answered,
+      coalesce((select count(*)::int from quiz_progress where user_id = p.id and correct), 0) as quiz_correct
     from profiles p
   ) r;
   return result;

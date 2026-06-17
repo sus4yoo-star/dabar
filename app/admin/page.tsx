@@ -13,6 +13,8 @@ interface Row {
   prog: Record<string, number>;
   plays: number;
   points: number;
+  quiz_answered: number;
+  quiz_correct: number;
 }
 
 export default function AdminPage() {
@@ -20,6 +22,7 @@ export default function AdminPage() {
   const { t } = useI18n();
   const { user, isAdmin, loading } = useAuth();
   const [rows, setRows] = useState<Row[] | null>(null);
+  const [totalQ, setTotalQ] = useState(0);
 
   useEffect(() => {
     if (loading) return;
@@ -27,7 +30,11 @@ export default function AdminPage() {
     if (!isAdmin) return;
     (async () => {
       // 개인 진도는 비공개 — 관리자만 호출 가능한 보안 RPC 로 집계 데이터를 받는다.
-      const { data, error } = await supabase.rpc("admin_dashboard");
+      const [{ data, error }, { count }] = await Promise.all([
+        supabase.rpc("admin_dashboard"),
+        supabase.from("questions").select("*", { count: "exact", head: true }),
+      ]);
+      setTotalQ(count ?? 0);
       if (error || !data) { setRows([]); return; }
       const list: Row[] = ((data as any[]) ?? []).map((p) => ({
         id: p.id,
@@ -35,6 +42,8 @@ export default function AdminPage() {
         prog: (p.prog as Record<string, number>) || {},
         plays: p.plays || 0,
         points: p.points || 0,
+        quiz_answered: p.quiz_answered || 0,
+        quiz_correct: p.quiz_correct || 0,
       }));
       // 진도 합계 → 점수 순 정렬
       list.sort((a, b) => {
@@ -88,6 +97,17 @@ export default function AdminPage() {
                       </span>
                     );
                   })}
+                </div>
+                {/* 성경퀴즈 완주 진도 (푼 문제 수 / 전체 · 정답 수) */}
+                <div style={{ marginTop: 8 }}>
+                  {(() => {
+                    const pct = totalQ > 0 ? Math.round((r.quiz_answered / totalQ) * 100) : 0;
+                    return (
+                      <span style={{ fontSize: 11.5, fontWeight: 700, color: r.quiz_answered > 0 ? theme.primarySoft : theme.textFaint, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "4px 9px" }}>
+                        {t("ad.quizProg", { a: r.quiz_answered, t: totalQ || "·", c: r.quiz_correct })}{totalQ > 0 ? ` (${pct}%)` : ""}
+                      </span>
+                    );
+                  })()}
                 </div>
               </div>
             ))}
