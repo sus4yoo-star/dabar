@@ -34,7 +34,6 @@ export default function ResultPage() {
   const { user, loading: authLoading } = useAuth();
   const [result, setResult] = useState<Result | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
-  const [errMsg, setErrMsg] = useState("");
   const savedOnce = useRef(false);
 
   useEffect(() => {
@@ -44,7 +43,7 @@ export default function ResultPage() {
   }, []);
 
   const saveScore = useCallback(async (r: Result, uid: string) => {
-    setSaveState("saving"); setErrMsg("");
+    setSaveState("saving");
     const pct = Math.round((r.score / r.total) * 100);
     const { error } = await supabase.from("scores").insert({
       user_id: uid, score: r.score, total: r.total, points: r.points ?? 0, percentage: pct,
@@ -52,7 +51,6 @@ export default function ResultPage() {
     });
     if (error) {
       console.error("[DABAR] score save error:", error);
-      setErrMsg(error.message || error.hint || error.code || "알 수 없는 오류");
       setSaveState("error");
       return;
     }
@@ -120,7 +118,7 @@ export default function ResultPage() {
         {user && saveState === "saved" && <span style={{ fontSize: 13, color: theme.correct }}>{t("r.saved")}</span>}
         {user && saveState === "error" && (
           <span style={{ fontSize: 13, color: theme.wrong }}>
-            {t("r.saveFail")}{errMsg ? ` — ${errMsg}` : ""}{"  "}
+            {t("r.saveFail")}{"  "}
             <button onClick={() => user && saveScore(result, user.id)} style={{ color: theme.gold, fontWeight: 700, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", padding: 0 }}>{t("r.saveRetry")}</button>
           </span>
         )}
