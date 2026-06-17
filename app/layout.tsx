@@ -40,7 +40,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <head><link rel="apple-touch-icon" href="/icons/icon-192.png" /></head>
+      <head>
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        {/* 페인트 전에 저장된 언어로 html lang/dir 설정 — 하이드레이션 불일치·RTL 깜빡임 방지(정적 스크립트, 사용자 입력 없음) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var l=localStorage.getItem('dabar_lang');if(l){var e=document.documentElement;e.lang=l;e.dir=(l==='ar'||l==='fa'||l==='ur')?'rtl':'ltr';}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body>
         <ChunkGuard />
         <I18nProvider>

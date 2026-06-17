@@ -40,7 +40,11 @@ export async function POST(req: NextRequest) {
 
   webpush.setVapidDetails(subject, VAPID_PUBLIC, priv);
   const tag = groupId ? `group-${groupId}` : `chat-${companionId}`;
-  const payload = JSON.stringify({ title: title || "다바르", body: text || "", url: url || "/share/me", tag });
+  // 페이로드 안전화: 길이 제한(푸시 서비스 4KB 한도) + url 은 동일 출처 상대경로만 허용
+  const safeTitle = (typeof title === "string" && title.trim() ? title : "다바르").slice(0, 120);
+  const safeText = (typeof text === "string" ? text : "").slice(0, 500);
+  const safeUrl = typeof url === "string" && url.startsWith("/") && !url.startsWith("//") ? url : "/share/me";
+  const payload = JSON.stringify({ title: safeTitle, body: safeText, url: safeUrl, tag });
 
   let sent = 0;
   await Promise.all(

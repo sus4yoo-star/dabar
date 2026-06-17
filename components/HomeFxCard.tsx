@@ -84,7 +84,7 @@ export default function HomeFxCard() {
       </div>
       <Row cur={toCur} onCur={(c) => { setToCur(c); setLast("from"); }} value={last === "to" ? toVal : group(toVal)} onChange={onTo} />
 
-      <p style={{ margin: "9px 1px 0", fontSize: 10, color: theme.textFaint, lineHeight: 1.4 }}>
+      <p style={{ margin: "9px 1px 0", fontSize: 12, color: theme.textFaint, lineHeight: 1.45 }}>
         {rate != null ? `1 ${fromCur} = ${fmtRate(rate)} ${toCur}` : t("fx.loading")}<br />{t("fx.note", { d: dateStr })}
       </p>
     </div>

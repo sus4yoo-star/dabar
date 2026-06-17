@@ -97,14 +97,12 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     try {
       const { ok, d } = await callApi(q, target, source);
       if (!ok || !d.text) {
-        setErr(d.error === "no-key"
-          ? "번역 키가 아직 설정되지 않았어요 (GOOGLE_TRANSLATE_API_KEY)"
-          : "번역에 실패했어요. 잠시 후 다시 시도해 주세요.");
+        setErr(ui(myLang, d.error === "no-key" ? "errTrUnavailable" : "errTranslate"));
       } else {
         if (dest === "R") setRightText(d.text); else setLeftText(d.text);
         speak(d.text, target);
       }
-    } catch { setErr("네트워크 오류예요."); }
+    } catch { setErr(ui(myLang, "errNetwork")); }
     setBusy("");
   }
 
@@ -128,7 +126,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     primeAudio(); // 제스처 시점에 오디오 컨텍스트를 미리 깨움 (iOS 첫 녹음 실패 방지)
     if (SR) startSR(lang);
     else if (canRecord()) startRecorder(lang);
-    else setErr("이 브라우저에서는 음성 입력을 지원하지 않아요. 직접 입력해 주세요.");
+    else setErr(ui(myLang, "errSttUnsupported"));
   }
 
   function stopMic() {
@@ -162,7 +160,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
       const txt = finalRef.current.trim();
       if (txt) translateInto(txt, lang, isLeft ? seeker : myLang, isLeft ? "R" : "L");
     };
-    rec.onerror = () => { recRef.current = null; setListening(null); setErr("음성을 인식하지 못했어요. 다시 시도해 주세요."); };
+    rec.onerror = () => { recRef.current = null; setListening(null); setErr(ui(myLang, "errSttFail")); };
     setListening(lang);
     try { rec.start(); } catch { recRef.current = null; setListening(null); }
   }
@@ -178,7 +176,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     } catch {
       recorderRef.current = null;
       setListening(null);
-      setErr("마이크 권한이 필요해요. 권한을 허용해 주세요.");
+      setErr(ui(myLang, "errMicPerm"));
     }
   }
 
@@ -198,12 +196,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
       });
       const d = await r.json();
       if (!r.ok || !d.text) {
-        setErr(
-          d.error === "no-key"
-            ? "음성 인식 키가 아직 설정되지 않았어요 (Speech-to-Text)"
-            : d.error === "stt-disabled"
-            ? "음성 인식이 꺼져 있어요. Google Cloud에서 'Cloud Speech-to-Text API'를 켜주세요."
-            : "음성을 인식하지 못했어요. 다시 시도해 주세요.");
+        setErr(ui(myLang, (d.error === "no-key" || d.error === "stt-disabled") ? "errSttUnavailable" : "errSttFail"));
         setBusy(""); return;
       }
       if (isLeft) setLeftText(d.text); else setRightText(d.text);
@@ -216,7 +209,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
         await translateInto(d.text, lang, target, isLeft ? "R" : "L");
       }
     } catch {
-      setErr("네트워크 오류예요."); setBusy("");
+      setErr(ui(myLang, "errNetwork")); setBusy("");
     }
   }
 
@@ -231,7 +224,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     const micH = big ? 46 : 50;
     return (
       <div dir={dir} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 5 }}>
-        <span style={{ fontSize: big ? 12.5 : 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)} <span style={{ opacity: 0.7 }}>({code.toUpperCase()})</span>{busy === side ? " · 번역 중…" : ""}</span>
+        <span style={{ fontSize: big ? 12.5 : 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)} <span style={{ opacity: 0.7 }}>({code.toUpperCase()})</span>{busy === side ? ` · ${ui(myLang, "trBusy")}` : ""}</span>
         <div style={{ display: "flex", gap: 6 }}>
           {/* 마이크 (크게, 가변폭) */}
           <button onClick={() => micFor(code)} disabled={!micAvailable} aria-label={ui(myLang, "micSpeak")}

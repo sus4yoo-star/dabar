@@ -163,7 +163,7 @@ export default function Home() {
         {user && <SmallLink onClick={shareInvite}>{t("home.inviteShort")}</SmallLink>}
         <SmallLink onClick={() => router.push(user ? "/account" : "/privacy")}>{user ? t("home.accountShort") : t("privacy.title")}</SmallLink>
       </div>
-      <p style={{ textAlign: "center", fontSize: 10.5, color: theme.textFaint, marginTop: 12, letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
+      <p style={{ textAlign: "center", fontSize: 12, color: theme.textFaint, marginTop: 12, letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
     </main>
   );
 }

@@ -61,7 +61,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       supabase.from("profiles").update({ avatar_url: pickAvatar(u), provider, updated_at: new Date().toISOString() }).eq("id", u.id).then(() => {});
     } else {
       const nn = pickNickname(u);
-      await supabase.from("profiles").insert({ id: u.id, nickname: nn, avatar_url: pickAvatar(u), provider });
+      // upsert: getSession 과 onAuthStateChange 가 신규 유저에 동시에 진입해도 중복 INSERT(unique 충돌) 없이 안전
+      await supabase.from("profiles").upsert({ id: u.id, nickname: nn, avatar_url: pickAvatar(u), provider }, { onConflict: "id" });
       setNickname(nn);
     }
   }, []);
@@ -73,6 +74,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setNickname(pickNickname(data.session?.user ?? null));
       setLoading(false);
       if (data.session?.user) ensureProfile(data.session.user).catch(() => {});
+    }).catch(() => {
+      // 네트워크 불안정 시에도 스플래시에 영구히 갇히지 않도록 (현장 약전파 대비)
+      setLoading(false);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {

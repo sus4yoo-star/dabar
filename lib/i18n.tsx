@@ -161,6 +161,10 @@ const DICT: Dict = {
   "login.redirecting":{ ko: "이동 중...", en: "Redirecting...", th: "กำลังนำทาง...", lo: "ກຳລັງນຳທາງ..." },
   "login.free":       { ko: "가입은 무료예요. 카카오·구글 계정으로 3초 만에 시작할 수 있어요.", en: "Free to join — start in 3 seconds with Kakao or Google.", th: "สมัครฟรี เริ่มได้ใน 3 วินาทีด้วย Kakao หรือ Google", lo: "ສະໝັກຟຣີ ເລີ່ມໄດ້ໃນ 3 ວິນາທີດ້ວຍ Kakao ຫຼື Google" },
   "login.fail":       { ko: "로그인을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.", en: "Couldn't start login. Please try again shortly.", th: "เริ่มเข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", lo: "ເລີ່ມເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່" },
+  // 로그인 콜백 (카카오·구글 후 돌아오는 화면)
+  "auth.cbLoading":   { ko: "로그인 중...", en: "Signing in...", th: "กำลังเข้าสู่ระบบ...", lo: "ກຳລັງເຂົ້າສູ່ລະບົບ..." },
+  "auth.cbFail":      { ko: "로그인을 마치지 못했어요.", en: "Couldn't complete sign-in.", th: "เข้าสู่ระบบไม่สำเร็จ", lo: "ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ" },
+  "auth.cbRetry":     { ko: "다시 로그인하기", en: "Try signing in again", th: "ลองเข้าสู่ระบบอีกครั้ง", lo: "ລອງເຂົ້າສູ່ລະບົບອີກຄັ້ງ" },
   // 이메일 매직링크 (카카오·구글이 막혔을 때 백업)
   "login.orEmail":    { ko: "또는 이메일로 로그인", en: "Or sign in with email", th: "หรือเข้าสู่ระบบด้วยอีเมล", lo: "ຫຼື ເຂົ້າສູ່ລະບົບດ້ວຍອີເມວ" },
   "login.emailPh":    { ko: "이메일 주소", en: "Email address", th: "ที่อยู่อีเมล", lo: "ທີ່ຢູ່ອີເມວ" },
@@ -536,7 +540,10 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   // 방향(RTL) + UI 자동번역 (ko/en/th/lo 외 언어)
   useEffect(() => {
-    if (typeof document !== "undefined") document.documentElement.dir = RTL_LANGS.has(lang) ? "rtl" : "ltr";
+    if (typeof document !== "undefined") {
+      document.documentElement.dir = RTL_LANGS.has(lang) ? "rtl" : "ltr";
+      document.documentElement.lang = lang; // 스크린리더가 올바른 언어로 읽도록
+    }
     if (STATIC_UI.includes(lang)) { setUiMap({}); return; }
     const cacheKey = `dabar_ui_${lang}`;
     let cache: Record<string, string> = {};
@@ -572,7 +579,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     let s = STATIC_UI.includes(lang)
       ? (e?.[lang] ?? en ?? e?.ko ?? key)
       : ((en && uiMap[en]) ?? en ?? e?.ko ?? key);
-    if (vars) for (const k of Object.keys(vars)) s = s.replace(`{${k}}`, String(vars[k]));
+    if (vars) for (const k of Object.keys(vars)) s = s.split(`{${k}}`).join(String(vars[k])); // 같은 토큰이 두 번 이상 나와도 모두 치환
     return s;
   };
   return <I18nCtx.Provider value={{ lang, setLang, t }}>{children}</I18nCtx.Provider>;

@@ -17,12 +17,22 @@ export default function DecisionFlow({ toolSlug, onAgain }: { toolSlug: string; 
   const [phase, setPhase] = useState<Phase>("ask");
   const [seeker, setSeeker] = useState<DecisionContent | null>(null);
   const [helper, setHelper] = useState<DecisionContent | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const rtl = rtlFor(seekerLang);
 
   useEffect(() => {
-    fetchDecision(seekerLang).then(setSeeker).catch(() => setSeeker(null));
-    fetchDecision(myLang).then(setHelper).catch(() => setHelper(null));
-  }, [seekerLang, myLang]);
+    // cancelled 가드: 언어를 바꾸면 느린 이전 응답이 새 콘텐츠를 덮어쓰지 않게
+    let cancelled = false;
+    setLoaded(false);
+    Promise.allSettled([fetchDecision(seekerLang), fetchDecision(myLang)]).then(([s, h]) => {
+      if (cancelled) return;
+      setSeeker(s.status === "fulfilled" ? s.value : null);
+      setHelper(h.status === "fulfilled" ? h.value : null);
+      setLoaded(true);
+    });
+    return () => { cancelled = true; };
+  }, [seekerLang, myLang, reloadKey]);
 
   function finishPrayer() {
     logSession({ toolSlug, seekerLanguage: seekerLang, decided: true }).catch(() => {});
@@ -33,7 +43,16 @@ export default function DecisionFlow({ toolSlug, onAgain }: { toolSlug: string; 
     onAgain();
   }
 
-  if (!seeker) return null;
+  // 로딩 끝났는데 콘텐츠가 없으면(오프라인/네트워크 실패) 빈 화면 대신 안내 + 다시 시도
+  if (!seeker) {
+    if (!loaded) return null;
+    return (
+      <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 40, textAlign: "center", gap: 16, color: theme.textMuted }}>
+        <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6 }}>{ui(myLang, "noContent")}</p>
+        <button onClick={() => setReloadKey((k) => k + 1)} style={{ borderRadius: 999, background: theme.primary, color: "#fff", border: "none", padding: "12px 28px", fontWeight: 700, cursor: "pointer" }}>{ui(myLang, "retry")}</button>
+      </div>
+    );
+  }
   const dual = myLang !== seekerLang && !!helper;
   const Divider = () => <div style={{ margin: "20px 0", height: 1, width: 48, background: "currentColor", opacity: 0.2 }} />;
   const pillCrimson = { borderRadius: 999, background: "#C9402F", padding: "12px 32px", fontWeight: 700, color: "#fff", border: "none", cursor: "pointer" } as const;
