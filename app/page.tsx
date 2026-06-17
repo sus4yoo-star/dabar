@@ -135,15 +135,15 @@ export default function Home() {
         )}
       </div>
 
-      {/* 복음 전하기 — 메인 CTA (가장 강조) */}
+      {/* 복음 전하기 — 메인 CTA (유일한 골드 포인트 · 위계 최상단) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "13px 16px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: "var(--a-green-bg)", cursor: "pointer", color: theme.text, boxShadow: "0 10px 26px rgba(47,110,94,0.16)" }}>
-        <span style={{ flexShrink: 0, width: 48, height: 48, borderRadius: 15, background: "var(--a-green-chip)", display: "grid", placeItems: "center", fontSize: 26 }}>🕊️</span>
+        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "16px 18px", borderRadius: 18, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
+        <span style={{ flexShrink: 0, width: 48, height: 48, borderRadius: 15, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center", fontSize: 26 }}>🕊️</span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: theme.gold }}>{t("home.shareTitle")}</span>
+          <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.shareTitle")}</span>
           <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.shareSub")}</span>
         </span>
-        <span style={{ fontSize: 17, color: theme.gold, opacity: 0.7 }}>→</span>
+        <span style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
       </button>
 
       {/* 📚 양육·교육 과정 — 2번째 */}
@@ -195,13 +195,13 @@ const ACCENT: Record<"green" | "blue" | "amber", Accent> = {
 function NavCard({ icon, title, sub, onClick, accent }: { icon: string; title: string; sub: string; onClick: () => void; accent: Accent }) {
   return (
     <button onClick={onClick} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 9, padding: "12px 15px", borderRadius: 18, border: `1px solid ${accent.border}`, background: accent.bg, cursor: "pointer", color: theme.text, boxShadow: "0 2px 10px rgba(26,37,48,0.06), 0 1px 3px rgba(26,37,48,0.04)" }}>
-      <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: accent.chip, display: "grid", placeItems: "center", fontSize: 22 }}>{icon}</span>
+      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 11, padding: "14px 16px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 2px 10px rgba(26,37,48,0.06), 0 1px 3px rgba(26,37,48,0.04)" }}>
+      <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 13, background: accent.chip, display: "grid", placeItems: "center", fontSize: 22 }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ fontFamily: serif, display: "block", fontSize: 16.5, fontWeight: 700, color: accent.fg }}>{title}</span>
+        <span style={{ fontFamily: serif, display: "block", fontSize: 16.5, fontWeight: 700, color: theme.text, letterSpacing: -0.2 }}>{title}</span>
         <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{sub}</span>
       </span>
-      <span style={{ fontSize: 17, color: accent.fg, opacity: 0.65 }}>→</span>
+      <span style={{ fontSize: 16, color: theme.textFaint }}>›</span>
     </button>
   );
 }

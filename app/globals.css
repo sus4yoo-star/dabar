@@ -6,7 +6,7 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 /* ── 디자인 토큰 — "거룩한 동행" 라이트 (흰 바탕 · 살아있는 블루/그린 · 거룩한 골드) ─── */
 :root {
   --t-primary:#1f8fe6; --t-primarySoft:#1573c4; --t-gold:#1ea85a; --t-goldSoft:#34bd72;
-  --t-sacred:#c79a2b; --t-sacredSoft:#e0bb52; --t-sacredLight:rgba(199,154,43,0.14); /* 거룩한 골드 강조 */
+  --t-sacred:#c79a2b; --t-sacredSoft:#e0bb52; --t-sacredLight:rgba(199,154,43,0.12); --t-sacredBorder:rgba(199,154,43,0.42); /* 거룩한 골드 강조 */
   --t-bg:#ffffff; --t-bgGrad:#ffffff; --t-card:#fbfdff;
   --t-cardBorder:rgba(16,62,102,0.12); --t-goldBorder:rgba(30,168,90,0.40);
   --t-primaryBg:rgba(31,143,230,0.09); --t-goldLight:rgba(30,168,90,0.12);
@@ -26,7 +26,7 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 /* ── 다크(야간) 토큰 — 거룩한 동행 (깊은 밤하늘) ─────────── */
 html.night {
   --t-primary:#43a6f0; --t-primarySoft:#8cc8f2; --t-gold:#36c47e; --t-goldSoft:#54d595;
-  --t-sacred:#e0bb52; --t-sacredSoft:#ecd07e; --t-sacredLight:rgba(224,187,82,0.16);
+  --t-sacred:#e0bb52; --t-sacredSoft:#ecd07e; --t-sacredLight:rgba(224,187,82,0.15); --t-sacredBorder:rgba(224,187,82,0.45);
   --t-bg:#0e1620; --t-bgGrad:#0e1620; --t-card:#16222e;
   --t-cardBorder:rgba(255,255,255,0.12); --t-goldBorder:rgba(54,196,126,0.46);
   --t-primaryBg:rgba(67,166,240,0.15); --t-goldLight:rgba(54,196,126,0.15);
