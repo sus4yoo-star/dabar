@@ -10,11 +10,25 @@
 -- 그 둘은 그대로 둔다. 여기서는 lesson_progress(진도)만 비공개로 전환한다.
 -- 적용 후에는 app/admin 페이지가 admin_dashboard() RPC 를 사용한다.
 
+-- 0) 진도 테이블 보장 (이 DB 에 아직 없으면 생성 — schema.sql 과 동일 정의)
+create table if not exists lesson_progress (
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  course     text not null,
+  lesson     text not null,
+  created_at timestamptz default now(),
+  primary key (user_id, course, lesson)
+);
+alter table lesson_progress enable row level security;
+drop policy if exists "본인 진도 저장" on lesson_progress;
+create policy "본인 진도 저장" on lesson_progress for insert with check (auth.uid() = user_id);
+grant insert on lesson_progress to authenticated;
+
 -- 1) 진도: 공개 읽기 → 본인 행만
 drop policy if exists "진도 읽기" on lesson_progress;
 drop policy if exists "본인 진도 읽기" on lesson_progress;
 create policy "본인 진도 읽기" on lesson_progress for select using (auth.uid() = user_id);
-revoke select on lesson_progress from anon;   -- authenticated 의 select 는 유지(정책이 본인 행으로 제한)
+grant select on lesson_progress to authenticated;     -- 정책이 본인 행으로 제한
+revoke select on lesson_progress from anon;
 
 -- 2) 관리자 현황판 집계 (is_admin 만 호출 가능)
 create or replace function public.admin_dashboard()
