@@ -64,10 +64,13 @@ export default function Home() {
 
   return (
     <main style={{ maxWidth: 460, margin: "0 auto", padding: "0.55rem 1rem 0.8rem", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-      {/* 상단 바 — 언어 · 화면 토글(큰 글씨/야간) · 로그인/아웃 한 줄 */}
+      {/* 상단 바 — 언어 · [화면 토글 + 긴급 SOS] · 로그인/아웃 한 줄 */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6, marginBottom: 8 }}>
         <LangSelector />
-        <DisplayQuickToggle />
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <DisplayQuickToggle />
+          <SosButton variant="mini" />
+        </div>
         {!loading && (user ? (
           <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.logout")}</button>
         ) : (
@@ -99,14 +102,14 @@ export default function Home() {
       )}
 
       {/* 히어로 */}
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: 14, paddingTop: 2 }}>
-        <div style={{ position: "relative", width: 60, height: 60, margin: "0 auto" }}>
-          <div aria-hidden style={{ position: "absolute", inset: -13, borderRadius: "50%", background: "radial-gradient(circle, rgba(199,154,43,0.22) 0%, rgba(199,154,43,0) 70%)", filter: "blur(5px)" }} />
-          <div style={{ position: "relative", width: 60, height: 60, borderRadius: 19, background: "linear-gradient(135deg,#e7f7ee 0%,#e9f4fd 100%)", display: "grid", placeItems: "center", boxShadow: "0 10px 26px rgba(31,143,230,0.18)" }}>
-            <img src="/icons/icon-192.png" alt="DABAR" width={40} height={40} style={{ borderRadius: 12 }} />
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: 7 }}>
+        <div style={{ position: "relative", width: 48, height: 48, margin: "0 auto" }}>
+          <div aria-hidden style={{ position: "absolute", inset: -11, borderRadius: "50%", background: "radial-gradient(circle, rgba(199,154,43,0.22) 0%, rgba(199,154,43,0) 70%)", filter: "blur(5px)" }} />
+          <div style={{ position: "relative", width: 48, height: 48, borderRadius: 16, background: "linear-gradient(135deg,#e7f7ee 0%,#e9f4fd 100%)", display: "grid", placeItems: "center", boxShadow: "0 8px 20px rgba(31,143,230,0.18)" }}>
+            <img src="/icons/icon-192.png" alt="DABAR" width={32} height={32} style={{ borderRadius: 10 }} />
           </div>
         </div>
-        <h1 style={{ fontFamily: serif, fontSize: 30, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 5, margin: "11px 0 4px" }}>DABAR</h1>
+        <h1 style={{ fontFamily: serif, fontSize: 26, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 5, margin: "7px 0 3px" }}>DABAR</h1>
         {/* 거룩한 금빛 장식선 */}
         <div aria-hidden style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginBottom: 4 }}>
           <span style={{ width: 28, height: 1, background: "linear-gradient(90deg, transparent, var(--t-sacred))" }} />
@@ -138,8 +141,8 @@ export default function Home() {
 
       {/* 복음 전하기 — 메인 CTA (유일한 골드 포인트 · 위계 최상단) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "16px 18px", borderRadius: 18, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
-        <span style={{ flexShrink: 0, width: 48, height: 48, borderRadius: 15, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="megaphone" color="var(--t-sacred)" size={25} /></span>
+        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 15px", borderRadius: 16, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
+        <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="megaphone" color="var(--t-sacred)" size={23} /></span>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.shareTitle")}</span>
           <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.shareSub")}</span>
@@ -170,10 +173,7 @@ export default function Home() {
         {user && <QuickChip icon="chart" label={t("common.progress")} onClick={() => router.push("/progress")} />}
       </div>
 
-      {/* 🆘 긴급 SOS — 한 줄 */}
-      <SosButton compact />
-
-      {/* 하단 보조 링크 */}
+      {/* 하단 보조 링크 (긴급 SOS는 상단 바로 이동) */}
       <div style={{ marginTop: "auto", paddingTop: 9, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
         {isAdmin && <SmallLink onClick={() => router.push("/admin")}>{t("home.adminShort")}</SmallLink>}
         <SmallLink onClick={() => router.push("/guide")}>{t("home.guideShort")}</SmallLink>
@@ -196,8 +196,8 @@ const ACCENT: Record<"green" | "blue" | "amber", Accent> = {
 function NavCard({ icon, title, sub, onClick, accent }: { icon: ReactNode; title: string; sub: string; onClick: () => void; accent: Accent }) {
   return (
     <button onClick={onClick} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 11, padding: "14px 16px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 2px 10px rgba(26,37,48,0.06), 0 1px 3px rgba(26,37,48,0.04)" }}>
-      <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 13, background: accent.chip, display: "grid", placeItems: "center", fontSize: 22 }}>{icon}</span>
+      style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", marginTop: 8, padding: "11px 14px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 2px 10px rgba(26,37,48,0.06), 0 1px 3px rgba(26,37,48,0.04)" }}>
+      <span style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 13, background: accent.chip, display: "grid", placeItems: "center" }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ fontFamily: serif, display: "block", fontSize: 16.5, fontWeight: 700, color: theme.text, letterSpacing: -0.2 }}>{title}</span>
         <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{sub}</span>
