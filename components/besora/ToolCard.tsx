@@ -5,14 +5,14 @@ import type { Tool } from "@/lib/besora/types";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { toolName, toolDesc } from "@/lib/besora/i18n";
 
-// 도구별 그라데이션 (인라인 — Tailwind 의존 없음)
+// 도구별 그라데이션 — 깊고 차분한 주얼톤(고급) · 도구 정체성은 유지
 const GRAD: Record<string, { bg: string; dark?: boolean }> = {
-  gold:    { bg: "linear-gradient(135deg,#F2CF6B,#D89E22)" },
-  crimson: { bg: "linear-gradient(135deg,#D9533F,#A52A1C)" },
-  parch:   { bg: "linear-gradient(135deg,#F5F1E8,#E7E1D4)", dark: true },
-  green:   { bg: "linear-gradient(135deg,#6FB98B,#3F8862)" },
-  violet:  { bg: "linear-gradient(135deg,#B3A6DA,#7E6CB8)" },
-  ink:     { bg: "linear-gradient(135deg,#3A3346,#16131d)" },
+  gold:    { bg: "linear-gradient(135deg,#D9B154,#B0821A)" },
+  crimson: { bg: "linear-gradient(135deg,#C2493A,#8C2A20)" },
+  parch:   { bg: "linear-gradient(135deg,#EDE7D8,#DAD2BF)", dark: true },
+  green:   { bg: "linear-gradient(135deg,#3E9B6E,#236245)" },
+  violet:  { bg: "linear-gradient(135deg,#7C6CB0,#534878)" },
+  ink:     { bg: "linear-gradient(135deg,#2E2A38,#15131C)" },
 };
 
 export default function ToolCard({ tool, wide = false }: { tool: Tool; wide?: boolean }) {
