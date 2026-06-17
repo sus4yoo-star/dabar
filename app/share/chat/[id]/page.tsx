@@ -145,7 +145,7 @@ export default function ChatPage() {
         <input value={text} onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") onSend(); }}
           placeholder={ui(myLang, "chatPlaceholder")}
-          style={{ flex: 1, borderRadius: 999, border: `1px solid ${theme.cardBorder}`, background: "#f2f7fb", padding: "11px 16px", fontSize: 15, color: theme.text, outline: "none" }} />
+          style={{ flex: 1, borderRadius: 999, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: "11px 16px", fontSize: 15, color: theme.text, outline: "none" }} />
         <button onClick={onSend} disabled={!text.trim()}
           style={{ flexShrink: 0, borderRadius: 999, background: theme.gold, color: "#08263a", border: "none", padding: "0 18px", fontSize: 14, fontWeight: 800, cursor: "pointer", opacity: text.trim() ? 1 : 0.4 }}>
           {ui(myLang, "send")}
