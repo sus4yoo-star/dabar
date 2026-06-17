@@ -60,18 +60,16 @@ export default function Home() {
 
   return (
     <main style={{ maxWidth: 460, margin: "0 auto", padding: "0.55rem 1rem 0.8rem", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-      {/* 상단 바 — 언어 + 로그인/아웃만 (깔끔) */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 8 }}>
+      {/* 상단 바 — 언어 · 화면 토글(큰 글씨/야간) · 로그인/아웃 한 줄 */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6, marginBottom: 8 }}>
         <LangSelector />
+        <DisplayQuickToggle />
         {!loading && (user ? (
-          <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>{t("common.logout")}</button>
+          <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.logout")}</button>
         ) : (
-          <button onClick={() => router.push("/login")} style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: theme.primary, border: "none", borderRadius: 16, padding: "6px 14px", cursor: "pointer", whiteSpace: "nowrap" }}>{t("common.login")}</button>
+          <button onClick={() => router.push("/login")} style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: theme.primary, border: "none", borderRadius: 16, padding: "6px 14px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.login")}</button>
         ))}
       </div>
-
-      {/* 큰 글씨 / 야간 모드 — 항상 보이는 빠른 토글 (어르신 접근성) */}
-      <DisplayQuickToggle />
 
       {/* 첫 사용자 온보딩 (비로그인 첫 방문 1회) */}
       {showOnboard && (
