@@ -26,20 +26,15 @@ export default function AdminPage() {
     if (!user) { router.replace("/login"); return; }
     if (!isAdmin) return;
     (async () => {
-      const [{ data: profiles }, { data: prog }, { data: scores }] = await Promise.all([
-        supabase.from("profiles").select("id, nickname"),
-        supabase.from("lesson_progress").select("user_id, course, lesson"),
-        supabase.from("scores").select("user_id, points"),
-      ]);
-      const progMap: Record<string, Record<string, number>> = {};
-      (prog ?? []).forEach((r: any) => { (progMap[r.user_id] ||= {})[r.course] = (progMap[r.user_id]?.[r.course] || 0) + 1; });
-      const scoreMap: Record<string, { plays: number; points: number }> = {};
-      (scores ?? []).forEach((s: any) => { const m = (scoreMap[s.user_id] ||= { plays: 0, points: 0 }); m.plays++; m.points += s.points || 0; });
-      const list: Row[] = (profiles ?? []).map((p: any) => ({
-        id: p.id, nickname: p.nickname || "익명",
-        prog: progMap[p.id] || {},
-        plays: scoreMap[p.id]?.plays || 0,
-        points: scoreMap[p.id]?.points || 0,
+      // 개인 진도는 비공개 — 관리자만 호출 가능한 보안 RPC 로 집계 데이터를 받는다.
+      const { data, error } = await supabase.rpc("admin_dashboard");
+      if (error || !data) { setRows([]); return; }
+      const list: Row[] = ((data as any[]) ?? []).map((p) => ({
+        id: p.id,
+        nickname: p.nickname || "익명",
+        prog: (p.prog as Record<string, number>) || {},
+        plays: p.plays || 0,
+        points: p.points || 0,
       }));
       // 진도 합계 → 점수 순 정렬
       list.sort((a, b) => {
