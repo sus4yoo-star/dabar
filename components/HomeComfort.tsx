@@ -148,7 +148,15 @@ export default function HomeComfort() {
         style={{ width: "100%", marginTop: 9, padding: 12, fontSize: 14.5, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 12, cursor: loading || (!input.trim() && images.length === 0) ? "default" : "pointer", opacity: loading || (!input.trim() && images.length === 0) ? 0.55 : 1 }}>
         {loading ? t("cf.loading") : t("cf.submit")}
       </button>
-      {err && <p style={{ margin: "8px 0 0", fontSize: 12, color: theme.wrong, textAlign: "center" }}>{err}</p>}
+      {err && (
+        <div style={{ marginTop: 10, padding: "11px 12px", borderRadius: 12, background: theme.wrongBg, border: `1px solid rgba(226,85,85,0.3)`, textAlign: "center" }}>
+          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: theme.wrong, lineHeight: 1.5 }}>{err}</p>
+          <button onClick={() => ask(input)} disabled={loading || (!input.trim() && images.length === 0)}
+            style={{ fontSize: 13, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 10, padding: "8px 18px", cursor: "pointer", opacity: loading ? 0.6 : 1 }}>
+            🔄 {t("common.retry")}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
