@@ -36,8 +36,10 @@ export default function MenuScanner() {
   const [items, setItems] = useState<Item[] | null>(null);
   const [open, setOpen] = useState(false);
   const [target, setTarget] = useState<string>(lang); // 번역 결과 언어 (선택 가능)
+  const lastFile = useRef<File | null>(null);
 
   async function handle(file: File) {
+    lastFile.current = file;
     setErr(""); setLoading(true); setItems(null);
     try {
       const { base64, dataUrl } = await processImage(file);
@@ -82,7 +84,17 @@ export default function MenuScanner() {
           <button onClick={() => galRef.current?.click()} style={{ ...btn, background: theme.primaryBg, color: theme.primarySoft, border: `1px solid ${theme.cardBorder}` }}>{t("scan.attach")}</button>
         </div>
       )}
-      {err && <p style={{ margin: "8px 0 0", fontSize: 12, color: theme.wrong, textAlign: "center", whiteSpace: "pre-wrap", lineHeight: 1.4 }}>{err}</p>}
+      {err && (
+        <div style={{ margin: "8px 0 0", padding: "10px 11px", borderRadius: 11, background: theme.wrongBg, border: `1px solid ${theme.wrong}`, textAlign: "center" }}>
+          <p style={{ margin: 0, fontSize: 12, color: theme.wrong, whiteSpace: "pre-wrap", lineHeight: 1.4 }}>{err}</p>
+          {lastFile.current && !loading && (
+            <button onClick={() => lastFile.current && handle(lastFile.current)}
+              style={{ marginTop: 8, fontSize: 12.5, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 9, padding: "7px 16px", cursor: "pointer" }}>
+              🔄 {t("common.retry")}
+            </button>
+          )}
+        </div>
+      )}
 
       {open && typeof document !== "undefined" && createPortal(
         <div style={{ position: "fixed", inset: 0, zIndex: 80, background: theme.bg, display: "flex", flexDirection: "column" }}>

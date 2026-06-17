@@ -34,6 +34,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   const [rightPron, setRightPron] = useState(""); // 상대 언어 칸의 발음 표기(내 언어 글자)
   const [busy, setBusy] = useState<"" | "L" | "R">(""); // 번역 중인 도착 칸
   const [err, setErr] = useState("");
+  const lastReq = useRef<{ q: string; source: string; target: string; dest: "L" | "R" } | null>(null); // 마지막 번역 요청(재시도용)
   const recRef = useRef<any>(null);           // Web Speech 인스턴스
   const recorderRef = useRef<Recorder | null>(null); // 녹음 인스턴스(iOS 등)
   const finalRef = useRef("");
@@ -93,6 +94,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   // q(source 언어) → 반대 칸(dest)에 target 언어로 번역·재생
   async function translateInto(q: string, source: string, target: string, dest: "L" | "R") {
     if (!q.trim()) return;
+    lastReq.current = { q, source, target, dest };
     setBusy(dest); setErr("");
     try {
       const { ok, d } = await callApi(q, target, source);
@@ -315,7 +317,12 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
         {langBar}
         {toolTabs}
         {mainBody}
-        {tab === "talk" && err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
+        {tab === "talk" && err && (
+          <div style={{ margin: "6px 0 0", textAlign: "center" }}>
+            <p style={{ fontSize: 12, color: theme.wrong, margin: 0 }}>{err}</p>
+            {lastReq.current && !busy && <button onClick={() => { const r = lastReq.current!; translateInto(r.q, r.source, r.target, r.dest); }} style={{ marginTop: 6, fontSize: 12, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 9, padding: "6px 14px", cursor: "pointer" }}>🔄 {ui(myLang, "retry")}</button>}
+          </div>
+        )}
       </div>
     );
   }
@@ -344,7 +351,12 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
             {langBar}
             {toolTabs}
             {mainBody}
-            {tab === "talk" && err && <p style={{ fontSize: 12, color: theme.wrong, margin: "6px 0 0", textAlign: "center" }}>{err}</p>}
+            {tab === "talk" && err && (
+          <div style={{ margin: "6px 0 0", textAlign: "center" }}>
+            <p style={{ fontSize: 12, color: theme.wrong, margin: 0 }}>{err}</p>
+            {lastReq.current && !busy && <button onClick={() => { const r = lastReq.current!; translateInto(r.q, r.source, r.target, r.dest); }} style={{ marginTop: 6, fontSize: 12, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 9, padding: "6px 14px", cursor: "pointer" }}>🔄 {ui(myLang, "retry")}</button>}
+          </div>
+        )}
           </div>
         </div>,
         document.body

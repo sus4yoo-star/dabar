@@ -25,6 +25,7 @@ const DICT: Dict = {
   "common.home":      { ko: "← 홈", en: "← Home", th: "← หน้าแรก", lo: "← ໜ້າຫຼັກ" },
   "common.cancel":    { ko: "취소", en: "Cancel", th: "ยกเลิก", lo: "ຍົກເລີກ" },
   "common.retry":     { ko: "다시 시도", en: "Try again", th: "ลองอีกครั้ง", lo: "ລອງອີກຄັ້ງ" },
+  "offline.msg":      { ko: "인터넷 연결이 끊겼어요. 일부 기능이 제한될 수 있어요.", en: "You're offline. Some features may be limited.", th: "คุณออฟไลน์อยู่ บางฟังก์ชันอาจถูกจำกัด", lo: "ທ່ານອອບໄລນ໌ຢູ່ ບາງໜ້າທີ່ອາດຖືກຈຳກັດ" },
   "common.confirm":   { ko: "확인", en: "Confirm", th: "ตกลง", lo: "ຕົກລົງ" },
   "disp.title":       { ko: "화면 설정", en: "Display", th: "การแสดงผล", lo: "ການສະແດງຜົນ" },
   "disp.bigText":     { ko: "큰 글씨", en: "Large text", th: "ตัวอักษรใหญ่", lo: "ໂຕໜັງສືໃຫຍ່" },
