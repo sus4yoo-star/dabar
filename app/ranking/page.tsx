@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { LeaderboardRow } from "@/lib/types";
 import { PageHeader, ACCENT, softShadow } from "@/lib/ui";
+import { SkeletonList } from "@/components/Skeleton";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -76,8 +77,14 @@ export default function RankingPage() {
       )}
 
       {error && <p style={{ textAlign: "center", color: theme.wrong, fontSize: 14, padding: "2rem 0" }}>{t("rk.fail")}</p>}
-      {!error && rows === null && <p style={{ textAlign: "center", color: theme.textMuted, fontSize: 14, padding: "2rem 0" }}>{t("c.loading")}</p>}
-      {!error && rows && rows.length === 0 && <p style={{ textAlign: "center", color: theme.textMuted, fontSize: 14, padding: "2rem 0" }}>{t("rk.empty")}</p>}
+      {!error && rows === null && <SkeletonList count={5} />}
+      {!error && rows && rows.length === 0 && (
+        <div className="fade-in-2" style={{ textAlign: "center", padding: "2.5rem 1.5rem", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: ACCENT.blue.bg, boxShadow: softShadow }}>
+          <div style={{ fontSize: 44, marginBottom: 10 }}>🏆</div>
+          <p style={{ fontSize: 14.5, color: theme.text, fontWeight: 700, margin: "0 0 16px", lineHeight: 1.6 }}>{t("rk.empty")}</p>
+          <button onClick={() => router.push("/play")} style={{ padding: "12px 26px", fontSize: 14.5, fontWeight: 800, color: "#fff", background: "linear-gradient(135deg,#1f9bef 0%,#1577c2 100%)", border: "none", borderRadius: 13, cursor: "pointer", boxShadow: "0 8px 20px rgba(31,155,239,0.25)" }}>{t("menu.quiz.t")} →</button>
+        </div>
+      )}
 
       {!error && rows && rows.length > 0 && (
         <div className="fade-in-2" style={{ borderRadius: 18, overflow: "hidden", border: `1px solid ${theme.cardBorder}`, background: theme.card, boxShadow: softShadow }}>

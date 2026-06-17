@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { getSupabase } from "@/lib/besora/supabase";
 import { Group, MAX_MEMBERS, createGroup, fetchMyGroupIds, fetchPublicGroups, joinGroup } from "@/lib/besora/groups";
 import { PageHeader, ACCENT, softShadow } from "@/lib/ui";
+import { SkeletonList } from "@/components/Skeleton";
 
 export default function GroupsPage() {
   const router = useRouter();
@@ -133,7 +134,7 @@ export default function GroupsPage() {
       )}
 
       {loading ? (
-        <p style={{ textAlign: "center", color: theme.textMuted, padding: "2rem" }}>…</p>
+        <SkeletonList count={4} />
       ) : (
         <>
           {mine.length > 0 && (

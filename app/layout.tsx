@@ -48,6 +48,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(function(){try{var l=localStorage.getItem('dabar_lang');if(l){var e=document.documentElement;e.lang=l;e.dir=(l==='ar'||l==='fa'||l==='ur')?'rtl':'ltr';}}catch(e){}})();`,
           }}
         />
+        {/* 화면 설정(큰 글씨·야간 모드)을 페인트 전에 적용 — 깜빡임 방지 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var e=document.documentElement;if(localStorage.getItem('dabar_bigtext')==='1')e.classList.add('big-text');if(localStorage.getItem('dabar_night')==='1')e.classList.add('night');}catch(e){}})();`,
+          }}
+        />
       </head>
       <body>
         <ChunkGuard />

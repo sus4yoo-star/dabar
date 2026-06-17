@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { useI18n, LangSelector } from "@/lib/i18n";
+import { useToast } from "@/components/Toast";
 
 // 브랜드 컬러 (파랑·초록·흰색)
 const GOLD = "#58a700";
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { user, loading, signIn, signInWithEmail } = useAuth();
   const { t } = useI18n();
+  const { show, view: toastView } = useToast();
   const [busy, setBusy] = useState<"google" | "kakao" | "email" | null>(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -28,20 +30,20 @@ export default function LoginPage() {
       await signIn(provider); // 카카오/구글 동의 화면으로 이동
     } catch (e) {
       setBusy(null);
-      alert(t("login.fail"));
+      show(t("login.fail"));
     }
   }
 
   async function handleEmail(e: React.FormEvent) {
     e.preventDefault();
     const addr = email.trim();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(addr)) { alert(t("login.emailInvalid")); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(addr)) { show(t("login.emailInvalid")); return; }
     try {
       setBusy("email");
       await signInWithEmail(addr);
       setSent(true);
     } catch {
-      alert(t("login.fail"));
+      show(t("login.fail"));
     } finally {
       setBusy(null);
     }
@@ -183,6 +185,7 @@ export default function LoginPage() {
           DABAR by AMOV · Love Creates Value
         </p>
       </div>
+      {toastView}
     </main>
   );
 }

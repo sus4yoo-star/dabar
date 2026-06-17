@@ -6,6 +6,7 @@ import { useI18n } from "@/lib/i18n";
 import { BOOK_BY_CODE, BookMeta, adjacentBook, groupedBooks, searchBooks } from "@/lib/bibleData";
 import { BIBLE_VERSION_LABEL, BookText, SECONDARY_VERSIONS, loadBook } from "@/lib/bibleText";
 import { softShadow } from "@/lib/ui";
+import { Skeleton } from "@/components/Skeleton";
 
 export default function ReadPage() {
   const router = useRouter();
@@ -138,7 +139,9 @@ export default function ReadPage() {
         <h2 style={{ fontSize: 23, fontWeight: 800, color: theme.gold, margin: "2px 0 14px", letterSpacing: -0.2 }}>{meta?.ko} {chapter}{t("read.chapter")}</h2>
 
         {loading ? (
-          <p style={{ color: theme.textMuted, textAlign: "center", padding: "3rem 0" }}>…</p>
+          <div style={{ padding: "1rem 0" }}>
+            {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} w={`${92 - (i % 3) * 12}%`} h={15} style={{ margin: "0 auto 14px" }} />)}
+          </div>
         ) : parallel ? (
           !secondVer ? (
             <div style={{ textAlign: "center", padding: "2.5rem 1rem", color: theme.textMuted }}>

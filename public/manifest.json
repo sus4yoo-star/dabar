@@ -12,6 +12,11 @@
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "categories": ["education", "lifestyle", "books"],
+  "shortcuts": [
+    { "name": "복음 전하기", "short_name": "복음", "url": "/share", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "성경 퀴즈", "short_name": "퀴즈", "url": "/play", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "소그룹 모임", "short_name": "소그룹", "url": "/groups", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ],
   "icons": [
     {
       "src": "/icons/icon-192.png",

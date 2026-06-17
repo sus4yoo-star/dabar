@@ -32,6 +32,33 @@ button:not(:disabled):hover { filter: brightness(1.06); }
   *, button { animation: none !important; transition: none !important; }
 }
 
+/* ── 접근성: 키보드 포커스 표시 ─────────────── */
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible,
+select:focus-visible, [role="button"]:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid rgba(31,155,239,0.6);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ── 화면 설정: 큰 글씨 모드 (어르신용 전역 확대) ── */
+html.big-text { zoom: 1.18; }
+
+/* ── 화면 설정: 야간(어두운) 모드 ──────────────
+   html 레벨 필터라 fixed 요소의 위치 기준이 뷰포트로 유지된다.
+   이미지·사진·로고는 되돌려서(이중 반전) 원래 색으로 보이게 한다. */
+html.night { filter: invert(1) hue-rotate(180deg); background: #0e1620; }
+html.night img, html.night video, html.night canvas,
+html.night .no-invert { filter: invert(1) hue-rotate(180deg); }
+
+/* ── 스켈레톤(뼈대) 로딩 shimmer ───────────── */
+@keyframes shimmer { 0% { background-position: -180px 0; } 100% { background-position: 180px 0; } }
+.skeleton {
+  background: linear-gradient(90deg, rgba(16,62,102,0.07) 25%, rgba(16,62,102,0.13) 37%, rgba(16,62,102,0.07) 63%);
+  background-size: 360px 100%;
+  animation: shimmer 1.3s ease-in-out infinite;
+  border-radius: 10px;
+}
+
 /* 복음 전하기(/share) 전도 도구 일러스트 애니메이션 (Sketch SVG용) */
 @keyframes sk-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes sk-pop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }

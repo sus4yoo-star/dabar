@@ -10,6 +10,7 @@ import { translateMany } from "@/lib/autoTranslate";
 import { fetchQuizProgress, upsertQuizProgress, clearQuizProgress } from "@/lib/quizProgress";
 import { bookLabel, categoryLabel } from "@/lib/bookNames";
 import { ALL_BOOKS } from "@/lib/bible";
+import { useToast } from "@/components/Toast";
 
 const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: theme.gold, hard: theme.wrong };
 
@@ -65,6 +66,7 @@ function BookProgressList({ allQ, result, lang }: { allQ: Question[]; result: Re
 
 function QuizInner() {
   const router = useRouter();
+  const { show, view: toastView } = useToast();
   const { t, lang } = useI18n();
   const params = useSearchParams();
   // 빠짐없이 풀기(완주) 모드 — 범위 내 전 문제를 순서대로, 타이머 없이, 이어풀기
@@ -167,7 +169,7 @@ function QuizInner() {
     if (!user || reported) return;
     setReported(true);
     await supabase.from("question_reports").insert({ question_id: questions[idx]?.id, user_id: user.id, question: questions[idx]?.question, reason: "사용자 신고" });
-    alert(t("q.reportAlert"));
+    show(t("q.reportAlert"));
   }
 
   const goNext = useCallback((currentScore: number, currentAnswers: typeof answers) => {
@@ -275,6 +277,7 @@ function QuizInner() {
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>
+      {toastView}
       {/* 나가기 — 진행 중에도 홈으로 */}
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, fontWeight: 600, color: theme.textMuted, background: "none", border: "none", cursor: "pointer", padding: "2px 4px" }}>{t("cat.exit")}</button>
