@@ -298,6 +298,7 @@ const DICT: Dict = {
   "ad.total":   { ko: "총 {n}명", en: "{n} members", th: "{n} คน", lo: "{n} ຄົນ" },
   "ad.empty":   { ko: "아직 등록된 성도가 없어요.", en: "No members yet.", th: "ยังไม่มีสมาชิก", lo: "ຍັງບໍ່ມີສະມາຊິກ" },
   "ad.quizStat":{ ko: "퀴즈 {p}판 · ⭐{pt}", en: "{p} plays · ⭐{pt}", th: "{p} ครั้ง · ⭐{pt}", lo: "{p} ຄັ້ງ · ⭐{pt}" },
+  "ad.quizProg":{ ko: "📖 성경퀴즈 {a}/{t} · 정답 {c}", en: "📖 Bible quiz {a}/{t} · {c} correct", th: "📖 ควิซพระคัมภีร์ {a}/{t} · ถูก {c}", lo: "📖 ຄິວສ໌ພະຄຳພີ {a}/{t} · ຖືກ {c}" },
 
   // 절차 안내
   "g.title":    { ko: "교인 절차 안내", en: "Membership Steps", th: "ขั้นตอนการเป็นสมาชิก", lo: "ຂັ້ນຕອນການເປັນສະມາຊິກ" },
