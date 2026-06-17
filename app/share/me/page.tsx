@@ -15,6 +15,7 @@ export default function Me() {
   const { myLang } = useLang();
   const [total, setTotal] = useState<number | null>(null);
   const [decided, setDecided] = useState<number | null>(null);
+  const [month, setMonth] = useState<number | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [chats, setChats] = useState<ChatListItem[]>([]);
   const [myId, setMyId] = useState<string | null>(null);
@@ -25,10 +26,17 @@ export default function Me() {
       if (!data.user) { setLoggedIn(false); return; }
       setLoggedIn(true);
       setMyId(data.user.id);
-      const { count: t } = await sb.from("sessions").select("*", { count: "exact", head: true });
-      const { count: d } = await sb.from("sessions").select("*", { count: "exact", head: true }).eq("decided", true);
+      const uid = data.user.id;
+      // 본인 기록만 집계 (예전엔 전체를 세어 "나의 기록"이 부정확했음)
+      const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
+      const [{ count: t }, { count: d }, { count: m }] = await Promise.all([
+        sb.from("sessions").select("*", { count: "exact", head: true }).eq("evangelist_id", uid),
+        sb.from("sessions").select("*", { count: "exact", head: true }).eq("evangelist_id", uid).eq("decided", true),
+        sb.from("sessions").select("*", { count: "exact", head: true }).eq("evangelist_id", uid).gte("created_at", monthStart.toISOString()),
+      ]);
       setTotal(t ?? 0);
       setDecided(d ?? 0);
+      setMonth(m ?? 0);
       try { setChats(await fetchChatList()); } catch { /* ignore */ }
     });
   }, []);
@@ -44,16 +52,23 @@ export default function Me() {
         </p>
       ) : (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <div style={{ borderRadius: 16, background: theme.card, border: `1px solid ${theme.cardBorder}`, padding: 20 }}>
-              <p style={{ fontSize: 12, color: theme.textMuted, margin: 0 }}>전한 횟수</p>
-              <p style={{ marginTop: 4, fontFamily: "'Noto Serif KR',serif", fontSize: 36, color: theme.gold, margin: "4px 0 0" }}>{total ?? "…"}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+            <div style={{ borderRadius: 16, background: theme.card, border: `1px solid ${theme.cardBorder}`, padding: "18px 14px" }}>
+              <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{ui(myLang, "statShared")}</p>
+              <p style={{ marginTop: 4, fontFamily: "'Noto Serif KR',serif", fontSize: 32, color: theme.gold, margin: "4px 0 0" }}>{total ?? "…"}</p>
             </div>
-            <div style={{ borderRadius: 16, background: theme.card, border: `1px solid ${theme.cardBorder}`, padding: 20 }}>
-              <p style={{ fontSize: 12, color: theme.textMuted, margin: 0 }}>함께 결단</p>
-              <p style={{ marginTop: 4, fontFamily: "'Noto Serif KR',serif", fontSize: 36, color: theme.correct, margin: "4px 0 0" }}>{decided ?? "…"}</p>
+            <div style={{ borderRadius: 16, background: theme.card, border: `1px solid ${theme.cardBorder}`, padding: "18px 14px" }}>
+              <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{ui(myLang, "statDecided")}</p>
+              <p style={{ marginTop: 4, fontFamily: "'Noto Serif KR',serif", fontSize: 32, color: theme.correct, margin: "4px 0 0" }}>{decided ?? "…"}</p>
+            </div>
+            <div style={{ borderRadius: 16, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, padding: "18px 14px" }}>
+              <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{ui(myLang, "statMonth")}</p>
+              <p style={{ marginTop: 4, fontFamily: "'Noto Serif KR',serif", fontSize: 32, color: theme.primarySoft, margin: "4px 0 0" }}>{month ?? "…"}</p>
             </div>
           </div>
+          {(total ?? 0) > 0 && (
+            <p style={{ margin: "14px 2px 0", fontSize: 13.5, color: theme.textMuted, lineHeight: 1.6, textAlign: "center" }}>{ui(myLang, "encourage")}</p>
+          )}
 
           {/* 동행 */}
           <div style={{ marginTop: 28 }}>
