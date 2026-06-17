@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { COURSES } from "@/lib/courses";
+import { SkeletonList } from "@/components/Skeleton";
 
 interface Row {
   id: string;
@@ -69,7 +70,7 @@ export default function AdminPage() {
       </div>
       <p style={{ fontSize: 12.5, color: theme.textMuted, margin: "0 0 1.25rem" }}>{t("ad.desc")}</p>
 
-      {rows === null && <p style={{ textAlign: "center", color: theme.textMuted, padding: "2rem 0" }}>{t("c.loading")}</p>}
+      {rows === null && <SkeletonList count={6} />}
       {rows && rows.length === 0 && <p style={{ textAlign: "center", color: theme.textMuted, padding: "2rem 0" }}>{t("ad.empty")}</p>}
 
       {rows && rows.length > 0 && (
