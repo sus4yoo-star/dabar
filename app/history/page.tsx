@@ -19,9 +19,9 @@ export default function HistoryPage() {
   const [rows, setRows] = useState<WrongAnswer[] | null>(null);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    if (loading) return;
-    if (!user) { router.replace("/login"); return; }
+  function load() {
+    if (!user) return;
+    setError(false); setRows(null);
     supabase
       .from("wrong_answers")
       .select("*")
@@ -32,6 +32,13 @@ export default function HistoryPage() {
         if (error) { setError(true); return; }
         setRows((data ?? []) as WrongAnswer[]);
       });
+  }
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user) { router.replace("/login"); return; }
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loading, router]);
 
   // 권별 오답 수 Top
@@ -71,7 +78,12 @@ export default function HistoryPage() {
         </>
       )}
 
-      {error && <p style={{ textAlign: "center", color: theme.wrong, fontSize: 14, padding: "2rem 0" }}>{t("h.fail")}</p>}
+      {error && (
+        <div style={{ textAlign: "center", padding: "2rem 0" }}>
+          <p style={{ color: theme.wrong, fontSize: 14, margin: "0 0 12px" }}>{t("h.fail")}</p>
+          <button onClick={load} style={{ fontSize: 14, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 11, padding: "10px 22px", cursor: "pointer" }}>🔄 {t("common.retry")}</button>
+        </div>
+      )}
       {!error && rows === null && <p style={{ textAlign: "center", color: theme.textMuted, fontSize: 14, padding: "2rem 0" }}>{t("c.loading")}</p>}
       {!error && rows && rows.length === 0 && (
         <div className="fade-in" style={{ textAlign: "center", padding: "2.5rem 1.25rem", marginTop: "1rem", borderRadius: 18, border: `1px solid ${ACCENT.green.border}`, background: ACCENT.green.bg, boxShadow: softShadow }}>

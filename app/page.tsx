@@ -106,7 +106,7 @@ export default function Home() {
                   style={{ width: 130, fontSize: 13, padding: "5px 9px", borderRadius: 12, border: `1px solid ${theme.gold}`, background: theme.card, color: theme.text, outline: "none" }} />
                 <button onClick={async () => { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else show(t("common.nickFail")); }}
                   style={{ fontSize: 12, fontWeight: 700, color: "#08263a", background: theme.gold, border: "none", borderRadius: 12, padding: "5px 10px", cursor: "pointer" }}>{t("common.save")}</button>
-                <button onClick={() => setEditingNick(false)} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>✕</button>
+                <button onClick={() => setEditingNick(false)} aria-label={t("common.cancel")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer", padding: "4px 8px" }}>✕</button>
               </span>
             ) : (
               <>

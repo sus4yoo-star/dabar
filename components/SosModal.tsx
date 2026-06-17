@@ -59,6 +59,13 @@ export default function SosModal({ onClose }: { onClose: () => void }) {
     try { const raw = localStorage.getItem(LS_KEY); if (raw) { const d = JSON.parse(raw); setData({ name: d.name ?? "", place: d.place ?? "" }); } } catch { /* */ }
     try { const c = localStorage.getItem(LS_COUNTRY); setCountry(c && COUNTRIES.some((x) => x.code === c) ? c : detectCountryCode()); } catch { setCountry(detectCountryCode()); }
   }, []);
+  // Esc 로 닫기 — 키보드/접근성
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   function save(next: SosData) { setData(next); try { localStorage.setItem(LS_KEY, JSON.stringify(next)); } catch { /* */ } }
   function pickCountry(c: string) { setCountry(c); try { localStorage.setItem(LS_COUNTRY, c); } catch { /* */ } }
 
