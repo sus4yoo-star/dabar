@@ -16,7 +16,7 @@ export default function ReachPage() {
     <main style={{ maxWidth: 520, margin: "0 auto", padding: "0.7rem 1rem 1.2rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer" }}>{t("common.home")}</button>
-        <h1 style={{ fontSize: 17, fontWeight: 800, color: theme.gold, margin: 0, textAlign: "center", flex: 1 }}>{t("reach.title")}</h1>
+        <h1 className="serif" style={{ fontSize: 18, fontWeight: 700, color: theme.gold, margin: 0, textAlign: "center", flex: 1, letterSpacing: -0.2 }}>{t("reach.title")}</h1>
         <span style={{ width: 52 }} />
       </div>
 

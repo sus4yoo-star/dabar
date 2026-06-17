@@ -146,11 +146,11 @@ export default function Home() {
         <span style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
       </button>
 
-      {/* 📚 양육·교육 과정 — 2번째 */}
-      <NavCard icon="📚" title={t("home.growSection")} sub={t("home.growSub")} onClick={() => router.push("/learn")} accent={ACCENT.green} />
-
-      {/* 🌱 선교 여정 — 3번째 (내가 전하는 사람들) */}
+      {/* 🌱 선교 여정 — 복음 전하기와 같은 결(골드), 2번째 */}
       <HomeReachCard />
+
+      {/* 📚 양육·교육 과정 — 3번째 */}
+      <NavCard icon="📚" title={t("home.growSection")} sub={t("home.growSub")} onClick={() => router.push("/learn")} accent={ACCENT.green} />
 
       {/* 📖 성경퀴즈 */}
       <NavCard icon="📖" title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} accent={ACCENT.blue} />

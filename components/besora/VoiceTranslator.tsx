@@ -336,7 +336,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
       {/* 닫았을 때만 보이는 슬림 재열기 바 (큰 마이크 버튼 대신) */}
       {!open && (
         <button onClick={() => setOpen(true)} aria-label={ui(myLang, "voice")}
-          style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", bottom: 14, zIndex: 55, padding: "9px 18px", borderRadius: 999, border: "none", cursor: "pointer", background: "linear-gradient(135deg,#3CAFFF,#92D700)", color: "#fff", fontSize: 13, fontWeight: 800, boxShadow: "0 8px 22px rgba(23,50,73,0.3)" }}>
+          style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", bottom: 14, zIndex: 55, padding: "10px 20px", borderRadius: 999, border: "none", cursor: "pointer", background: theme.primary, color: "#fff", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, boxShadow: "0 8px 22px rgba(31,143,230,0.32)" }}>
           🎤 {ui(myLang, "voice")} ▲
         </button>
       )}
