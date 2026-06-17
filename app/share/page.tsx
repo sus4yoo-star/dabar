@@ -16,18 +16,20 @@ export default function ShareHome() {
   const [tools, setTools] = useState<Tool[]>([]);
   const [err, setErr] = useState<string | null>(null);
 
-  useEffect(() => {
+  function load() {
+    setErr(null);
     fetchTools().then(setTools).catch((e) => setErr(e.message));
-  }, []);
+  }
+  useEffect(() => { load(); }, []);
 
   return (
     <AppShell>
       <p style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 22, fontWeight: 700, lineHeight: 1.25, color: theme.text, margin: "0 0 14px" }}>{ui(myLang, "tagline")}</p>
 
       {err && (
-        <div style={{ marginBottom: 14, borderRadius: 12, border: `1px solid ${theme.wrong}`, background: theme.wrongBg, padding: 16, fontSize: 14, color: theme.text }}>
-          전도 콘텐츠를 불러오지 못했어요. (Supabase 의 besora 스키마/콘텐츠 확인)
-          <span style={{ marginTop: 4, display: "block", fontSize: 12, color: theme.textMuted }}>{err}</span>
+        <div style={{ marginBottom: 14, borderRadius: 12, border: `1px solid ${theme.wrong}`, background: theme.wrongBg, padding: 16, fontSize: 14, color: theme.text, textAlign: "center" }}>
+          <p style={{ margin: "0 0 10px", lineHeight: 1.5 }}>{ui(myLang, "errContent")}</p>
+          <button onClick={load} style={{ fontSize: 13.5, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 10, padding: "9px 20px", cursor: "pointer" }}>🔄 {ui(myLang, "retry")}</button>
         </div>
       )}
 
