@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { useI18n, LangSelector } from "@/lib/i18n";
 import { useToast } from "@/components/Toast";
 import { theme } from "@/lib/theme";
+import BrandMark from "@/components/BrandMark";
 
 // 브랜드 컬러 (파랑·초록·흰색)
 const GOLD = theme.gold;
@@ -64,23 +65,19 @@ export default function LoginPage() {
     >
       <div style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 18 }}><LangSelector /></div>
-        {/* 아이콘 + 글로우 */}
+        {/* 대표 마크 + 글로우 */}
         <div style={{ position: "relative", display: "inline-block", marginBottom: 18 }}>
           <div
             aria-hidden
             style={{
-              position: "absolute", inset: -28, borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(146,215,0,0.22) 0%, rgba(146,215,0,0) 70%)",
+              position: "absolute", inset: -22, borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(199,154,43,0.22) 0%, rgba(199,154,43,0) 70%)",
               filter: "blur(6px)",
             }}
           />
-          <img
-            src="/icons/icon-192.png"
-            alt="DABAR"
-            width={92}
-            height={92}
-            style={{ position: "relative", borderRadius: 22, boxShadow: "0 10px 40px rgba(0,0,0,0.45)" }}
-          />
+          <div style={{ position: "relative", width: 92, height: 92, borderRadius: 26, background: "linear-gradient(135deg,#e7f7ee 0%,#e9f4fd 100%)", display: "grid", placeItems: "center", boxShadow: "0 12px 34px rgba(31,143,230,0.22)" }}>
+            <BrandMark size={62} />
+          </div>
         </div>
 
         {/* 워드마크 */}
