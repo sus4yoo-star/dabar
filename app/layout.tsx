@@ -5,6 +5,7 @@ import { AuthGate } from "@/lib/AuthGate";
 import { I18nProvider } from "@/lib/i18n";
 import ChunkGuard from "./ChunkGuard";
 import OfflineBanner from "@/components/OfflineBanner";
+import ErrorReporter from "@/components/ErrorReporter";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dabar.theamov.com"),
@@ -58,6 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ChunkGuard />
+        <ErrorReporter />
         <I18nProvider>
           <OfflineBanner />
           <AuthProvider>
