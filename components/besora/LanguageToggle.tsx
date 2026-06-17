@@ -44,7 +44,7 @@ export default function LanguageToggle() {
       </div>
 
       {open && (
-        <div role="listbox" style={{ position: "absolute", insetInlineEnd: 0, zIndex: 50, marginTop: 8, maxHeight: 260, width: 240, overflow: "auto", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: "#ffffff", padding: 8, boxShadow: "0 16px 40px rgba(23,50,73,0.18)" }}>
+        <div role="listbox" style={{ position: "absolute", insetInlineEnd: 0, zIndex: 50, marginTop: 8, maxHeight: 260, width: 240, overflow: "auto", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: 8, boxShadow: "0 16px 40px rgba(23,50,73,0.18)" }}>
           <p style={{ padding: "4px 8px", fontSize: 11.5, color: theme.textMuted, margin: 0 }}>
             {open === "my" ? ui(myLang, "myLanguage") : ui(myLang, "seekerLanguage")}
           </p>

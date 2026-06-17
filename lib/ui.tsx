@@ -7,11 +7,11 @@ import { theme } from "@/lib/theme";
 export type Accent = { fg: string; chip: string; bg: string; border: string };
 
 export const ACCENT: Record<"green" | "blue" | "amber" | "red" | "violet", Accent> = {
-  green:  { fg: theme.gold,        chip: "rgba(146,215,0,0.20)",  bg: "linear-gradient(135deg,#f6ffea 0%,#ffffff 72%)", border: theme.goldBorder },
-  blue:   { fg: theme.primarySoft, chip: "rgba(31,155,239,0.15)", bg: "linear-gradient(135deg,#eef8ff 0%,#ffffff 72%)", border: theme.cardBorder },
-  amber:  { fg: "#c9820a",         chip: "rgba(230,160,0,0.18)",  bg: "linear-gradient(135deg,#fff7e6 0%,#ffffff 72%)", border: theme.cardBorder },
-  red:    { fg: "#c0392b",         chip: "rgba(226,59,59,0.14)",  bg: "linear-gradient(135deg,#fff1ef 0%,#ffffff 72%)", border: "rgba(226,59,59,0.30)" },
-  violet: { fg: "#7c5cd6",         chip: "rgba(124,92,214,0.16)", bg: "linear-gradient(135deg,#f4f0ff 0%,#ffffff 72%)", border: theme.cardBorder },
+  green:  { fg: "var(--a-green-fg)",  chip: "var(--a-green-chip)",  bg: "var(--a-green-bg)",  border: "var(--a-green-border)" },
+  blue:   { fg: "var(--a-blue-fg)",   chip: "var(--a-blue-chip)",   bg: "var(--a-blue-bg)",   border: "var(--a-blue-border)" },
+  amber:  { fg: "var(--a-amber-fg)",  chip: "var(--a-amber-chip)",  bg: "var(--a-amber-bg)",  border: "var(--a-amber-border)" },
+  red:    { fg: "var(--a-red-fg)",    chip: "var(--a-red-chip)",    bg: "var(--a-red-bg)",    border: "var(--a-red-border)" },
+  violet: { fg: "var(--a-violet-fg)", chip: "var(--a-violet-chip)", bg: "var(--a-violet-bg)", border: "var(--a-violet-border)" },
 };
 
 export const softShadow = "0 3px 12px rgba(23,50,73,0.05)";

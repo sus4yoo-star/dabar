@@ -102,7 +102,7 @@ export default function Phrasebook({ big = false }: { big?: boolean } = {}) {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder={`🔍 ${ui(myLang, "search")}`}
-          style={{ width: "100%", boxSizing: "border-box", fontSize: 15, padding: "11px 36px 11px 13px", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: "#fff", color: theme.text, outline: "none" }}
+          style={{ width: "100%", boxSizing: "border-box", fontSize: 15, padding: "11px 36px 11px 13px", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, outline: "none" }}
         />
         {searching && (
           <button onClick={() => setQ("")} aria-label="clear" style={{ position: "absolute", insetInlineEnd: 6, top: "50%", transform: "translateY(-50%)", width: 28, height: 28, borderRadius: 999, border: "none", background: theme.card, color: theme.textMuted, cursor: "pointer", fontSize: 14 }}>✕</button>
@@ -144,7 +144,7 @@ export default function Phrasebook({ big = false }: { big?: boolean } = {}) {
             <div key={p.id} role="button" tabIndex={0}
               onClick={() => twoWay && speak(st, seeker)}
               onKeyDown={(e) => { if (twoWay && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); speak(st, seeker); } }}
-              style={{ textAlign: "left", width: "100%", padding: "11px 13px", borderRadius: 13, border: `1px solid ${theme.cardBorder}`, background: "#fff", cursor: twoWay ? "pointer" : "default", display: "flex", alignItems: "center", gap: 10 }}>
+              style={{ textAlign: "left", width: "100%", padding: "11px 13px", borderRadius: 13, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: twoWay ? "pointer" : "default", display: "flex", alignItems: "center", gap: 10 }}>
               <button
                 onClick={(e) => { e.stopPropagation(); toggleFav(p.id); }}
                 aria-label="favorite" aria-pressed={fav}

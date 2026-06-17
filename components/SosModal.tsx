@@ -151,7 +151,7 @@ export default function SosModal({ onClose }: { onClose: () => void }) {
   if (typeof document === "undefined") return null;
   return createPortal(
     <div style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(20,8,8,0.5)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }} onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "10px 14px calc(16px + env(safe-area-inset-bottom))", maxHeight: "96dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: theme.card, borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "10px 14px calc(16px + env(safe-area-inset-bottom))", maxHeight: "96dvh", overflowY: "auto", maxWidth: 480, width: "100%", margin: "0 auto", boxShadow: "0 -12px 36px rgba(0,0,0,0.25)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
           <span style={{ fontSize: 17, fontWeight: 900, color: RED }}>{t("sos.title")}</span>
           <button onClick={onClose} style={{ fontSize: 13, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "5px 12px", cursor: "pointer" }}>{t("sos.close")} ✕</button>
@@ -229,5 +229,5 @@ export default function SosModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-const inp: React.CSSProperties = { width: "100%", boxSizing: "border-box", fontSize: 15, padding: "9px 11px", borderRadius: 10, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" };
+const inp: React.CSSProperties = { width: "100%", boxSizing: "border-box", fontSize: 15, padding: "9px 11px", borderRadius: 10, border: `1px solid ${theme.border}`, background: theme.card, color: theme.text, outline: "none" };
 const lbl: React.CSSProperties = { display: "block", fontSize: 12, fontWeight: 800, color: theme.textMuted, marginBottom: 3 };

@@ -95,7 +95,7 @@ export default function ReadPage() {
       {/* 헤더 */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: theme.bg ?? "#fff", borderBottom: `1px solid ${theme.cardBorder}`, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
         <button onClick={() => router.push("/")} style={iconBtn}>← {t("common.home")}</button>
-        <button onClick={() => setPickerOpen(true)} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "linear-gradient(135deg,#eef8ff 0%,#ffffff 72%)", border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "10px 12px", cursor: "pointer", boxShadow: softShadow }}>
+        <button onClick={() => setPickerOpen(true)} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "var(--a-blue-bg)", border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "10px 12px", cursor: "pointer", boxShadow: softShadow }}>
           <span style={{ fontSize: 15.5, fontWeight: 800, color: theme.text }}>📖 {meta?.ko} {chapter}{t("read.chapter")}</span>
           <span style={{ fontSize: 11, fontWeight: 700, color: theme.gold }}>▾</span>
         </button>
@@ -108,7 +108,7 @@ export default function ReadPage() {
       {/* 본문 */}
       <div ref={scroller} style={{ flex: 1, overflowY: "auto", padding: "16px 18px 90px" }}>
         {/* 컨셉: 혼자 읽기 + 상대 언어와 나란히 함께 읽기 */}
-        <div style={{ background: "linear-gradient(135deg,#eef8ff 0%,#ffffff 72%)", border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "13px 14px", margin: "0 0 14px", boxShadow: softShadow }}>
+        <div style={{ background: "var(--a-blue-bg)", border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "13px 14px", margin: "0 0 14px", boxShadow: softShadow }}>
           <p style={{ fontSize: 12.5, color: theme.textMuted, lineHeight: 1.55, textAlign: "center", margin: 0 }}>🙏 {t("read.concept")}</p>
           <button onClick={() => router.push("/share/verses")}
             style={{ width: "100%", marginTop: 10, padding: "11px", fontSize: 13.5, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 12, cursor: "pointer", boxShadow: "0 6px 16px rgba(31,155,239,0.20)" }}>

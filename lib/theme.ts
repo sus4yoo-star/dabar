@@ -1,28 +1,29 @@
-// DABAR 테마 — 흰 바탕 + 파랑·초록 포인트 (로고 컨셉)
-// 바탕은 흰색, 파랑(#3CAFFF 계열)은 주요 동작/링크, 초록(#92D700 계열)은 강조/성장 역할.
+// DABAR 테마 — CSS 변수 기반(라이트/다크 전환 지원).
+// 실제 색 값은 globals.css 의 :root(라이트) 와 html.night(다크) 에 정의된다.
+// 인라인 스타일에서 그대로 쓰도록 각 토큰은 var(...) 문자열을 가리킨다.
 export const theme = {
   // 브랜드
-  primary:    "#1f9bef",   // 파랑 — CTA·링크·선택 상태
-  primarySoft:"#1577c2",   // 파랑(진한) — 보조 강조 텍스트
-  gold:       "#58a700",   // (토큰명 유지) 초록 — 제목·뱃지·성장 강조
-  goldSoft:   "#79c61d",
+  primary:    "var(--t-primary)",     // 파랑 — CTA·링크·선택 상태
+  primarySoft:"var(--t-primarySoft)", // 파랑(진한) — 보조 강조 텍스트
+  gold:       "var(--t-gold)",        // (토큰명 유지) 초록 — 제목·뱃지·성장 강조
+  goldSoft:   "var(--t-goldSoft)",
 
-  // 배경 / 표면 (모두 흰색 계열)
-  bg:        "#ffffff",
-  bgGrad:    "#ffffff",
-  card:      "#fafcfe",                  // 흰 카드 (테두리로 구분)
-  cardBorder:"rgba(16,62,102,0.16)",
-  goldBorder:"rgba(88,167,0,0.45)",      // 초록 테두리
-  primaryBg: "rgba(31,155,239,0.10)",    // 파랑 연한 배경
-  goldLight: "rgba(146,215,0,0.14)",     // 초록 연한 배경
+  // 배경 / 표면
+  bg:        "var(--t-bg)",
+  bgGrad:    "var(--t-bgGrad)",
+  card:      "var(--t-card)",
+  cardBorder:"var(--t-cardBorder)",
+  goldBorder:"var(--t-goldBorder)",
+  primaryBg: "var(--t-primaryBg)",
+  goldLight: "var(--t-goldLight)",
 
-  // 텍스트 (어둡게 — 흰 바탕 가독성)
-  text:      "#173249",
-  textMuted: "#54718a",
-  textFaint: "#85a0b5",
-  border:    "rgba(23,50,73,0.20)",
+  // 텍스트
+  text:      "var(--t-text)",
+  textMuted: "var(--t-textMuted)",
+  textFaint: "var(--t-textFaint)",
+  border:    "var(--t-border)",
 
   // 상태
-  correct:   "#17a05e", correctBg: "rgba(23,160,94,0.12)",
-  wrong:     "#e25555", wrongBg:   "rgba(226,85,85,0.12)",
+  correct:   "var(--t-correct)", correctBg: "var(--t-correctBg)",
+  wrong:     "var(--t-wrong)",    wrongBg:   "var(--t-wrongBg)",
 };

@@ -172,7 +172,7 @@ export default function GroupDetailPage() {
             {editingNotice ? (
               <div>
                 <textarea value={noticeDraft} onChange={e => setNoticeDraft(e.target.value)} placeholder={t("grp.noticePh")} rows={3}
-                  style={{ width: "100%", boxSizing: "border-box", fontSize: 13.5, padding: "9px 11px", borderRadius: 10, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none", resize: "vertical", lineHeight: 1.5 }} />
+                  style={{ width: "100%", boxSizing: "border-box", fontSize: 13.5, padding: "9px 11px", borderRadius: 10, border: `1px solid ${theme.border}`, background: theme.card, color: theme.text, outline: "none", resize: "vertical", lineHeight: 1.5 }} />
                 <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
                   <button onClick={() => setEditingNotice(false)} style={{ flex: 1, padding: 9, fontSize: 13, fontWeight: 700, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 9, cursor: "pointer" }}>{t("grp.cancel")}</button>
                   <button onClick={saveNotice} style={{ flex: 2, padding: 9, fontSize: 13, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 9, cursor: "pointer" }}>{t("grp.save")}</button>
@@ -299,7 +299,7 @@ export default function GroupDetailPage() {
       {isMember && (
         <div style={{ flexShrink: 0, background: theme.bg, borderTop: `1px solid ${theme.cardBorder}`, padding: "10px 12px calc(10px + env(safe-area-inset-bottom))", display: "flex", gap: 8, alignItems: "center" }}>
           <input value={text} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }} placeholder={t("grp.msgPh")}
-            style={{ flex: 1, fontSize: 14, padding: "10px 13px", borderRadius: 20, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" }} />
+            style={{ flex: 1, fontSize: 14, padding: "10px 13px", borderRadius: 20, border: `1px solid ${theme.border}`, background: theme.card, color: theme.text, outline: "none" }} />
           <button onClick={send} disabled={!text.trim()} style={{ flexShrink: 0, fontSize: 14, fontWeight: 800, color: "#fff", background: "linear-gradient(135deg,#1f9bef 0%,#1577c2 100%)", border: "none", borderRadius: 20, padding: "10px 18px", cursor: "pointer", opacity: text.trim() ? 1 : 0.5, boxShadow: text.trim() ? "0 4px 12px rgba(31,155,239,0.28)" : "none" }}>{t("grp.send")}</button>
         </div>
       )}

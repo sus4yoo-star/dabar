@@ -124,7 +124,7 @@ export default function GroupsPage() {
       {!loading && totalOthers > 1 && (
         <div style={{ marginBottom: 14 }}>
           <input value={q} onChange={e => setQ(e.target.value)} placeholder={t("grp.search")} aria-label={t("grp.search")}
-            style={{ width: "100%", boxSizing: "border-box", fontSize: 14, padding: "10px 13px", borderRadius: 12, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" }} />
+            style={{ width: "100%", boxSizing: "border-box", fontSize: 14, padding: "10px 13px", borderRadius: 12, border: `1px solid ${theme.border}`, background: theme.card, color: theme.text, outline: "none" }} />
           <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
             {(["recent", "members"] as const).map(s => (
               <button key={s} onClick={() => setSort(s)} style={{ fontSize: 12, fontWeight: sort === s ? 800 : 600, padding: "5px 12px", borderRadius: 999, cursor: "pointer", border: `1px solid ${sort === s ? "transparent" : theme.cardBorder}`, background: sort === s ? theme.primary : theme.card, color: sort === s ? "#fff" : theme.textMuted }}>{t(s === "recent" ? "grp.sortRecent" : "grp.sortMembers")}</button>
@@ -158,7 +158,7 @@ export default function GroupsPage() {
 
 function Field({ v, ph, on }: { v: string; ph: string; on: (v: string) => void }) {
   return <input value={v} onChange={e => on(e.target.value)} placeholder={ph}
-    style={{ width: "100%", boxSizing: "border-box", fontSize: 14, padding: "10px 12px", marginBottom: 8, borderRadius: 10, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" }} />;
+    style={{ width: "100%", boxSizing: "border-box", fontSize: 14, padding: "10px 12px", marginBottom: 8, borderRadius: 10, border: `1px solid ${theme.border}`, background: theme.card, color: theme.text, outline: "none" }} />;
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {

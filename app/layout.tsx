@@ -4,6 +4,7 @@ import { AuthProvider } from "@/lib/auth";
 import { AuthGate } from "@/lib/AuthGate";
 import { I18nProvider } from "@/lib/i18n";
 import ChunkGuard from "./ChunkGuard";
+import OfflineBanner from "@/components/OfflineBanner";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dabar.theamov.com"),
@@ -51,13 +52,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* 화면 설정(큰 글씨·야간 모드)을 페인트 전에 적용 — 깜빡임 방지 */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var e=document.documentElement;if(localStorage.getItem('dabar_bigtext')==='1')e.classList.add('big-text');if(localStorage.getItem('dabar_night')==='1')e.classList.add('night');}catch(e){}})();`,
+            __html: `(function(){try{var e=document.documentElement;if(localStorage.getItem('dabar_bigtext')==='1')e.classList.add('big-text');if(localStorage.getItem('dabar_night')==='1'){e.classList.add('night');document.addEventListener('DOMContentLoaded',function(){var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content','#0e1620');});}}catch(e){}})();`,
           }}
         />
       </head>
       <body>
         <ChunkGuard />
         <I18nProvider>
+          <OfflineBanner />
           <AuthProvider>
             <AuthGate>{children}</AuthGate>
           </AuthProvider>
