@@ -100,12 +100,18 @@ export default function Home() {
       {/* 히어로 */}
       <div className="fade-in" style={{ textAlign: "center", marginBottom: 14, paddingTop: 2 }}>
         <div style={{ position: "relative", width: 60, height: 60, margin: "0 auto" }}>
-          <div aria-hidden style={{ position: "absolute", inset: -12, borderRadius: "50%", background: "radial-gradient(circle, rgba(47,110,94,0.20) 0%, rgba(47,110,94,0) 70%)", filter: "blur(5px)" }} />
-          <div style={{ position: "relative", width: 60, height: 60, borderRadius: 19, background: "linear-gradient(135deg,#eaf1ec 0%,#e7f0f7 100%)", display: "grid", placeItems: "center", boxShadow: "0 10px 26px rgba(28,91,140,0.18)" }}>
+          <div aria-hidden style={{ position: "absolute", inset: -13, borderRadius: "50%", background: "radial-gradient(circle, rgba(199,154,43,0.22) 0%, rgba(199,154,43,0) 70%)", filter: "blur(5px)" }} />
+          <div style={{ position: "relative", width: 60, height: 60, borderRadius: 19, background: "linear-gradient(135deg,#e7f7ee 0%,#e9f4fd 100%)", display: "grid", placeItems: "center", boxShadow: "0 10px 26px rgba(31,143,230,0.18)" }}>
             <img src="/icons/icon-192.png" alt="DABAR" width={40} height={40} style={{ borderRadius: 12 }} />
           </div>
         </div>
-        <h1 style={{ fontFamily: serif, fontSize: 30, fontWeight: 700, color: theme.gold, letterSpacing: 5, margin: "11px 0 3px" }}>DABAR</h1>
+        <h1 style={{ fontFamily: serif, fontSize: 30, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 5, margin: "11px 0 4px" }}>DABAR</h1>
+        {/* 거룩한 금빛 장식선 */}
+        <div aria-hidden style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginBottom: 4 }}>
+          <span style={{ width: 28, height: 1, background: "linear-gradient(90deg, transparent, var(--t-sacred))" }} />
+          <span style={{ color: "var(--t-sacred)", fontSize: 9, lineHeight: 1 }}>✦</span>
+          <span style={{ width: 28, height: 1, background: "linear-gradient(90deg, var(--t-sacred), transparent)" }} />
+        </div>
         <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0, letterSpacing: 0.3 }}>{t("home.tagline")}</p>
         {user && (
           <div style={{ marginTop: 5, fontSize: 13, color: theme.primarySoft, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: 6 }}>
