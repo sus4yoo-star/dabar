@@ -99,9 +99,14 @@ export default function GroupsPage() {
       {user && !canCreate && (
         <div style={{ margin: "0 0 14px", padding: "10px 12px", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10 }}>
           <p style={{ fontSize: 12.5, color: theme.textMuted, textAlign: "center", margin: 0, lineHeight: 1.5 }}>{t("grp.leaderOnly")}</p>
-          <button onClick={runDiag} style={{ display: "block", margin: "8px auto 0", fontSize: 12, fontWeight: 700, color: theme.primarySoft, background: "transparent", border: `1px solid ${theme.cardBorder}`, borderRadius: 8, padding: "5px 12px", cursor: "pointer" }}>🔧 권한 진단</button>
-          {diag.length > 0 && (
-            <pre style={{ marginTop: 10, fontSize: 11, lineHeight: 1.6, color: theme.text, background: theme.bg, border: `1px solid ${theme.cardBorder}`, borderRadius: 8, padding: 10, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{diag.join("\n")}</pre>
+          {/* 권한 진단 — 개발자/관리자 디버그 도구 (일반 사용자에겐 숨김) */}
+          {isAdmin && (
+            <>
+              <button onClick={runDiag} style={{ display: "block", margin: "8px auto 0", fontSize: 12, fontWeight: 700, color: theme.primarySoft, background: "transparent", border: `1px solid ${theme.cardBorder}`, borderRadius: 8, padding: "5px 12px", cursor: "pointer" }}>🔧 권한 진단</button>
+              {diag.length > 0 && (
+                <pre style={{ marginTop: 10, fontSize: 11, lineHeight: 1.6, color: theme.text, background: theme.bg, border: `1px solid ${theme.cardBorder}`, borderRadius: 8, padding: 10, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{diag.join("\n")}</pre>
+              )}
+            </>
           )}
         </div>
       )}
