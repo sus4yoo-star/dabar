@@ -2,19 +2,56 @@
 html, body { min-height: 100%; }
 /* iOS/모바일: 입력창 포커스·회전 시 글자 자동 확대 방지 */
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* ── 디자인 토큰 (라이트 기본) ───────────────── */
+:root {
+  --t-primary:#1f9bef; --t-primarySoft:#1577c2; --t-gold:#58a700; --t-goldSoft:#79c61d;
+  --t-bg:#ffffff; --t-bgGrad:#ffffff; --t-card:#fafcfe;
+  --t-cardBorder:rgba(16,62,102,0.16); --t-goldBorder:rgba(88,167,0,0.45);
+  --t-primaryBg:rgba(31,155,239,0.10); --t-goldLight:rgba(146,215,0,0.14);
+  --t-text:#173249; --t-textMuted:#54718a; --t-textFaint:#85a0b5; --t-border:rgba(23,50,73,0.20);
+  --t-correct:#17a05e; --t-correctBg:rgba(23,160,94,0.12);
+  --t-wrong:#e25555; --t-wrongBg:rgba(226,85,85,0.12);
+  --t-placeholder:#9ab4c6;
+  /* 강조(ACCENT) 팔레트 */
+  --a-green-fg:var(--t-gold);        --a-green-chip:rgba(146,215,0,0.20);  --a-green-bg:linear-gradient(135deg,#f6ffea 0%,#ffffff 72%); --a-green-border:var(--t-goldBorder);
+  --a-blue-fg:var(--t-primarySoft);  --a-blue-chip:rgba(31,155,239,0.15);  --a-blue-bg:linear-gradient(135deg,#eef8ff 0%,#ffffff 72%);  --a-blue-border:var(--t-cardBorder);
+  --a-amber-fg:#c9820a;              --a-amber-chip:rgba(230,160,0,0.18);  --a-amber-bg:linear-gradient(135deg,#fff7e6 0%,#ffffff 72%); --a-amber-border:var(--t-cardBorder);
+  --a-red-fg:#c0392b;                --a-red-chip:rgba(226,59,59,0.14);    --a-red-bg:linear-gradient(135deg,#fff1ef 0%,#ffffff 72%);   --a-red-border:rgba(226,59,59,0.30);
+  --a-violet-fg:#7c5cd6;             --a-violet-chip:rgba(124,92,214,0.16); --a-violet-bg:linear-gradient(135deg,#f4f0ff 0%,#ffffff 72%); --a-violet-border:var(--t-cardBorder);
+}
+
+/* ── 다크(야간) 토큰 ─────────────────────────── */
+html.night {
+  --t-primary:#46b2ff; --t-primarySoft:#8cc9ff; --t-gold:#92d64c; --t-goldSoft:#a9e264;
+  --t-bg:#0e1620; --t-bgGrad:#0e1620; --t-card:#18242f;
+  --t-cardBorder:rgba(255,255,255,0.13); --t-goldBorder:rgba(146,214,76,0.5);
+  --t-primaryBg:rgba(70,178,255,0.15); --t-goldLight:rgba(146,214,76,0.16);
+  --t-text:#e9eff5; --t-textMuted:#a3b6c7; --t-textFaint:#6f8499; --t-border:rgba(255,255,255,0.17);
+  --t-correct:#41dd8c; --t-correctBg:rgba(65,221,140,0.16);
+  --t-wrong:#ff6f6f; --t-wrongBg:rgba(255,111,111,0.16);
+  --t-placeholder:#6f8499;
+  --a-green-fg:#9be055;   --a-green-chip:rgba(146,214,76,0.22);  --a-green-bg:linear-gradient(135deg,#16301b 0%,#18242f 72%);
+  --a-blue-fg:#8cc9ff;    --a-blue-chip:rgba(70,178,255,0.20);   --a-blue-bg:linear-gradient(135deg,#102a3d 0%,#18242f 72%);
+  --a-amber-fg:#e7b85a;   --a-amber-chip:rgba(230,160,0,0.24);   --a-amber-bg:linear-gradient(135deg,#332810 0%,#18242f 72%);
+  --a-red-fg:#ff9183;     --a-red-chip:rgba(255,111,111,0.22);   --a-red-bg:linear-gradient(135deg,#341816 0%,#18242f 72%); --a-red-border:rgba(255,111,111,0.36);
+  --a-violet-fg:#bba6f2;  --a-violet-chip:rgba(124,92,214,0.26); --a-violet-bg:linear-gradient(135deg,#221c3a 0%,#18242f 72%);
+}
+
 body {
   margin: 0;
   padding: 0;
-  background-color: #ffffff;
-  color: #173249;
+  background-color: var(--t-bg);
+  color: var(--t-text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  transition: background-color .2s ease, color .2s ease;
 }
 button { font-family: inherit; transition: transform .08s ease, filter .15s ease, opacity .15s ease, background .15s ease; }
 button:not(:disabled):active { transform: scale(0.97); }
 button:not(:disabled):hover { filter: brightness(1.06); }
-::placeholder { color: #9ab4c6; }
+::placeholder { color: var(--t-placeholder); }
 
 /* ── 애니메이션 ───────────────────────────── */
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -45,12 +82,7 @@ html.big-text { zoom: 1.18; }
 /* 화면 설정 토글 바는 컨트롤이므로 확대 대상에서 제외 — 항상 한 줄 유지(1/1.18≈0.85) */
 html.big-text .dq-bar { zoom: 0.847; }
 
-/* ── 화면 설정: 야간(어두운) 모드 ──────────────
-   html 레벨 필터라 fixed 요소의 위치 기준이 뷰포트로 유지된다.
-   이미지·사진·로고는 되돌려서(이중 반전) 원래 색으로 보이게 한다. */
-html.night { filter: invert(1) hue-rotate(180deg); background: #0e1620; }
-html.night img, html.night video, html.night canvas,
-html.night .no-invert { filter: invert(1) hue-rotate(180deg); }
+/* 야간(어두운) 모드는 위 html.night 토큰 교체로 처리한다(필터 방식 아님). */
 
 /* ── 스켈레톤(뼈대) 로딩 shimmer ───────────── */
 @keyframes shimmer { 0% { background-position: -180px 0; } 100% { background-position: 180px 0; } }
@@ -59,6 +91,10 @@ html.night .no-invert { filter: invert(1) hue-rotate(180deg); }
   background-size: 360px 100%;
   animation: shimmer 1.3s ease-in-out infinite;
   border-radius: 10px;
+}
+html.night .skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.13) 37%, rgba(255,255,255,0.06) 63%);
+  background-size: 360px 100%;
 }
 
 /* 복음 전하기(/share) 전도 도구 일러스트 애니메이션 (Sketch SVG용) */

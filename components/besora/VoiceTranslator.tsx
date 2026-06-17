@@ -310,7 +310,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   // 인라인 모드 — 페이지에 그냥 박아두기 (플로팅/포털 없음, 항상 보임)
   if (inline) {
     return (
-      <div style={{ marginTop: big ? 10 : 14, padding: big ? "12px 13px 13px" : "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: "#ffffff" }}>
+      <div style={{ marginTop: big ? 10 : 14, padding: big ? "12px 13px 13px" : "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card }}>
         <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: big ? 15.5 : 15, fontWeight: 700, color: theme.text, margin: big ? "0 0 8px" : "0 0 8px" }}>🎤 {ui(myLang, "voice")}</h2>
         {langBar}
         {toolTabs}
@@ -336,7 +336,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
 
       {open && mounted && createPortal(
         <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 60, display: "flex", justifyContent: "center", pointerEvents: "none" }}>
-          <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: "#ffffff", padding: "10px 16px 14px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "48dvh", overflowY: "auto" }}>
+          <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 480, borderTopLeftRadius: 22, borderTopRightRadius: 22, border: `1px solid ${theme.cardBorder}`, borderBottom: "none", background: theme.card, padding: "10px 16px 14px", boxShadow: "0 -12px 36px rgba(23,50,73,0.20)", maxHeight: "48dvh", overflowY: "auto" }}>
             <div style={{ marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 16, fontWeight: 700, color: theme.text, margin: 0 }}>🎤 {ui(myLang, "voice")}</h2>
               <button onClick={close} style={{ fontSize: 14, color: theme.textMuted, background: "none", border: "none", cursor: "pointer" }}>{ui(myLang, "close")} ✕</button>

@@ -85,7 +85,7 @@ export default function MenuScanner() {
       {err && <p style={{ margin: "8px 0 0", fontSize: 12, color: theme.wrong, textAlign: "center", whiteSpace: "pre-wrap", lineHeight: 1.4 }}>{err}</p>}
 
       {open && typeof document !== "undefined" && createPortal(
-        <div style={{ position: "fixed", inset: 0, zIndex: 80, background: "#fff", display: "flex", flexDirection: "column" }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 80, background: theme.bg, display: "flex", flexDirection: "column" }}>
           <div style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderBottom: `1px solid ${theme.cardBorder}` }}>
             <span style={{ fontSize: 15, fontWeight: 800, color: theme.gold }}>📷 {t("scan.title")}</span>
             <button onClick={() => setOpen(false)} style={{ fontSize: 14, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "7px 16px", cursor: "pointer" }}>{t("scan.close")} ✕</button>

@@ -105,7 +105,7 @@ export default function ChatPage() {
   return (
     <Shell>
       {/* 헤더 */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderBottom: `1px solid ${theme.cardBorder}`, background: "#fff", position: "sticky", top: 0, zIndex: 5 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderBottom: `1px solid ${theme.cardBorder}`, background: theme.card, position: "sticky", top: 0, zIndex: 5 }}>
         <Link href="/share/me" aria-label={ui(myLang, "backToList")} style={{ fontSize: 18, color: theme.textMuted, textDecoration: "none" }}>‹</Link>
         <Avatar url={companion?.avatarUrl ?? null} name={companion?.nickname ?? ""} />
         <div style={{ minWidth: 0, flex: 1 }}>
@@ -141,7 +141,7 @@ export default function ChatPage() {
       </div>
 
       {/* 입력 */}
-      <div style={{ display: "flex", gap: 8, padding: "10px 12px", paddingBottom: "calc(10px + env(safe-area-inset-bottom))", borderTop: `1px solid ${theme.cardBorder}`, background: "#fff", flexShrink: 0 }}>
+      <div style={{ display: "flex", gap: 8, padding: "10px 12px", paddingBottom: "calc(10px + env(safe-area-inset-bottom))", borderTop: `1px solid ${theme.cardBorder}`, background: theme.card, flexShrink: 0 }}>
         <input value={text} onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") onSend(); }}
           placeholder={ui(myLang, "chatPlaceholder")}

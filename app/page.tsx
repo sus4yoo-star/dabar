@@ -122,7 +122,7 @@ export default function Home() {
 
       {/* 복음 전하기 — 메인 CTA (가장 강조) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "11px 14px", borderRadius: 16, border: `1px solid ${theme.goldBorder}`, background: "linear-gradient(135deg,#edfcd2 0%,#f8fff1 100%)", cursor: "pointer", color: theme.text, boxShadow: "0 8px 20px rgba(88,167,0,0.15)" }}>
+        style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "11px 14px", borderRadius: 16, border: `1px solid ${theme.goldBorder}`, background: "var(--a-green-bg)", cursor: "pointer", color: theme.text, boxShadow: "0 8px 20px rgba(88,167,0,0.15)" }}>
         <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: "rgba(146,215,0,0.22)", display: "grid", placeItems: "center", fontSize: 25 }}>🕊️</span>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.gold }}>{t("home.shareTitle")}</span>
@@ -172,9 +172,9 @@ export default function Home() {
 
 type Accent = { fg: string; chip: string; bg: string; border: string };
 const ACCENT: Record<"green" | "blue" | "amber", Accent> = {
-  green: { fg: theme.gold,        chip: "rgba(146,215,0,0.20)",  bg: "linear-gradient(135deg,#f6ffea 0%,#ffffff 70%)", border: theme.goldBorder },
-  blue:  { fg: theme.primarySoft, chip: "rgba(31,155,239,0.15)", bg: "linear-gradient(135deg,#eef8ff 0%,#ffffff 70%)", border: theme.cardBorder },
-  amber: { fg: "#c9820a",         chip: "rgba(230,160,0,0.18)",  bg: "linear-gradient(135deg,#fff7e6 0%,#ffffff 70%)", border: theme.cardBorder },
+  green: { fg: "var(--a-green-fg)", chip: "var(--a-green-chip)", bg: "var(--a-green-bg)", border: "var(--a-green-border)" },
+  blue:  { fg: "var(--a-blue-fg)",  chip: "var(--a-blue-chip)",  bg: "var(--a-blue-bg)",  border: "var(--a-blue-border)" },
+  amber: { fg: "var(--a-amber-fg)", chip: "var(--a-amber-chip)", bg: "var(--a-amber-bg)", border: "var(--a-amber-border)" },
 };
 
 function NavCard({ icon, title, sub, onClick, accent }: { icon: string; title: string; sub: string; onClick: () => void; accent: Accent }) {

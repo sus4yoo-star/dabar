@@ -77,7 +77,7 @@ export default function HomeComfort() {
     position: "absolute", top: "50%", transform: "translateY(-50%)", zIndex: 2,
     [side === "start" ? "insetInlineStart" : "insetInlineEnd"]: -2,
     width: 30, height: 30, borderRadius: 999, display: "grid", placeItems: "center",
-    background: "#fff", border: `1px solid ${theme.goldBorder}`, color: theme.gold,
+    background: theme.card, border: `1px solid ${theme.goldBorder}`, color: theme.gold,
     fontSize: 19, lineHeight: 1, fontWeight: 800, cursor: "pointer", boxShadow: "0 3px 10px rgba(23,50,73,0.14)",
   });
 
@@ -128,7 +128,7 @@ export default function HomeComfort() {
       </div>
 
       <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={2} placeholder={t("cf.placeholder")}
-        style={{ width: "100%", boxSizing: "border-box", resize: "none", fontSize: 14, padding: "10px 12px", borderRadius: 12, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none", lineHeight: 1.5 }} />
+        style={{ width: "100%", boxSizing: "border-box", resize: "none", fontSize: 14, padding: "10px 12px", borderRadius: 12, border: `1px solid ${theme.border}`, background: theme.card, color: theme.text, outline: "none", lineHeight: 1.5 }} />
 
       {/* 사진 첨부 (복수) */}
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, flexWrap: "wrap" }}>

@@ -21,6 +21,7 @@ export default function DisplaySettings() {
     const e = document.documentElement;
     e.classList.toggle(cls, on);
     try { on ? localStorage.setItem(key, "1") : localStorage.removeItem(key); } catch { /* */ }
+    if (cls === "night") { const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", on ? "#0e1620" : "#ffffff"); }
   }
   function toggleBig() { const v = !big; setBig(v); apply("big-text", "dabar_bigtext", v); }
   function toggleNight() { const v = !night; setNight(v); apply("night", "dabar_night", v); }

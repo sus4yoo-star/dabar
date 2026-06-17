@@ -147,7 +147,7 @@ export default function StepView({
               style={{
                 borderRadius: 999, padding: "12px 30px",
                 fontFamily: "'Noto Serif KR',serif", fontSize: 15, fontWeight: 800, letterSpacing: 0.3,
-                color: theme.wrong, background: "#fff",
+                color: theme.wrong, background: theme.card,
                 border: `1px solid ${skin ? "rgba(255,255,255,0.7)" : theme.cardBorder}`,
                 boxShadow: "0 8px 22px rgba(23,50,73,0.18)", cursor: "pointer",
               }}
