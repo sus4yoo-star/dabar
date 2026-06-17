@@ -21,7 +21,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
           padding: "12px 18px",
           borderBottom: `1px solid ${theme.cardBorder}`,
-          background: "rgba(255,255,255,0.86)", backdropFilter: "blur(10px)",
+          background: "var(--t-glass)", backdropFilter: "blur(10px)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>

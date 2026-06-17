@@ -13,6 +13,7 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   --t-correct:#17a05e; --t-correctBg:rgba(23,160,94,0.12);
   --t-wrong:#e25555; --t-wrongBg:rgba(226,85,85,0.12);
   --t-placeholder:#9ab4c6;
+  --t-glass:rgba(255,255,255,0.86); /* 반투명 헤더/플로팅 컨트롤 배경 (블러용) */
   /* 강조(ACCENT) 팔레트 */
   --a-green-fg:var(--t-gold);        --a-green-chip:rgba(146,215,0,0.20);  --a-green-bg:linear-gradient(135deg,#f6ffea 0%,#ffffff 72%); --a-green-border:var(--t-goldBorder);
   --a-blue-fg:var(--t-primarySoft);  --a-blue-chip:rgba(31,155,239,0.15);  --a-blue-bg:linear-gradient(135deg,#eef8ff 0%,#ffffff 72%);  --a-blue-border:var(--t-cardBorder);
@@ -31,6 +32,7 @@ html.night {
   --t-correct:#41dd8c; --t-correctBg:rgba(65,221,140,0.16);
   --t-wrong:#ff6f6f; --t-wrongBg:rgba(255,111,111,0.16);
   --t-placeholder:#6f8499;
+  --t-glass:rgba(14,22,32,0.86);
   --a-green-fg:#9be055;   --a-green-chip:rgba(146,214,76,0.22);  --a-green-bg:linear-gradient(135deg,#16301b 0%,#18242f 72%);
   --a-blue-fg:#8cc9ff;    --a-blue-chip:rgba(70,178,255,0.20);   --a-blue-bg:linear-gradient(135deg,#102a3d 0%,#18242f 72%);
   --a-amber-fg:#e7b85a;   --a-amber-chip:rgba(230,160,0,0.24);   --a-amber-bg:linear-gradient(135deg,#332810 0%,#18242f 72%);
