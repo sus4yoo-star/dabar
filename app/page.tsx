@@ -9,6 +9,7 @@ import { useI18n, LangSelector } from "@/lib/i18n";
 import HomeReachCard from "@/components/HomeReachCard";
 import SosButton from "@/components/SosButton";
 import { useToast } from "@/components/Toast";
+import DisplayQuickToggle from "@/components/DisplayQuickToggle";
 
 export default function Home() {
   const router = useRouter();
@@ -68,6 +69,9 @@ export default function Home() {
           <button onClick={() => router.push("/login")} style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: theme.primary, border: "none", borderRadius: 16, padding: "6px 14px", cursor: "pointer", whiteSpace: "nowrap" }}>{t("common.login")}</button>
         ))}
       </div>
+
+      {/* 큰 글씨 / 야간 모드 — 항상 보이는 빠른 토글 (어르신 접근성) */}
+      <DisplayQuickToggle />
 
       {/* 첫 사용자 온보딩 (비로그인 첫 방문 1회) */}
       {showOnboard && (
