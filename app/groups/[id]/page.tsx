@@ -262,7 +262,7 @@ export default function GroupDetailPage() {
         {!isMember ? (
           <div style={{ textAlign: "center", padding: "1.5rem 1rem", color: theme.textMuted }}>
             <p style={{ fontSize: 13.5, margin: "0 0 12px" }}>{full ? t("grp.fullMsg") : t("grp.joinToChat")}</p>
-            <button onClick={handleJoin} disabled={full} style={{ padding: "12px 28px", fontSize: 15, fontWeight: 800, color: "#fff", background: full ? theme.textFaint : theme.primary, border: "none", borderRadius: 12, cursor: full ? "default" : "pointer", opacity: full ? 0.7 : 1 }}>{full ? t("grp.full") : t("grp.join")}</button>
+            <button onClick={handleJoin} disabled={full} style={{ padding: "13px 30px", fontSize: 15, fontWeight: 800, color: "#fff", background: full ? theme.textFaint : "linear-gradient(135deg,#1f9bef 0%,#1577c2 100%)", border: "none", borderRadius: 13, cursor: full ? "default" : "pointer", opacity: full ? 0.7 : 1, boxShadow: full ? "none" : "0 8px 20px rgba(31,155,239,0.25)" }}>{full ? t("grp.full") : t("grp.join")}</button>
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -297,7 +297,7 @@ export default function GroupDetailPage() {
         <div style={{ flexShrink: 0, background: theme.bg, borderTop: `1px solid ${theme.cardBorder}`, padding: "10px 12px calc(10px + env(safe-area-inset-bottom))", display: "flex", gap: 8, alignItems: "center" }}>
           <input value={text} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }} placeholder={t("grp.msgPh")}
             style={{ flex: 1, fontSize: 14, padding: "10px 13px", borderRadius: 20, border: `1px solid ${theme.border}`, background: "#fff", color: theme.text, outline: "none" }} />
-          <button onClick={send} disabled={!text.trim()} style={{ flexShrink: 0, fontSize: 14, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 20, padding: "10px 16px", cursor: "pointer", opacity: text.trim() ? 1 : 0.5 }}>{t("grp.send")}</button>
+          <button onClick={send} disabled={!text.trim()} style={{ flexShrink: 0, fontSize: 14, fontWeight: 800, color: "#fff", background: "linear-gradient(135deg,#1f9bef 0%,#1577c2 100%)", border: "none", borderRadius: 20, padding: "10px 18px", cursor: "pointer", opacity: text.trim() ? 1 : 0.5, boxShadow: text.trim() ? "0 4px 12px rgba(31,155,239,0.28)" : "none" }}>{t("grp.send")}</button>
         </div>
       )}
       {lightbox !== null && photos[lightbox] && (

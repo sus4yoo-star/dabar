@@ -8,6 +8,7 @@ import { useToast } from "@/components/Toast";
 import { supabase } from "@/lib/supabase";
 import { getSupabase } from "@/lib/besora/supabase";
 import { Group, MAX_MEMBERS, createGroup, fetchMyGroupIds, fetchPublicGroups, joinGroup } from "@/lib/besora/groups";
+import { PageHeader, ACCENT, softShadow } from "@/lib/ui";
 
 export default function GroupsPage() {
   const router = useRouter();
@@ -89,14 +90,10 @@ export default function GroupsPage() {
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer" }}>{t("common.home")}</button>
-        <h1 style={{ fontSize: 18, fontWeight: 800, color: theme.primarySoft, margin: 0 }}>🤝 {t("grp.title")}</h1>
-        <span style={{ width: 52 }} />
-      </div>
+      <PageHeader title={`🤝 ${t("grp.title")}`} onHome={() => router.push("/")} homeLabel={t("common.home")} />
 
       {canCreate && !creating && (
-        <button onClick={() => setCreating(true)} style={{ width: "100%", padding: 13, marginBottom: 14, fontSize: 15, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 14, cursor: "pointer" }}>{t("grp.create")}</button>
+        <button onClick={() => setCreating(true)} style={{ width: "100%", padding: 14, marginBottom: 14, fontSize: 15, fontWeight: 800, color: "#fff", background: "linear-gradient(135deg,#1f9bef 0%,#1577c2 100%)", border: "none", borderRadius: 14, cursor: "pointer", boxShadow: "0 8px 20px rgba(31,155,239,0.25)" }}>{t("grp.create")}</button>
       )}
       {user && !canCreate && (
         <div style={{ margin: "0 0 14px", padding: "10px 12px", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10 }}>
@@ -174,15 +171,18 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function GroupCard({ g, member, onOpen, t }: { g: Group; member?: boolean; onOpen: () => void; t: (k: string) => string }) {
   const full = !member && g.member_count >= MAX_MEMBERS;
+  const ac = member ? ACCENT.green : ACCENT.blue;
   return (
-    <button onClick={full ? undefined : onOpen} disabled={full} style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "14px 15px", borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: full ? "default" : "pointer", opacity: full ? 0.6 : 1 }}>
+    <button onClick={full ? undefined : onOpen} disabled={full} className="fade-in-2"
+      style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "13px 14px", borderRadius: 16, border: `1px solid ${full ? theme.cardBorder : ac.border}`, background: full ? theme.card : ac.bg, cursor: full ? "default" : "pointer", opacity: full ? 0.6 : 1, boxShadow: softShadow }}>
+      <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ac.chip, display: "grid", placeItems: "center", fontSize: 22 }}>🤝</span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ display: "block", fontSize: 15.5, fontWeight: 800, color: theme.text, marginBottom: 3 }}>{g.name}</span>
+        <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: theme.text, marginBottom: 2 }}>{g.name}</span>
         {g.place && <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted }}>📍 {g.place}</span>}
         {g.schedule && <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted }}>🕒 {g.schedule}</span>}
         <span style={{ display: "block", fontSize: 11.5, color: theme.textFaint, marginTop: 3 }}>👥 {g.member_count}/{MAX_MEMBERS}{t("grp.members")}</span>
       </span>
-      <span style={{ flexShrink: 0, fontSize: 13, fontWeight: 800, color: "#fff", background: member ? theme.gold : full ? theme.textFaint : theme.primary, borderRadius: 10, padding: "8px 14px" }}>{member ? t("grp.enter") : full ? t("grp.full") : t("grp.join")}</span>
+      <span style={{ flexShrink: 0, fontSize: 13, fontWeight: 800, color: "#fff", background: member ? theme.gold : full ? theme.textFaint : theme.primary, borderRadius: 11, padding: "9px 15px" }}>{member ? t("grp.enter") : full ? t("grp.full") : t("grp.join")}</span>
     </button>
   );
 }
