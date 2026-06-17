@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { useI18n, LangSelector } from "@/lib/i18n";
 import { useToast } from "@/components/Toast";
+import { theme } from "@/lib/theme";
 
 // 브랜드 컬러 (파랑·초록·흰색)
-const GOLD = "#58a700";
-const GOLD_SOFT = "#79c61d";
+const GOLD = theme.gold;
+const GOLD_SOFT = theme.goldSoft;
 
 export default function LoginPage() {
   const router = useRouter();
@@ -58,8 +59,7 @@ export default function LoginPage() {
         alignItems: "center",
         justifyContent: "center",
         padding: "3rem 1.5rem",
-        background:
-          "#ffffff",
+        background: theme.bg,
       }}
     >
       <div style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
@@ -92,10 +92,10 @@ export default function LoginPage() {
         >
           DABAR
         </h1>
-        <p style={{ fontSize: 13, color: "#54718a", letterSpacing: 3, margin: "0 0 18px" }}>
+        <p style={{ fontSize: 13, color: theme.textMuted, letterSpacing: 3, margin: "0 0 18px" }}>
           다바르 · 말씀 퀴즈
         </p>
-        <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#3c5a73", margin: "0 0 26px" }}>
+        <p style={{ fontSize: 14.5, lineHeight: 1.7, color: theme.textMuted, margin: "0 0 26px" }}>
           {t("login.tagline1")}<br />
           {t("login.tagline2")}
         </p>
@@ -104,15 +104,15 @@ export default function LoginPage() {
         <div
           style={{
             textAlign: "left",
-            background: "rgba(146,215,0,0.07)",
-            border: "1px solid rgba(146,215,0,0.30)",
+            background: theme.goldLight,
+            border: `1px solid ${theme.goldBorder}`,
             borderLeft: `3px solid ${GOLD_SOFT}`,
             borderRadius: 14,
             padding: "16px 18px",
             margin: "0 0 28px",
           }}
         >
-          <p style={{ fontSize: 14.5, lineHeight: 1.75, color: "#173249", fontStyle: "italic", margin: "0 0 8px" }}>
+          <p style={{ fontSize: 14.5, lineHeight: 1.75, color: theme.text, fontStyle: "italic", margin: "0 0 8px" }}>
             “{t("login.verse")}”
           </p>
           <p style={{ fontSize: 12.5, color: GOLD, margin: 0, letterSpacing: 0.5 }}>— {t("login.verseRef")}</p>
@@ -151,7 +151,7 @@ export default function LoginPage() {
 
         {/* 이메일 매직링크 — 카카오·구글이 막혔을 때 백업 경로 */}
         {sent ? (
-          <p style={{ fontSize: 13.5, lineHeight: 1.6, color: "#2f7d00", background: "rgba(88,167,0,0.08)", border: "1px solid rgba(88,167,0,0.28)", borderRadius: 12, padding: "12px 14px", marginTop: 14, textAlign: "left" }}>
+          <p style={{ fontSize: 13.5, lineHeight: 1.6, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, padding: "12px 14px", marginTop: 14, textAlign: "left" }}>
             {t("login.emailSent")}
           </p>
         ) : emailOpen ? (
@@ -159,7 +159,7 @@ export default function LoginPage() {
             <input
               type="email" inputMode="email" autoComplete="email" value={email}
               onChange={(e) => setEmail(e.target.value)} placeholder={t("login.emailPh")}
-              style={{ width: "100%", boxSizing: "border-box", padding: 14, fontSize: 15.5, border: "1px solid #d8e2ea", borderRadius: 12, outline: "none" }}
+              style={{ width: "100%", boxSizing: "border-box", padding: 14, fontSize: 15.5, border: `1px solid ${theme.border}`, borderRadius: 12, outline: "none", background: theme.card, color: theme.text }}
             />
             <button type="submit" disabled={busy !== null}
               style={{ width: "100%", padding: 14, fontSize: 15.5, fontWeight: 700, background: GOLD, color: "#fff", border: "none", borderRadius: 12, cursor: busy ? "default" : "pointer", opacity: busy && busy !== "email" ? 0.55 : 1 }}>
@@ -168,20 +168,20 @@ export default function LoginPage() {
           </form>
         ) : (
           <button onClick={() => setEmailOpen(true)}
-            style={{ marginTop: 14, background: "none", border: "none", color: "#54718a", fontSize: 13.5, fontWeight: 600, textDecoration: "underline", cursor: "pointer" }}>
+            style={{ marginTop: 14, background: "none", border: "none", color: theme.textMuted, fontSize: 13.5, fontWeight: 600, textDecoration: "underline", cursor: "pointer" }}>
             {t("login.orEmail")}
           </button>
         )}
 
-        <p style={{ fontSize: 12.5, color: "#85a0b5", marginTop: 20, lineHeight: 1.6 }}>
+        <p style={{ fontSize: 12.5, color: theme.textFaint, marginTop: 20, lineHeight: 1.6 }}>
           {t("login.free")}
         </p>
 
         <p style={{ fontSize: 11.5, marginTop: 16 }}>
-          <a href="/privacy" style={{ color: "#54718a", textDecoration: "underline" }}>{t("privacy.title")}</a>
+          <a href="/privacy" style={{ color: theme.textMuted, textDecoration: "underline" }}>{t("privacy.title")}</a>
         </p>
 
-        <p style={{ fontSize: 11, color: "#9ab4c6", marginTop: "2rem", letterSpacing: 1.5 }}>
+        <p style={{ fontSize: 11, color: theme.textFaint, marginTop: "2rem", letterSpacing: 1.5 }}>
           DABAR by AMOV · Love Creates Value
         </p>
       </div>
