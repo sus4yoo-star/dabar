@@ -16,7 +16,7 @@ function ScriptureQuote({ passages, onSkin, fg }: { passages: VersePassage[]; on
     <div style={{ marginTop: 18, width: "100%", maxWidth: 460, textAlign: "start", borderRadius: 14, padding: "14px 16px", background: onSkin ? "rgba(255,255,255,0.16)" : theme.goldLight, borderInlineStart: `3px solid ${onSkin ? "rgba(255,255,255,0.55)" : theme.gold}` }}>
       {passages.map((p, i) => (
         <div key={p.key} style={{ marginTop: i === 0 ? 0 : 12 }}>
-          <span style={{ display: "block", fontFamily: "'Noto Serif KR',serif", fontSize: 12, fontWeight: 700, letterSpacing: 0.3, color: onSkin ? fg : theme.gold, opacity: onSkin ? 0.85 : 1, marginBottom: 3 }}>{p.label}</span>
+          <span style={{ display: "block", fontFamily: "'Noto Serif KR',serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.3, color: onSkin ? fg : theme.gold, opacity: onSkin ? 0.85 : 1, marginBottom: 3 }}>{p.label}</span>
           <p style={{ margin: 0, fontFamily: "'Noto Serif KR',serif", fontSize: 16.5, lineHeight: 1.66, color: onSkin ? fg : theme.text, opacity: onSkin ? 0.98 : 0.92 }}>
             &ldquo;{p.text}&rdquo;
           </p>
@@ -129,7 +129,7 @@ export default function StepView({
         {step.helper.guide && (
           <div dir={myRtl ? "rtl" : "ltr"} style={{ marginTop: 20, width: "100%", maxWidth: 460, display: "flex", gap: 8, alignItems: "flex-start", textAlign: "start", borderRadius: 12, padding: "9px 12px", background: skin ? "rgba(255,255,255,0.16)" : theme.primaryBg, border: `1px solid ${skin ? "rgba(255,255,255,0.32)" : theme.cardBorder}` }}>
             <span style={{ fontSize: 14, flexShrink: 0 }}>💬</span>
-            <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: skin ? fg : theme.textMuted, opacity: skin ? 0.95 : 1 }}>{step.helper.guide}</p>
+            <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.5, color: skin ? fg : theme.textMuted, opacity: skin ? 0.95 : 1 }}>{step.helper.guide}</p>
           </div>
         )}
 
