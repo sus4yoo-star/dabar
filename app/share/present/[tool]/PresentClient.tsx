@@ -27,7 +27,7 @@ function sideNav(side: "start" | "end"): CSSProperties {
     display: "grid",
     placeItems: "center",
     borderRadius: 999,
-    background: "rgba(255,255,255,0.92)",
+    background: "var(--t-glass)",
     border: `1px solid ${theme.goldBorder}`,
     color: theme.gold,
     fontSize: 26,
