@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { PageHeader, AccentCard, ACCENT, softCard, softShadow } from "@/lib/ui";
+import MenuIcon from "@/components/MenuIcon";
 import { useToast } from "@/components/Toast";
 import { useConfirm } from "@/components/ConfirmModal";
 import DisplaySettings from "@/components/DisplaySettings";
@@ -57,18 +58,18 @@ export default function AccountPage() {
 
       {/* 설정/링크 섹션 */}
       <AccentCard
-        icon="🔒"
+        icon={<MenuIcon name="lock" color="var(--a-blue-fg)" />}
         title={t("privacy.title")}
         onClick={() => router.push("/privacy")}
         accent={ACCENT.blue}
       />
 
       <AccentCard
-        icon="🚪"
+        icon={<MenuIcon name="logout" color="var(--a-amber-fg)" />}
         title={t("acct.logout")}
         onClick={signOut}
         accent={ACCENT.amber}
-        right={<span aria-hidden style={{ fontSize: 18, color: ACCENT.amber.fg, opacity: 0.85 }}>›</span>}
+        right={<span aria-hidden style={{ fontSize: 16, color: theme.textFaint }}>›</span>}
       />
 
       {/* 위험 구역 — 계정 삭제 (애플 심사 필수) */}
