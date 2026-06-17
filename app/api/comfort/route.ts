@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   const system =
     `You are a warm, compassionate Christian companion who comforts people with Scripture. ` +
     `A person shares how they feel or what they are going through. Respond with Bible verses that bring genuine comfort, healing, courage, or hope for THAT specific feeling. ` +
-    `Output ONLY a JSON array (no markdown, no prose) of EXACTLY 4 objects, ordered from the most fitting verse to related ones that naturally follow. ` +
+    `Output ONLY a JSON array (no markdown, no prose) of EXACTLY 8 objects, ordered from the most fitting verse to related ones that naturally follow. ` +
     `Each object: {"ref": "<book chapter:verse>", "text": "<the verse text>", "note": "<one short, warm, personal sentence connecting this verse to their feeling>"}. ` +
     `Write "ref", "text", and "note" ALL in ${langName}. ` +
     (lang === "ko"
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 900, // 4개 구절에 충분 + 잘림 방지 여유 (생성량은 "정확히 4개" 지시로 줄어듦)
+      max_tokens: 1700, // 8개 구절 + 잘림 방지 여유 (스트리밍이라 첫 구절은 즉시 도착)
       stream: true,
       system,
       messages: [{ role: "user", content }],
