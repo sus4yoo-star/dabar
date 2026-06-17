@@ -14,20 +14,23 @@ export const ACCENT: Record<"green" | "blue" | "amber" | "red" | "violet", Accen
   violet: { fg: "var(--a-violet-fg)", chip: "var(--a-violet-chip)", bg: "var(--a-violet-bg)", border: "var(--a-violet-border)" },
 };
 
-export const softShadow = "0 3px 12px rgba(23,50,73,0.05)";
-export const cardShadow = "0 8px 24px rgba(23,50,73,0.07)";
+export const softShadow = "0 2px 10px rgba(26,37,48,0.06), 0 1px 3px rgba(26,37,48,0.04)";
+export const cardShadow = "0 10px 30px rgba(26,37,48,0.08), 0 2px 6px rgba(26,37,48,0.05)";
 
-// 페이지 공통 헤더 — 제목(골드) + 홈/뒤로 버튼. 모든 내부 페이지에서 동일한 모양.
+// 우아한 세리프 — 제목/워드마크에 사용(말씀·품격). 한국어는 시스템 명조로 자연 폴백.
+export const serif = "'Iowan Old Style','Apple Garamond',Georgia,'Times New Roman','Noto Serif KR',serif";
+
+// 페이지 공통 헤더 — 제목(세리프) + 홈/뒤로 버튼. 모든 내부 페이지에서 동일한 모양.
 export function PageHeader({ title, onHome, homeLabel = "홈", right }: {
   title: string; onHome: () => void; homeLabel?: string; right?: React.ReactNode;
 }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: "1.25rem" }}>
-      <h1 style={{ fontSize: 21, fontWeight: 800, color: theme.gold, margin: 0, letterSpacing: -0.2 }}>{title}</h1>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: "1.4rem" }}>
+      <h1 style={{ fontFamily: serif, fontSize: 23, fontWeight: 700, color: theme.gold, margin: 0, letterSpacing: -0.2 }}>{title}</h1>
       <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
         {right}
         <button onClick={onHome}
-          style={{ fontSize: 13, fontWeight: 600, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "7px 14px", cursor: "pointer", whiteSpace: "nowrap" }}>
+          style={{ fontSize: 13, fontWeight: 600, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "7px 14px", cursor: "pointer", whiteSpace: "nowrap", boxShadow: softShadow }}>
           {homeLabel}
         </button>
       </div>
@@ -58,13 +61,13 @@ export function AccentCard({ icon, title, sub, onClick, accent, right }: {
 }) {
   return (
     <button onClick={onClick} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 9, padding: "12px 15px", borderRadius: 16, border: `1px solid ${accent.border}`, background: accent.bg, cursor: onClick ? "pointer" : "default", color: theme.text, boxShadow: softShadow }}>
-      <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: accent.chip, display: "grid", placeItems: "center", fontSize: 23 }}>{icon}</span>
+      style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", marginTop: 10, padding: "14px 16px", borderRadius: 18, border: `1px solid ${accent.border}`, background: accent.bg, cursor: onClick ? "pointer" : "default", color: theme.text, boxShadow: softShadow }}>
+      <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 14, background: accent.chip, display: "grid", placeItems: "center", fontSize: 23 }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ display: "block", fontSize: 16.5, fontWeight: 800, color: accent.fg }}>{title}</span>
-        {sub && <span style={{ display: "block", fontSize: 13, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{sub}</span>}
+        <span style={{ fontFamily: serif, display: "block", fontSize: 17, fontWeight: 700, color: accent.fg }}>{title}</span>
+        {sub && <span style={{ display: "block", fontSize: 13, color: theme.textMuted, marginTop: 3, lineHeight: 1.45 }}>{sub}</span>}
       </span>
-      {right ?? (onClick && <span style={{ fontSize: 18, color: accent.fg, opacity: 0.85 }}>→</span>)}
+      {right ?? (onClick && <span style={{ fontSize: 17, color: accent.fg, opacity: 0.7 }}>→</span>)}
     </button>
   );
 }

@@ -11,6 +11,7 @@ import SosButton from "@/components/SosButton";
 import { useToast } from "@/components/Toast";
 import DisplayQuickToggle from "@/components/DisplayQuickToggle";
 import InstallHint from "@/components/InstallHint";
+import { serif } from "@/lib/ui";
 
 export default function Home() {
   const router = useRouter();
@@ -97,12 +98,15 @@ export default function Home() {
       )}
 
       {/* 히어로 */}
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: 8 }}>
-        <div style={{ width: 46, height: 46, margin: "0 auto", borderRadius: 14, background: "linear-gradient(135deg,#e9ffce 0%,#d4eeff 100%)", display: "grid", placeItems: "center", boxShadow: "0 8px 20px rgba(31,155,239,0.20)" }}>
-          <img src="/icons/icon-192.png" alt="DABAR" width={32} height={32} style={{ borderRadius: 10 }} />
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: 14, paddingTop: 2 }}>
+        <div style={{ position: "relative", width: 60, height: 60, margin: "0 auto" }}>
+          <div aria-hidden style={{ position: "absolute", inset: -12, borderRadius: "50%", background: "radial-gradient(circle, rgba(47,110,94,0.20) 0%, rgba(47,110,94,0) 70%)", filter: "blur(5px)" }} />
+          <div style={{ position: "relative", width: 60, height: 60, borderRadius: 19, background: "linear-gradient(135deg,#eaf1ec 0%,#e7f0f7 100%)", display: "grid", placeItems: "center", boxShadow: "0 10px 26px rgba(28,91,140,0.18)" }}>
+            <img src="/icons/icon-192.png" alt="DABAR" width={40} height={40} style={{ borderRadius: 12 }} />
+          </div>
         </div>
-        <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 23, fontWeight: 700, color: theme.gold, letterSpacing: 4, margin: "4px 0 1px" }}>DABAR</h1>
-        <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{t("home.tagline")}</p>
+        <h1 style={{ fontFamily: serif, fontSize: 30, fontWeight: 700, color: theme.gold, letterSpacing: 5, margin: "11px 0 3px" }}>DABAR</h1>
+        <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0, letterSpacing: 0.3 }}>{t("home.tagline")}</p>
         {user && (
           <div style={{ marginTop: 5, fontSize: 13, color: theme.primarySoft, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: 6 }}>
             {editingNick ? (
@@ -127,13 +131,13 @@ export default function Home() {
 
       {/* 복음 전하기 — 메인 CTA (가장 강조) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "11px 14px", borderRadius: 16, border: `1px solid ${theme.goldBorder}`, background: "var(--a-green-bg)", cursor: "pointer", color: theme.text, boxShadow: "0 8px 20px rgba(88,167,0,0.15)" }}>
-        <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: "rgba(146,215,0,0.22)", display: "grid", placeItems: "center", fontSize: 25 }}>🕊️</span>
+        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "13px 16px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: "var(--a-green-bg)", cursor: "pointer", color: theme.text, boxShadow: "0 10px 26px rgba(47,110,94,0.16)" }}>
+        <span style={{ flexShrink: 0, width: 48, height: 48, borderRadius: 15, background: "var(--a-green-chip)", display: "grid", placeItems: "center", fontSize: 26 }}>🕊️</span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.gold }}>{t("home.shareTitle")}</span>
-          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 1, lineHeight: 1.35 }}>{t("home.shareSub")}</span>
+          <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: theme.gold }}>{t("home.shareTitle")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.shareSub")}</span>
         </span>
-        <span style={{ fontSize: 18, color: theme.gold }}>→</span>
+        <span style={{ fontSize: 17, color: theme.gold, opacity: 0.7 }}>→</span>
       </button>
 
       {/* 📚 양육·교육 과정 — 2번째 */}
@@ -185,13 +189,13 @@ const ACCENT: Record<"green" | "blue" | "amber", Accent> = {
 function NavCard({ icon, title, sub, onClick, accent }: { icon: string; title: string; sub: string; onClick: () => void; accent: Accent }) {
   return (
     <button onClick={onClick} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", marginTop: 7, padding: "10px 13px", borderRadius: 15, border: `1px solid ${accent.border}`, background: accent.bg, cursor: "pointer", color: theme.text, boxShadow: "0 3px 12px rgba(23,50,73,0.05)" }}>
-      <span style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 12, background: accent.chip, display: "grid", placeItems: "center", fontSize: 22 }}>{icon}</span>
+      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 9, padding: "12px 15px", borderRadius: 18, border: `1px solid ${accent.border}`, background: accent.bg, cursor: "pointer", color: theme.text, boxShadow: "0 2px 10px rgba(26,37,48,0.06), 0 1px 3px rgba(26,37,48,0.04)" }}>
+      <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: accent.chip, display: "grid", placeItems: "center", fontSize: 22 }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: accent.fg }}>{title}</span>
-        <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 1, lineHeight: 1.35 }}>{sub}</span>
+        <span style={{ fontFamily: serif, display: "block", fontSize: 16.5, fontWeight: 700, color: accent.fg }}>{title}</span>
+        <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{sub}</span>
       </span>
-      <span style={{ fontSize: 18, color: accent.fg, opacity: 0.85 }}>→</span>
+      <span style={{ fontSize: 17, color: accent.fg, opacity: 0.65 }}>→</span>
     </button>
   );
 }
