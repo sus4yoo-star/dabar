@@ -175,10 +175,10 @@ export default function Home() {
 
       {/* 하단 보조 링크 (긴급 SOS는 상단 바로 이동) */}
       <div style={{ marginTop: "auto", paddingTop: 9, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
-        {isAdmin && <SmallLink onClick={() => router.push("/admin")}>{t("home.adminShort")}</SmallLink>}
-        <SmallLink onClick={() => router.push("/guide")}>{t("home.guideShort")}</SmallLink>
-        {user && <SmallLink onClick={shareInvite}>{t("home.inviteShort")}</SmallLink>}
-        <SmallLink onClick={() => router.push(user ? "/account" : "/privacy")}>{user ? t("home.accountShort") : t("privacy.title")}</SmallLink>
+        {isAdmin && <SmallLink icon="dashboard" onClick={() => router.push("/admin")}>{t("home.adminShort")}</SmallLink>}
+        <SmallLink icon="clipboard" onClick={() => router.push("/guide")}>{t("home.guideShort")}</SmallLink>
+        {user && <SmallLink icon="share" onClick={shareInvite}>{t("home.inviteShort")}</SmallLink>}
+        <SmallLink icon={user ? "account" : "lock"} onClick={() => router.push(user ? "/account" : "/privacy")}>{user ? t("home.accountShort") : t("privacy.title")}</SmallLink>
       </div>
       <p style={{ textAlign: "center", fontSize: 10.5, color: theme.textFaint, marginTop: 8, letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
       {toastView}
@@ -208,7 +208,7 @@ function NavCard({ icon, title, sub, onClick, accent }: { icon: ReactNode; title
 }
 
 function QuickChip({ icon, label, onClick, badge }: { icon: string; label: string; onClick: () => void; badge?: number }) {
-  const text = label.replace(/^\S+\s+/, ""); // 라벨 앞 이모지 제거 (라인 아이콘으로 대체)
+  const text = label.replace(/^\p{Extended_Pictographic}️?\s*/u, ""); // 라벨 앞 이모지만 제거
   return (
     <button onClick={onClick}
       style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "11px 6px", borderRadius: 13, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 13.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
@@ -219,11 +219,13 @@ function QuickChip({ icon, label, onClick, badge }: { icon: string; label: strin
   );
 }
 
-function SmallLink({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+function SmallLink({ children, onClick, icon }: { children: string; onClick: () => void; icon?: string }) {
+  const text = children.replace(/^\p{Extended_Pictographic}️?\s*/u, ""); // 앞 '이모지'일 때만 제거
   return (
     <button onClick={onClick}
-      style={{ fontSize: 13.5, fontWeight: 600, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 999, padding: "8px 14px", cursor: "pointer", whiteSpace: "nowrap" }}>
-      {children}
+      style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13.5, fontWeight: 600, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 999, padding: "8px 13px", cursor: "pointer", whiteSpace: "nowrap" }}>
+      {icon && <MenuIcon name={icon} size={16} color={theme.textFaint} />}
+      {text}
     </button>
   );
 }

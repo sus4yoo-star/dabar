@@ -60,6 +60,42 @@ const PATHS: Record<string, React.ReactNode> = {
     <path d="M4 4v16h16" />
     <path d="M8 16v-4" /><path d="M13 16V8" /><path d="M18 16v-6" />
   </>),
+  // 개인정보 — 자물쇠
+  lock: (<>
+    <rect x="5" y="11" width="14" height="9.5" rx="2.2" />
+    <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    <path d="M12 15v2" />
+  </>),
+  // 로그아웃 — 문/나가기
+  logout: (<>
+    <path d="M9.5 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.5" />
+    <path d="m16 16.5 4.5-4.5L16 7.5" />
+    <path d="M20 12H9.5" />
+  </>),
+  // 계정 — 사용자
+  account: (<>
+    <circle cx="12" cy="12" r="9.5" />
+    <circle cx="12" cy="10" r="3.2" />
+    <path d="M5.8 18.6a6.4 6.4 0 0 1 12.4 0" />
+  </>),
+  // 안내 — 클립보드/문서
+  clipboard: (<>
+    <rect x="5" y="4" width="14" height="17" rx="2" />
+    <rect x="9" y="2.5" width="6" height="3.4" rx="1" />
+    <path d="M9 11h6" /><path d="M9 14.5h6" /><path d="M9 18h4" />
+  </>),
+  // 초대 — 공유
+  share: (<>
+    <circle cx="18" cy="5.5" r="2.8" /><circle cx="6" cy="12" r="2.8" /><circle cx="18" cy="18.5" r="2.8" />
+    <path d="m8.4 13.4 7.2 3.9" /><path d="m15.6 6.7-7.2 3.9" />
+  </>),
+  // 현황판 — 대시보드
+  dashboard: (<>
+    <rect x="3.5" y="3.5" width="7" height="8.5" rx="1.4" />
+    <rect x="13.5" y="3.5" width="7" height="5" rx="1.4" />
+    <rect x="13.5" y="11.5" width="7" height="9" rx="1.4" />
+    <rect x="3.5" y="15" width="7" height="5.5" rx="1.4" />
+  </>),
 };
 
 export default function MenuIcon({ name, size = 24, color, strokeWidth = 1.5, style }:
