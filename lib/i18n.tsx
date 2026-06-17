@@ -116,7 +116,7 @@ const DICT: Dict = {
   "scan.hint":    { ko: "글자 위에 번역이 겹쳐 표시돼요. 탭하면 원문↔번역", en: "Translation overlays the text. Tap to toggle original↔translation", th: "คำแปลซ้อนบนข้อความ แตะเพื่อสลับ", lo: "ຄຳແປວາງທັບຂໍ້ຄວາມ ແຕະເພື່ອສະຫຼັບ" },
   "scan.close":   { ko: "닫기", en: "Close", th: "ปิด", lo: "ປິດ" },
 
-  "home.tagline":     { ko: "다바르 · 말씀 — 무엇부터 시작할까요?", en: "DABAR · The Word — where to begin?", th: "ดาบาร์ · พระวจนะ — เริ่มจากตรงไหนดี?", lo: "ດາບາ · ພຣະທຳ — ເລີ່ມຈາກໃສດີ?" },
+  "home.tagline":     { ko: "오늘도 말씀과 함께 🌿 무엇부터 시작할까요?", en: "With the Word today 🌿 where shall we begin?", th: "อยู่กับพระวจนะวันนี้ 🌿 เริ่มจากตรงไหนดี?", lo: "ຢູ່ກັບພຣະທຳມື້ນີ້ 🌿 ເລີ່ມຈາກໃສດີ?" },
   "home.greeting":    { ko: "{name}님, 오늘도 말씀과 함께해요 👋", en: "{name}, walk with the Word today 👋", th: "{name} วันนี้มาเดินกับพระวจนะกัน 👋", lo: "{name} ມື້ນີ້ມາຍ່າງກັບພຣະທຳນຳກັນ 👋" },
   "home.streakToday": { ko: "🔥 {n}일 연속 출석!", en: "🔥 {n}-day streak!", th: "🔥 ต่อเนื่อง {n} วัน!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້!" },
   "home.streakGo":    { ko: "🔥 {n}일 연속 — 오늘도 풀면 이어져요!", en: "🔥 {n}-day streak — keep it going today!", th: "🔥 ต่อเนื่อง {n} วัน — ทำต่อวันนี้สิ!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້ — ເຮັດຕໍ່ມື້ນີ້ເລີຍ!" },
