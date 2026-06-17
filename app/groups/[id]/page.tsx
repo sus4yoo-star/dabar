@@ -12,12 +12,15 @@ import {
   setGroupPublic, deleteGroup,
 } from "@/lib/besora/groups";
 import { PushState, disablePush, enablePush, getPushState, notifyGroup } from "@/lib/besora/push";
+import { useConfirm } from "@/components/ConfirmModal";
+import { Skeleton } from "@/components/Skeleton";
 
 export default function GroupDetailPage() {
   const router = useRouter();
   const { t } = useI18n();
   const { user, nickname } = useAuth();
   const { show, view } = useToast();
+  const { confirm, view: confirmView } = useConfirm();
   const id = String(useParams().id);
 
   const [group, setGroup] = useState<Group | null>(null);
@@ -75,7 +78,7 @@ export default function GroupDetailPage() {
     else { const st = await enablePush(); setPush(st); if (st === "denied") show(t("grp.notReady")); }
   }
   async function onDeletePhoto(p: GroupPhoto) {
-    if (!confirm(t("grp.delPhoto"))) return;
+    if (!(await confirm({ title: t("grp.delPhoto"), confirmLabel: t("acct.delete"), danger: true }))) return;
     await deletePhoto(p);
     setPhotos(prev => prev.filter(x => x.id !== p.id));
     setLightbox(null);
@@ -113,7 +116,7 @@ export default function GroupDetailPage() {
     catch { show(t("grp.notReady")); }
   }
   async function removeGroup() {
-    if (!confirm(t("grp.delGroupConfirm"))) return;
+    if (!(await confirm({ title: t("grp.deleteGroup"), message: t("grp.delGroupConfirm"), confirmLabel: t("grp.deleteGroup"), danger: true }))) return;
     try { await deleteGroup(id); router.push("/groups"); }
     catch { show(t("grp.notReady")); }
   }
@@ -142,7 +145,7 @@ export default function GroupDetailPage() {
     } catch { setText(body); }
   }
 
-  if (loading) return <Center>…</Center>;
+  if (loading) return <Center><div style={{ width: "100%", maxWidth: 380 }}><Skeleton w="55%" h={18} /><Skeleton w="100%" h={70} r={14} style={{ marginTop: 14 }} /><Skeleton w="100%" h={48} r={12} style={{ marginTop: 12 }} /><Skeleton w="80%" h={14} style={{ marginTop: 16 }} /></div></Center>;
   if (!group) return <Center>{t("grp.notReady")}</Center>;
 
   return (
@@ -303,6 +306,7 @@ export default function GroupDetailPage() {
       {lightbox !== null && photos[lightbox] && (
         <Lightbox photos={photos} index={lightbox} onIndex={setLightbox} onClose={() => setLightbox(null)} />
       )}
+      {confirmView}
       {view}
     </main>
   );

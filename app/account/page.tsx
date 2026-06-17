@@ -6,31 +6,37 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { PageHeader, AccentCard, ACCENT, softCard, softShadow } from "@/lib/ui";
+import { useToast } from "@/components/Toast";
+import { useConfirm } from "@/components/ConfirmModal";
+import DisplaySettings from "@/components/DisplaySettings";
 
 export default function AccountPage() {
   const router = useRouter();
   const { t } = useI18n();
   const { user, loading, nickname, signOut } = useAuth();
+  const { show, view: toastView } = useToast();
+  const { confirm, view: confirmView } = useConfirm();
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => { if (!loading && !user) router.replace("/login"); }, [loading, user, router]);
 
   async function handleDelete() {
-    if (!confirm(t("acct.deleteConfirm"))) return;
+    const ok = await confirm({ title: t("acct.delete"), message: t("acct.deleteConfirm"), confirmLabel: t("acct.delete"), danger: true });
+    if (!ok) return;
     setDeleting(true);
     try {
       const { error } = await supabase.rpc("delete_me");
       if (error) throw error;
       await signOut();
-      alert(t("acct.deleted"));
+      show(t("acct.deleted"));
       router.replace("/");
     } catch {
       setDeleting(false);
-      alert(t("acct.deleteFail"));
+      show(t("acct.deleteFail"));
     }
   }
 
-  if (loading || !user) return <main style={{ minHeight: "100dvh", display: "grid", placeItems: "center", color: theme.textMuted }}>…</main>;
+  if (loading || !user) return <main style={{ minHeight: "100dvh", display: "grid", placeItems: "center" }}><div className="skeleton" style={{ width: 180, height: 16 }} /></main>;
 
   return (
     <main className="fade-in" style={{ maxWidth: 440, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
@@ -44,6 +50,10 @@ export default function AccountPage() {
           <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, wordBreak: "break-all" }}>{user.email ?? ""}</span>
         </span>
       </div>
+
+      {/* 화면 설정 — 큰 글씨 / 야간 모드 */}
+      <p style={{ fontSize: 11.5, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.6, margin: "0 0 8px 4px", textTransform: "uppercase" }}>{t("disp.title")}</p>
+      <DisplaySettings />
 
       {/* 설정/링크 섹션 */}
       <AccentCard
@@ -70,6 +80,8 @@ export default function AccountPage() {
         <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 12px", lineHeight: 1.6 }}>{t("acct.deleteDesc")}</p>
         <button onClick={handleDelete} disabled={deleting} style={{ width: "100%", padding: 13, fontSize: 14.5, fontWeight: 800, color: "#fff", background: theme.wrong, border: "none", borderRadius: 12, cursor: deleting ? "default" : "pointer", opacity: deleting ? 0.7 : 1 }}>{deleting ? t("acct.deleting") : t("acct.delete")}</button>
       </div>
+      {confirmView}
+      {toastView}
     </main>
   );
 }

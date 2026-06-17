@@ -9,11 +9,13 @@ import { useI18n } from "@/lib/i18n";
 import { bookLabel, categoryLabel } from "@/lib/bookNames";
 import { WrongAnswer } from "@/lib/types";
 import { PageHeader, ACCENT, softShadow, softCard } from "@/lib/ui";
+import { useToast } from "@/components/Toast";
 
 export default function HistoryPage() {
   const router = useRouter();
   const { t, lang } = useI18n();
   const { user, loading } = useAuth();
+  const { show, view: toastView } = useToast();
   const [rows, setRows] = useState<WrongAnswer[] | null>(null);
   const [error, setError] = useState(false);
 
@@ -40,9 +42,9 @@ export default function HistoryPage() {
   // 틀린 문제만 모아 다시 풀기 (최근 20문제)
   async function retryWrong() {
     const ids = Array.from(new Set((rows ?? []).map(r => r.question_id).filter(Boolean))).slice(0, 20) as string[];
-    if (!ids.length) { alert(t("h.retryNone")); return; }
+    if (!ids.length) { show(t("h.retryNone")); return; }
     const { data, error } = await supabase.from("questions").select("*").in("id", ids);
-    if (error || !data || !data.length) { alert(t("h.retryFail")); return; }
+    if (error || !data || !data.length) { show(t("h.retryFail")); return; }
     sessionStorage.setItem("retryQuiz", JSON.stringify(data));
     sessionStorage.removeItem("quizResult");
     router.push("/quiz");
@@ -85,7 +87,7 @@ export default function HistoryPage() {
             <div key={r.id} className="fade-in-2" style={softCard({ borderLeft: `4px solid ${theme.wrong}`, padding: "14px 16px" })}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <span style={{ fontSize: 12, color: theme.gold, fontWeight: 800 }}>{r.book ? bookLabel(r.book, lang) : ""}{r.category ? ` · ${categoryLabel(r.category, lang)}` : ""}</span>
-                <span style={{ fontSize: 11.5, color: theme.textFaint }}>{new Date(r.created_at).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })}</span>
+                <span style={{ fontSize: 11.5, color: theme.textFaint }}>{new Date(r.created_at).toLocaleDateString(lang, { month: "short", day: "numeric" })}</span>
               </div>
               <p style={{ fontSize: 14.5, color: theme.text, margin: "0 0 8px", lineHeight: 1.55 }}>{r.question}</p>
               <p style={{ fontSize: 13.5, color: theme.correct, fontWeight: 700, margin: 0, padding: "7px 11px", borderRadius: 11, background: theme.correctBg }}>{t("r.answerLine", { a: r.correct_answer })}</p>
@@ -93,6 +95,7 @@ export default function HistoryPage() {
           ))}
         </div>
       )}
+      {toastView}
     </main>
   );
 }

@@ -8,10 +8,12 @@ import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
 import HomeReachCard from "@/components/HomeReachCard";
 import SosButton from "@/components/SosButton";
+import { useToast } from "@/components/Toast";
 
 export default function Home() {
   const router = useRouter();
   const { t } = useI18n();
+  const { show, view: toastView } = useToast();
   const { user, nickname, loading, signOut, updateNickname, isAdmin } = useAuth();
   const [editingNick, setEditingNick] = useState(false);
   const [nickDraft, setNickDraft] = useState("");
@@ -100,7 +102,7 @@ export default function Home() {
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <input value={nickDraft} onChange={e => setNickDraft(e.target.value)} maxLength={20} autoFocus
                   style={{ width: 130, fontSize: 13, padding: "5px 9px", borderRadius: 12, border: `1px solid ${theme.gold}`, background: theme.card, color: theme.text, outline: "none" }} />
-                <button onClick={async () => { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else alert(t("common.nickFail")); }}
+                <button onClick={async () => { const ok = await updateNickname(nickDraft); if (ok) setEditingNick(false); else show(t("common.nickFail")); }}
                   style={{ fontSize: 12, fontWeight: 700, color: "#08263a", background: theme.gold, border: "none", borderRadius: 12, padding: "5px 10px", cursor: "pointer" }}>{t("common.save")}</button>
                 <button onClick={() => setEditingNick(false)} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer" }}>✕</button>
               </span>
@@ -161,6 +163,7 @@ export default function Home() {
         <SmallLink onClick={() => router.push(user ? "/account" : "/privacy")}>{user ? t("home.accountShort") : t("privacy.title")}</SmallLink>
       </div>
       <p style={{ textAlign: "center", fontSize: 10.5, color: theme.textFaint, marginTop: 8, letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
+      {toastView}
     </main>
   );
 }
