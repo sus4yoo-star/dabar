@@ -109,7 +109,10 @@ begin
   end loop;
 end $$;
 
--- sessions: 누구나 기록(INSERT), 되읽기 없음
+-- sessions: 누구나 기록(INSERT), 조회는 본인 것만(전도 기록 화면)
 drop policy if exists "sessions_insert" on besora.sessions;
 create policy "sessions_insert" on besora.sessions for insert with check (true);
+drop policy if exists "sessions_select_own" on besora.sessions;
+create policy "sessions_select_own" on besora.sessions for select using (auth.uid() = evangelist_id);
 grant insert on besora.sessions to anon, authenticated;
+grant select on besora.sessions to authenticated;
