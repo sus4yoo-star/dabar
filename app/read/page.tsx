@@ -5,6 +5,7 @@ import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 import { BOOK_BY_CODE, BookMeta, adjacentBook, groupedBooks, searchBooks } from "@/lib/bibleData";
 import { BIBLE_VERSION_LABEL, BookText, SECONDARY_VERSIONS, loadBook } from "@/lib/bibleText";
+import { softShadow } from "@/lib/ui";
 
 export default function ReadPage() {
   const router = useRouter();
@@ -93,7 +94,7 @@ export default function ReadPage() {
       {/* 헤더 */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: theme.bg ?? "#fff", borderBottom: `1px solid ${theme.cardBorder}`, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
         <button onClick={() => router.push("/")} style={iconBtn}>← {t("common.home")}</button>
-        <button onClick={() => setPickerOpen(true)} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "9px 12px", cursor: "pointer" }}>
+        <button onClick={() => setPickerOpen(true)} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "linear-gradient(135deg,#eef8ff 0%,#ffffff 72%)", border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "10px 12px", cursor: "pointer", boxShadow: softShadow }}>
           <span style={{ fontSize: 15.5, fontWeight: 800, color: theme.text }}>📖 {meta?.ko} {chapter}{t("read.chapter")}</span>
           <span style={{ fontSize: 11, fontWeight: 700, color: theme.gold }}>▾</span>
         </button>
@@ -106,10 +107,10 @@ export default function ReadPage() {
       {/* 본문 */}
       <div ref={scroller} style={{ flex: 1, overflowY: "auto", padding: "16px 18px 90px" }}>
         {/* 컨셉: 혼자 읽기 + 상대 언어와 나란히 함께 읽기 */}
-        <div style={{ background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "10px 12px", margin: "0 0 14px" }}>
-          <p style={{ fontSize: 12, color: theme.textMuted, lineHeight: 1.55, textAlign: "center", margin: 0 }}>🙏 {t("read.concept")}</p>
+        <div style={{ background: "linear-gradient(135deg,#eef8ff 0%,#ffffff 72%)", border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "13px 14px", margin: "0 0 14px", boxShadow: softShadow }}>
+          <p style={{ fontSize: 12.5, color: theme.textMuted, lineHeight: 1.55, textAlign: "center", margin: 0 }}>🙏 {t("read.concept")}</p>
           <button onClick={() => router.push("/share/verses")}
-            style={{ width: "100%", marginTop: 9, padding: "9px", fontSize: 13, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 10, cursor: "pointer" }}>
+            style={{ width: "100%", marginTop: 10, padding: "11px", fontSize: 13.5, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 12, cursor: "pointer", boxShadow: "0 6px 16px rgba(31,155,239,0.20)" }}>
             {t("read.toParallel")}
           </button>
         </div>
@@ -134,7 +135,7 @@ export default function ReadPage() {
           </div>
         )}
 
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: "2px 0 14px" }}>{meta?.ko} {chapter}{t("read.chapter")}</h2>
+        <h2 style={{ fontSize: 23, fontWeight: 800, color: theme.gold, margin: "2px 0 14px", letterSpacing: -0.2 }}>{meta?.ko} {chapter}{t("read.chapter")}</h2>
 
         {loading ? (
           <p style={{ color: theme.textMuted, textAlign: "center", padding: "3rem 0" }}>…</p>
@@ -333,6 +334,6 @@ function savePos(p: ReadPos) {
   try { localStorage.setItem(POS_KEY, JSON.stringify(p)); } catch { /* */ }
 }
 
-const modeBtn = (on: boolean): React.CSSProperties => ({ flex: 1, fontSize: 13, fontWeight: on ? 800 : 600, padding: "8px", borderRadius: 10, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text });
-const iconBtn: React.CSSProperties = { fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 10, padding: "7px 10px", cursor: "pointer", whiteSpace: "nowrap" };
-const navBtn: React.CSSProperties = { flex: 1, fontSize: 14, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "11px", cursor: "pointer" };
+const modeBtn = (on: boolean): React.CSSProperties => ({ flex: 1, fontSize: 13.5, fontWeight: on ? 800 : 600, padding: "10px", borderRadius: 12, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text });
+const iconBtn: React.CSSProperties = { fontSize: 13, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "8px 11px", cursor: "pointer", whiteSpace: "nowrap" };
+const navBtn: React.CSSProperties = { flex: 1, fontSize: 14.5, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "13px", cursor: "pointer", boxShadow: softShadow };

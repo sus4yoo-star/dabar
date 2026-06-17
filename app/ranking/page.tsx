@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { LeaderboardRow } from "@/lib/types";
+import { PageHeader, ACCENT, softShadow } from "@/lib/ui";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -51,29 +52,26 @@ export default function RankingPage() {
 
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: 0 }}>{t("rk.title")}</h1>
-        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("r.home")}</button>
-      </div>
+      <PageHeader title={t("rk.title")} homeLabel={t("r.home")} onHome={() => router.push("/")} />
 
       {/* 주간 / 전체 토글 */}
-      <div style={{ display: "flex", gap: 7, marginBottom: "1rem" }}>
+      <div style={{ display: "flex", gap: 8, marginBottom: "0.9rem" }}>
         {([["all", t("rk.all")], ["weekly", t("rk.weekly")]] as const).map(([key, label]) => {
           const on = tab === key;
           return (
-            <button key={key} onClick={() => setTab(key as "weekly" | "all")} style={{ flex: 1, padding: "10px", borderRadius: 12, fontSize: 14, fontWeight: on ? 800 : 600, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.border}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text }}>{label}</button>
+            <button key={key} onClick={() => setTab(key as "weekly" | "all")} style={{ flex: 1, padding: "12px", borderRadius: 14, fontSize: 14.5, fontWeight: on ? 800 : 600, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, boxShadow: on ? "0 6px 16px rgba(31,155,239,0.22)" : softShadow }}>{label}</button>
           );
         })}
       </div>
-      <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 1.1rem" }}>
+      <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 1.1rem 2px", lineHeight: 1.5 }}>
         {tab === "weekly" ? t("rk.descWeekly") : t("rk.descAll")}
       </p>
 
       {user && myRow && (
-        <div style={{ display: "flex", alignItems: "center", gap: 12, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "12px 16px", marginBottom: "1.1rem" }}>
-          <span style={{ fontSize: 16, fontWeight: 800, color: theme.gold, minWidth: 36 }}>{myRank ? t("rk.rankUnit", { n: myRank }) : "-"}</span>
-          <span style={{ flex: 1, fontSize: 14, fontWeight: 700, color: theme.text }}>{myRow.nickname} <span style={{ color: theme.textMuted, fontWeight: 400 }}>{t("c.me")}</span></span>
-          <span style={{ fontSize: 14, fontWeight: 800, color: theme.gold }}>⭐ {myRow.total_points}</span>
+        <div className="fade-in" style={{ display: "flex", alignItems: "center", gap: 13, background: ACCENT.blue.bg, border: `1px solid ${ACCENT.blue.border}`, borderRadius: 18, padding: "14px 16px", marginBottom: "1.1rem", boxShadow: softShadow }}>
+          <span style={{ flexShrink: 0, minWidth: 46, height: 46, padding: "0 6px", borderRadius: 13, background: ACCENT.blue.chip, display: "grid", placeItems: "center", fontSize: 15, fontWeight: 800, color: ACCENT.blue.fg }}>{myRank ? t("rk.rankUnit", { n: myRank }) : "-"}</span>
+          <span style={{ flex: 1, minWidth: 0, fontSize: 14.5, fontWeight: 700, color: theme.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{myRow.nickname} <span style={{ color: theme.textMuted, fontWeight: 400 }}>{t("c.me")}</span></span>
+          <span style={{ flexShrink: 0, fontSize: 14.5, fontWeight: 800, color: theme.gold }}>⭐ {myRow.total_points}</span>
         </div>
       )}
 
@@ -82,15 +80,16 @@ export default function RankingPage() {
       {!error && rows && rows.length === 0 && <p style={{ textAlign: "center", color: theme.textMuted, fontSize: 14, padding: "2rem 0" }}>{t("rk.empty")}</p>}
 
       {!error && rows && rows.length > 0 && (
-        <div style={{ borderRadius: 14, overflow: "hidden", border: `1px solid ${theme.cardBorder}`, background: theme.card }}>
+        <div className="fade-in-2" style={{ borderRadius: 18, overflow: "hidden", border: `1px solid ${theme.cardBorder}`, background: theme.card, boxShadow: softShadow }}>
           {rows.map((r, i) => {
             const mine = user && r.user_id === user.id;
+            const top = i < 3;
             return (
-              <div key={r.user_id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderBottom: i < rows.length - 1 ? `1px solid ${theme.cardBorder}` : "none", background: mine ? theme.primaryBg : "transparent" }}>
-                <span style={{ fontSize: 15, fontWeight: 800, color: i < 3 ? theme.gold : theme.textMuted, minWidth: 32, textAlign: "center" }}>{MEDALS[i] ?? i + 1}</span>
-                <span style={{ flex: 1, fontSize: 14, fontWeight: mine ? 700 : 500, color: theme.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.nickname}{mine ? " " + t("c.me") : ""}</span>
+              <div key={r.user_id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", borderBottom: i < rows.length - 1 ? `1px solid ${theme.cardBorder}` : "none", background: mine ? theme.primaryBg : "transparent" }}>
+                <span style={{ fontSize: top ? 22 : 15, fontWeight: 800, color: top ? theme.gold : theme.textMuted, minWidth: 34, textAlign: "center", lineHeight: 1 }}>{MEDALS[i] ?? i + 1}</span>
+                <span style={{ flex: 1, fontSize: 14.5, fontWeight: mine ? 800 : 600, color: theme.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.nickname}{mine ? " " + t("c.me") : ""}</span>
                 <span style={{ fontSize: 12, color: theme.textMuted, minWidth: 48, textAlign: "right" }}>{t("rk.plays", { n: r.plays })}</span>
-                <span style={{ fontSize: 14, fontWeight: 800, color: theme.gold, minWidth: 64, textAlign: "right" }}>⭐ {r.total_points}</span>
+                <span style={{ fontSize: 14.5, fontWeight: 800, color: theme.gold, minWidth: 64, textAlign: "right" }}>⭐ {r.total_points}</span>
               </div>
             );
           })}

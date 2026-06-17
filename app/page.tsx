@@ -56,9 +56,9 @@ export default function Home() {
   }, [user]);
 
   return (
-    <main style={{ maxWidth: 460, margin: "0 auto", padding: "0.9rem 1rem 1.4rem", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+    <main style={{ maxWidth: 460, margin: "0 auto", padding: "0.55rem 1rem 0.8rem", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       {/* 상단 바 — 언어 + 로그인/아웃만 (깔끔) */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 12 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 8 }}>
         <LangSelector />
         {!loading && (user ? (
           <button onClick={signOut} style={{ fontSize: 12, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>{t("common.logout")}</button>
@@ -88,14 +88,14 @@ export default function Home() {
       )}
 
       {/* 히어로 */}
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: 14 }}>
-        <div style={{ width: 62, height: 62, margin: "0 auto", borderRadius: 19, background: "linear-gradient(135deg,#e9ffce 0%,#d4eeff 100%)", display: "grid", placeItems: "center", boxShadow: "0 12px 26px rgba(31,155,239,0.20)" }}>
-          <img src="/icons/icon-192.png" alt="DABAR" width={42} height={42} style={{ borderRadius: 12 }} />
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: 8 }}>
+        <div style={{ width: 46, height: 46, margin: "0 auto", borderRadius: 14, background: "linear-gradient(135deg,#e9ffce 0%,#d4eeff 100%)", display: "grid", placeItems: "center", boxShadow: "0 8px 20px rgba(31,155,239,0.20)" }}>
+          <img src="/icons/icon-192.png" alt="DABAR" width={32} height={32} style={{ borderRadius: 10 }} />
         </div>
-        <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 29, fontWeight: 700, color: theme.gold, letterSpacing: 5, margin: "9px 0 3px" }}>DABAR</h1>
-        <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0 }}>{t("home.tagline")}</p>
+        <h1 style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 23, fontWeight: 700, color: theme.gold, letterSpacing: 4, margin: "4px 0 1px" }}>DABAR</h1>
+        <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{t("home.tagline")}</p>
         {user && (
-          <div style={{ marginTop: 8, fontSize: 13.5, color: theme.primarySoft, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: 6 }}>
+          <div style={{ marginTop: 5, fontSize: 13, color: theme.primarySoft, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: 6 }}>
             {editingNick ? (
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <input value={nickDraft} onChange={e => setNickDraft(e.target.value)} maxLength={20} autoFocus
@@ -118,20 +118,20 @@ export default function Home() {
 
       {/* 복음 전하기 — 메인 CTA (가장 강조) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 14, textAlign: "left", width: "100%", padding: "15px 16px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: "linear-gradient(135deg,#edfcd2 0%,#f8fff1 100%)", cursor: "pointer", color: theme.text, boxShadow: "0 10px 24px rgba(88,167,0,0.16)" }}>
-        <span style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 15, background: "rgba(146,215,0,0.22)", display: "grid", placeItems: "center", fontSize: 28 }}>🕊️</span>
+        style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "11px 14px", borderRadius: 16, border: `1px solid ${theme.goldBorder}`, background: "linear-gradient(135deg,#edfcd2 0%,#f8fff1 100%)", cursor: "pointer", color: theme.text, boxShadow: "0 8px 20px rgba(88,167,0,0.15)" }}>
+        <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: "rgba(146,215,0,0.22)", display: "grid", placeItems: "center", fontSize: 25 }}>🕊️</span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 18.5, fontWeight: 800, color: theme.gold }}>{t("home.shareTitle")}</span>
-          <span style={{ display: "block", fontSize: 13.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.shareSub")}</span>
+          <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.gold }}>{t("home.shareTitle")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 1, lineHeight: 1.35 }}>{t("home.shareSub")}</span>
         </span>
-        <span style={{ fontSize: 19, color: theme.gold }}>→</span>
+        <span style={{ fontSize: 18, color: theme.gold }}>→</span>
       </button>
 
-      {/* 🌱 전도 여정 — 복음 전하기 바로 아래 (내가 전하는 사람들) */}
-      <HomeReachCard />
-
-      {/* 📚 양육·교육 과정 */}
+      {/* 📚 양육·교육 과정 — 2번째 */}
       <NavCard icon="📚" title={t("home.growSection")} sub={t("home.growSub")} onClick={() => router.push("/learn")} accent={ACCENT.green} />
+
+      {/* 🌱 선교 여정 — 3번째 (내가 전하는 사람들) */}
+      <HomeReachCard />
 
       {/* 📖 성경퀴즈 */}
       <NavCard icon="📖" title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} accent={ACCENT.blue} />
@@ -143,7 +143,7 @@ export default function Home() {
       <NavCard icon="💛" title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} accent={ACCENT.amber} />
 
       {/* 빠른 이동 — 동행 / 랭킹 / 오답 */}
-      <div style={{ display: "flex", gap: 8, marginTop: 9 }}>
+      <div style={{ display: "flex", gap: 8, marginTop: 7 }}>
         <QuickChip label={t("common.companions")} onClick={() => router.push("/share/me")} badge={unread} />
         <QuickChip label={t("common.ranking")} onClick={() => router.push("/ranking")} />
         {user && <QuickChip label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
@@ -154,13 +154,13 @@ export default function Home() {
       <SosButton compact />
 
       {/* 하단 보조 링크 */}
-      <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
+      <div style={{ marginTop: "auto", paddingTop: 9, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
         {isAdmin && <SmallLink onClick={() => router.push("/admin")}>{t("home.adminShort")}</SmallLink>}
         <SmallLink onClick={() => router.push("/guide")}>{t("home.guideShort")}</SmallLink>
         {user && <SmallLink onClick={shareInvite}>{t("home.inviteShort")}</SmallLink>}
         <SmallLink onClick={() => router.push(user ? "/account" : "/privacy")}>{user ? t("home.accountShort") : t("privacy.title")}</SmallLink>
       </div>
-      <p style={{ textAlign: "center", fontSize: 12, color: theme.textFaint, marginTop: 12, letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
+      <p style={{ textAlign: "center", fontSize: 10.5, color: theme.textFaint, marginTop: 8, letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
     </main>
   );
 }
@@ -175,11 +175,11 @@ const ACCENT: Record<"green" | "blue" | "amber", Accent> = {
 function NavCard({ icon, title, sub, onClick, accent }: { icon: string; title: string; sub: string; onClick: () => void; accent: Accent }) {
   return (
     <button onClick={onClick} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 9, padding: "12px 15px", borderRadius: 16, border: `1px solid ${accent.border}`, background: accent.bg, cursor: "pointer", color: theme.text, boxShadow: "0 3px 12px rgba(23,50,73,0.05)" }}>
-      <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: accent.chip, display: "grid", placeItems: "center", fontSize: 24 }}>{icon}</span>
+      style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", marginTop: 7, padding: "10px 13px", borderRadius: 15, border: `1px solid ${accent.border}`, background: accent.bg, cursor: "pointer", color: theme.text, boxShadow: "0 3px 12px rgba(23,50,73,0.05)" }}>
+      <span style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 12, background: accent.chip, display: "grid", placeItems: "center", fontSize: 22 }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ display: "block", fontSize: 16.5, fontWeight: 800, color: accent.fg }}>{title}</span>
-        <span style={{ display: "block", fontSize: 13, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{sub}</span>
+        <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: accent.fg }}>{title}</span>
+        <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 1, lineHeight: 1.35 }}>{sub}</span>
       </span>
       <span style={{ fontSize: 18, color: accent.fg, opacity: 0.85 }}>→</span>
     </button>
@@ -189,7 +189,7 @@ function NavCard({ icon, title, sub, onClick, accent }: { icon: string; title: s
 function QuickChip({ label, onClick, badge }: { label: string; onClick: () => void; badge?: number }) {
   return (
     <button onClick={onClick}
-      style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "13px 6px", borderRadius: 13, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 14.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
+      style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px 6px", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 14, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
       {label}
       {badge ? <span style={{ position: "absolute", top: -5, right: 8, minWidth: 16, height: 16, padding: "0 4px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 9.5, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{badge > 99 ? "99+" : badge}</span> : null}
     </button>

@@ -5,6 +5,7 @@ import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { PageHeader, ACCENT, softShadow, softCard } from "@/lib/ui";
 import { ALL_BOOKS } from "@/lib/bible";
 import { fetchQuizProgress } from "@/lib/quizProgress";
 import { bookLabel } from "@/lib/bookNames";
@@ -60,11 +61,7 @@ export default function ProgressPage() {
 
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>
-        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("common.home")}</button>
-        <h1 style={{ fontSize: 18, fontWeight: 800, color: theme.gold, margin: 0 }}>{t("prog.title")}</h1>
-        <span style={{ width: 56 }} />
-      </div>
+      <PageHeader title={t("prog.title")} homeLabel={t("common.home")} onHome={() => router.push("/")} />
 
       {!user ? (
         <p style={{ textAlign: "center", color: theme.textMuted, marginTop: "3rem" }}>{t("prog.login")}</p>
@@ -74,28 +71,32 @@ export default function ProgressPage() {
         <p style={{ textAlign: "center", color: theme.textMuted, marginTop: "3rem", lineHeight: 1.6 }}>{t("prog.empty")}</p>
       ) : (
         <>
-          <div style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "14px 16px", marginBottom: "1rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: theme.text }}>{t("prog.overall", { a: overall.a, t: overall.t, p: pct })}</span>
-              <span style={{ fontSize: 13, fontWeight: 800, color: theme.correct }}>✓ {overall.o}</span>
+          <div className="fade-in" style={{ background: ACCENT.green.bg, border: `1px solid ${ACCENT.green.border}`, borderRadius: 18, padding: "16px 17px", marginBottom: "1.1rem", boxShadow: softShadow }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 13, marginBottom: 11 }}>
+              <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ACCENT.green.chip, display: "grid", placeItems: "center", fontSize: 23 }}>📊</span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: ACCENT.green.fg }}>{t("prog.overall", { a: overall.a, t: overall.t, p: pct })}</span>
+              </span>
+              <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 800, color: theme.correct }}>✓ {overall.o}</span>
             </div>
-            <div style={{ height: 9, background: "rgba(13,52,84,0.12)", borderRadius: 5, overflow: "hidden" }}>
+            <div style={{ height: 10, background: "rgba(13,52,84,0.10)", borderRadius: 5, overflow: "hidden" }}>
               <div style={{ height: "100%", width: `${pct}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, borderRadius: 5, transition: "width .4s" }} />
             </div>
           </div>
 
-          <p style={{ fontSize: 12, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "0 0 8px 2px" }}>{t("q.bookProg")}</p>
+          <p style={{ fontSize: 12.5, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "0 0 9px 2px" }}>{t("q.bookProg")}</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
             {byBook.map(({ book, s }) => {
               const p = s.t ? Math.round((s.a / s.t) * 100) : 0;
+              const done = p === 100;
               return (
-                <div key={book} style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, padding: "10px 13px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 5 }}>
+                <div key={book} style={softCard({ padding: "12px 14px", border: `1px solid ${done ? theme.goldBorder : theme.cardBorder}` })}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, marginBottom: 7 }}>
                     <span style={{ fontWeight: 700, color: theme.text }}>{bookLabel(book, lang)}</span>
-                    <span style={{ color: p === 100 ? theme.correct : theme.textMuted, fontWeight: 700 }}>{s.a}/{s.t}{p === 100 ? " ✓" : ""}</span>
+                    <span style={{ color: done ? theme.correct : theme.textMuted, fontWeight: 800 }}>{s.a}/{s.t}{done ? " ✓" : ""}</span>
                   </div>
-                  <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${p}%`, background: p === 100 ? theme.correct : `linear-gradient(90deg,${theme.primarySoft},${theme.gold})`, borderRadius: 3 }} />
+                  <div style={{ height: 7, background: "rgba(13,52,84,0.10)", borderRadius: 4, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${p}%`, background: done ? theme.correct : `linear-gradient(90deg,${theme.primarySoft},${theme.gold})`, borderRadius: 4 }} />
                   </div>
                 </div>
               );

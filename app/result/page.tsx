@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { downloadResultImage } from "@/lib/resultImage";
 import { shareResult } from "@/lib/share";
 import { useI18n } from "@/lib/i18n";
+import { ACCENT, softShadow, cardShadow, softCard } from "@/lib/ui";
 
 interface ResultMeta { testament?: string; level?: string; bookCount?: number; }
 interface Result {
@@ -93,13 +94,19 @@ export default function ResultPage() {
 
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: theme.gold, letterSpacing: 3, margin: "0 0 1.5rem", textAlign: "center" }}>DABAR</p>
+      <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: theme.gold, letterSpacing: 3, margin: "0 0 1.25rem", textAlign: "center" }}>DABAR</p>
 
-      <div style={{ background: grade.bg, border: `1px solid ${theme.cardBorder}`, borderRadius: 18, padding: "2rem", textAlign: "center", marginBottom: "1rem" }}>
-        <p style={{ fontSize: 58, fontWeight: 800, color: grade.color, margin: "0 0 4px" }}>{result.score}<span style={{ fontSize: 22, fontWeight: 400, color: theme.textMuted }}> / {result.total}</span></p>
-        <p style={{ fontSize: 16, color: grade.color, margin: "0 0 4px", fontWeight: 700 }}>{gradeMsg}</p>
+      {/* 점수 히어로 — 그라데이션 + 아이콘 칩으로 보상감 강조 */}
+      <div className="fade-in" style={{ background: `linear-gradient(135deg, ${grade.bg} 0%, #ffffff 88%)`, border: `1px solid ${theme.cardBorder}`, borderRadius: 22, padding: "1.9rem 1.5rem", textAlign: "center", marginBottom: "1rem", boxShadow: cardShadow }}>
+        <div style={{ width: 60, height: 60, margin: "0 auto 12px", borderRadius: 18, background: grade.bg, display: "grid", placeItems: "center", fontSize: 30, boxShadow: softShadow }}>
+          {pct >= 90 ? "🏆" : pct >= 70 ? "🎉" : pct >= 50 ? "💪" : "🌱"}
+        </div>
+        <p style={{ fontSize: 60, fontWeight: 800, color: grade.color, margin: "0 0 2px", lineHeight: 1 }}>{result.score}<span style={{ fontSize: 22, fontWeight: 400, color: theme.textMuted }}> / {result.total}</span></p>
+        <p style={{ fontSize: 16.5, color: grade.color, margin: "8px 0 4px", fontWeight: 800 }}>{gradeMsg}</p>
         <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{t("r.accuracy", { n: pct })}</p>
-        {!!result.points && <p style={{ fontSize: 15, color: theme.gold, fontWeight: 800, margin: "8px 0 0" }}>{t("r.points", { n: result.points })}</p>}
+        {!!result.points && (
+          <p style={{ display: "inline-block", fontSize: 14.5, color: theme.gold, fontWeight: 800, margin: "12px 0 0", padding: "5px 14px", borderRadius: 999, background: theme.goldLight, border: `1px solid ${theme.goldBorder}` }}>{t("r.points", { n: result.points })}</p>
+        )}
       </div>
 
       <div style={{ textAlign: "center", marginBottom: "1.25rem", minHeight: 22 }}>
@@ -122,27 +129,28 @@ export default function ResultPage() {
       <div style={{ display: "flex", gap: 10, marginBottom: "1.5rem" }}>
         <button
           onClick={() => downloadResultImage({ score: result.score, total: result.total, percentage: pct, message: gradeMsg, color: grade.color, wrongList: imageWrongs })}
-          style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: "transparent", color: theme.gold, border: `1.5px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}
+          style={{ flex: 1, padding: 14, fontSize: 14.5, fontWeight: 800, background: theme.goldLight, color: theme.gold, border: `1px solid ${theme.goldBorder}`, borderRadius: 14, cursor: "pointer", boxShadow: softShadow }}
         >{t("r.imgSave")}</button>
         <button
           onClick={() => shareResult({ score: result.score, total: result.total, percentage: pct, message: gradeMsg })}
-          style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: "#FEE500", color: "#191600", border: "none", borderRadius: 12, cursor: "pointer" }}
+          style={{ flex: 1, padding: 14, fontSize: 14.5, fontWeight: 800, background: "#FEE500", color: "#191600", border: "none", borderRadius: 14, cursor: "pointer", boxShadow: softShadow }}
         >{t("r.share")}</button>
       </div>
 
       {/* 오답노트 */}
-      <p style={{ fontSize: 12, fontWeight: 700, color: theme.gold, letterSpacing: 0.5, marginBottom: 10 }}>{t("r.wrongNote")}</p>
+      <p style={{ fontSize: 12.5, fontWeight: 800, color: theme.gold, letterSpacing: 0.5, marginBottom: 10 }}>{t("r.wrongNote")}</p>
       {wrongs.length === 0 ? (
-        <div style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "20px 16px", textAlign: "center", marginBottom: "1.5rem" }}>
-          <p style={{ fontSize: 15, color: theme.correct, fontWeight: 700, margin: 0 }}>{t("r.perfect")}</p>
+        <div style={{ ...softCard({ borderRadius: 16, padding: "22px 16px", marginBottom: "1.5rem", background: ACCENT.green.bg, border: `1px solid ${theme.goldBorder}` }), textAlign: "center" }}>
+          <div style={{ fontSize: 30, marginBottom: 6 }}>✨</div>
+          <p style={{ fontSize: 15.5, color: theme.correct, fontWeight: 800, margin: 0 }}>{t("r.perfect")}</p>
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: "1.5rem" }}>
           {shownWrongs.map(({ q }) => (
-            <div key={q.id} style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderLeft: `3px solid ${theme.wrong}`, borderRadius: 12, padding: "13px 15px" }}>
-              <p style={{ fontSize: 12, color: theme.gold, fontWeight: 700, margin: "0 0 5px" }}>{q.book} · {q.category}</p>
+            <div key={q.id} style={{ ...softCard({ borderRadius: 14, padding: "14px 16px", background: ACCENT.red.bg, border: `1px solid ${ACCENT.red.border}`, borderLeft: `3px solid ${theme.wrong}` }) }}>
+              <p style={{ fontSize: 12, color: theme.gold, fontWeight: 800, margin: "0 0 5px" }}>{q.book} · {q.category}</p>
               <p style={{ fontSize: 14, color: theme.text, margin: "0 0 8px", lineHeight: 1.55 }}>{q.question}</p>
-              <p style={{ fontSize: 13, color: theme.correct, fontWeight: 700, margin: "0 0 4px" }}>{t("r.answerLine", { a: q.options[q.answer] })}</p>
+              <p style={{ fontSize: 13, color: theme.correct, fontWeight: 800, margin: "0 0 4px" }}>{t("r.answerLine", { a: q.options[q.answer] })}</p>
               {q.explanation && <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0, lineHeight: 1.6 }}>{q.explanation}</p>}
             </div>
           ))}
@@ -153,14 +161,14 @@ export default function ResultPage() {
       )}
 
       <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-        <button onClick={() => router.push("/ranking")} style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: theme.goldLight, color: theme.gold, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("r.ranking")}</button>
-        {user && <button onClick={() => router.push("/history")} style={{ flex: 1, padding: 13, fontSize: 14, fontWeight: 700, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("r.myNotes")}</button>}
+        <button onClick={() => router.push("/ranking")} style={{ flex: 1, padding: 14, fontSize: 14.5, fontWeight: 800, background: theme.goldLight, color: theme.gold, border: `1px solid ${theme.goldBorder}`, borderRadius: 14, cursor: "pointer", boxShadow: softShadow }}>{t("r.ranking")}</button>
+        {user && <button onClick={() => router.push("/history")} style={{ flex: 1, padding: 14, fontSize: 14.5, fontWeight: 800, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, cursor: "pointer", boxShadow: softShadow }}>{t("r.myNotes")}</button>}
       </div>
       <div style={{ display: "flex", gap: 10 }}>
-        <button onClick={() => router.push("/")} style={{ flex: 1, padding: 14, fontSize: 15, fontWeight: 700, background: "transparent", color: theme.text, border: `1.5px solid ${theme.border}`, borderRadius: 12, cursor: "pointer" }}>{t("r.home")}</button>
-        <button onClick={() => { sessionStorage.removeItem("quizResult"); sessionStorage.removeItem("quizResultSaved"); router.back(); }} style={{ flex: 1, padding: 14, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{t("r.again")}</button>
+        <button onClick={() => router.push("/")} style={{ flex: 1, padding: 15, fontSize: 15, fontWeight: 800, background: theme.card, color: theme.text, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, cursor: "pointer", boxShadow: softShadow }}>{t("r.home")}</button>
+        <button onClick={() => { sessionStorage.removeItem("quizResult"); sessionStorage.removeItem("quizResultSaved"); router.back(); }} style={{ flex: 1, padding: 15, fontSize: 15, fontWeight: 800, background: theme.primary, color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", boxShadow: "0 8px 22px rgba(31,155,239,0.22)" }}>{t("r.again")}</button>
       </div>
-      <button onClick={() => router.push("/play")} style={{ width: "100%", marginTop: 14, padding: "12px 14px", fontSize: 13.5, fontWeight: 700, background: theme.primaryBg, color: theme.primarySoft, border: `1px solid ${theme.cardBorder}`, borderRadius: 12, cursor: "pointer", lineHeight: 1.4 }}>{t("r.tryComplete")}</button>
+      <button onClick={() => router.push("/play")} style={{ width: "100%", marginTop: 14, padding: "13px 14px", fontSize: 13.5, fontWeight: 800, background: ACCENT.blue.bg, color: theme.primarySoft, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, cursor: "pointer", lineHeight: 1.4, boxShadow: softShadow }}>{t("r.tryComplete")}</button>
       <p style={{ textAlign: "center", fontSize: 11, color: theme.textFaint, marginTop: "2rem", letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
     </main>
   );

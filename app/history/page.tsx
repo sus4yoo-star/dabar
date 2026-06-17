@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { bookLabel, categoryLabel } from "@/lib/bookNames";
 import { WrongAnswer } from "@/lib/types";
+import { PageHeader, ACCENT, softShadow, softCard } from "@/lib/ui";
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -49,45 +50,45 @@ export default function HistoryPage() {
 
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: 0 }}>{t("h.title")}</h1>
-        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("r.home")}</button>
-      </div>
+      <PageHeader title={t("h.title")} homeLabel={t("r.home")} onHome={() => router.push("/")} />
 
       {rows && rows.length > 0 && (
         <>
-          <div style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "14px 16px", marginBottom: "0.9rem" }}>
-            <p style={{ fontSize: 13, color: theme.text, margin: "0 0 6px", fontWeight: 700 }}>{t("h.total", { n: rows.length })}</p>
-            {topBooks.length > 0 && (
-              <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>
-                {t("h.topBooks", { b: topBooks.map(([b, n]) => `${bookLabel(b, lang)}(${n})`).join(" · ") })}
-              </p>
-            )}
+          <div className="fade-in" style={{ display: "flex", alignItems: "center", gap: 13, background: ACCENT.red.bg, border: `1px solid ${ACCENT.red.border}`, borderRadius: 18, padding: "15px 16px", marginBottom: "0.9rem", boxShadow: softShadow }}>
+            <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ACCENT.red.chip, display: "grid", placeItems: "center", fontSize: 23 }}>📝</span>
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: "block", fontSize: 16, color: ACCENT.red.fg, fontWeight: 800 }}>{t("h.total", { n: rows.length })}</span>
+              {topBooks.length > 0 && (
+                <span style={{ display: "block", fontSize: 13, color: theme.textMuted, marginTop: 3, lineHeight: 1.4 }}>
+                  {t("h.topBooks", { b: topBooks.map(([b, n]) => `${bookLabel(b, lang)}(${n})`).join(" · ") })}
+                </span>
+              )}
+            </span>
           </div>
-          <button onClick={retryWrong} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 800, background: "linear-gradient(135deg,#a6e02f 0%,#86c40a 100%)", color: "#08263a", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: "1.25rem", boxShadow: "0 8px 24px rgba(216,190,110,0.22)" }}>{t("h.retry")}</button>
+          <button onClick={retryWrong} style={{ width: "100%", padding: 15, fontSize: 15.5, fontWeight: 800, background: "linear-gradient(135deg,#a6e02f 0%,#86c40a 100%)", color: "#08263a", border: "none", borderRadius: 16, cursor: "pointer", marginBottom: "1.25rem", boxShadow: "0 8px 24px rgba(88,167,0,0.20)" }}>{t("h.retry")}</button>
         </>
       )}
 
       {error && <p style={{ textAlign: "center", color: theme.wrong, fontSize: 14, padding: "2rem 0" }}>{t("h.fail")}</p>}
       {!error && rows === null && <p style={{ textAlign: "center", color: theme.textMuted, fontSize: 14, padding: "2rem 0" }}>{t("c.loading")}</p>}
       {!error && rows && rows.length === 0 && (
-        <div style={{ textAlign: "center", padding: "3rem 1rem", color: theme.textMuted }}>
-          <p style={{ fontSize: 40, margin: "0 0 10px" }}>🎉</p>
-          <p style={{ fontSize: 15, color: theme.text, fontWeight: 700, margin: "0 0 4px" }}>{t("h.emptyT")}</p>
-          <p style={{ fontSize: 13, margin: 0 }}>{t("h.emptyS")}</p>
+        <div className="fade-in" style={{ textAlign: "center", padding: "2.5rem 1.25rem", marginTop: "1rem", borderRadius: 18, border: `1px solid ${ACCENT.green.border}`, background: ACCENT.green.bg, boxShadow: softShadow }}>
+          <span style={{ display: "grid", placeItems: "center", width: 60, height: 60, margin: "0 auto 12px", borderRadius: 18, background: ACCENT.green.chip, fontSize: 32 }}>🎉</span>
+          <p style={{ fontSize: 16, color: ACCENT.green.fg, fontWeight: 800, margin: "0 0 5px" }}>{t("h.emptyT")}</p>
+          <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0, lineHeight: 1.5 }}>{t("h.emptyS")}</p>
         </div>
       )}
 
       {!error && rows && rows.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {rows.map(r => (
-            <div key={r.id} style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderLeft: `3px solid ${theme.wrong}`, borderRadius: 12, padding: "13px 15px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                <span style={{ fontSize: 12, color: theme.gold, fontWeight: 700 }}>{r.book ? bookLabel(r.book, lang) : ""}{r.category ? ` · ${categoryLabel(r.category, lang)}` : ""}</span>
-                <span style={{ fontSize: 11, color: theme.textFaint }}>{new Date(r.created_at).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })}</span>
+            <div key={r.id} className="fade-in-2" style={softCard({ borderLeft: `4px solid ${theme.wrong}`, padding: "14px 16px" })}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <span style={{ fontSize: 12, color: theme.gold, fontWeight: 800 }}>{r.book ? bookLabel(r.book, lang) : ""}{r.category ? ` · ${categoryLabel(r.category, lang)}` : ""}</span>
+                <span style={{ fontSize: 11.5, color: theme.textFaint }}>{new Date(r.created_at).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })}</span>
               </div>
-              <p style={{ fontSize: 14, color: theme.text, margin: "0 0 7px", lineHeight: 1.55 }}>{r.question}</p>
-              <p style={{ fontSize: 13, color: theme.correct, fontWeight: 700, margin: 0 }}>{t("r.answerLine", { a: r.correct_answer })}</p>
+              <p style={{ fontSize: 14.5, color: theme.text, margin: "0 0 8px", lineHeight: 1.55 }}>{r.question}</p>
+              <p style={{ fontSize: 13.5, color: theme.correct, fontWeight: 700, margin: 0, padding: "7px 11px", borderRadius: 11, background: theme.correctBg }}>{t("r.answerLine", { a: r.correct_answer })}</p>
             </div>
           ))}
         </div>
