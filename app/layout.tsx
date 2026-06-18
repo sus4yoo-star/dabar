@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: "복음 전하기 · 다국어 통역 · 이미지 번역 · 성경 퀴즈 · 소그룹 · 긴급 SOS",
     url: "https://dabar.theamov.com",
     siteName: "DABAR",
-    images: [{ url: "/og.png?v=2", width: 1200, height: 630, alt: "DABAR · 다바르 — 선교 현장의 동행자" }],
+    images: [{ url: "/og.png?v=3", width: 1200, height: 630, alt: "DABAR · 다바르 — 선교 현장의 동행자" }],
     locale: "ko_KR",
     type: "website",
   },
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "DABAR · 다바르 — 선교 현장의 동행자",
     description: "복음 전하기 · 다국어 통역 · 이미지 번역 · 성경 퀴즈 · 소그룹 · 긴급 SOS",
-    images: ["/og.png?v=2"],
+    images: ["/og.png?v=3"],
   },
 };
 
