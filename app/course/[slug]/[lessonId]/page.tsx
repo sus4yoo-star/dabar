@@ -101,7 +101,7 @@ export default function LessonPage() {
       {/* 문제 */}
       {phase === "quiz" && (
         <div className="fade-in-2">
-          <div style={{ height: 8, background: "rgba(13,52,84,0.12)", borderRadius: 4, marginBottom: 16, overflow: "hidden" }}>
+          <div style={{ height: 8, background: "var(--t-border)", borderRadius: 4, marginBottom: 16, overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${((qIdx + 1) / quiz.length) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .3s ease", borderRadius: 4 }} />
           </div>
           <p style={{ fontSize: 12.5, color: theme.textMuted, fontWeight: 700, margin: "0 0 8px" }}>{qIdx + 1} / {quiz.length}</p>

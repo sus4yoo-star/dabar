@@ -80,7 +80,7 @@ export default function ProgressPage() {
               </span>
               <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 800, color: theme.correct }}>✓ {overall.o}</span>
             </div>
-            <div style={{ height: 10, background: "rgba(13,52,84,0.10)", borderRadius: 5, overflow: "hidden" }}>
+            <div style={{ height: 10, background: "var(--t-border)", borderRadius: 5, overflow: "hidden" }}>
               <div style={{ height: "100%", width: `${pct}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, borderRadius: 5, transition: "width .4s" }} />
             </div>
           </div>
@@ -96,7 +96,7 @@ export default function ProgressPage() {
                     <span style={{ fontWeight: 700, color: theme.text }}>{bookLabel(book, lang)}</span>
                     <span style={{ color: done ? theme.correct : theme.textMuted, fontWeight: 800 }}>{s.a}/{s.t}{done ? " ✓" : ""}</span>
                   </div>
-                  <div style={{ height: 7, background: "rgba(13,52,84,0.10)", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ height: 7, background: "var(--t-border)", borderRadius: 4, overflow: "hidden" }}>
                     <div style={{ height: "100%", width: `${p}%`, background: done ? theme.correct : `linear-gradient(90deg,${theme.primarySoft},${theme.gold})`, borderRadius: 4 }} />
                   </div>
                 </div>

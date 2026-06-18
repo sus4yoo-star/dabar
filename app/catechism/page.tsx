@@ -79,7 +79,7 @@ export default function CatechismPage() {
           <span style={{ fontSize: 13, fontWeight: 700, color: theme.text }}>{t("cat.memProg")}</span>
           <span style={{ fontSize: 13, fontWeight: 800, color: theme.gold }}>{memCount} / 107</span>
         </div>
-        <div style={{ height: 8, background: "rgba(13,52,84,0.12)", borderRadius: 4, overflow: "hidden" }}>
+        <div style={{ height: 8, background: "var(--t-border)", borderRadius: 4, overflow: "hidden" }}>
           <div style={{ height: "100%", width: `${(memCount / 107) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .4s", borderRadius: 4 }} />
         </div>
       </div>
