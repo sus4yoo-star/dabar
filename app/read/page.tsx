@@ -94,7 +94,7 @@ export default function ReadPage() {
     <main style={{ maxWidth: 560, margin: "0 auto", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       {/* 헤더 */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: theme.bg ?? "#fff", borderBottom: `1px solid ${theme.cardBorder}`, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
-        <button onClick={() => router.push("/")} style={iconBtn}>← {t("common.home")}</button>
+        <button onClick={() => router.push("/")} style={iconBtn}>{t("common.home")}</button>
         <button onClick={() => setPickerOpen(true)} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "var(--a-blue-bg)", border: `1px solid ${theme.cardBorder}`, borderRadius: 14, padding: "10px 12px", cursor: "pointer", boxShadow: softShadow }}>
           <span style={{ fontSize: 15.5, fontWeight: 800, color: theme.text }}>📖 {meta?.ko} {chapter}{t("read.chapter")}</span>
           <span style={{ fontSize: 11, fontWeight: 700, color: theme.gold }}>▾</span>
