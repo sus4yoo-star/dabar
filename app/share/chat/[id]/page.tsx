@@ -82,7 +82,7 @@ export default function ChatPage() {
     setText("");
     try {
       await sendMessage(companionId, body);
-      notifyPeer(companionId, nickname || "동행자", body); // 상대에게 푸시
+      notifyPeer(companionId, nickname || ui(myLang, "companionLabel"), body); // 상대에게 푸시
     } catch { /* ignore */ }
   }
 
@@ -109,7 +109,7 @@ export default function ChatPage() {
         <Link href="/share/me" aria-label={ui(myLang, "backToList")} style={{ fontSize: 18, color: theme.textMuted, textDecoration: "none" }}>‹</Link>
         <Avatar url={companion?.avatarUrl ?? null} name={companion?.nickname ?? ""} />
         <div style={{ minWidth: 0, flex: 1 }}>
-          <p style={{ margin: 0, fontWeight: 700, color: theme.text, fontSize: 15, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{companion?.nickname ?? "동행자"}</p>
+          <p style={{ margin: 0, fontWeight: 700, color: theme.text, fontSize: 15, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{companion?.nickname ?? ui(myLang, "companionLabel")}</p>
           <p style={{ margin: 0, fontSize: 11, color: "var(--t-sacred)", fontWeight: 700 }}>{ui(myLang, "companionLabel")}</p>
         </div>
         <button onClick={() => setAuto((v) => !v)}

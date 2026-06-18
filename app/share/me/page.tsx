@@ -46,7 +46,7 @@ export default function Me() {
     <AppShell title={ui(myLang, "myRecords")}>
       {!loggedIn ? (
         <p style={{ borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: 20, fontSize: 14, color: theme.textMuted, lineHeight: 1.6 }}>
-          {ui(myLang, "loginToConnect")} (게스트로도 전도는 자유롭게 가능합니다.)
+          {ui(myLang, "loginToConnect")} ({ui(myLang, "guestOk")})
           <Link href="/login" style={{ display: "inline-block", marginTop: 12, borderRadius: 999, background: theme.primary, color: "#fff", padding: "10px 20px", fontWeight: 700, textDecoration: "none" }}>{ui(myLang, "login")}</Link>
         </p>
       ) : (
@@ -81,7 +81,7 @@ export default function Me() {
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
                 {chats.map((c) => {
                   const mine = c.lastSender && myId && c.lastSender === myId;
-                  const preview = c.lastBody ? (mine ? `나: ${c.lastBody}` : c.lastBody) : ui(myLang, "companionLabel");
+                  const preview = c.lastBody ? (mine ? `${ui(myLang, "mePrefix")}: ${c.lastBody}` : c.lastBody) : ui(myLang, "companionLabel");
                   return (
                     <Link key={c.id} href={`/share/chat/${c.id}`}
                       style={{ display: "flex", alignItems: "center", gap: 12, borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: "12px 14px", textDecoration: "none" }}>

@@ -448,6 +448,7 @@ const DICT: Dict = {
   "grp.send":      { ko: "보내기", en: "Send", th: "ส่ง", lo: "ສົ່ງ" },
   "grp.joinToChat":{ ko: "참여하면 나눔 채팅을 할 수 있어요.", en: "Join to start the group chat.", th: "เข้าร่วมเพื่อเริ่มแชท", lo: "ເຂົ້າຮ່ວມເພື່ອເລີ່ມແຊັດ" },
   "grp.membersTitle": { ko: "참여자", en: "Members", th: "สมาชิก", lo: "ສະມາຊິກ" },
+  "grp.anon":      { ko: "익명", en: "Anonymous", th: "ไม่ระบุชื่อ", lo: "ບໍ່ລະບຸຊື່" },
   "grp.notReady":  { ko: "모임 기능을 사용하려면 DB 설정(besora-groups.sql)이 필요해요.", en: "Group DB setup (besora-groups.sql) is required.", th: "ต้องตั้งค่าฐานข้อมูลกลุ่มก่อน", lo: "ຕ້ອງຕັ້ງຄ່າຖານຂໍ້ມູນກຸ່ມກ່ອນ" },
   "grp.today":     { ko: "오늘", en: "Today", th: "วันนี้", lo: "ມື້ນີ້" },
   "grp.yesterday": { ko: "어제", en: "Yesterday", th: "เมื่อวาน", lo: "ມື້ວານ" },
