@@ -11,8 +11,8 @@ interface ResultImageArgs {
   wrongList?: WrongItem[]; // 오답 (있으면 카드에 오답노트로 표시)
 }
 
-const GOLD = "#58a700";
-const GOLD_SOFT = "#79c61d";
+const GOLD = "#c79a2b";      // 거룩한 골드 — 앱 워드마크와 일치
+const GOLD_SOFT = "#b8901f";
 const IMG_MAX_WRONG = 3; // 이미지에는 최대 3개까지
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
