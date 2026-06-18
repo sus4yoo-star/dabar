@@ -34,12 +34,14 @@ export function PageHeader({ title, subtitle, onHome, homeLabel = "홈", right, 
   title: string; subtitle?: string; onHome: () => void; homeLabel?: string; right?: React.ReactNode; accentColor?: string;
 }) {
   const fg = accentColor ?? theme.gold;
+  // 라벨에 화살표(←)가 이미 들어있을 수 있으므로 떼어내고, 항상 우리가 한 개만 붙인다(중복 화살표 방지).
+  const homeText = homeLabel.replace(/^[←‹←\s]+/, "");
   return (
     <div style={{ marginBottom: "0.7rem" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3, minHeight: 32 }}>
-        <button onClick={onHome} aria-label={homeLabel}
+        <button onClick={onHome} aria-label={homeText}
           style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 600, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "6px 13px", cursor: "pointer", whiteSpace: "nowrap", boxShadow: softShadow }}>
-          <span aria-hidden style={{ fontSize: 14, lineHeight: 1 }}>←</span>{homeLabel}
+          <span aria-hidden style={{ fontSize: 14, lineHeight: 1 }}>←</span>{homeText}
         </button>
         <span style={{ flex: 1 }} />
         {right}
