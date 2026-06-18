@@ -57,7 +57,7 @@ export default function DecisionFlow({ toolSlug, onAgain }: { toolSlug: string; 
   const Divider = () => <div style={{ margin: "20px 0", height: 1, width: 48, background: "currentColor", opacity: 0.2 }} />;
   const pillCrimson = { borderRadius: 999, background: "#C9402F", padding: "12px 32px", fontWeight: 700, color: "#fff", border: "none", cursor: "pointer" } as const;
   const pillGreen = { borderRadius: 999, background: theme.correct, padding: "12px 32px", fontWeight: 700, color: "#ffffff", border: "none", cursor: "pointer" } as const;
-  const pillGold = { borderRadius: 999, background: theme.gold, padding: "12px 32px", fontWeight: 800, color: "#08263a", border: "none", cursor: "pointer" } as const;
+  const pillGold = { borderRadius: 999, background: "var(--t-sacred)", padding: "12px 32px", fontWeight: 800, color: "#1c1402", border: "none", cursor: "pointer" } as const;
 
   return (
     <div style={{ display: "flex", flex: 1, flexDirection: "column" }}>
@@ -90,7 +90,7 @@ export default function DecisionFlow({ toolSlug, onAgain }: { toolSlug: string; 
 
         {phase === "pray" && (
           <>
-            <p style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 24, color: theme.gold, margin: 0 }}>✝</p>
+            <p style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 24, color: "var(--t-sacred)", margin: 0 }}>✝</p>
             <p style={{ marginTop: 16, maxWidth: 460, fontSize: 26, lineHeight: 1.6 }}>{seeker.prayer_text}</p>
             <div style={{ marginTop: 24 }}>
               <AudioButton text={seeker.prayer_text} lang={seekerLang} audioUrl={seeker.audio_url} label={ui(myLang, "listen")} />

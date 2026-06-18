@@ -1,20 +1,17 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
+import { PageHeader, ACCENT } from "@/lib/ui";
 import HomeComfort from "@/components/HomeComfort";
 
-// 💛 마음에 닿는 말씀 — 지금 감정/상황(글·사진)에 맞는 위로의 성구를 받는 페이지.
+// 💛 마음에 닿는 말씀 — 지금 감정/상황(글·사진)에 맞는 위로의 성구를 받는 페이지. (앰버 컨셉)
 export default function ComfortPage() {
   const router = useRouter();
   const { t } = useI18n();
   return (
-    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
-        <h1 className="serif" style={{ fontSize: 23, fontWeight: 700, color: "var(--a-amber-fg)", margin: 0, letterSpacing: -0.2 }}>{t("cf.title")}</h1>
-        <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("r.home")}</button>
-      </div>
+    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "0.9rem 1.25rem 2rem", minHeight: "100dvh" }}>
+      <PageHeader title={t("cf.title")} subtitle={t("cf.sub")} onHome={() => router.push("/")} homeLabel={t("r.home")} accentColor={ACCENT.amber.fg} />
       <HomeComfort />
     </main>
   );

@@ -110,7 +110,7 @@ export default function ChatPage() {
         <Avatar url={companion?.avatarUrl ?? null} name={companion?.nickname ?? ""} />
         <div style={{ minWidth: 0, flex: 1 }}>
           <p style={{ margin: 0, fontWeight: 700, color: theme.text, fontSize: 15, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{companion?.nickname ?? "동행자"}</p>
-          <p style={{ margin: 0, fontSize: 11, color: theme.gold, fontWeight: 700 }}>{ui(myLang, "companionLabel")}</p>
+          <p style={{ margin: 0, fontSize: 11, color: "var(--t-sacred)", fontWeight: 700 }}>{ui(myLang, "companionLabel")}</p>
         </div>
         <button onClick={() => setAuto((v) => !v)}
           style={{ flexShrink: 0, fontSize: 11.5, fontWeight: 700, borderRadius: 999, padding: "6px 11px", cursor: "pointer", border: `1px solid ${theme.cardBorder}`, background: auto ? theme.primaryBg : theme.card, color: auto ? theme.primarySoft : theme.textMuted }}>
@@ -147,7 +147,7 @@ export default function ChatPage() {
           placeholder={ui(myLang, "chatPlaceholder")}
           style={{ flex: 1, borderRadius: 999, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: "11px 16px", fontSize: 15, color: theme.text, outline: "none" }} />
         <button onClick={onSend} disabled={!text.trim()}
-          style={{ flexShrink: 0, borderRadius: 999, background: theme.gold, color: "#08263a", border: "none", padding: "0 18px", fontSize: 14, fontWeight: 800, cursor: "pointer", opacity: text.trim() ? 1 : 0.4 }}>
+          style={{ flexShrink: 0, borderRadius: 999, background: "var(--t-sacred)", color: "#1c1402", border: "none", padding: "0 18px", fontSize: 14, fontWeight: 800, cursor: "pointer", opacity: text.trim() ? 1 : 0.4 }}>
           {ui(myLang, "send")}
         </button>
       </div>
@@ -167,7 +167,7 @@ function Avatar({ url, name }: { url: string | null; name: string }) {
     return <img src={url} alt={name} width={36} height={36} style={{ borderRadius: 999, objectFit: "cover", flexShrink: 0 }} />;
   }
   return (
-    <div style={{ width: 36, height: 36, borderRadius: 999, flexShrink: 0, background: theme.goldLight, color: theme.gold, display: "grid", placeItems: "center", fontWeight: 800, fontSize: 15 }}>
+    <div style={{ width: 36, height: 36, borderRadius: 999, flexShrink: 0, background: "var(--t-sacredLight)", color: "var(--t-sacred)", display: "grid", placeItems: "center", fontWeight: 800, fontSize: 15 }}>
       {(name || "·").charAt(0)}
     </div>
   );

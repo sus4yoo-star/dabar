@@ -14,6 +14,7 @@ import {
 import { PushState, disablePush, enablePush, getPushState, notifyGroup } from "@/lib/besora/push";
 import { useConfirm } from "@/components/ConfirmModal";
 import { Skeleton } from "@/components/Skeleton";
+import { ACCENT } from "@/lib/ui";
 
 export default function GroupDetailPage() {
   const router = useRouter();
@@ -162,9 +163,9 @@ export default function GroupDetailPage() {
       <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", padding: "14px 16px 16px" }}>
         {/* 공지 (리더 작성) */}
         {(group.notice || amLeader) && (
-          <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, marginBottom: 14 }}>
+          <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${ACCENT.blue.border}`, background: ACCENT.blue.bg, marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 800, color: theme.gold }}>📌 {t("grp.notice")}</span>
+              <span style={{ fontSize: 12, fontWeight: 800, color: ACCENT.blue.fg }}>📌 {t("grp.notice")}</span>
               {amLeader && !editingNotice && (
                 <button onClick={() => { setNoticeDraft(group.notice ?? ""); setEditingNotice(true); }} style={{ fontSize: 11.5, fontWeight: 700, color: theme.primarySoft, background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>✏️ {t("grp.noticeEdit")}</button>
               )}
@@ -193,7 +194,7 @@ export default function GroupDetailPage() {
 
         {/* 카카오톡으로 초대하기 (멤버) — 링크 공유 → 받은 사람이 열면 참여 */}
         {isMember && (
-          <button onClick={inviteKakao} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px", marginBottom: 14, fontSize: 14, fontWeight: 800, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, cursor: "pointer" }}>{t("grp.invite")}</button>
+          <button onClick={inviteKakao} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px", marginBottom: 14, fontSize: 14, fontWeight: 800, color: ACCENT.blue.fg, background: ACCENT.blue.chip, border: `1px solid ${ACCENT.blue.border}`, borderRadius: 12, cursor: "pointer" }}>{t("grp.invite")}</button>
         )}
 
         {/* 리더 설정 — 공개/비공개 전환 · 모임 삭제 */}
@@ -259,7 +260,7 @@ export default function GroupDetailPage() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0 0 8px 2px" }}>
           <span style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5 }}>💬 {t("grp.chat")}</span>
           {isMember && push !== "unsupported" && (
-            <button onClick={togglePush} style={{ fontSize: 11.5, fontWeight: 700, color: push === "on" ? theme.gold : theme.textMuted, background: push === "on" ? theme.goldLight : theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "4px 11px", cursor: "pointer" }}>{push === "on" ? t("grp.notifOn") : t("grp.notifOff")}</button>
+            <button onClick={togglePush} style={{ fontSize: 11.5, fontWeight: 700, color: push === "on" ? ACCENT.blue.fg : theme.textMuted, background: push === "on" ? ACCENT.blue.chip : theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "4px 11px", cursor: "pointer" }}>{push === "on" ? t("grp.notifOn") : t("grp.notifOff")}</button>
           )}
         </div>
         {!isMember ? (

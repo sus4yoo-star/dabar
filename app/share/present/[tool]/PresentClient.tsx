@@ -28,8 +28,8 @@ function sideNav(side: "start" | "end"): CSSProperties {
     placeItems: "center",
     borderRadius: 999,
     background: "var(--t-glass)",
-    border: `1px solid ${theme.goldBorder}`,
-    color: theme.gold,
+    border: `1px solid var(--t-sacredBorder)`,
+    color: "var(--t-sacred)",
     fontSize: 26,
     lineHeight: 1,
     fontWeight: 700,
@@ -81,13 +81,12 @@ export default function PresentClient() {
   // 1) 상대 언어 미설정 → 선택 게이트
   if (!seekerLang) {
     return (
-      <AppShell>
-        <h1 style={{ marginBottom: 4, fontFamily: "'Noto Serif KR',serif", fontSize: 24, fontWeight: 600, color: theme.text }}>{ui(myLang, "setSeekerLanguage")}</h1>
-        <p style={{ marginBottom: 24, fontSize: 14, color: theme.textMuted }}>{tool?.name_ko ?? slug}</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      // 도구 이름은 DB 콘텐츠(번역 문자열 아님)라 부제로 그대로 표기. 제목은 기존 i18n 키.
+      <AppShell title={ui(myLang, "setSeekerLanguage")} subtitle={tool?.name_ko ?? slug}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {languages.map((l) => (
             <button key={l.code} onClick={() => setSeekerLang(l.code)}
-              style={{ borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: 16, textAlign: "start", cursor: "pointer" }}>
+              style={{ borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: 14, textAlign: "start", cursor: "pointer" }}>
               <span style={{ display: "block", fontWeight: 700, color: theme.text }}>{l.name_native}</span>
               <span style={{ fontSize: 12, color: theme.textMuted }}>{l.name_en}</span>
             </button>
@@ -113,7 +112,7 @@ export default function PresentClient() {
       {!inDecision && (
         <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
           {contentSteps.map((_, i) => (
-            <span key={i} style={{ height: 6, flex: 1, borderRadius: 999, background: i <= idx ? theme.gold : "var(--t-border)" }} />
+            <span key={i} style={{ height: 6, flex: 1, borderRadius: 999, background: i <= idx ? "var(--t-sacred)" : "var(--t-border)" }} />
           ))}
         </div>
       )}
@@ -135,7 +134,7 @@ export default function PresentClient() {
       ) : (
         <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", color: theme.textMuted }}>
           <p>{ui(myLang, "noContent")}</p>
-          <button onClick={reset} style={{ marginTop: 16, color: theme.gold, background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>{ui(myLang, "home")}</button>
+          <button onClick={reset} style={{ marginTop: 16, color: "var(--t-sacred)", background: "none", border: "none", textDecoration: "underline", cursor: "pointer" }}>{ui(myLang, "home")}</button>
         </div>
       )}
     </AppShell>

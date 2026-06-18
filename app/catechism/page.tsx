@@ -2,11 +2,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
-import MenuIcon from "@/components/MenuIcon";
 import { useI18n } from "@/lib/i18n";
 import { getCatechism } from "@/lib/catechism";
 import { useAutoTranslate } from "@/lib/autoTranslate";
-import { PageHeader, PillButton, ACCENT, softCard } from "@/lib/ui";
+import { PageHeader, PillButton, SectionLabel, ACCENT, softCard } from "@/lib/ui";
 
 const MEM_KEY = "dabar_catechism_memorized";
 const CATS = ["전체", "하나님", "구원", "십계명", "기도"] as const;
@@ -55,51 +54,50 @@ export default function CatechismPage() {
   const memCount = memorized.size;
 
   return (
-    <main className="fade-in" style={{ maxWidth: 560, margin: "0 auto", padding: "2rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
+    <main className="fade-in" style={{ maxWidth: 560, margin: "0 auto", padding: "0.7rem 1.25rem 1.4rem", minHeight: "100dvh" }}>
       <PageHeader
         title={t("cat.title")}
+        subtitle={t("cat.sub")}
         onHome={() => router.push("/")}
         homeLabel={t("common.home")}
+        accentColor={ACCENT.green.fg}
         right={<PillButton tone="gold" onClick={() => router.push("/catechism/quiz")}>{t("cat.quizBtn")}</PillButton>}
       />
 
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1rem" }}>
-        <div style={{ width: 56, height: 56, margin: "0 auto 8px", borderRadius: 16, background: ACCENT.green.chip, display: "grid", placeItems: "center" }}><MenuIcon name="clipboard" color={ACCENT.green.fg} size={26} /></div>
-        <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0, lineHeight: 1.5 }}>{t("cat.sub")}</p>
-        {auto && (
-          <p style={{ marginTop: 8, fontSize: 11.5, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "6px 10px", display: "inline-block" }}>
-            {lq || la ? t("c.autoTransing") : t("c.autoTrans")}
-          </p>
-        )}
-      </div>
+      {auto && (
+        <p style={{ textAlign: "center", fontSize: 11.5, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "6px 10px", display: "block", margin: "0 auto 10px", maxWidth: "fit-content" }}>
+          {lq || la ? t("c.autoTransing") : t("c.autoTrans")}
+        </p>
+      )}
 
       {/* 외우기 진도 */}
-      <div style={{ ...softCard({ background: ACCENT.green.bg }), padding: "13px 16px", marginBottom: "1rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+      <div style={{ ...softCard({ background: ACCENT.green.bg }), padding: "11px 16px", marginBottom: 10 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 7 }}>
           <span style={{ fontSize: 13, fontWeight: 700, color: theme.text }}>{t("cat.memProg")}</span>
-          <span style={{ fontSize: 13, fontWeight: 800, color: theme.gold }}>{memCount} / 107</span>
+          <span style={{ fontSize: 13, fontWeight: 800, color: ACCENT.green.fg }}>{memCount} / 107</span>
         </div>
         <div style={{ height: 8, background: "var(--t-border)", borderRadius: 4, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${(memCount / 107) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .4s", borderRadius: 4 }} />
+          <div style={{ height: "100%", width: `${(memCount / 107) * 100}%`, background: ACCENT.green.fg, transition: "width .4s", borderRadius: 4 }} />
         </div>
       </div>
 
-      {/* 분류 */}
-      <div style={{ display: "flex", gap: 7, flexWrap: "wrap", marginBottom: 10 }}>
-        {CATS.map(c => {
-          const on = cat === c;
-          return <button key={c} onClick={() => setCat(c)} style={{ padding: "9px 15px", borderRadius: 999, fontSize: 13.5, fontWeight: on ? 800 : 600, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text }}>{t(CAT_KEY[c])}</button>;
-        })}
+      {/* 분류 + 모드 — 2열 그리드로 컴팩트 */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {CATS.map(c => {
+            const on = cat === c;
+            return <button key={c} onClick={() => setCat(c)} style={{ padding: "8px 13px", borderRadius: 999, fontSize: 13, fontWeight: on ? 800 : 600, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? ACCENT.green.fg : theme.card, color: on ? "#fff" : theme.text }}>{t(CAT_KEY[c])}</button>;
+          })}
+        </div>
+        <div style={{ display: "flex", gap: 6 }}>
+          {([[false, "cat.readMode"], [true, "cat.memMode"]] as const).map(([val, lk]) => {
+            const on = memorize === val;
+            return <button key={lk} onClick={() => { setMemorize(val); setRevealed(new Set()); }} style={{ flex: 1, padding: "10px 8px", borderRadius: 12, fontSize: 13, fontWeight: on ? 800 : 600, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? ACCENT.green.fg : theme.card, color: on ? "#fff" : theme.text }}>{t(lk)}</button>;
+          })}
+        </div>
       </div>
 
-      {/* 모드 */}
-      <div style={{ display: "flex", gap: 7, marginBottom: "1.1rem" }}>
-        {([[false, "cat.readMode"], [true, "cat.memMode"]] as const).map(([val, lk]) => {
-          const on = memorize === val;
-          return <button key={lk} onClick={() => { setMemorize(val); setRevealed(new Set()); }} style={{ flex: 1, padding: "12px", borderRadius: 14, fontSize: 14.5, fontWeight: on ? 800 : 600, cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text }}>{t(lk)}</button>;
-        })}
-      </div>
-
+      <SectionLabel icon="clipboard" accentColor={ACCENT.green.fg}>{t("menu.catechism.t")}</SectionLabel>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {list.map(c => {
           const show = !memorize || revealed.has(c.n);
@@ -107,14 +105,14 @@ export default function CatechismPage() {
           return (
             <div key={c.n} className="fade-in-2" style={{ ...softCard(mem ? { background: theme.correctBg, border: `1px solid ${theme.correct}` } : { background: ACCENT.blue.bg }), padding: "15px 16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                <span style={{ fontSize: 12, fontWeight: 800, color: theme.gold }}>{t("cat.qno", { n: c.n })} · {t(CAT_KEY[catOf(c.n)])}</span>
+                <span style={{ fontSize: 12, fontWeight: 800, color: ACCENT.green.fg }}>{t("cat.qno", { n: c.n })} · {t(CAT_KEY[catOf(c.n)])}</span>
                 <button onClick={() => toggleMemorized(c.n)} style={{ flexShrink: 0, fontSize: 12, fontWeight: 700, color: mem ? theme.correct : theme.textMuted, background: mem ? theme.correctBg : theme.card, border: `1px solid ${mem ? theme.correct : theme.cardBorder}`, borderRadius: 999, padding: "5px 12px", cursor: "pointer" }}>{mem ? t("cat.memOn") : t("cat.memOff")}</button>
               </div>
               <p onClick={() => memorize && toggleReveal(c.n)} style={{ fontSize: 15.5, fontWeight: 700, color: theme.text, margin: "0 0 8px", lineHeight: 1.6, cursor: memorize ? "pointer" : "default" }}>{c.q}</p>
               {show ? (
                 <p style={{ fontSize: 14.5, color: theme.textMuted, margin: 0, lineHeight: 1.7 }}>{c.a}</p>
               ) : (
-                <p onClick={() => toggleReveal(c.n)} style={{ fontSize: 13.5, color: theme.primarySoft, margin: 0, fontWeight: 700, cursor: "pointer" }}>{t("cat.tapAns")}</p>
+                <p onClick={() => toggleReveal(c.n)} style={{ fontSize: 13.5, color: ACCENT.green.fg, margin: 0, fontWeight: 700, cursor: "pointer" }}>{t("cat.tapAns")}</p>
               )}
             </div>
           );

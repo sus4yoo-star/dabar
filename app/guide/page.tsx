@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
-import { PageHeader, AccentCard, ACCENT, softCard, softShadow } from "@/lib/ui";
+import { PageHeader, AccentCard, ACCENT, SACRED, softCard, softShadow } from "@/lib/ui";
 
 const STEPS = [
   { emoji: "🙌", tk: "g.step1t", dk: "g.step1d", accent: ACCENT.green },
@@ -16,13 +16,7 @@ export default function GuidePage() {
   const { t } = useI18n();
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
-      <PageHeader title={t("g.title")} onHome={() => router.push("/")} homeLabel={t("common.home")} />
-
-      {/* 히어로 — 홈 스타일 아이콘 칩 */}
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-        <div style={{ width: 62, height: 62, margin: "0 auto 10px", borderRadius: 19, background: "linear-gradient(135deg,#e7f7ee 0%,#e9f4fd 100%)", display: "grid", placeItems: "center", fontSize: 30, boxShadow: "0 12px 26px rgba(31,155,239,0.20)" }}>📋</div>
-        <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0, lineHeight: 1.5 }}>{t("g.sub")}</p>
-      </div>
+      <PageHeader title={t("g.title")} subtitle={t("g.sub")} onHome={() => router.push("/")} homeLabel={t("common.home")} accentColor={SACRED.fg} />
 
       {/* 단계 — 홈 메뉴 카드 스타일 (번호 + 컬러 아이콘 칩) */}
       <div>

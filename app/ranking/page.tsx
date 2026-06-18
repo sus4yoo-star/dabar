@@ -57,7 +57,7 @@ export default function RankingPage() {
   }, [user, view]);
 
   return (
-    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
+    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "0.7rem 1.25rem 1.4rem", minHeight: "100dvh" }}>
       <PageHeader title={t("rk.title")} homeLabel={t("r.home")} onHome={() => router.push("/")} accentColor={ACCENT.blue.fg} />
 
       {/* 주간 / 전체 토글 */}

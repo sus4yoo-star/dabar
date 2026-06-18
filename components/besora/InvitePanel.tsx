@@ -41,7 +41,7 @@ export default function InvitePanel() {
     return (
       <div>
         <button onClick={make} disabled={busy}
-          style={{ width: "100%", borderRadius: 14, background: theme.gold, color: "#08263a", border: "none", padding: "14px 0", fontSize: 15, fontWeight: 800, cursor: "pointer", opacity: busy ? 0.5 : 1 }}>
+          style={{ width: "100%", borderRadius: 14, background: "var(--t-sacred)", color: "#1c1402", border: "none", padding: "14px 0", fontSize: 15, fontWeight: 800, cursor: "pointer", opacity: busy ? 0.5 : 1 }}>
           ＋ {ui(myLang, "inviteCreate")}
         </button>
         {err && <p style={{ marginTop: 8, fontSize: 12.5, color: theme.wrong }}>{err}</p>}
@@ -65,7 +65,7 @@ export default function InvitePanel() {
           {copied ? ui(myLang, "inviteCopied") : ui(myLang, "inviteCopy")}
         </button>
         <button onClick={share}
-          style={{ flex: 1, borderRadius: 12, background: theme.gold, color: "#08263a", border: "none", padding: "11px 0", fontSize: 14, fontWeight: 800, cursor: "pointer" }}>
+          style={{ flex: 1, borderRadius: 12, background: "var(--t-sacred)", color: "#1c1402", border: "none", padding: "11px 0", fontSize: 14, fontWeight: 800, cursor: "pointer" }}>
           {ui(myLang, "inviteShare")}
         </button>
       </div>

@@ -9,7 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { downloadResultImage } from "@/lib/resultImage";
 import { shareResult } from "@/lib/share";
 import { useI18n } from "@/lib/i18n";
-import { ACCENT, softShadow, cardShadow, softCard } from "@/lib/ui";
+import { SectionLabel, ACCENT, softShadow, cardShadow, softCard } from "@/lib/ui";
 
 interface ResultMeta { testament?: string; level?: string; bookCount?: number; }
 interface Result {
@@ -91,8 +91,8 @@ export default function ResultPage() {
   const imageWrongs = wrongs.map(({ q }) => ({ q: q.question, a: q.options[q.answer] }));
 
   return (
-    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 3, margin: "0 0 1.25rem", textAlign: "center" }}>DABAR</p>
+    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.25rem 1.4rem", minHeight: "100dvh" }}>
+      <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 3, margin: "0 0 0.9rem", textAlign: "center" }}>DABAR</p>
 
       {/* 점수 히어로 — 그라데이션 + 아이콘 칩으로 보상감 강조 */}
       <div className="fade-in" style={{ background: `linear-gradient(135deg, ${grade.bg} 0%, ${theme.card} 88%)`, border: `1px solid ${theme.cardBorder}`, borderRadius: 22, padding: "1.9rem 1.5rem", textAlign: "center", marginBottom: "1rem", boxShadow: cardShadow }}>
@@ -136,7 +136,7 @@ export default function ResultPage() {
       </div>
 
       {/* 오답노트 */}
-      <p style={{ fontSize: 12.5, fontWeight: 800, color: theme.primarySoft, letterSpacing: 0.5, marginBottom: 10 }}>{t("r.wrongNote")}</p>
+      <SectionLabel icon="list" accentColor={ACCENT.blue.fg}>{t("r.wrongNote")}</SectionLabel>
       {wrongs.length === 0 ? (
         <div style={{ ...softCard({ borderRadius: 16, padding: "22px 16px", marginBottom: "1.5rem", background: ACCENT.green.bg, border: `1px solid ${theme.goldBorder}` }), textAlign: "center" }}>
           <div style={{ fontSize: 30, marginBottom: 6 }}>✨</div>

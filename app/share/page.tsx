@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { theme } from "@/lib/theme";
 import AppShell from "@/components/besora/AppShell";
+import ShareSection from "@/components/besora/ShareSection";
 import ToolCard from "@/components/besora/ToolCard";
 import VoiceTranslator from "@/components/besora/VoiceTranslator";
 import { fetchTools } from "@/lib/besora/content";
@@ -23,26 +24,29 @@ export default function ShareHome() {
   useEffect(() => { load(); }, []);
 
   return (
-    <AppShell>
-      <p style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 22, fontWeight: 700, lineHeight: 1.25, color: theme.text, margin: "0 0 14px" }}>{ui(myLang, "tagline")}</p>
-
+    // 골드 히어로는 AppShell 이 /reach 스타일로 그린다. 상단 바에 이미 브랜드(appName)가 있으므로
+    // 허브 히어로 제목은 전도의 핵심 문구(tagline)로 — appName 중복 표시 방지.
+    <AppShell title={ui(myLang, "tagline")}>
       {err && (
-        <div style={{ marginBottom: 14, borderRadius: 12, border: `1px solid ${theme.wrong}`, background: theme.wrongBg, padding: 16, fontSize: 14, color: theme.text, textAlign: "center" }}>
+        <div style={{ marginBottom: 12, borderRadius: 12, border: `1px solid ${theme.wrong}`, background: theme.wrongBg, padding: 16, fontSize: 14, color: theme.text, textAlign: "center" }}>
           <p style={{ margin: "0 0 10px", lineHeight: 1.5 }}>{ui(myLang, "errContent")}</p>
           <button onClick={load} style={{ fontSize: 13.5, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 10, padding: "9px 20px", cursor: "pointer" }}>🔄 {ui(myLang, "retry")}</button>
         </div>
       )}
 
-      {/* 전도 도구 5개: 2+2+1(와이드) */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      {/* 도구 선택 — 골드 섹션 라벨(아이콘 + 세리프 + 가로선, /reach 와 동일) */}
+      <ShareSection icon="megaphone">{ui(myLang, "chooseTool")}</ShareSection>
+      {/* 전도 도구 5개: 2+2+1(와이드) · 보석톤 그라데이션 유지 */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {tools.slice(0, 4).map((t) => <ToolCard key={t.id} tool={t} />)}
         {tools[4] && <div style={{ gridColumn: "span 2" }}><ToolCard tool={tools[4]} wide /></div>}
       </div>
 
       {/* 🎤 음성 통역 — 언어 선택도 여기서 (내 언어 ↔ 상대 언어) */}
+      <ShareSection icon="mic">{ui(myLang, "voice")}</ShareSection>
       <VoiceTranslator inline />
 
-      {!ready && <p style={{ marginTop: 20, textAlign: "center", fontSize: 12, color: theme.textMuted }}>…</p>}
+      {!ready && <p style={{ marginTop: 16, textAlign: "center", fontSize: 12, color: theme.textMuted }}>…</p>}
     </AppShell>
   );
 }
