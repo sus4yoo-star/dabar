@@ -75,7 +75,7 @@ export default function HistoryPage() {
               )}
             </span>
           </div>
-          <button onClick={retryWrong} style={{ width: "100%", padding: 15, fontSize: 15.5, fontWeight: 800, background: "linear-gradient(135deg,#a6e02f 0%,#86c40a 100%)", color: "#08263a", border: "none", borderRadius: 16, cursor: "pointer", marginBottom: "1.25rem", boxShadow: "0 8px 24px rgba(88,167,0,0.20)" }}>{t("h.retry")}</button>
+          <button onClick={retryWrong} style={{ width: "100%", padding: 15, fontSize: 15.5, fontWeight: 800, background: "linear-gradient(135deg,#2bb069 0%,#178a50 100%)", color: "#fff", border: "none", borderRadius: 16, cursor: "pointer", marginBottom: "1.25rem", boxShadow: "0 8px 24px rgba(88,167,0,0.20)" }}>{t("h.retry")}</button>
         </>
       )}
 

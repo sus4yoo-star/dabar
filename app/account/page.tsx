@@ -45,7 +45,7 @@ export default function AccountPage() {
 
       {/* 프로필 카드 — 홈 히어로 톤(컬러 아이콘 칩) */}
       <div className="fade-in" style={{ ...softCard({ padding: "16px 17px", marginBottom: 16, display: "flex", alignItems: "center", gap: 14, background: ACCENT.green.bg, border: `1px solid ${theme.goldBorder}` }) }}>
-        <span style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 16, background: "linear-gradient(135deg,#e9ffce 0%,#d4eeff 100%)", display: "grid", placeItems: "center", fontSize: 26 }}>🙂</span>
+        <span style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 16, background: "linear-gradient(135deg,#e7f7ee 0%,#e9f4fd 100%)", display: "grid", placeItems: "center", fontSize: 26 }}>🙂</span>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ display: "block", fontSize: 17, fontWeight: 800, color: theme.text }}>{nickname}</span>
           <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, wordBreak: "break-all" }}>{user.email ?? ""}</span>

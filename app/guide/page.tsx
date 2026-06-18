@@ -20,7 +20,7 @@ export default function GuidePage() {
 
       {/* 히어로 — 홈 스타일 아이콘 칩 */}
       <div className="fade-in" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-        <div style={{ width: 62, height: 62, margin: "0 auto 10px", borderRadius: 19, background: "linear-gradient(135deg,#e9ffce 0%,#d4eeff 100%)", display: "grid", placeItems: "center", fontSize: 30, boxShadow: "0 12px 26px rgba(31,155,239,0.20)" }}>📋</div>
+        <div style={{ width: 62, height: 62, margin: "0 auto 10px", borderRadius: 19, background: "linear-gradient(135deg,#e7f7ee 0%,#e9f4fd 100%)", display: "grid", placeItems: "center", fontSize: 30, boxShadow: "0 12px 26px rgba(31,155,239,0.20)" }}>📋</div>
         <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0, lineHeight: 1.5 }}>{t("g.sub")}</p>
       </div>
 
