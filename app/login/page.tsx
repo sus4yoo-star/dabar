@@ -9,7 +9,6 @@ import BrandMark from "@/components/BrandMark";
 
 // 브랜드 컬러 (파랑·초록·흰색)
 const GOLD = theme.gold;
-const GOLD_SOFT = theme.goldSoft;
 
 export default function LoginPage() {
   const router = useRouter();
@@ -89,6 +88,12 @@ export default function LoginPage() {
         >
           DABAR
         </h1>
+        {/* 거룩한 금빛 장식선 */}
+        <div aria-hidden style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, margin: "2px 0 10px" }}>
+          <span style={{ width: 34, height: 1, background: "linear-gradient(90deg, transparent, var(--t-sacred))" }} />
+          <span style={{ color: "var(--t-sacred)", fontSize: 10, lineHeight: 1 }}>✦</span>
+          <span style={{ width: 34, height: 1, background: "linear-gradient(90deg, var(--t-sacred), transparent)" }} />
+        </div>
         <p style={{ fontSize: 13, color: theme.textMuted, letterSpacing: 3, margin: "0 0 18px" }}>
           다바르 · 말씀 퀴즈
         </p>
@@ -97,22 +102,22 @@ export default function LoginPage() {
           {t("login.tagline2")}
         </p>
 
-        {/* 말씀 카드 */}
+        {/* 말씀 카드 — 거룩한 골드 톤(성구) */}
         <div
           style={{
             textAlign: "left",
-            background: theme.goldLight,
-            border: `1px solid ${theme.goldBorder}`,
-            borderLeft: `3px solid ${GOLD_SOFT}`,
+            background: "var(--t-sacredLight)",
+            border: "1px solid var(--t-sacredBorder)",
+            borderLeft: "3px solid var(--t-sacred)",
             borderRadius: 14,
             padding: "16px 18px",
             margin: "0 0 28px",
           }}
         >
-          <p style={{ fontSize: 14.5, lineHeight: 1.75, color: theme.text, fontStyle: "italic", margin: "0 0 8px" }}>
+          <p style={{ fontFamily: "'Iowan Old Style',Georgia,'Noto Serif KR',serif", fontSize: 15.5, lineHeight: 1.8, color: theme.text, fontStyle: "italic", margin: "0 0 8px" }}>
             “{t("login.verse")}”
           </p>
-          <p style={{ fontSize: 12.5, color: GOLD, margin: 0, letterSpacing: 0.5 }}>— {t("login.verseRef")}</p>
+          <p style={{ fontSize: 12.5, color: "var(--t-sacred)", margin: 0, letterSpacing: 0.5, fontWeight: 700 }}>— {t("login.verseRef")}</p>
         </div>
 
         {/* 로그인 버튼 */}
