@@ -28,7 +28,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <Link href="/" aria-label={ui(myLang, "home")} style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12.5, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "6px 11px", textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}>
             ← {ui(myLang, "home")}
           </Link>
-          <Link href="/share" style={{ fontSize: 18, fontWeight: 800, color: theme.gold, textDecoration: "none", letterSpacing: 0.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <Link href="/share" style={{ fontSize: 18, fontWeight: 800, color: "var(--t-sacred)", textDecoration: "none", letterSpacing: 0.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             🕊️ {ui(myLang, "appName")}
           </Link>
         </div>

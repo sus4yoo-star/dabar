@@ -9,24 +9,24 @@ import ErrorReporter from "@/components/ErrorReporter";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dabar.theamov.com"),
-  title: "DABAR · 다바르",
-  description: "복음 전하기 · 다국어 통역 · 이미지 번역 · 성경 퀴즈 · 소그룹 · 긴급 SOS — 선교 현장의 동행자 🕊️",
+  title: "DABAR · 복음 전파 · 양육 — 현장의 동행자",
+  description: "복음 전파와 양육, 선교 현장의 동행자 🕊️",
   manifest: "/manifest.json",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "DABAR" },
   openGraph: {
-    title: "DABAR · 다바르 — 선교 현장의 동행자",
-    description: "복음 전하기 · 다국어 통역 · 이미지 번역 · 성경 퀴즈 · 소그룹 · 긴급 SOS",
+    title: "DABAR · 복음 전파 · 양육 — 현장의 동행자",
+    description: "복음 전파와 양육, 선교 현장의 동행자",
     url: "https://dabar.theamov.com",
     siteName: "DABAR",
-    images: [{ url: "/og.png?v=3", width: 1200, height: 630, alt: "DABAR · 다바르 — 선교 현장의 동행자" }],
+    images: [{ url: "/og.png?v=4", width: 1200, height: 630, alt: "DABAR · 복음 전파 · 양육 — 현장의 동행자" }],
     locale: "ko_KR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DABAR · 다바르 — 선교 현장의 동행자",
-    description: "복음 전하기 · 다국어 통역 · 이미지 번역 · 성경 퀴즈 · 소그룹 · 긴급 SOS",
-    images: ["/og.png?v=3"],
+    title: "DABAR · 복음 전파 · 양육 — 현장의 동행자",
+    description: "복음 전파와 양육, 선교 현장의 동행자",
+    images: ["/og.png?v=4"],
   },
 };
 

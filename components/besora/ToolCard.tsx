@@ -31,9 +31,12 @@ export default function ToolCard({ tool, wide = false }: { tool: Tool; wide?: bo
 
   if (wide) {
     return (
-      <button onClick={go} style={{ display: "flex", height: 68, width: "100%", alignItems: "center", gap: 12, overflow: "hidden", borderRadius: 22, background: g.bg, padding: "0 20px", border: "none", cursor: "pointer" }}>
-        <span style={{ fontSize: 20, fontWeight: 700, color: fg, fontFamily: "'Noto Serif KR',serif" }}>{seekerName}</span>
-        {showBoth && <span style={{ fontSize: 12, color: fg, opacity: 0.7 }}>{myName}</span>}
+      <button onClick={go} style={{ display: "flex", minHeight: 70, width: "100%", flexDirection: "column", justifyContent: "center", gap: 2, overflow: "hidden", borderRadius: 22, background: g.bg, padding: "12px 20px", border: "none", cursor: "pointer", textAlign: "left" }}>
+        <span style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+          <span style={{ fontSize: 20, fontWeight: 700, color: fg, fontFamily: "'Noto Serif KR',serif" }}>{seekerName}</span>
+          {showBoth && <span style={{ fontSize: 12, color: fg, opacity: 0.7 }}>{myName}</span>}
+        </span>
+        {desc && <span style={{ fontSize: 11.5, lineHeight: 1.3, color: fg, opacity: 0.82 }}>{desc}</span>}
       </button>
     );
   }

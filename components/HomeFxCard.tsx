@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
+import MenuIcon from "@/components/MenuIcon";
 
 // 지원 통화 (음성통역 20개 언어의 대표 통화)
 const CURRENCIES: { cur: string; flag: string }[] = [
@@ -75,7 +76,7 @@ export default function HomeFxCard() {
 
   return (
     <div className="fade-in-3" style={{ background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "12px 11px" }}>
-      <div style={{ fontSize: 13.5, fontWeight: 800, color: theme.gold, marginBottom: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>💱 {t("fx.title")}</div>
+      <div className="serif" style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: "var(--t-sacred)", marginBottom: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}><MenuIcon name="calc" size={17} color="var(--t-sacred)" />{t("fx.title")}</div>
 
       <Row cur={fromCur} onCur={(c) => { setFromCur(c); setLast("from"); }} value={last === "from" ? fromVal : group(fromVal)} onChange={onFrom} />
       <div style={{ display: "flex", justifyContent: "center", margin: "5px 0" }}>
