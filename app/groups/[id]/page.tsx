@@ -284,7 +284,7 @@ export default function GroupDetailPage() {
                   </div>
                 )}
                 <div style={{ alignSelf: mine ? "flex-end" : "flex-start", maxWidth: "82%", display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start" }}>
-                  {!mine && <span style={{ display: "block", fontSize: 10.5, color: theme.textFaint, margin: "0 0 2px 4px" }}>{nameById[m.sender] ?? "익명"}</span>}
+                  {!mine && <span style={{ display: "block", fontSize: 10.5, color: theme.textFaint, margin: "0 0 2px 4px" }}>{nameById[m.sender] ?? t("grp.anon")}</span>}
                   <span style={{ display: "inline-block", fontSize: 14, lineHeight: 1.5, padding: "8px 12px", borderRadius: 14, background: mine ? theme.primary : theme.card, color: mine ? "#fff" : theme.text, border: mine ? "none" : `1px solid ${theme.cardBorder}`, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{m.body}</span>
                   <span style={{ fontSize: 9.5, color: theme.textFaint, margin: "2px 4px 0" }}>{fmtTime(m.created_at)}</span>
                 </div>
