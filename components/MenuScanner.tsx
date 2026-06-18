@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { theme } from "@/lib/theme";
 import { useI18n, LANGS } from "@/lib/i18n";
+import MenuIcon from "@/components/MenuIcon";
 
 type Item = { original: string; translated: string };
 
@@ -58,9 +59,9 @@ export default function MenuScanner() {
 
   return (
     <div className="fade-in-3" style={{ height: "100%", display: "flex", flexDirection: "column", background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "12px 13px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 3 }}>
-        <span style={{ fontSize: 16 }}>📷</span>
-        <span style={{ fontSize: 14, fontWeight: 800, color: theme.gold }}>{t("scan.title")}</span>
+      <div className="serif" style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+        <MenuIcon name="camera" size={17} color="var(--t-sacred)" />
+        <span style={{ fontSize: 14, fontWeight: 700, color: "var(--t-sacred)" }}>{t("scan.title")}</span>
       </div>
       <p style={{ margin: "0 0 10px", fontSize: 11.5, color: theme.textMuted, lineHeight: 1.4 }}>{t("scan.sub")}</p>
 
@@ -99,7 +100,7 @@ export default function MenuScanner() {
       {open && typeof document !== "undefined" && createPortal(
         <div style={{ position: "fixed", inset: 0, zIndex: 80, background: theme.bg, display: "flex", flexDirection: "column" }}>
           <div style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderBottom: `1px solid ${theme.cardBorder}` }}>
-            <span style={{ fontSize: 15, fontWeight: 800, color: theme.gold }}>📷 {t("scan.title")}</span>
+            <span className="serif" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 15, fontWeight: 700, color: "var(--t-sacred)" }}><MenuIcon name="camera" size={17} color="var(--t-sacred)" />{t("scan.title")}</span>
             <button onClick={() => setOpen(false)} style={{ fontSize: 14, fontWeight: 700, color: theme.text, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "7px 16px", cursor: "pointer" }}>{t("scan.close")} ✕</button>
           </div>
           <div style={{ flex: 1, overflowY: "auto", padding: "14px 16px 28px", maxWidth: 560, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>

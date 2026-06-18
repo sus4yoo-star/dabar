@@ -99,6 +99,23 @@ const PATHS: Record<string, React.ReactNode> = {
   droplet: (<path d="M12 3.2s6 6.4 6 10.3a6 6 0 0 1-12 0c0-3.9 6-10.3 6-10.3z" />),
   // 입교 — 십자가
   cross: (<><path d="M12 3v18" /><path d="M6.5 8.5h11" /></>),
+  // 환율 — 계산기
+  calc: (<>
+    <rect x="5" y="3" width="14" height="18" rx="2.4" />
+    <rect x="8" y="6" width="8" height="3.2" rx="0.8" />
+    <path d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 16.5h.01M12 16.5h.01M15.5 16.5h.01" />
+  </>),
+  // 이미지 번역 — 카메라
+  camera: (<>
+    <path d="M4 7.5h3L9 5.5h6L17 7.5h3a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 20 19.5H4A1.5 1.5 0 0 1 2.5 18V9A1.5 1.5 0 0 1 4 7.5z" />
+    <circle cx="12" cy="13" r="3.4" />
+  </>),
+  // 음성 통역 — 마이크
+  mic: (<>
+    <rect x="9" y="3" width="6" height="11" rx="3" />
+    <path d="M5.5 11a6.5 6.5 0 0 0 13 0" />
+    <path d="M12 17.5V21" /><path d="M8.5 21h7" />
+  </>),
   // 현황판 — 대시보드
   dashboard: (<>
     <rect x="3.5" y="3.5" width="7" height="8.5" rx="1.4" />

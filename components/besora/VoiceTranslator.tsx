@@ -271,7 +271,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
       </label>
       <span style={{ paddingBottom: 9, color: theme.textFaint, fontSize: 15, fontWeight: 800 }}>↔</span>
       <label style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
-        <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.gold }}>{ui(myLang, "seekerLanguage")}</span>
+        <span style={{ fontSize: 10.5, fontWeight: 800, color: "var(--t-sacred)" }}>{ui(myLang, "seekerLanguage")}</span>
         <select value={seeker} onChange={(e) => setSeekerLang(e.target.value)} style={selStyle}>
           {languages.map((l) => <option key={l.code} value={l.code}>{l.name_native} ({l.code.toUpperCase()})</option>)}
         </select>
@@ -282,7 +282,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   const panes = (
     <div style={{ display: "flex", flexDirection: big ? "column" : "row", gap: big ? 8 : 8, alignItems: big ? "stretch" : "flex-start" }}>
       {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder, big)}
-      {twoWay && pane(seeker, rightText, onRightType, "R", theme.gold, theme.goldLight, theme.goldBorder, big, rightPron)}
+      {twoWay && pane(seeker, rightText, onRightType, "R", "var(--t-sacred)", "var(--t-sacredLight)", "var(--t-sacredBorder)", big, rightPron)}
     </div>
   );
   const hint = (
