@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
+import MenuIcon from "@/components/MenuIcon";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { useToast } from "@/components/Toast";
@@ -180,8 +181,8 @@ function GroupCard({ g, member, onOpen, t }: { g: Group; member?: boolean; onOpe
   const ac = member ? ACCENT.green : ACCENT.blue;
   return (
     <button onClick={full ? undefined : onOpen} disabled={full} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "13px 14px", borderRadius: 16, border: `1px solid ${full ? theme.cardBorder : ac.border}`, background: full ? theme.card : ac.bg, cursor: full ? "default" : "pointer", opacity: full ? 0.6 : 1, boxShadow: softShadow }}>
-      <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ac.chip, display: "grid", placeItems: "center", fontSize: 22 }}>🤝</span>
+      style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", padding: "13px 14px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: full ? "default" : "pointer", opacity: full ? 0.6 : 1, boxShadow: softShadow }}>
+      <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ac.chip, display: "grid", placeItems: "center" }}><MenuIcon name="users" color={ac.fg} /></span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: theme.text, marginBottom: 2 }}>{g.name}</span>
         {g.place && <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted }}>📍 {g.place}</span>}

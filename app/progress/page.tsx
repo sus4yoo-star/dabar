@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
+import MenuIcon from "@/components/MenuIcon";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
@@ -73,7 +74,7 @@ export default function ProgressPage() {
         <>
           <div className="fade-in" style={{ background: ACCENT.green.bg, border: `1px solid ${ACCENT.green.border}`, borderRadius: 18, padding: "16px 17px", marginBottom: "1.1rem", boxShadow: softShadow }}>
             <div style={{ display: "flex", alignItems: "center", gap: 13, marginBottom: 11 }}>
-              <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ACCENT.green.chip, display: "grid", placeItems: "center", fontSize: 23 }}>📊</span>
+              <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ACCENT.green.chip, display: "grid", placeItems: "center" }}><MenuIcon name="chart" color={ACCENT.green.fg} /></span>
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: ACCENT.green.fg }}>{t("prog.overall", { a: overall.a, t: overall.t, p: pct })}</span>
               </span>

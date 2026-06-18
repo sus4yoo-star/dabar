@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
+import MenuIcon from "@/components/MenuIcon";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
@@ -64,7 +65,7 @@ export default function HistoryPage() {
       {rows && rows.length > 0 && (
         <>
           <div className="fade-in" style={{ display: "flex", alignItems: "center", gap: 13, background: ACCENT.red.bg, border: `1px solid ${ACCENT.red.border}`, borderRadius: 18, padding: "15px 16px", marginBottom: "0.9rem", boxShadow: softShadow }}>
-            <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ACCENT.red.chip, display: "grid", placeItems: "center", fontSize: 23 }}>📝</span>
+            <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ACCENT.red.chip, display: "grid", placeItems: "center" }}><MenuIcon name="list" color={ACCENT.red.fg} /></span>
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: "block", fontSize: 16, color: ACCENT.red.fg, fontWeight: 800 }}>{t("h.total", { n: rows.length })}</span>
               {topBooks.length > 0 && (
