@@ -140,9 +140,6 @@ export default function HomeComfort() {
   // 입력 보기
   return (
     <div style={card}>
-      <p style={{ margin: 0, fontSize: 13.5, fontWeight: 800, color: theme.text }}>{t("cf.title")}</p>
-      <p style={{ margin: "3px 0 9px", fontSize: 12, color: theme.textMuted }}>{t("cf.sub")}</p>
-
       {/* 감정 칩 — 한 줄(가로 스크롤) */}
       <div style={{ display: "flex", flexWrap: "nowrap", gap: 6, marginBottom: 9, overflowX: "auto", paddingBottom: 2, WebkitOverflowScrolling: "touch" }}>
         {EMO.map((k) => (

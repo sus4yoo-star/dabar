@@ -22,14 +22,8 @@ export default function ParallelVersesPage() {
   }
 
   return (
-    <AppShell>
-      {/* 제목 */}
-      <div style={{ marginBottom: 12 }}>
-        <p style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 22, fontWeight: 700, color: theme.text, margin: 0 }}>{t("pv.title")}</p>
-        <p style={{ fontSize: 12.5, color: theme.textMuted, margin: "4px 0 0" }}>{t("pv.entrySub")}</p>
-      </div>
-
-      {/* 언어 쌍 바 */}
+    <AppShell title={t("pv.title")} subtitle={t("pv.entrySub")}>
+      {/* 언어 쌍 바 — 내 언어(파랑) ↔ 상대 언어(골드) */}
       <div style={{ display: "flex", alignItems: "stretch", gap: 8, marginBottom: 10 }}>
         <button onClick={() => setPick(pick === "my" ? null : "my")}
           style={{ flex: 1, borderRadius: 14, border: `1px solid ${pick === "my" ? theme.primary : theme.cardBorder}`, background: theme.primaryBg, padding: "9px 12px", textAlign: "left", cursor: "pointer" }}>
@@ -39,9 +33,9 @@ export default function ParallelVersesPage() {
         <button onClick={swap} aria-label={t("pv.swap")} disabled={!seekerLang}
           style={{ flexShrink: 0, borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 16, fontWeight: 800, padding: "0 12px", cursor: seekerLang ? "pointer" : "default", opacity: seekerLang ? 1 : 0.4 }}>↔</button>
         <button onClick={() => setPick(pick === "seeker" ? null : "seeker")}
-          style={{ flex: 1, borderRadius: 14, border: `1px solid ${pick === "seeker" ? theme.goldSoft : theme.goldBorder}`, background: theme.goldLight, padding: "9px 12px", textAlign: "left", cursor: "pointer" }}>
+          style={{ flex: 1, borderRadius: 14, border: `1px solid ${pick === "seeker" ? "var(--t-sacredSoft)" : "var(--t-sacredBorder)"}`, background: "var(--t-sacredLight)", padding: "9px 12px", textAlign: "left", cursor: "pointer" }}>
           <span style={{ display: "block", fontSize: 10.5, letterSpacing: 0.5, color: theme.textMuted }}>{t("pv.seekerLang")}</span>
-          <span style={{ display: "block", fontSize: 17, fontWeight: 700, color: theme.gold }}>{seekerLang ? nameOf(seekerLang) : t("pv.pickSeeker")}</span>
+          <span style={{ display: "block", fontSize: 17, fontWeight: 700, color: "var(--t-sacred)" }}>{seekerLang ? nameOf(seekerLang) : t("pv.pickSeeker")}</span>
         </button>
       </div>
 
@@ -50,7 +44,7 @@ export default function ParallelVersesPage() {
         <div style={{ marginBottom: 12, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
           {languages.map((l) => {
             const on = pick === "my" ? l.code === myLang : l.code === seekerLang;
-            const onBg = pick === "my" ? theme.primary : theme.gold;
+            const onBg = pick === "my" ? theme.primary : "var(--t-sacred)";
             return (
               <button key={l.code}
                 onClick={() => { (pick === "my" ? setMyLang : setSeekerLang)(l.code); setPick(null); }}
@@ -74,12 +68,12 @@ export default function ParallelVersesPage() {
             const o = theirs![i];
             return (
               <div key={m.key} style={{ borderRadius: 14, border: `1px solid ${theme.cardBorder}`, background: theme.card, overflow: "hidden" }}>
-                <div style={{ padding: "7px 12px", borderBottom: `1px solid ${theme.cardBorder}`, fontSize: 12.5, fontWeight: 800, color: theme.gold, background: theme.goldLight }}>
+                <div style={{ padding: "7px 12px", borderBottom: `1px solid ${theme.cardBorder}`, fontSize: 12.5, fontWeight: 800, color: "var(--t-sacred)", background: "var(--t-sacredLight)" }}>
                   {m.label}{o && o.label !== m.label ? `  ·  ${o.label}` : ""}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
                   <VerseBlock name={nameOf(myLang)} text={m.text} rtl={rtlFor(myLang)} accent={theme.primarySoft} border />
-                  <VerseBlock name={nameOf(seekerLang)} text={o?.text ?? ""} rtl={rtlFor(seekerLang)} accent={theme.gold} />
+                  <VerseBlock name={nameOf(seekerLang)} text={o?.text ?? ""} rtl={rtlFor(seekerLang)} accent="var(--t-sacred)" />
                 </div>
               </div>
             );

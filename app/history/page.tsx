@@ -59,7 +59,7 @@ export default function HistoryPage() {
   }
 
   return (
-    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
+    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "0.7rem 1.25rem 1.4rem", minHeight: "100dvh" }}>
       <PageHeader title={t("h.title")} homeLabel={t("r.home")} onHome={() => router.push("/")} accentColor={ACCENT.blue.fg} />
 
       {rows && rows.length > 0 && (

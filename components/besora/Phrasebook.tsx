@@ -116,7 +116,7 @@ export default function Phrasebook({ big = false }: { big?: boolean } = {}) {
             const on = c.id === cat;
             return (
               <button key={c.id} onClick={() => setCat(c.id)}
-                style={{ flexShrink: 0, padding: "8px 14px", borderRadius: 999, border: `1px solid ${on ? theme.gold : theme.cardBorder}`, background: on ? theme.gold : theme.card, color: on ? "#fff" : theme.textMuted, fontSize: 13.5, fontWeight: 800, cursor: "pointer", whiteSpace: "nowrap" }}>
+                style={{ flexShrink: 0, padding: "8px 14px", borderRadius: 999, border: `1px solid ${on ? "var(--t-sacred)" : theme.cardBorder}`, background: on ? "var(--t-sacred)" : theme.card, color: on ? "#1c1402" : theme.textMuted, fontSize: 13.5, fontWeight: 800, cursor: "pointer", whiteSpace: "nowrap" }}>
                 {c.icon} {c.title[myLang] || c.title.en}
               </button>
             );
@@ -148,7 +148,7 @@ export default function Phrasebook({ big = false }: { big?: boolean } = {}) {
               <button
                 onClick={(e) => { e.stopPropagation(); toggleFav(p.id); }}
                 aria-label="favorite" aria-pressed={fav}
-                style={{ flexShrink: 0, width: 36, height: 36, borderRadius: 10, border: "none", background: "transparent", cursor: "pointer", fontSize: 18, lineHeight: 1, color: fav ? theme.gold : theme.textFaint, filter: fav ? "none" : "grayscale(1)", opacity: fav ? 1 : 0.5 }}>★</button>
+                style={{ flexShrink: 0, width: 36, height: 36, borderRadius: 10, border: "none", background: "transparent", cursor: "pointer", fontSize: 18, lineHeight: 1, color: fav ? "var(--t-sacred)" : theme.textFaint, filter: fav ? "none" : "grayscale(1)", opacity: fav ? 1 : 0.5 }}>★</button>
               <div style={{ flex: 1, minWidth: 0 }}>
                 {twoWay && (
                   <p dir={rtlFor(seeker) ? "rtl" : "ltr"} style={{ margin: "0 0 3px", fontSize: big ? 18 : 16.5, fontWeight: 800, color: theme.text, lineHeight: 1.45 }}>{st}</p>
@@ -156,7 +156,7 @@ export default function Phrasebook({ big = false }: { big?: boolean } = {}) {
                 <p style={{ margin: 0, fontSize: big ? 14 : 13, fontWeight: 600, color: theme.textMuted, lineHeight: 1.4 }}>{myText(p)}</p>
               </div>
               {twoWay && (
-                <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 11, background: theme.goldLight, color: theme.gold, display: "grid", placeItems: "center", fontSize: 19 }}>▶</span>
+                <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 11, background: "var(--t-sacredLight)", color: "var(--t-sacred)", display: "grid", placeItems: "center", fontSize: 19 }}>▶</span>
               )}
             </div>
           );

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { theme } from "@/lib/theme";
 import AppShell from "@/components/besora/AppShell";
+import ShareSection from "@/components/besora/ShareSection";
 import InvitePanel from "@/components/besora/InvitePanel";
 import PushToggle from "@/components/besora/PushToggle";
 import { getSupabase } from "@/lib/besora/supabase";
@@ -42,9 +43,7 @@ export default function Me() {
   }, []);
 
   return (
-    <AppShell>
-      <h1 style={{ marginBottom: 20, fontFamily: "'Noto Serif KR',serif", fontSize: 24, fontWeight: 600, color: theme.text }}>{ui(myLang, "myRecords")}</h1>
-
+    <AppShell title={ui(myLang, "myRecords")}>
       {!loggedIn ? (
         <p style={{ borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, padding: 20, fontSize: 14, color: theme.textMuted, lineHeight: 1.6 }}>
           {ui(myLang, "loginToConnect")} (게스트로도 전도는 자유롭게 가능합니다.)
@@ -52,28 +51,29 @@ export default function Me() {
         </p>
       ) : (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-            <div style={{ borderRadius: 16, background: theme.card, border: `1px solid ${theme.cardBorder}`, padding: "18px 14px" }}>
+          {/* 통계 3칸 — '전한 횟수'는 골드(핵심), '결단'은 의미색(초록), '이번 달' 골드 카드 */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+            <div style={{ borderRadius: 16, background: "var(--t-sacredLight)", border: `1px solid var(--t-sacredBorder)`, padding: "16px 12px" }}>
               <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{ui(myLang, "statShared")}</p>
-              <p style={{ marginTop: 4, fontFamily: "'Noto Serif KR',serif", fontSize: 32, color: theme.gold, margin: "4px 0 0" }}>{total ?? "…"}</p>
+              <p className="serif" style={{ fontSize: 32, color: "var(--t-sacred)", margin: "4px 0 0", fontWeight: 700 }}>{total ?? "…"}</p>
             </div>
-            <div style={{ borderRadius: 16, background: theme.card, border: `1px solid ${theme.cardBorder}`, padding: "18px 14px" }}>
+            <div style={{ borderRadius: 16, background: theme.card, border: `1px solid ${theme.cardBorder}`, padding: "16px 12px" }}>
               <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{ui(myLang, "statDecided")}</p>
-              <p style={{ marginTop: 4, fontFamily: "'Noto Serif KR',serif", fontSize: 32, color: theme.correct, margin: "4px 0 0" }}>{decided ?? "…"}</p>
+              <p className="serif" style={{ fontSize: 32, color: theme.correct, margin: "4px 0 0", fontWeight: 700 }}>{decided ?? "…"}</p>
             </div>
-            <div style={{ borderRadius: 16, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, padding: "18px 14px" }}>
+            <div style={{ borderRadius: 16, background: theme.card, border: `1px solid ${theme.cardBorder}`, padding: "16px 12px" }}>
               <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0 }}>{ui(myLang, "statMonth")}</p>
-              <p style={{ marginTop: 4, fontFamily: "'Noto Serif KR',serif", fontSize: 32, color: theme.primarySoft, margin: "4px 0 0" }}>{month ?? "…"}</p>
+              <p className="serif" style={{ fontSize: 32, color: theme.primarySoft, margin: "4px 0 0", fontWeight: 700 }}>{month ?? "…"}</p>
             </div>
           </div>
           {(total ?? 0) > 0 && (
-            <p style={{ margin: "14px 2px 0", fontSize: 13.5, color: theme.textMuted, lineHeight: 1.6, textAlign: "center" }}>{ui(myLang, "encourage")}</p>
+            <p style={{ margin: "12px 2px 0", fontSize: 13.5, color: theme.textMuted, lineHeight: 1.6, textAlign: "center" }}>{ui(myLang, "encourage")}</p>
           )}
 
-          {/* 동행 */}
-          <div style={{ marginTop: 28 }}>
-            <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 18, fontWeight: 700, color: theme.text, margin: "0 0 6px" }}>🤝 {ui(myLang, "companions")}</h2>
-            <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 14px", lineHeight: 1.55 }}>{ui(myLang, "inviteDesc")}</p>
+          {/* 동행 — 골드 섹션 라벨 */}
+          <div style={{ marginTop: 18 }}>
+            <ShareSection icon="userPlus">{ui(myLang, "companions")}</ShareSection>
+            <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 12px", lineHeight: 1.55 }}>{ui(myLang, "inviteDesc")}</p>
 
             {chats.length === 0 ? (
               <p style={{ fontSize: 13.5, color: theme.textFaint, margin: "0 0 16px" }}>{ui(myLang, "noCompanions")}</p>
@@ -88,7 +88,7 @@ export default function Me() {
                       {c.avatarUrl
                         // eslint-disable-next-line @next/next/no-img-element
                         ? <img src={c.avatarUrl} alt="" width={46} height={46} style={{ borderRadius: 999, objectFit: "cover", flexShrink: 0 }} />
-                        : <div style={{ width: 46, height: 46, borderRadius: 999, flexShrink: 0, background: theme.goldLight, color: theme.gold, display: "grid", placeItems: "center", fontWeight: 800, fontSize: 17 }}>{(c.nickname || "·").charAt(0)}</div>}
+                        : <div style={{ width: 46, height: 46, borderRadius: 999, flexShrink: 0, background: "var(--t-sacredLight)", color: "var(--t-sacred)", display: "grid", placeItems: "center", fontWeight: 800, fontSize: 17 }}>{(c.nickname || "·").charAt(0)}</div>}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
                           <p style={{ margin: 0, fontWeight: 700, color: theme.text, fontSize: 15, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.nickname}</p>

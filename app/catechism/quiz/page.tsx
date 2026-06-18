@@ -92,7 +92,7 @@ export default function CatechismQuiz() {
     return (
       <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "3rem 1.25rem", minHeight: "100dvh", textAlign: "center" }}>
         <div style={{ width: 72, height: 72, margin: "0 auto 10px", borderRadius: 21, background: ACCENT.green.chip, display: "grid", placeItems: "center", fontSize: 40 }}>{pct >= 80 ? "🏆" : pct >= 50 ? "😊" : "🌱"}</div>
-        <h1 style={{ fontSize: 40, fontWeight: 800, color: theme.gold, margin: "0 0 4px" }}>{score} / {quiz.length}</h1>
+        <h1 style={{ fontSize: 40, fontWeight: 800, color: ACCENT.green.fg, margin: "0 0 4px" }}>{score} / {quiz.length}</h1>
         <p style={{ fontSize: 15, color: theme.textMuted, margin: "0 0 2rem" }}>{t("cat.quizDone", { n: pct })}</p>
         <button onClick={restart} style={{ width: "100%", padding: 16, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#2bb069 0%,#178a50 100%)", color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", marginBottom: 10, boxShadow: "0 8px 20px rgba(88,167,0,0.20)" }}>{t("c.retry")}</button>
         <button onClick={() => router.push("/catechism")} style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 700, background: theme.card, color: theme.text, border: `1.5px solid ${theme.cardBorder}`, borderRadius: 14, cursor: "pointer" }}>{t("cat.toCat")}</button>
@@ -103,7 +103,7 @@ export default function CatechismQuiz() {
   return (
     <main className="fade-in" style={{ maxWidth: 560, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>
       <div style={{ height: 8, background: "var(--t-border)", borderRadius: 4, marginBottom: 14, overflow: "hidden" }}>
-        <div style={{ height: "100%", width: `${((idx + 1) / quiz.length) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .3s", borderRadius: 4 }} />
+        <div style={{ height: "100%", width: `${((idx + 1) / quiz.length) * 100}%`, background: ACCENT.green.fg, transition: "width .3s", borderRadius: 4 }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
         <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 700 }}>{idx + 1} / {quiz.length}</span>
@@ -111,7 +111,7 @@ export default function CatechismQuiz() {
       </div>
 
       <div className="fade-in-2" style={{ borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: ACCENT.blue.bg, boxShadow: "0 3px 12px rgba(23,50,73,0.05)", padding: "16px 17px", marginBottom: 16 }}>
-        <p style={{ fontSize: 12, fontWeight: 800, color: theme.gold, margin: "0 0 6px" }}>{t("cat.qno", { n: cur.item.n })}</p>
+        <p style={{ fontSize: 12, fontWeight: 800, color: ACCENT.green.fg, margin: "0 0 6px" }}>{t("cat.qno", { n: cur.item.n })}</p>
         <p style={{ fontSize: 18, fontWeight: 700, color: theme.text, lineHeight: 1.6, margin: 0 }}>{cur.item.q}</p>
       </div>
 
@@ -130,7 +130,7 @@ export default function CatechismQuiz() {
       </div>
 
       {selected !== null && (
-        <button onClick={next} className="fade-in" style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 800, background: theme.primary, color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", marginTop: 14, boxShadow: "0 8px 20px rgba(31,155,239,0.22)" }}>{idx + 1 >= quiz.length ? t("q.result") : t("q.next")}</button>
+        <button onClick={next} className="fade-in" style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 800, background: "linear-gradient(135deg,#2bb069 0%,#178a50 100%)", color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", marginTop: 14, boxShadow: "0 8px 20px rgba(88,167,0,0.20)" }}>{idx + 1 >= quiz.length ? t("q.result") : t("q.next")}</button>
       )}
     </main>
   );

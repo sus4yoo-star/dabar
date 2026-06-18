@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { useAutoCourse } from "@/lib/autoTranslate";
 import { supabase } from "@/lib/supabase";
-import { PageHeader, ACCENT, softCard } from "@/lib/ui";
+import { PageHeader, SectionLabel, ACCENT, softCard } from "@/lib/ui";
 
 const STATIC_LANGS = ["ko", "en", "th"];
 
@@ -75,26 +75,28 @@ export default function LessonPage() {
   }
 
   return (
-    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem 2.5rem", minHeight: "100dvh" }}>
+    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "0.7rem 1.25rem 1.4rem", minHeight: "100dvh" }}>
       <PageHeader
         title={lesson.label ?? `${lesson.id}과`}
+        subtitle={lesson.title}
         onHome={() => router.push(`/course/${course.slug}`)}
         homeLabel={t("c.back")}
-        right={<span style={{ fontSize: 12.5, fontWeight: 700, color: theme.gold, maxWidth: 150, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{course.emoji} {course.title}</span>}
+        accentColor={ACCENT.green.fg}
+        right={<span style={{ fontSize: 12.5, fontWeight: 700, color: ACCENT.green.fg, maxWidth: 150, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{course.emoji} {course.title}</span>}
       />
 
       {/* 배우기 */}
       {phase === "learn" && (
         <div className="fade-in-2">
-          <h1 style={{ fontSize: 23, fontWeight: 800, color: theme.text, margin: "0 0 14px", lineHeight: 1.35 }}>{lesson.label ?? `${lesson.id}과`}. {lesson.title}</h1>
-          <div style={{ ...softCard({ background: ACCENT.green.bg, border: `1px solid ${theme.goldBorder}`, borderLeft: `4px solid ${theme.goldSoft}` }), padding: "15px 17px", marginBottom: "1.25rem" }}>
+          <div style={{ ...softCard({ background: ACCENT.green.bg, border: `1px solid ${ACCENT.green.border}`, borderLeft: `4px solid ${ACCENT.green.fg}` }), padding: "13px 17px", marginBottom: 14 }}>
             <p style={{ fontSize: 15, lineHeight: 1.75, color: theme.text, fontStyle: "italic", margin: "0 0 6px", fontFamily: "'Iowan Old Style',Georgia,serif" }}>“{lesson.verse}”</p>
-            <p style={{ fontSize: 12.5, fontWeight: 700, color: theme.gold, margin: 0 }}>— {lesson.verseRef}</p>
+            <p style={{ fontSize: 12.5, fontWeight: 700, color: ACCENT.green.fg, margin: 0 }}>— {lesson.verseRef}</p>
           </div>
+          <SectionLabel icon="book" accentColor={ACCENT.green.fg}>{t("menu.deep.t")}</SectionLabel>
           {lesson.teaching.map((para, i) => (
             <p key={i} style={{ fontSize: 15.5, lineHeight: 1.8, color: theme.text, margin: "0 0 14px" }}>{para}</p>
           ))}
-          <button onClick={() => setPhase("quiz")} style={{ width: "100%", padding: 16, fontSize: 16, fontWeight: 800, background: theme.primary, color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", marginTop: 8, boxShadow: "0 8px 20px rgba(31,155,239,0.22)" }}>{t("co.startQuiz")}</button>
+          <button onClick={() => setPhase("quiz")} style={{ width: "100%", padding: 16, fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#2bb069 0%,#178a50 100%)", color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", marginTop: 8, boxShadow: "0 8px 20px rgba(88,167,0,0.20)" }}>{t("co.startQuiz")}</button>
         </div>
       )}
 
@@ -102,7 +104,7 @@ export default function LessonPage() {
       {phase === "quiz" && (
         <div className="fade-in-2">
           <div style={{ height: 8, background: "var(--t-border)", borderRadius: 4, marginBottom: 16, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${((qIdx + 1) / quiz.length) * 100}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, transition: "width .3s ease", borderRadius: 4 }} />
+            <div style={{ height: "100%", width: `${((qIdx + 1) / quiz.length) * 100}%`, background: ACCENT.green.fg, transition: "width .3s ease", borderRadius: 4 }} />
           </div>
           <p style={{ fontSize: 12.5, color: theme.textMuted, fontWeight: 700, margin: "0 0 8px" }}>{qIdx + 1} / {quiz.length}</p>
           <p style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.6, color: theme.text, marginBottom: "1.25rem" }}>{q.question}</p>
@@ -116,7 +118,7 @@ export default function LessonPage() {
               const anim = selected === null ? "" : i === q.answer ? "anim-pop" : i === selected ? "anim-shake" : "";
               return (
                 <button key={i} className={anim} onClick={() => choose(i)} style={{ padding: "15px 16px", textAlign: "left", fontSize: 15, lineHeight: 1.5, borderRadius: 14, background: bg, border, color, cursor: selected !== null ? "default" : "pointer", boxShadow: selected === null ? "0 3px 12px rgba(23,50,73,0.05)" : "none" }}>
-                  <span style={{ fontWeight: 700, marginRight: 10, color: i === q.answer && selected !== null ? theme.correct : theme.gold }}>{"①②③④"[i]}</span>{opt}
+                  <span style={{ fontWeight: 700, marginRight: 10, color: i === q.answer && selected !== null ? theme.correct : ACCENT.green.fg }}>{"①②③④"[i]}</span>{opt}
                 </button>
               );
             })}
@@ -128,7 +130,7 @@ export default function LessonPage() {
             </div>
           )}
           {selected !== null && (
-            <button onClick={nextQ} className="fade-in" style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 800, background: theme.primary, color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", boxShadow: "0 8px 20px rgba(31,155,239,0.22)" }}>{qIdx + 1 >= quiz.length ? t("co.finishLesson") : t("q.next")}</button>
+            <button onClick={nextQ} className="fade-in" style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 800, background: "linear-gradient(135deg,#2bb069 0%,#178a50 100%)", color: "#fff", border: "none", borderRadius: 14, cursor: "pointer", boxShadow: "0 8px 20px rgba(88,167,0,0.20)" }}>{qIdx + 1 >= quiz.length ? t("co.finishLesson") : t("q.next")}</button>
           )}
         </div>
       )}

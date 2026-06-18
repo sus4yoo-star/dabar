@@ -6,7 +6,7 @@ import MenuIcon from "@/components/MenuIcon";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { PageHeader, ACCENT, softShadow, softCard } from "@/lib/ui";
+import { PageHeader, SectionLabel, ACCENT, softShadow, softCard } from "@/lib/ui";
 import { ALL_BOOKS } from "@/lib/bible";
 import { fetchQuizProgress } from "@/lib/quizProgress";
 import { bookLabel } from "@/lib/bookNames";
@@ -61,7 +61,7 @@ export default function ProgressPage() {
   const pct = overall.t ? Math.round((overall.a / overall.t) * 100) : 0;
 
   return (
-    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
+    <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "0.7rem 1.1rem 1.4rem", minHeight: "100dvh" }}>
       <PageHeader title={t("prog.title")} homeLabel={t("common.home")} onHome={() => router.push("/")} accentColor={ACCENT.blue.fg} />
 
       {!user ? (
@@ -85,7 +85,7 @@ export default function ProgressPage() {
             </div>
           </div>
 
-          <p style={{ fontSize: 12.5, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "0 0 9px 2px" }}>{t("q.bookProg")}</p>
+          <SectionLabel icon="chart" accentColor={ACCENT.blue.fg}>{t("q.bookProg")}</SectionLabel>
           <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
             {byBook.map(({ book, s }) => {
               const p = s.t ? Math.round((s.a / s.t) * 100) : 0;

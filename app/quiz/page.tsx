@@ -11,6 +11,7 @@ import { fetchQuizProgress, upsertQuizProgress, clearQuizProgress } from "@/lib/
 import { bookLabel, categoryLabel } from "@/lib/bookNames";
 import { ALL_BOOKS } from "@/lib/bible";
 import { useToast } from "@/components/Toast";
+import { PageHeader, SectionLabel, ACCENT } from "@/lib/ui";
 
 const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: "var(--a-amber-fg)", hard: theme.wrong };
 
@@ -258,16 +259,16 @@ function QuizInner() {
     const xCount = allQ.filter(qq => result[qq.id] === "x").length;
     const btn = (bg: string, color: string, border: string) => ({ display: "block", width: "100%", maxWidth: 340, margin: "0 auto 10px", padding: 14, fontSize: 15, fontWeight: 700, background: bg, color, border, borderRadius: 12, cursor: "pointer" } as React.CSSProperties);
     return (
-      <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh", textAlign: "center" }}>
-        <div style={{ fontSize: 52, marginBottom: 8 }}>🎓</div>
-        <p style={{ fontSize: 17, fontWeight: 800, color: theme.primarySoft, margin: "0 0 6px" }}>{t("q.studyDone")}</p>
-        <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 18px" }}>{t("q.studyScore", { o: oCount, x: xCount, t: allQ.length })}</p>
-        {xCount > 0 && <button onClick={startWrong} style={btn(theme.wrongBg, theme.wrong, `1px solid ${theme.wrong}`)}>{t("q.retryWrong", { n: xCount })}</button>}
-        <p style={{ fontSize: 12, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "16px 0 8px" }}>{t("q.bookProg")}</p>
-        <BookProgressList allQ={allQ} result={result} lang={lang} />
-        <div style={{ height: 14 }} />
-        <button onClick={restartComplete} style={btn(theme.primary, "#fff", "none")}>{t("q.restart")}</button>
-        <button onClick={() => router.push("/")} style={btn("transparent", theme.text, `1px solid ${theme.border}`)}>{t("r.home")}</button>
+      <main style={{ maxWidth: 480, margin: "0 auto", padding: "0.7rem 1.25rem 1.4rem", minHeight: "100dvh" }}>
+        <PageHeader title={t("q.studyDone")} subtitle={t("q.studyScore", { o: oCount, x: xCount, t: allQ.length })} onHome={() => router.push("/")} homeLabel={t("r.home")} accentColor={ACCENT.blue.fg} />
+        <div style={{ textAlign: "center" }}>
+          {xCount > 0 && <button onClick={startWrong} style={btn(theme.wrongBg, theme.wrong, `1px solid ${theme.wrong}`)}>{t("q.retryWrong", { n: xCount })}</button>}
+          <SectionLabel icon="chart" accentColor={ACCENT.blue.fg}>{t("q.bookProg")}</SectionLabel>
+          <BookProgressList allQ={allQ} result={result} lang={lang} />
+          <div style={{ height: 14 }} />
+          <button onClick={restartComplete} style={btn(theme.primary, "#fff", "none")}>{t("q.restart")}</button>
+          <button onClick={() => router.push("/")} style={btn("transparent", theme.text, `1px solid ${theme.border}`)}>{t("r.home")}</button>
+        </div>
       </main>
     );
   }

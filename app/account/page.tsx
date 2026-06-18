@@ -5,7 +5,7 @@ import { theme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
-import { PageHeader, AccentCard, ACCENT, softCard, softShadow } from "@/lib/ui";
+import { PageHeader, AccentCard, ACCENT, SACRED, softCard, softShadow } from "@/lib/ui";
 import MenuIcon from "@/components/MenuIcon";
 import { useToast } from "@/components/Toast";
 import { useConfirm } from "@/components/ConfirmModal";
@@ -41,7 +41,7 @@ export default function AccountPage() {
 
   return (
     <main className="fade-in" style={{ maxWidth: 440, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
-      <PageHeader title={t("acct.title")} onHome={() => router.push("/")} homeLabel={t("common.home")} />
+      <PageHeader title={t("acct.title")} onHome={() => router.push("/")} homeLabel={t("common.home")} accentColor={SACRED.fg} />
 
       {/* 프로필 카드 — 홈 히어로 톤(컬러 아이콘 칩) */}
       <div className="fade-in" style={{ ...softCard({ padding: "16px 17px", marginBottom: 16, display: "flex", alignItems: "center", gap: 14, background: ACCENT.green.bg, border: `1px solid ${theme.goldBorder}` }) }}>

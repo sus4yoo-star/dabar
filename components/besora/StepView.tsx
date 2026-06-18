@@ -13,10 +13,10 @@ import { versesFor, type VersePassage } from "@/lib/besora/verses";
 function ScriptureQuote({ passages, onSkin, fg }: { passages: VersePassage[]; onSkin: boolean; fg: string }) {
   if (passages.length === 0) return null;
   return (
-    <div style={{ marginTop: 18, width: "100%", maxWidth: 460, textAlign: "start", borderRadius: 14, padding: "14px 16px", background: onSkin ? "rgba(255,255,255,0.16)" : theme.goldLight, borderInlineStart: `3px solid ${onSkin ? "rgba(255,255,255,0.55)" : theme.gold}` }}>
+    <div style={{ marginTop: 18, width: "100%", maxWidth: 460, textAlign: "start", borderRadius: 14, padding: "14px 16px", background: onSkin ? "rgba(255,255,255,0.16)" : "var(--t-sacredLight)", borderInlineStart: `3px solid ${onSkin ? "rgba(255,255,255,0.55)" : "var(--t-sacred)"}` }}>
       {passages.map((p, i) => (
         <div key={p.key} style={{ marginTop: i === 0 ? 0 : 12 }}>
-          <span style={{ display: "block", fontFamily: "'Noto Serif KR',serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.3, color: onSkin ? fg : theme.gold, opacity: onSkin ? 0.85 : 1, marginBottom: 3 }}>{p.label}</span>
+          <span style={{ display: "block", fontFamily: "'Noto Serif KR',serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.3, color: onSkin ? fg : "var(--t-sacred)", opacity: onSkin ? 0.85 : 1, marginBottom: 3 }}>{p.label}</span>
           <p style={{ margin: 0, fontFamily: "'Noto Serif KR',serif", fontSize: 16.5, lineHeight: 1.66, color: onSkin ? fg : theme.text, opacity: onSkin ? 0.98 : 0.92 }}>
             &ldquo;{p.text}&rdquo;
           </p>
@@ -64,10 +64,10 @@ function ColorSymbol({ colorKey, fg }: { colorKey: string; fg: string }) {
 function VerseMotif() {
   return (
     <svg viewBox="0 0 48 36" width={58} height={44} fill="none" style={{ marginBottom: 10, opacity: 0.9 }}>
-      <path d="M6 30 Q24 18 42 30" stroke={theme.gold} strokeWidth={2.6} strokeLinecap="round" />
-      <path d="M6 30 Q24 18 42 30" stroke={theme.gold} strokeWidth={2.6} strokeDasharray="0.5 6" strokeLinecap="round" opacity={0.5} transform="translate(0 5)" />
-      <rect x={22} y={6} width={4} height={16} rx={2} fill={theme.gold} />
-      <rect x={16} y={11} width={16} height={4} rx={2} fill={theme.gold} />
+      <path d="M6 30 Q24 18 42 30" stroke="var(--t-sacred)" strokeWidth={2.6} strokeLinecap="round" />
+      <path d="M6 30 Q24 18 42 30" stroke="var(--t-sacred)" strokeWidth={2.6} strokeDasharray="0.5 6" strokeLinecap="round" opacity={0.5} transform="translate(0 5)" />
+      <rect x={22} y={6} width={4} height={16} rx={2} fill="var(--t-sacred)" />
+      <rect x={16} y={11} width={16} height={4} rx={2} fill="var(--t-sacred)" />
     </svg>
   );
 }
@@ -111,7 +111,7 @@ export default function StepView({
         {isVerse && <VerseMotif />}
 
         {verseRef && (
-          <span style={{ marginBottom: 14, display: "inline-block", padding: "4px 14px", borderRadius: 999, background: skin ? "rgba(255,255,255,0.18)" : theme.goldLight, color: skin ? fg : theme.gold, fontFamily: "'Noto Serif KR',serif", fontSize: 14, fontWeight: 700, letterSpacing: 0.3 }}>
+          <span style={{ marginBottom: 14, display: "inline-block", padding: "4px 14px", borderRadius: 999, background: skin ? "rgba(255,255,255,0.18)" : "var(--t-sacredLight)", color: skin ? fg : "var(--t-sacred)", fontFamily: "'Noto Serif KR',serif", fontSize: 14, fontWeight: 700, letterSpacing: 0.3 }}>
             {verseRef}
           </span>
         )}

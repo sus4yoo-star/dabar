@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
-import { PageHeader, ACCENT, softShadow, type Accent } from "@/lib/ui";
+import { PageHeader, SectionLabel, ACCENT, softShadow, type Accent } from "@/lib/ui";
 import MenuIcon from "@/components/MenuIcon";
 
 // 양육·교육 과정 (성경퀴즈 제외 — 새신자부터 소요리문답까지)
@@ -19,9 +19,8 @@ export default function LearnPage() {
   const { t } = useI18n();
 
   return (
-    <main className="fade-in" style={{ maxWidth: 440, margin: "0 auto", padding: "0.85rem 1.1rem 2rem", minHeight: "100dvh" }}>
-      <PageHeader title={t("home.growSection")} homeLabel={t("common.home")} onHome={() => router.push("/")} />
-      <p style={{ fontSize: 13.5, color: theme.textMuted, margin: "-0.6rem 0 1.2rem 2px", lineHeight: 1.5 }}>{t("home.growSub")}</p>
+    <main className="fade-in" style={{ maxWidth: 440, margin: "0 auto", padding: "0.7rem 1.1rem 1.4rem", minHeight: "100dvh" }}>
+      <PageHeader title={t("home.growSection")} subtitle={t("home.growSub")} homeLabel={t("common.home")} onHome={() => router.push("/")} accentColor={ACCENT.green.fg} />
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {COURSE_MENU.map(m => (

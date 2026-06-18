@@ -4,7 +4,7 @@ import { useState } from "react";
 import { theme } from "@/lib/theme";
 import { BIBLE_BOOKS, booksForTestament } from "@/lib/bible";
 import { useI18n } from "@/lib/i18n";
-import { serif } from "@/lib/ui";
+import { PageHeader, SectionLabel, ACCENT } from "@/lib/ui";
 import MenuIcon from "@/components/MenuIcon";
 
 const COUNTS = [5, 10, 20, 30];
@@ -44,34 +44,33 @@ export default function PlaySetup() {
   }
 
   return (
-    <main style={{ maxWidth: 440, margin: "0 auto", padding: "0.8rem 1.1rem 1.6rem", minHeight: "100dvh" }}>
-      {/* 상단 바 */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-        <button onClick={() => router.push("/")} aria-label={t("common.back")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 13px", cursor: "pointer" }}>{t("common.home")}</button>
-        <button onClick={() => router.push("/progress")} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}><MenuIcon name="chart" size={15} color={theme.primarySoft} />{t("prog.link")}</button>
-      </div>
+    <main style={{ maxWidth: 440, margin: "0 auto", padding: "0.7rem 1.1rem 1.4rem", minHeight: "100dvh" }}>
+      <PageHeader
+        title={t("pl.title")}
+        subtitle={t("pl.subtitle")}
+        onHome={() => router.push("/")}
+        homeLabel={t("common.home")}
+        accentColor={ACCENT.blue.fg}
+        right={
+          <button onClick={() => router.push("/progress")} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: 700, color: ACCENT.blue.fg, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}><MenuIcon name="chart" size={15} color={ACCENT.blue.fg} />{t("prog.link")}</button>
+        }
+      />
 
-      {/* 히어로 — 블루 칩 아이콘 + 세리프 제목 + 부제 */}
-      <div style={{ textAlign: "center", marginBottom: 20 }}>
-        <span style={{ display: "inline-grid", placeItems: "center", width: 54, height: 54, borderRadius: 16, background: "var(--a-blue-chip)", marginBottom: 8 }}>
-          <MenuIcon name="book" size={28} color="var(--a-blue-fg)" />
-        </span>
-        <h1 className="serif" style={{ fontSize: 24, fontWeight: 700, color: theme.primarySoft, margin: 0, letterSpacing: -0.2 }}>{t("pl.title")}</h1>
-        <p style={{ fontSize: 12.5, color: theme.textMuted, margin: "5px 0 0", lineHeight: 1.5 }}>{t("pl.subtitle")}</p>
-      </div>
-
-      <Section title={t("pl.testament")}><ChipGroup items={TESTAMENTS} value={testament} onChange={changeTestament} /></Section>
-      <BookPicker testament={testament} selected={books} onToggle={toggleBook} onClear={() => setBooks([])} onSelectAll={() => setBooks(booksForTestament(testament))} />
-      <Section title={t("pl.level")}><ChipGroup items={LEVELS} value={level} onChange={setLevel} /></Section>
+      <SectionLabel icon="book" accentColor={ACCENT.blue.fg}>{t("pl.testament")}</SectionLabel>
+      <ChipGroup items={TESTAMENTS} value={testament} onChange={changeTestament} />
+      <SectionLabel icon="grad" accentColor={ACCENT.blue.fg}>{t("pl.level")}</SectionLabel>
+      <ChipGroup items={LEVELS} value={level} onChange={setLevel} />
       {!complete && (
-        <Section title={t("pl.count")}>
+        <>
+          <SectionLabel icon="list" accentColor={ACCENT.blue.fg}>{t("pl.count")}</SectionLabel>
           <ChipGroup items={COUNTS.map(n => ({ value: String(n), label: t("pl.countN", { n }) }))} value={String(count)} onChange={v => setCount(Number(v))} />
-        </Section>
+        </>
       )}
+      <BookPicker testament={testament} selected={books} onToggle={toggleBook} onClear={() => setBooks([])} onSelectAll={() => setBooks(booksForTestament(testament))} />
 
       {/* 🏃 마라톤 퀴즈 — 성경 전권 완주 */}
-      <div style={{ marginBottom: "0.95rem" }}>
-        <button onClick={() => setComplete(c => !c)} style={{ width: "100%", textAlign: "left", padding: "15px 16px", borderRadius: 16, cursor: "pointer", border: `1.5px solid ${complete ? "transparent" : theme.cardBorder}`, background: complete ? "linear-gradient(135deg,#2a93e6 0%,#1573c4 100%)" : theme.card, color: complete ? "#fff" : theme.text, boxShadow: complete ? "0 8px 22px rgba(31,143,230,0.28)" : "0 2px 10px rgba(26,37,48,0.06)" }}>
+      <div style={{ margin: "0.7rem 0" }}>
+        <button onClick={() => setComplete(c => !c)} style={{ width: "100%", textAlign: "left", padding: "13px 16px", borderRadius: 16, cursor: "pointer", border: `1.5px solid ${complete ? "transparent" : theme.cardBorder}`, background: complete ? "linear-gradient(135deg,#2a93e6 0%,#1573c4 100%)" : theme.card, color: complete ? "#fff" : theme.text, boxShadow: complete ? "0 8px 22px rgba(31,143,230,0.28)" : "0 2px 10px rgba(26,37,48,0.06)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
             <span style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 38, height: 38, borderRadius: 11, background: complete ? "rgba(255,255,255,0.18)" : "var(--a-blue-chip)" }}>
               <MenuIcon name="trophy" size={20} color={complete ? "#fff" : "var(--a-blue-fg)"} />
@@ -99,22 +98,13 @@ export default function PlaySetup() {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginBottom: "0.95rem" }}>
-      <p style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 1, textTransform: "uppercase", margin: "0 0 7px 2px" }}>{title}</p>
-      {children}
-    </div>
-  );
-}
-
 function ChipGroup({ items, value, onChange }: { items: { value: string; label: string }[]; value: string; onChange: (v: string) => void }) {
   return (
     <div style={{ display: "flex", gap: 7 }}>
       {items.map(item => {
         const on = value === item.value;
         return (
-          <button key={item.value} onClick={() => onChange(item.value)} style={{ flex: 1, minWidth: 0, padding: "13px 6px", borderRadius: 13, fontSize: 15, lineHeight: 1.25, whiteSpace: "normal", wordBreak: "keep-all", cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 800 : 600, boxShadow: on ? "0 4px 14px rgba(31,143,230,0.26)" : "0 1px 3px rgba(26,37,48,0.04)", transition: "background .12s" }}>{item.label}</button>
+          <button key={item.value} onClick={() => onChange(item.value)} style={{ flex: 1, minWidth: 0, padding: "11px 6px", borderRadius: 13, fontSize: 15, lineHeight: 1.25, whiteSpace: "normal", wordBreak: "keep-all", cursor: "pointer", border: `1px solid ${on ? "transparent" : theme.cardBorder}`, background: on ? theme.primary : theme.card, color: on ? "#fff" : theme.text, fontWeight: on ? 800 : 600, boxShadow: on ? "0 4px 14px rgba(31,143,230,0.26)" : "0 1px 3px rgba(26,37,48,0.04)", transition: "background .12s" }}>{item.label}</button>
         );
       })}
     </div>
@@ -132,8 +122,8 @@ function BookPicker({ testament, selected, onToggle, onClear, onSelectAll }: {
     : [{ label: t("pl.old"), books: BIBLE_BOOKS.old }, { label: t("pl.new"), books: BIBLE_BOOKS.new }];
 
   return (
-    <div style={{ marginBottom: "0.95rem" }}>
-      <p style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 1, textTransform: "uppercase", margin: "0 0 7px 2px" }}>{t("pl.books")}</p>
+    <div style={{ marginBottom: "0.7rem" }}>
+      <SectionLabel icon="book" accentColor={ACCENT.blue.fg}>{t("pl.books")}</SectionLabel>
       <button onClick={() => setOpen(o => !o)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", borderRadius: 13, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 14, fontWeight: 600, cursor: "pointer", boxShadow: "0 1px 3px rgba(26,37,48,0.04)" }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}><MenuIcon name="book" size={17} color="var(--a-blue-fg)" />{selected.length === 0 ? t("pl.allBooks") : t("pl.booksSel", { n: selected.length })}</span>
         <span style={{ color: theme.primarySoft, fontWeight: 700 }}>{open ? t("pl.close") : t("pl.openPick")}</span>

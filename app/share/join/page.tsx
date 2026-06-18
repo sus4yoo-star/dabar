@@ -39,17 +39,14 @@ function JoinInner() {
   }, [code, router]);
 
   return (
-    <AppShell>
-      <div style={{ flex: 1, display: "grid", placeItems: "center", padding: "32px 8px", textAlign: "center" }}>
+    <AppShell title={ui(myLang, "joinTitle")} subtitle={ui(myLang, "joinDesc")}>
+      <div style={{ flex: 1, display: "grid", placeItems: "center", padding: "24px 8px", textAlign: "center" }}>
         <div style={{ maxWidth: 360 }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>🤝</div>
-          <h1 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: 22, fontWeight: 700, color: theme.text, margin: "0 0 8px" }}>{ui(myLang, "joinTitle")}</h1>
-          <p style={{ fontSize: 14, color: theme.textMuted, lineHeight: 1.6, margin: "0 0 22px" }}>{ui(myLang, "joinDesc")}</p>
-
+          <div style={{ fontSize: 40, marginBottom: 16 }}>🤝</div>
           {state === "joining" || state === "checking" ? (
             <p style={{ color: theme.textMuted }}>{ui(myLang, "joining")}</p>
           ) : state === "needLogin" ? (
-            <Link href="/login" style={{ display: "inline-block", borderRadius: 999, background: theme.gold, color: "#08263a", padding: "13px 26px", fontWeight: 800, textDecoration: "none" }}>
+            <Link href="/login" style={{ display: "inline-block", borderRadius: 999, background: "var(--t-sacred)", color: "#1c1402", padding: "13px 26px", fontWeight: 800, textDecoration: "none" }}>
               {ui(myLang, "joinAccept")}
             </Link>
           ) : (

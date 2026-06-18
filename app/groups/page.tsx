@@ -9,7 +9,7 @@ import { useToast } from "@/components/Toast";
 import { supabase } from "@/lib/supabase";
 import { getSupabase } from "@/lib/besora/supabase";
 import { Group, MAX_MEMBERS, createGroup, fetchMyGroupIds, fetchPublicGroups, joinGroup } from "@/lib/besora/groups";
-import { PageHeader, ACCENT, softShadow } from "@/lib/ui";
+import { PageHeader, SectionLabel, ACCENT, softShadow } from "@/lib/ui";
 import { SkeletonList } from "@/components/Skeleton";
 
 export default function GroupsPage() {
@@ -92,7 +92,7 @@ export default function GroupsPage() {
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
-      <PageHeader title={`🤝 ${t("grp.title")}`} onHome={() => router.push("/")} homeLabel={t("common.home")} accentColor={ACCENT.blue.fg} />
+      <PageHeader title={`🤝 ${t("grp.title")}`} subtitle={t("home.groupsSub")} onHome={() => router.push("/")} homeLabel={t("common.home")} accentColor={ACCENT.blue.fg} />
 
       {canCreate && !creating && (
         <button onClick={() => setCreating(true)} style={{ width: "100%", padding: 14, marginBottom: 14, fontSize: 15, fontWeight: 800, color: "#fff", background: "linear-gradient(135deg,#1f9bef 0%,#1577c2 100%)", border: "none", borderRadius: 14, cursor: "pointer", boxShadow: "0 8px 20px rgba(31,155,239,0.25)" }}>{t("grp.create")}</button>
@@ -169,8 +169,8 @@ function Field({ v, ph, on }: { v: string; ph: string; on: (v: string) => void }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: 18 }}>
-      <p style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.8, textTransform: "uppercase", margin: "0 0 8px 2px" }}>{title}</p>
+    <div style={{ marginBottom: 16 }}>
+      <SectionLabel icon="users" accentColor={ACCENT.blue.fg}>{title}</SectionLabel>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>{children}</div>
     </div>
   );
