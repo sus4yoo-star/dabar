@@ -101,7 +101,7 @@ export default function HomeComfort() {
     position: "absolute", top: "50%", transform: "translateY(-50%)", zIndex: 2,
     [side === "start" ? "insetInlineStart" : "insetInlineEnd"]: -2,
     width: 30, height: 30, borderRadius: 999, display: "grid", placeItems: "center",
-    background: theme.card, border: `1px solid ${theme.goldBorder}`, color: theme.gold,
+    background: theme.card, border: `1px solid var(--a-amber-border)`, color: "var(--a-amber-fg)",
     fontSize: 19, lineHeight: 1, fontWeight: 800, cursor: "pointer", boxShadow: "0 3px 10px rgba(23,50,73,0.14)",
   });
 
@@ -119,9 +119,9 @@ export default function HomeComfort() {
 
         <div style={{ position: "relative" }}>
           {!atFirst && <button onClick={() => setIdx((i) => Math.max(0, i - 1))} aria-label={t("cf.prev")} style={arrow("start")}>{dir === "rtl" ? "›" : "‹"}</button>}
-          <div style={{ background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 14, padding: "15px 36px", minHeight: 92 }}>
+          <div style={{ background: "var(--a-amber-chip)", border: `1px solid var(--a-amber-border)`, borderRadius: 14, padding: "15px 36px", minHeight: 92 }}>
             <p key={idx} dir={dir} className="fade-in" style={{ margin: 0, fontSize: 17, lineHeight: 1.7, fontWeight: 600, color: theme.text, textAlign: dir === "rtl" ? "right" : "left" }}>“{v.text}”</p>
-            {v.ref && <p dir={dir} style={{ margin: "8px 0 0", fontSize: 12.5, fontWeight: 800, color: theme.gold, textAlign: dir === "rtl" ? "right" : "left" }}>— {v.ref}</p>}
+            {v.ref && <p dir={dir} style={{ margin: "8px 0 0", fontSize: 12.5, fontWeight: 800, color: "var(--a-amber-fg)", textAlign: dir === "rtl" ? "right" : "left" }}>— {v.ref}</p>}
             {v.note && <p dir={dir} style={{ margin: "8px 0 0", fontSize: 12.5, lineHeight: 1.6, color: theme.textMuted, textAlign: dir === "rtl" ? "right" : "left" }}>{v.note}</p>}
           </div>
           {!atLast && <button onClick={() => setIdx((i) => Math.min(verses.length - 1, i + 1))} aria-label={t("cf.next")} style={arrow("end")}>{dir === "rtl" ? "‹" : "›"}</button>}
@@ -129,7 +129,7 @@ export default function HomeComfort() {
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 9 }}>
           <span style={{ display: "flex", gap: 4 }}>
-            {verses.map((_, i) => <span key={i} style={{ width: i === idx ? 16 : 6, height: 6, borderRadius: 999, background: i === idx ? theme.gold : "var(--t-border)", transition: "width .2s" }} />)}
+            {verses.map((_, i) => <span key={i} style={{ width: i === idx ? 16 : 6, height: 6, borderRadius: 999, background: i === idx ? "var(--a-amber-fg)" : "var(--t-border)", transition: "width .2s" }} />)}
           </span>
           <span style={{ fontSize: 11, fontWeight: 700, color: theme.textFaint }}>{idx + 1} / {verses.length}</span>
         </div>
@@ -147,7 +147,7 @@ export default function HomeComfort() {
       <div style={{ display: "flex", flexWrap: "nowrap", gap: 6, marginBottom: 9, overflowX: "auto", paddingBottom: 2, WebkitOverflowScrolling: "touch" }}>
         {EMO.map((k) => (
           <button key={k} onClick={() => { setInput(t(k)); ask(t(k)); }} disabled={loading}
-            style={{ flexShrink: 0, fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>{t(k)}</button>
+            style={{ flexShrink: 0, fontSize: 12.5, fontWeight: 700, color: "var(--a-amber-fg)", background: "var(--a-amber-chip)", border: `1px solid var(--a-amber-border)`, borderRadius: 999, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>{t(k)}</button>
         ))}
       </div>
 
@@ -157,7 +157,7 @@ export default function HomeComfort() {
       {/* 사진 첨부 (복수) */}
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
         <button onClick={() => fileRef.current?.click()} disabled={loading || images.length >= 4}
-          style={{ fontSize: 12.5, fontWeight: 700, color: theme.primarySoft, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "6px 12px", cursor: images.length >= 4 ? "default" : "pointer", opacity: images.length >= 4 ? 0.5 : 1 }}>{t("cf.addImage")}</button>
+          style={{ fontSize: 12.5, fontWeight: 700, color: "var(--a-amber-fg)", background: "var(--a-amber-chip)", border: `1px solid var(--a-amber-border)`, borderRadius: 999, padding: "6px 12px", cursor: images.length >= 4 ? "default" : "pointer", opacity: images.length >= 4 ? 0.5 : 1 }}>{t("cf.addImage")}</button>
         <input ref={fileRef} type="file" accept="image/*" multiple onChange={onPickImages} style={{ display: "none" }} />
         {images.map((b, i) => (
           <span key={i} style={{ position: "relative", width: 40, height: 40, borderRadius: 8, overflow: "hidden", border: `1px solid ${theme.cardBorder}` }}>
@@ -169,7 +169,7 @@ export default function HomeComfort() {
       </div>
 
       <button onClick={() => ask(input)} disabled={loading || (!input.trim() && images.length === 0)}
-        style={{ width: "100%", marginTop: 9, padding: 12, fontSize: 14.5, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 12, cursor: loading || (!input.trim() && images.length === 0) ? "default" : "pointer", opacity: loading || (!input.trim() && images.length === 0) ? 0.55 : 1 }}>
+        style={{ width: "100%", marginTop: 9, padding: 12, fontSize: 14.5, fontWeight: 800, color: "#fff", background: "var(--a-amber-fg)", border: "none", borderRadius: 12, cursor: loading || (!input.trim() && images.length === 0) ? "default" : "pointer", opacity: loading || (!input.trim() && images.length === 0) ? 0.55 : 1 }}>
         {loading ? t("cf.loading") : t("cf.submit")}
       </button>
       {err && (

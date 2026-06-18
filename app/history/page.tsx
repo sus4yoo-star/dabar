@@ -60,7 +60,7 @@ export default function HistoryPage() {
 
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
-      <PageHeader title={t("h.title")} homeLabel={t("r.home")} onHome={() => router.push("/")} />
+      <PageHeader title={t("h.title")} homeLabel={t("r.home")} onHome={() => router.push("/")} accentColor={ACCENT.blue.fg} />
 
       {rows && rows.length > 0 && (
         <>
@@ -75,7 +75,7 @@ export default function HistoryPage() {
               )}
             </span>
           </div>
-          <button onClick={retryWrong} style={{ width: "100%", padding: 15, fontSize: 15.5, fontWeight: 800, background: "linear-gradient(135deg,#2bb069 0%,#178a50 100%)", color: "#fff", border: "none", borderRadius: 16, cursor: "pointer", marginBottom: "1.25rem", boxShadow: "0 8px 24px rgba(88,167,0,0.20)" }}>{t("h.retry")}</button>
+          <button onClick={retryWrong} style={{ width: "100%", padding: 15, fontSize: 15.5, fontWeight: 800, background: "linear-gradient(135deg,#2a93e6 0%,#1573c4 100%)", color: "#fff", border: "none", borderRadius: 16, cursor: "pointer", marginBottom: "1.25rem", boxShadow: "0 8px 24px rgba(31,143,230,0.22)" }}>{t("h.retry")}</button>
         </>
       )}
 
@@ -99,7 +99,7 @@ export default function HistoryPage() {
           {rows.map(r => (
             <div key={r.id} className="fade-in-2" style={softCard({ borderLeft: `4px solid ${theme.wrong}`, padding: "14px 16px" })}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <span style={{ fontSize: 12, color: theme.gold, fontWeight: 800 }}>{r.book ? bookLabel(r.book, lang) : ""}{r.category ? ` · ${categoryLabel(r.category, lang)}` : ""}</span>
+                <span style={{ fontSize: 12, color: theme.primarySoft, fontWeight: 800 }}>{r.book ? bookLabel(r.book, lang) : ""}{r.category ? ` · ${categoryLabel(r.category, lang)}` : ""}</span>
                 <span style={{ fontSize: 11.5, color: theme.textFaint }}>{new Date(r.created_at).toLocaleDateString(lang, { month: "short", day: "numeric" })}</span>
               </div>
               <p style={{ fontSize: 14.5, color: theme.text, margin: "0 0 8px", lineHeight: 1.55 }}>{r.question}</p>

@@ -21,12 +21,13 @@ export const cardShadow = "0 10px 30px rgba(26,37,48,0.08), 0 2px 6px rgba(26,37
 export const serif = "'Iowan Old Style','Apple Garamond',Georgia,'Times New Roman','Noto Serif KR',serif";
 
 // 페이지 공통 헤더 — 제목(세리프) + 홈/뒤로 버튼. 모든 내부 페이지에서 동일한 모양.
-export function PageHeader({ title, onHome, homeLabel = "홈", right }: {
-  title: string; onHome: () => void; homeLabel?: string; right?: React.ReactNode;
+// accentColor: 홈 상위 메뉴의 위계를 하위 페이지에서도 지키기 위한 제목 색(미지정 시 양육 초록).
+export function PageHeader({ title, onHome, homeLabel = "홈", right, accentColor }: {
+  title: string; onHome: () => void; homeLabel?: string; right?: React.ReactNode; accentColor?: string;
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: "1.4rem" }}>
-      <h1 style={{ fontFamily: serif, fontSize: 23, fontWeight: 700, color: theme.gold, margin: 0, letterSpacing: -0.2 }}>{title.replace(/^\p{Extended_Pictographic}️?\s*/u, "")}</h1>
+      <h1 style={{ fontFamily: serif, fontSize: 23, fontWeight: 700, color: accentColor ?? theme.gold, margin: 0, letterSpacing: -0.2 }}>{title.replace(/^\p{Extended_Pictographic}️?\s*/u, "")}</h1>
       <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
         {right}
         <button onClick={onHome}

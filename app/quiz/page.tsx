@@ -12,7 +12,7 @@ import { bookLabel, categoryLabel } from "@/lib/bookNames";
 import { ALL_BOOKS } from "@/lib/bible";
 import { useToast } from "@/components/Toast";
 
-const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: theme.gold, hard: theme.wrong };
+const LEVEL_COLOR: Record<string, string> = { easy: theme.correct, medium: "var(--a-amber-fg)", hard: theme.wrong };
 
 // 완주 모드 출제 순서: 성경 순서대로(권 정경순 → 생성순) 정렬
 const bibleRank = (b: string) => { const i = ALL_BOOKS.indexOf(b); return i < 0 ? 999 : i; };
@@ -55,7 +55,7 @@ function BookProgressList({ allQ, result, lang }: { allQ: Question[]; result: Re
               <span style={{ color: pct === 100 ? theme.correct : theme.textMuted, fontWeight: 700 }}>{s.a}/{s.t}{pct === 100 ? " ✓" : ""}</span>
             </div>
             <div style={{ height: 5, background: "var(--t-border)", borderRadius: 3, overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${pct}%`, background: pct === 100 ? theme.correct : `linear-gradient(90deg,${theme.primarySoft},${theme.gold})`, borderRadius: 3 }} />
+              <div style={{ height: "100%", width: `${pct}%`, background: pct === 100 ? theme.correct : `linear-gradient(90deg,${theme.primarySoft},${theme.primary})`, borderRadius: 3 }} />
             </div>
           </div>
         );
@@ -260,7 +260,7 @@ function QuizInner() {
     return (
       <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh", textAlign: "center" }}>
         <div style={{ fontSize: 52, marginBottom: 8 }}>🎓</div>
-        <p style={{ fontSize: 17, fontWeight: 800, color: theme.gold, margin: "0 0 6px" }}>{t("q.studyDone")}</p>
+        <p style={{ fontSize: 17, fontWeight: 800, color: theme.primarySoft, margin: "0 0 6px" }}>{t("q.studyDone")}</p>
         <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 18px" }}>{t("q.studyScore", { o: oCount, x: xCount, t: allQ.length })}</p>
         {xCount > 0 && <button onClick={startWrong} style={btn(theme.wrongBg, theme.wrong, `1px solid ${theme.wrong}`)}>{t("q.retryWrong", { n: xCount })}</button>}
         <p style={{ fontSize: 12, fontWeight: 800, color: theme.textFaint, letterSpacing: 0.5, margin: "16px 0 8px" }}>{t("q.bookProg")}</p>
@@ -287,21 +287,21 @@ function QuizInner() {
       )}
       {/* 전체 진행바 */}
       <div style={{ height: 6, background: "var(--t-border)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
-        <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${complete ? (allQ.length ? (answeredCount / allQ.length) * 100 : 0) : ((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
+        <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.primary})`, width: `${complete ? (allQ.length ? (answeredCount / allQ.length) * 100 : 0) : ((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: complete ? 12 : 10 }}>
         {complete ? (
           <button onClick={() => setShowProgress(s => !s)} style={{ fontSize: 13, fontWeight: 700, color: theme.text, background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>
-            {mode === "wrong" && <span style={{ color: theme.wrong }}>❌ </span>}📚 {answeredCount}/{allQ.length} <span style={{ color: theme.gold }}>{showProgress ? "▴" : "▾"}</span>
+            {mode === "wrong" && <span style={{ color: theme.wrong }}>❌ </span>}📚 {answeredCount}/{allQ.length} <span style={{ color: theme.primarySoft }}>{showProgress ? "▴" : "▾"}</span>
           </button>
         ) : (
           <span style={{ fontSize: 13, color: theme.textMuted, fontWeight: 600 }}>
-            {retryMode && <span style={{ color: theme.primarySoft }}>🔁 </span>}{idx + 1}/{questions.length} · <span style={{ color: theme.gold }}>⭐{points}</span>
+            {retryMode && <span style={{ color: theme.primarySoft }}>🔁 </span>}{idx + 1}/{questions.length} · <span style={{ color: theme.primarySoft }}>⭐{points}</span>
           </span>
         )}
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, color: LEVEL_COLOR[q.level], fontWeight: 700 }}>{t("q." + q.level)}</span>
-          {!complete && streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, color: theme.gold, fontWeight: 800 }}>{t("q.combo", { n: streak })}</span>}
+          {!complete && streak >= 2 && <span key={streak} className="anim-pop" style={{ fontSize: 11, padding: "3px 10px", borderRadius: 12, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, color: theme.primarySoft, fontWeight: 800 }}>{t("q.combo", { n: streak })}</span>}
         </div>
         {complete
           ? <button onClick={restartComplete} style={{ fontSize: 12, fontWeight: 700, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 12, padding: "4px 10px", cursor: "pointer" }}>{t("q.restart")}</button>
@@ -315,11 +315,11 @@ function QuizInner() {
       )}
       {!complete && (
         <div style={{ height: 5, background: "var(--t-border)", borderRadius: 3, marginBottom: 20 }}>
-          <div style={{ height: "100%", background: timeLeft <= 5 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 15) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
+          <div style={{ height: "100%", background: timeLeft <= 5 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.primary})`, width: `${(timeLeft / 15) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
         </div>
       )}
       <div key={idx} className="fade-in">
-        <p style={{ fontSize: 12, color: theme.gold, fontWeight: 700, margin: "0 0 8px", letterSpacing: 0.5 }}>{bookLabel(q.book, lang)} · {categoryLabel(q.category, lang)}</p>
+        <p style={{ fontSize: 12, color: theme.primarySoft, fontWeight: 700, margin: "0 0 8px", letterSpacing: 0.5 }}>{bookLabel(q.book, lang)} · {categoryLabel(q.category, lang)}</p>
         <p style={{ fontSize: 19, fontWeight: 600, lineHeight: 1.65, color: theme.text, marginBottom: "1.5rem" }}>{q.question}</p>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: "1.25rem" }}>
@@ -332,7 +332,7 @@ function QuizInner() {
           const anim = selected === null ? "" : i === q.answer ? "anim-pop" : i === selected ? "anim-shake" : "";
           return (
             <button key={i} className={anim} onClick={() => handleSelect(i)} style={{ padding: "14px 16px", textAlign: "left", fontSize: 15, borderRadius: 12, background: bg, border, color, cursor: selected !== null ? "default" : "pointer", transition: "background .15s, border-color .15s, color .15s" }}>
-              <span style={{ fontWeight: 700, marginRight: 10, color: i === q.answer && selected !== null ? theme.correct : theme.gold }}>{"①②③④"[i]}</span>{opt}
+              <span style={{ fontWeight: 700, marginRight: 10, color: i === q.answer && selected !== null ? theme.correct : theme.primarySoft }}>{"①②③④"[i]}</span>{opt}
             </button>
           );
         })}
@@ -348,7 +348,7 @@ function QuizInner() {
         <button onClick={() => setShowHint(v => !v)} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", marginBottom: 12 }}>{showHint ? t("q.hintHide") : t("q.hintShow")}</button>
       )}
       {showHint && selected === null && (
-        <p style={{ fontSize: 13, color: theme.text, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, padding: "10px 14px", borderRadius: 8, marginBottom: 12, lineHeight: 1.6 }}>{q.hint}</p>
+        <p style={{ fontSize: 13, color: theme.text, background: theme.primaryBg, border: `1px solid ${theme.cardBorder}`, padding: "10px 14px", borderRadius: 8, marginBottom: 12, lineHeight: 1.6 }}>{q.hint}</p>
       )}
       {selected !== null && (
         <button onClick={() => goNext(score, answers)} style={{ width: "100%", padding: 15, fontSize: 15, fontWeight: 700, background: theme.primary, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer" }}>{!complete && idx + 1 >= questions.length ? t("q.result") : t("q.next")}</button>

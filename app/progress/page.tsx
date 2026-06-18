@@ -62,7 +62,7 @@ export default function ProgressPage() {
 
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
-      <PageHeader title={t("prog.title")} homeLabel={t("common.home")} onHome={() => router.push("/")} />
+      <PageHeader title={t("prog.title")} homeLabel={t("common.home")} onHome={() => router.push("/")} accentColor={ACCENT.blue.fg} />
 
       {!user ? (
         <p style={{ textAlign: "center", color: theme.textMuted, marginTop: "3rem" }}>{t("prog.login")}</p>
@@ -72,16 +72,16 @@ export default function ProgressPage() {
         <p style={{ textAlign: "center", color: theme.textMuted, marginTop: "3rem", lineHeight: 1.6 }}>{t("prog.empty")}</p>
       ) : (
         <>
-          <div className="fade-in" style={{ background: ACCENT.green.bg, border: `1px solid ${ACCENT.green.border}`, borderRadius: 18, padding: "16px 17px", marginBottom: "1.1rem", boxShadow: softShadow }}>
+          <div className="fade-in" style={{ background: ACCENT.blue.bg, border: `1px solid ${ACCENT.blue.border}`, borderRadius: 18, padding: "16px 17px", marginBottom: "1.1rem", boxShadow: softShadow }}>
             <div style={{ display: "flex", alignItems: "center", gap: 13, marginBottom: 11 }}>
-              <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ACCENT.green.chip, display: "grid", placeItems: "center" }}><MenuIcon name="chart" color={ACCENT.green.fg} /></span>
+              <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: ACCENT.blue.chip, display: "grid", placeItems: "center" }}><MenuIcon name="chart" color={ACCENT.blue.fg} /></span>
               <span style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: ACCENT.green.fg }}>{t("prog.overall", { a: overall.a, t: overall.t, p: pct })}</span>
+                <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: ACCENT.blue.fg }}>{t("prog.overall", { a: overall.a, t: overall.t, p: pct })}</span>
               </span>
               <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 800, color: theme.correct }}>✓ {overall.o}</span>
             </div>
             <div style={{ height: 10, background: "var(--t-border)", borderRadius: 5, overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${pct}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, borderRadius: 5, transition: "width .4s" }} />
+              <div style={{ height: "100%", width: `${pct}%`, background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.primary})`, borderRadius: 5, transition: "width .4s" }} />
             </div>
           </div>
 
@@ -97,7 +97,7 @@ export default function ProgressPage() {
                     <span style={{ color: done ? theme.correct : theme.textMuted, fontWeight: 800 }}>{s.a}/{s.t}{done ? " ✓" : ""}</span>
                   </div>
                   <div style={{ height: 7, background: "var(--t-border)", borderRadius: 4, overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${p}%`, background: done ? theme.correct : `linear-gradient(90deg,${theme.primarySoft},${theme.gold})`, borderRadius: 4 }} />
+                    <div style={{ height: "100%", width: `${p}%`, background: done ? theme.correct : `linear-gradient(90deg,${theme.primarySoft},${theme.primary})`, borderRadius: 4 }} />
                   </div>
                 </div>
               );

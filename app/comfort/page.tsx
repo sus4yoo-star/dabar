@@ -12,7 +12,7 @@ export default function ComfortPage() {
   return (
     <main className="fade-in" style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1.25rem", minHeight: "100dvh" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
-        <h1 className="serif" style={{ fontSize: 23, fontWeight: 700, color: theme.gold, margin: 0, letterSpacing: -0.2 }}>{t("cf.title")}</h1>
+        <h1 className="serif" style={{ fontSize: 23, fontWeight: 700, color: "var(--a-amber-fg)", margin: 0, letterSpacing: -0.2 }}>{t("cf.title")}</h1>
         <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("r.home")}</button>
       </div>
       <HomeComfort />

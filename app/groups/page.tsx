@@ -92,7 +92,7 @@ export default function GroupsPage() {
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1rem 1.1rem 2rem", minHeight: "100dvh" }}>
-      <PageHeader title={`🤝 ${t("grp.title")}`} onHome={() => router.push("/")} homeLabel={t("common.home")} />
+      <PageHeader title={`🤝 ${t("grp.title")}`} onHome={() => router.push("/")} homeLabel={t("common.home")} accentColor={ACCENT.blue.fg} />
 
       {canCreate && !creating && (
         <button onClick={() => setCreating(true)} style={{ width: "100%", padding: 14, marginBottom: 14, fontSize: 15, fontWeight: 800, color: "#fff", background: "linear-gradient(135deg,#1f9bef 0%,#1577c2 100%)", border: "none", borderRadius: 14, cursor: "pointer", boxShadow: "0 8px 20px rgba(31,155,239,0.25)" }}>{t("grp.create")}</button>
