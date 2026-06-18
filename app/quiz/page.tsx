@@ -54,7 +54,7 @@ function BookProgressList({ allQ, result, lang }: { allQ: Question[]; result: Re
               <span style={{ fontWeight: 600 }}>{bookLabel(book, lang)}</span>
               <span style={{ color: pct === 100 ? theme.correct : theme.textMuted, fontWeight: 700 }}>{s.a}/{s.t}{pct === 100 ? " ✓" : ""}</span>
             </div>
-            <div style={{ height: 5, background: "rgba(13,52,84,0.12)", borderRadius: 3, overflow: "hidden" }}>
+            <div style={{ height: 5, background: "var(--t-border)", borderRadius: 3, overflow: "hidden" }}>
               <div style={{ height: "100%", width: `${pct}%`, background: pct === 100 ? theme.correct : `linear-gradient(90deg,${theme.primarySoft},${theme.gold})`, borderRadius: 3 }} />
             </div>
           </div>
@@ -286,7 +286,7 @@ function QuizInner() {
         <p style={{ margin: "0 0 10px", fontSize: 11, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "5px 9px", textAlign: "center" }}>{t("c.autoTrans")}</p>
       )}
       {/* 전체 진행바 */}
-      <div style={{ height: 6, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
+      <div style={{ height: 6, background: "var(--t-border)", borderRadius: 3, marginBottom: 14, overflow: "hidden" }}>
         <div style={{ height: "100%", background: `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${complete ? (allQ.length ? (answeredCount / allQ.length) * 100 : 0) : ((idx + 1) / questions.length) * 100}%`, transition: "width .35s ease", borderRadius: 3 }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: complete ? 12 : 10 }}>
@@ -314,7 +314,7 @@ function QuizInner() {
         </div>
       )}
       {!complete && (
-        <div style={{ height: 5, background: "rgba(13,52,84,0.12)", borderRadius: 3, marginBottom: 20 }}>
+        <div style={{ height: 5, background: "var(--t-border)", borderRadius: 3, marginBottom: 20 }}>
           <div style={{ height: "100%", background: timeLeft <= 5 ? theme.wrong : `linear-gradient(90deg, ${theme.primarySoft}, ${theme.gold})`, width: `${(timeLeft / 15) * 100}%`, transition: "width 1s linear", borderRadius: 3 }} />
         </div>
       )}

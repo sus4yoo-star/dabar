@@ -129,7 +129,7 @@ export default function HomeComfort() {
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 9 }}>
           <span style={{ display: "flex", gap: 4 }}>
-            {verses.map((_, i) => <span key={i} style={{ width: i === idx ? 16 : 6, height: 6, borderRadius: 999, background: i === idx ? theme.gold : "rgba(13,52,84,0.18)", transition: "width .2s" }} />)}
+            {verses.map((_, i) => <span key={i} style={{ width: i === idx ? 16 : 6, height: 6, borderRadius: 999, background: i === idx ? theme.gold : "var(--t-border)", transition: "width .2s" }} />)}
           </span>
           <span style={{ fontSize: 11, fontWeight: 700, color: theme.textFaint }}>{idx + 1} / {verses.length}</span>
         </div>
