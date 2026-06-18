@@ -35,8 +35,8 @@ export function PageHeader({ title, subtitle, onHome, homeLabel = "홈", right, 
 }) {
   const fg = accentColor ?? theme.gold;
   return (
-    <div style={{ marginBottom: "1rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, minHeight: 32 }}>
+    <div style={{ marginBottom: "0.7rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3, minHeight: 32 }}>
         <button onClick={onHome} aria-label={homeLabel}
           style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 600, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 999, padding: "6px 13px", cursor: "pointer", whiteSpace: "nowrap", boxShadow: softShadow }}>
           <span aria-hidden style={{ fontSize: 14, lineHeight: 1 }}>←</span>{homeLabel}
@@ -65,7 +65,7 @@ export function SectionLabel({ icon, children, accentColor }: {
   // 라벨 앞 이모지는 제거 — 아이콘과 중복 방지(문자열 자식일 때만)
   const label = typeof children === "string" ? children.replace(/^\p{Extended_Pictographic}️?\s*/u, "") : children;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "16px 2px 9px" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "11px 2px 7px" }}>
       <MenuIcon name={icon} size={18} color={fg} />
       <span className="serif" style={{ fontSize: 16, fontWeight: 700, color: fg, letterSpacing: -0.2 }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: fg, opacity: 0.38, marginLeft: 4 }} />
