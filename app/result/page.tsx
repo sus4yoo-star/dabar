@@ -95,7 +95,7 @@ export default function ResultPage() {
       <p style={{ fontFamily: "'Iowan Old Style',Georgia,serif", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 3, margin: "0 0 1.25rem", textAlign: "center" }}>DABAR</p>
 
       {/* 점수 히어로 — 그라데이션 + 아이콘 칩으로 보상감 강조 */}
-      <div className="fade-in" style={{ background: `linear-gradient(135deg, ${grade.bg} 0%, #ffffff 88%)`, border: `1px solid ${theme.cardBorder}`, borderRadius: 22, padding: "1.9rem 1.5rem", textAlign: "center", marginBottom: "1rem", boxShadow: cardShadow }}>
+      <div className="fade-in" style={{ background: `linear-gradient(135deg, ${grade.bg} 0%, ${theme.card} 88%)`, border: `1px solid ${theme.cardBorder}`, borderRadius: 22, padding: "1.9rem 1.5rem", textAlign: "center", marginBottom: "1rem", boxShadow: cardShadow }}>
         <div style={{ width: 60, height: 60, margin: "0 auto 12px", borderRadius: 18, background: grade.bg, display: "grid", placeItems: "center", fontSize: 30, boxShadow: softShadow }}>
           {pct >= 90 ? "🏆" : pct >= 70 ? "🎉" : pct >= 50 ? "💪" : "🌱"}
         </div>
