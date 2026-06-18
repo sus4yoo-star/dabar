@@ -106,8 +106,8 @@ export default function Home() {
       <div className="fade-in" style={{ textAlign: "center", marginBottom: 7 }}>
         <div style={{ position: "relative", width: 48, height: 48, margin: "0 auto" }}>
           <div aria-hidden style={{ position: "absolute", inset: -11, borderRadius: "50%", background: "radial-gradient(circle, rgba(199,154,43,0.22) 0%, rgba(199,154,43,0) 70%)", filter: "blur(5px)" }} />
-          <div style={{ position: "relative", width: 48, height: 48, borderRadius: 16, background: "linear-gradient(135deg,#e7f7ee 0%,#e9f4fd 100%)", display: "grid", placeItems: "center", boxShadow: "0 8px 20px rgba(31,143,230,0.18)" }}>
-            <BrandMark size={32} />
+          <div style={{ position: "relative", width: 48, height: 48, borderRadius: 16, background: "transparent", display: "grid", placeItems: "center" }}>
+            <BrandMark size={40} />
           </div>
         </div>
         <h1 style={{ fontFamily: serif, fontSize: 26, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 5, margin: "7px 0 3px" }}>DABAR</h1>
