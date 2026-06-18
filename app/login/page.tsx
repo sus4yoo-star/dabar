@@ -76,7 +76,7 @@ export default function LoginPage() {
             }}
           />
           <div style={{ position: "relative", width: 92, height: 92, borderRadius: 26, background: "linear-gradient(135deg,#e7f7ee 0%,#e9f4fd 100%)", display: "grid", placeItems: "center", boxShadow: "0 12px 34px rgba(31,143,230,0.22)" }}>
-            <BrandMark size={62} />
+            <BrandMark size={70} />
           </div>
         </div>
 
