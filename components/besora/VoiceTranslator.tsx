@@ -223,9 +223,9 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     const on = listening === code;
     const has = !!value.trim();
     const dir = rtlFor(code) ? "rtl" : "ltr";
-    const micH = big ? 46 : 50;
+    const micH = big ? 42 : 50;
     return (
-      <div dir={dir} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 5 }}>
+      <div dir={dir} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: big ? 4 : 5 }}>
         <span style={{ fontSize: big ? 12.5 : 12, fontWeight: 800, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{nameOf(code)} <span style={{ opacity: 0.7 }}>({code.toUpperCase()})</span>{busy === side ? ` · ${ui(myLang, "trBusy")}` : ""}</span>
         <div style={{ display: "flex", gap: 6 }}>
           {/* 마이크 (크게, 가변폭) */}
@@ -246,7 +246,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
         </div>
         <textarea value={value} onChange={(e) => onType(e.target.value)} rows={2}
           placeholder={nameOf(code)}
-          style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bgSoft, padding: big ? "7px 10px" : "8px 10px", fontSize: big ? 14.5 : 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: big ? 40 : 48, lineHeight: 1.4 }} />
+          style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bgSoft, padding: big ? "6px 10px" : "8px 10px", fontSize: 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: big ? 34 : 48, lineHeight: 1.4 }} />
         {pron && (
           <div dir="ltr" style={{ display: "flex", alignItems: "flex-start", gap: 5, fontSize: big ? 15 : 13, fontWeight: 700, color: accent, lineHeight: 1.4, padding: "1px 2px 0" }}>
             <span style={{ flexShrink: 0 }}>🗣️</span>
@@ -262,7 +262,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   // 언어 선택 줄 — 내 언어 ↔ 상대 언어 (어느 화면에서든 직접 고를 수 있게)
   const selStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", fontSize: 14, fontWeight: 700, padding: "8px 10px", borderRadius: 10, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, outline: "none", appearance: "none", WebkitAppearance: "none" };
   const langBar = (
-    <div style={{ display: "flex", gap: 8, alignItems: "flex-end", marginBottom: 8 }}>
+    <div style={{ display: "flex", gap: 8, alignItems: "flex-end", marginBottom: 6 }}>
       <label style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
         <span style={{ fontSize: 10.5, fontWeight: 800, color: theme.primarySoft }}>{ui(myLang, "myLanguage")}</span>
         <select value={myLang} onChange={(e) => setMyLang(e.target.value)} style={selStyle}>
@@ -280,13 +280,13 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
   );
 
   const panes = (
-    <div style={{ display: "flex", flexDirection: big ? "column" : "row", gap: big ? 8 : 8, alignItems: big ? "stretch" : "flex-start" }}>
+    <div style={{ display: "flex", flexDirection: big ? "column" : "row", gap: big ? 6 : 8, alignItems: big ? "stretch" : "flex-start" }}>
       {pane(myLang, leftText, onLeftType, "L", theme.primarySoft, theme.primaryBg, theme.cardBorder, big)}
       {twoWay && pane(seeker, rightText, onRightType, "R", "var(--t-sacred)", "var(--t-sacredLight)", "var(--t-sacredBorder)", big, rightPron)}
     </div>
   );
   const hint = (
-    <p style={{ marginTop: 6, fontSize: 11, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500, textAlign: "center" }}>
+    <p style={{ marginTop: 4, marginBottom: 0, fontSize: 11, color: listening ? "#e25555" : theme.textMuted, fontWeight: listening ? 700 : 500, textAlign: "center" }}>
       {listening ? ui(myLang, "listening") : ui(myLang, "twoPaneHint")}
     </p>
   );
@@ -300,7 +300,7 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     </button>
   );
   const toolTabs = (
-    <div style={{ display: "flex", gap: 4, padding: 3, borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, marginBottom: 8 }}>
+    <div style={{ display: "flex", gap: 4, padding: 3, borderRadius: 12, background: theme.card, border: `1px solid ${theme.cardBorder}`, marginBottom: 6 }}>
       {tabBtn("talk", `🎤 ${ui(myLang, "tabTalk")}`)}
       {tabBtn("book", `📖 ${ui(myLang, "phrasebook")}`)}
     </div>
@@ -310,10 +310,10 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
     : <>{panes}{hint}</>;
 
   // 인라인 모드 — 페이지에 그냥 박아두기 (플로팅/포털 없음, 항상 보임)
+  // 제목(🎤 음성 통역)은 호출 페이지의 섹션 라벨이 이미 달아주므로 여기서는 생략(중복·세로공간 절약).
   if (inline) {
     return (
-      <div style={{ marginTop: big ? 10 : 14, padding: big ? "12px 13px 13px" : "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card }}>
-        <h2 style={{ fontFamily: "'Noto Serif KR',serif", fontSize: big ? 15.5 : 15, fontWeight: 700, color: theme.text, margin: big ? "0 0 8px" : "0 0 8px" }}>🎤 {ui(myLang, "voice")}</h2>
+      <div style={{ marginTop: big ? 8 : 12, padding: big ? "11px 12px 12px" : "12px 14px", borderRadius: 18, border: `1px solid ${theme.cardBorder}`, background: theme.card }}>
         {langBar}
         {toolTabs}
         {mainBody}

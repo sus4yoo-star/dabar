@@ -13,7 +13,7 @@ export default function ReachPage() {
   const router = useRouter();
   const { t } = useI18n();
   return (
-    <main style={{ maxWidth: 520, margin: "0 auto", padding: "0.7rem 1rem 1.4rem", minHeight: "100dvh" }}>
+    <main style={{ maxWidth: 520, margin: "0 auto", padding: "0.55rem 1rem 0.9rem", minHeight: "100dvh" }}>
       <PageHeader title={t("reach.title")} subtitle={t("reach.sub")} onHome={() => router.push("/")} homeLabel={t("common.home")} accentColor={SACRED.fg} />
 
       <SectionLabel icon="calc" accentColor={SACRED.fg}>{t("reach.secTools")}</SectionLabel>
@@ -24,11 +24,11 @@ export default function ReachPage() {
       </div>
 
       <SectionLabel icon="mic" accentColor={SACRED.fg}>{t("reach.secVoice")}</SectionLabel>
-      {/* 음성 통역 — 크게(세로 배치) */}
-      <LanguageProvider><VoiceTranslator inline big /></LanguageProvider>
+      {/* 음성 통역 — 좌우 2분할(한 화면에 들어오도록 컴팩트) */}
+      <LanguageProvider><VoiceTranslator inline /></LanguageProvider>
 
       {/* 🆘 긴급 SOS */}
-      <div style={{ marginTop: 18 }}><SosButton /></div>
+      <div style={{ marginTop: 10 }}><SosButton /></div>
     </main>
   );
 }
