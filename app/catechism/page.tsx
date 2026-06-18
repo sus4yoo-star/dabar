@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
+import MenuIcon from "@/components/MenuIcon";
 import { useI18n } from "@/lib/i18n";
 import { getCatechism } from "@/lib/catechism";
 import { useAutoTranslate } from "@/lib/autoTranslate";
@@ -63,7 +64,7 @@ export default function CatechismPage() {
       />
 
       <div className="fade-in" style={{ textAlign: "center", marginBottom: "1rem" }}>
-        <div style={{ width: 56, height: 56, margin: "0 auto 8px", borderRadius: 16, background: ACCENT.green.chip, display: "grid", placeItems: "center", fontSize: 28 }}>📜</div>
+        <div style={{ width: 56, height: 56, margin: "0 auto 8px", borderRadius: 16, background: ACCENT.green.chip, display: "grid", placeItems: "center" }}><MenuIcon name="clipboard" color={ACCENT.green.fg} size={26} /></div>
         <p style={{ fontSize: 13.5, color: theme.textMuted, margin: 0, lineHeight: 1.5 }}>{t("cat.sub")}</p>
         {auto && (
           <p style={{ marginTop: 8, fontSize: 11.5, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 10, padding: "6px 10px", display: "inline-block" }}>
