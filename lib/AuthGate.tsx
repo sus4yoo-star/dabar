@@ -13,7 +13,8 @@ function Splash() {
   return (
     <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, background: "#ffffff" }}>
       <BrandMark size={92} />
-      <p style={{ fontFamily: "'Iowan Old Style','Apple Garamond',Georgia,'Times New Roman','Noto Serif KR',serif", fontSize: 22, fontWeight: 700, color: "#b8901f", letterSpacing: 6, margin: 0 }}>DABAR</p>
+      {/* letterSpacing 은 마지막 글자 뒤에도 간격을 더해 가운데 정렬이 왼쪽으로 치우친다 → paddingLeft 로 상쇄 */}
+      <p style={{ fontFamily: "'Iowan Old Style','Apple Garamond',Georgia,'Times New Roman','Noto Serif KR',serif", fontSize: 22, fontWeight: 700, color: "#b8901f", letterSpacing: 6, paddingLeft: 6, margin: 0 }}>DABAR</p>
     </div>
   );
 }

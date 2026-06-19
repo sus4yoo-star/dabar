@@ -110,7 +110,7 @@ export default function Home() {
             <BrandMark size={40} />
           </div>
         </div>
-        <h1 style={{ fontFamily: serif, fontSize: 26, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 5, margin: "7px 0 3px" }}>DABAR</h1>
+        <h1 style={{ fontFamily: serif, fontSize: 26, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 5, paddingLeft: 5, margin: "7px 0 3px" }}>DABAR</h1>
         {/* 거룩한 금빛 장식선 */}
         <div aria-hidden style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginBottom: 4 }}>
           <span style={{ width: 28, height: 1, background: "linear-gradient(90deg, transparent, var(--t-sacred))" }} />

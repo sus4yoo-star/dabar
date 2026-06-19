@@ -3,7 +3,8 @@ const GOLD = "#b8901f";
 
 export default function BrandMark({ size = 48, stroke = 1.5 }: { size?: number; stroke?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="none" aria-hidden
+    // viewBox 의 y를 -5 만큼 올려 그림(콘텐츠 y 6~48)을 박스 정중앙에 맞춘다(위·아래 여백 11px로 균등).
+    <svg width={size} height={size} viewBox="0 -5 64 64" fill="none" aria-hidden
       stroke={GOLD} strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round"
       style={{ display: "block" }}>
       {/* 작은 금빛 빛 */}
