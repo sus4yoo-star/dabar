@@ -22,6 +22,22 @@ const LOCALE: Record<string, string> = {
   bn: "bn-IN", ja: "ja-JP", ur: "ur-PK", ru: "ru-RU", sw: "sw-KE",
 };
 
+// 자동 높이 조절 입력칸 — 기본 1줄, 번역/입력이 길어지면 내용에 맞춰 늘어나 글이 잘리지 않는다(스크롤 없음).
+function AutoGrowTextarea({ value, onChange, placeholder, dir, minH, style }: {
+  value: string; onChange: (v: string) => void; placeholder: string; dir: "ltr" | "rtl"; minH: number; style: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    el.style.height = "auto";                                   // 먼저 초기화해야 줄어들 때도 정확히 측정됨
+    el.style.height = `${Math.max(minH, el.scrollHeight)}px`;   // 내용 높이만큼(최소 1줄) 늘림
+  }, [value, minH]);
+  return (
+    <textarea ref={ref} value={value} dir={dir} placeholder={placeholder} rows={1}
+      onChange={(e) => onChange(e.target.value)} style={style} />
+  );
+}
+
 export default function VoiceTranslator({ inline = false, big = false }: { inline?: boolean; big?: boolean } = {}) {
   const { myLang, seekerLang, languages, rtlFor, setMyLang, setSeekerLang } = useLang();
   const pathname = usePathname();
@@ -244,9 +260,8 @@ export default function VoiceTranslator({ inline = false, big = false }: { inlin
             ▶
           </button>
         </div>
-        <textarea value={value} onChange={(e) => onType(e.target.value)} rows={2}
-          placeholder={nameOf(code)}
-          style={{ width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${border}`, background: bgSoft, padding: big ? "6px 10px" : "8px 10px", fontSize: 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: big ? 34 : 48, lineHeight: 1.4 }} />
+        <AutoGrowTextarea value={value} onChange={onType} placeholder={nameOf(code)} dir={dir} minH={big ? 36 : 40}
+          style={{ width: "100%", resize: "none", overflowY: "hidden", borderRadius: 12, border: `1px solid ${border}`, background: bgSoft, padding: big ? "7px 10px" : "9px 10px", fontSize: 14.5, color: theme.text, outline: "none", boxSizing: "border-box", minHeight: big ? 36 : 40, lineHeight: 1.4, display: "block" }} />
         {pron && (
           <div dir="ltr" style={{ display: "flex", alignItems: "flex-start", gap: 5, fontSize: big ? 15 : 13, fontWeight: 700, color: accent, lineHeight: 1.4, padding: "1px 2px 0" }}>
             <span style={{ flexShrink: 0 }}>🗣️</span>
