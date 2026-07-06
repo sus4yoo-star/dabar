@@ -1,14 +1,27 @@
 {
   "appId": "com.theamov.dabar",
   "appName": "DABAR",
-  "webDir": "public",
+  "webDir": "capacitor/www",
   "server": {
     "url": "https://dabar.theamov.com",
-    "cleartext": false
+    "cleartext": false,
+    "androidScheme": "https"
   },
   "backgroundColor": "#ffffff",
   "ios": {
     "contentInset": "always",
     "limitsNavigationsToAppBoundDomains": false
+  },
+  "android": {
+    "backgroundColor": "#ffffff"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 700,
+      "launchAutoHide": true,
+      "backgroundColor": "#ffffff",
+      "showSpinner": false,
+      "androidScaleType": "CENTER_CROP"
+    }
   }
 }
