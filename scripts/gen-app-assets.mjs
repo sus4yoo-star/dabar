@@ -1,0 +1,56 @@
+import sharp from "sharp";
+import { mkdirSync } from "fs";
+
+const GOLD = "#b8901f";
+const SERIF = "'Liberation Serif','Times New Roman',Georgia,serif";
+const root = "/home/user/dabar";
+mkdirSync(`${root}/assets`, { recursive: true });
+
+// 펼친 책 마크 (BrandMark) — art 좌표계 x[10,54] center 32, y[6,48] center 27
+const mark = (sw = 2) => `
+  <path d="M32 6c.4 2.7.8 3.1 3.5 3.5-2.7.4-3.1.8-3.5 3.5-.4-2.7-.8-3.1-3.5-3.5 2.7-.4 3.1-.8 3.5-3.5z" fill="${GOLD}" stroke="${GOLD}" stroke-width="0.4"/>
+  <path d="M32 24V48" fill="none" stroke="${GOLD}" stroke-width="${sw}" stroke-linecap="round"/>
+  <path d="M32 24C25 20 17 19 10 21.5C12 29 12 39.5 10 45C17 42.5 25 43.5 32 48" fill="none" stroke="${GOLD}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M32 24C39 20 47 19 54 21.5C52 29 52 39.5 54 45C47 42.5 39 43.5 32 48" fill="none" stroke="${GOLD}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+// 마크를 (cx,cy)에 s배율로 중앙배치하는 transform (art center 32,27)
+const place = (cx, cy, s) => `translate(${cx - 32 * s},${cy - 27 * s}) scale(${s})`;
+
+// 1) 풀 아이콘(1024) — 흰 배경 + 마크 + DABAR (letterSpacing 왼쪽쏠림 보정: x = 512 + ls/2)
+const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#ffffff"/>
+  <g transform="${place(512, 398, 10)}">${mark(2)}</g>
+  <text x="518" y="838" font-family="${SERIF}" font-size="150" font-weight="700" letter-spacing="12" fill="${GOLD}" text-anchor="middle">DABAR</text>
+</svg>`;
+
+// 2) 안드로이드 적응형 전경(1024, 투명) — 텍스트 없이 마크만, 원형 크롭 안전영역 안에
+const fgSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <g transform="${place(512, 512, 11)}">${mark(2)}</g>
+</svg>`;
+
+// 3) 안드로이드 적응형 배경(1024, 흰색)
+const bgSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="#ffffff"/></svg>`;
+
+// 4) 스플래시(2732) — 흰 배경 + 가운데 로크업(마크 + DABAR)
+const splashSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="2732" height="2732" viewBox="0 0 2732 2732">
+  <rect width="2732" height="2732" fill="#ffffff"/>
+  <g transform="${place(1366, 1200, 16)}">${mark(2)}</g>
+  <text x="1375" y="1720" font-family="${SERIF}" font-size="240" font-weight="700" letter-spacing="18" fill="${GOLD}" text-anchor="middle">DABAR</text>
+</svg>`;
+
+async function png(svg, out, size) {
+  let img = sharp(Buffer.from(svg), { density: 384 });
+  if (size) img = img.resize(size, size);
+  await img.png().toFile(out);
+  console.log("✓", out.replace(root + "/", ""));
+}
+
+await png(iconSvg, `${root}/assets/icon.png`);
+await png(fgSvg, `${root}/assets/icon-foreground.png`);
+await png(bgSvg, `${root}/assets/icon-background.png`);
+await png(splashSvg, `${root}/assets/splash.png`);
+await png(splashSvg, `${root}/assets/splash-dark.png`);
+// 웹 PWA 아이콘도 같은 마스터로 재생성(중앙정렬 일치)
+await png(iconSvg, `${root}/public/icons/icon-512.png`, 512);
+await png(iconSvg, `${root}/public/icons/icon-192.png`, 192);
+console.log("done");
