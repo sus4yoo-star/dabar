@@ -9,3 +9,16 @@ node_modules
 .claude/settings.local.json
 tsconfig.tsbuildinfo
 next-env.d.ts
+
+# Capacitor 네이티브 빌드 산출물 (플랫폼 폴더 ios/·android/ 는 커밋, 빌드 결과물만 제외)
+ios/App/Pods/
+ios/App/build/
+ios/.gradle/
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+android/app/src/main/assets/public/
+ios/App/App/public/
+DerivedData/
+**/xcuserdata/
