@@ -32,13 +32,15 @@ DABAR은 Next.js 서버·API가 필요한 앱이라, **네이티브 셸이 `http
 npm install
 ```
 
-### 1) 앱 아이콘·스플래시 생성 (권장)
-```bash
-npm i -D @capacitor/assets
-# assets/icon.png (1024x1024), assets/splash.png (2732x2732) 준비 후:
-npx capacitor-assets generate
-```
-(※ 소스 1024 아이콘이 필요하면 담당 개발자에게 요청 — 로고 SVG로 생성 가능)
+### 1) 앱 아이콘·스플래시  — 소스·안드로이드 완료 ✅
+- 소스 아이콘/스플래시는 `assets/` 에 생성됨: `icon.png`(1024), `icon-foreground.png`, `icon-background.png`, `splash.png`/`splash-dark.png`(2732).
+- **안드로이드 런처 아이콘(적응형 포함)·스플래시는 이미 생성 완료** — `android/app/src/main/res` 에 반영됨(`scripts/gen-android-res.mjs`). 웹 PWA 아이콘(`public/icons`)도 동일 마스터로 재생성됨.
+- **iOS 아이콘/스플래시**는 맥에서 `npx cap add ios` 후 아래로 생성(맥에선 `@capacitor/assets` 정상 설치됨):
+  ```bash
+  npm i -D @capacitor/assets
+  npx capacitor-assets generate --ios
+  ```
+- 디자인을 바꾸려면 `scripts/gen-app-assets.mjs`(마스터) 수정 → 재실행 → `scripts/gen-android-res.mjs` 재실행.
 
 ### 2) 🤖 Android (Play Console — 조직 계정이라 테스트 요건 없음)
 ```bash
