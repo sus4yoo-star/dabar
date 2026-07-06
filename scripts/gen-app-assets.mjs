@@ -34,8 +34,8 @@ const bgSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024
 // 4) 스플래시(2732) — 흰 배경 + 가운데 로크업(마크 + DABAR)
 const splashSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="2732" height="2732" viewBox="0 0 2732 2732">
   <rect width="2732" height="2732" fill="#ffffff"/>
-  <g transform="${place(1366, 1200, 16)}">${mark(2)}</g>
-  <text x="1375" y="1720" font-family="${SERIF}" font-size="240" font-weight="700" letter-spacing="18" fill="${GOLD}" text-anchor="middle">DABAR</text>
+  <g transform="${place(1366, 1244, 15)}">${mark(2)}</g>
+  <text x="1375" y="1804" font-family="${SERIF}" font-size="220" font-weight="700" letter-spacing="18" fill="${GOLD}" text-anchor="middle">DABAR</text>
 </svg>`;
 
 async function png(svg, out, size) {
