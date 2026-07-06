@@ -122,13 +122,10 @@ English: `gospel,mission,evangelism,bible,quiz,church,translate,interpret,discip
 <string>긴급 SOS 시 현재 위치를 도움 요청에 함께 보내기 위해 사용합니다.</string>
 ```
 
-**Android `android/app/src/main/AndroidManifest.xml`** (+ 웹뷰 권한 처리 필요)
-```xml
-<uses-permission android:name="android.permission.CAMERA"/>
-<uses-permission android:name="android.permission.RECORD_AUDIO"/>
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-```
-> ⚠️ Capacitor가 원격 웹페이지의 카메라/마이크/위치 요청을 자동 허용하지 않으므로, 네이티브 측 권한 브리지 처리도 필요 — **다음 빌드 단계에서 함께 세팅**합니다.
+**Android** — ✅ **완료**: `android/app/src/main/AndroidManifest.xml` 에 CAMERA·RECORD_AUDIO·ACCESS_FINE/COARSE_LOCATION 선언 반영. Capacitor 7 웹뷰 브리지가 런타임 권한 프롬프트(카메라/마이크/위치)를 자동 처리합니다.
+
+**iOS** — 맥에서 `cap add ios` 후 위 4개 `Info.plist` 문자열을 추가해야 함(없으면 크래시/반려).
+> ⚠️ iOS 참고: WKWebView의 `getUserMedia`(카메라/마이크)는 iOS 14.3+ 에서 동작하며, 위 Info.plist 설명 문자열이 있어야 합니다. 실기기 테스트 때 카메라/마이크가 안 뜨면 알려주세요 — 네이티브 미세조정 안내해 드립니다.
 
 ---
 
