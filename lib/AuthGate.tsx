@@ -6,7 +6,8 @@ import BrandMark from "@/components/BrandMark";
 
 // 로그인 없이 접근 가능한 경로 (이 두 곳까지 막으면 로그인 자체가 불가능해짐)
 // /share(복음 전하기): 비신자에게 복음을 전하는 화면이라 게스트도 접근 가능해야 함
-const PUBLIC_PREFIXES = ["/login", "/auth", "/share"];
+// /privacy·/delete-account: 스토어 심사·구글이 요구하는 공개 문서 URL (비로그인·크롤러 접근 가능해야 함)
+const PUBLIC_PREFIXES = ["/login", "/auth", "/share", "/privacy", "/delete-account"];
 
 // 첫 로딩 스플래시 — 깨끗한 흰 배경 + 새 골드 마크.
 function Splash() {
