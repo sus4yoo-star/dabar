@@ -54,3 +54,13 @@ await png(splashSvg, `${root}/assets/splash-dark.png`);
 await png(iconSvg, `${root}/public/icons/icon-512.png`, 512);
 await png(iconSvg, `${root}/public/icons/icon-192.png`, 192);
 console.log("done");
+
+// 5) Play 스토어 그래픽 배너(1024x500) — 흰 배경 + 가운데 로크업 + 부제
+const featSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+  <rect width="1024" height="500" fill="#ffffff"/>
+  <g transform="${place(512, 172, 5.6)}">${mark(2)}</g>
+  <text x="516" y="392" font-family="${SERIF}" font-size="98" font-weight="700" letter-spacing="8" fill="${GOLD}" text-anchor="middle">DABAR</text>
+  <text x="512" y="446" font-family="-apple-system,'Noto Sans KR',sans-serif" font-size="26" fill="#54718a" text-anchor="middle">복음 · 선교 · 양육 동행자</text>
+</svg>`;
+await png(featSvg, `${root}/assets/feature-graphic.png`);
+console.log("feature graphic done");
