@@ -174,7 +174,8 @@ ${schema}
 เงื่อนไข:
 - คง "book" ไว้เป็น "${book}" (ภาษาเกาหลี) ทุกข้อ และ "category" เป็นรหัสใดรหัสหนึ่งต่อไปนี้: "인물" (บุคคล) | "사건" (เหตุการณ์) | "말씀" (พระวจนะ) | "지명" (สถานที่)
 - "answer" คือดัชนีของตัวเลือกที่ถูกต้อง (0~3 เริ่มจาก 0)
-- ถูกต้องตามหลักเทววิทยา อ้างอิงฉบับ Thai Standard Version (TSV)
+- ถูกต้องตามหลักเทววิทยาและตรวจสอบแล้ว โดยอ้างอิง "พระคริสตธรรมคัมภีร์ ฉบับมาตรฐาน 2011" (Thai Standard Version, THSV 2011) ของสมาคมพระคริสตธรรมไทย ซึ่งเป็นฉบับที่คริสตจักรไทยใช้แพร่หลายที่สุด
+- ใช้ชื่อบุคคล ชื่อสถานที่ และคำศัพท์ทางศาสนาให้ตรงตามที่ปรากฏในฉบับมาตรฐาน 2011
 - easy: เด็ก 7 ขวบก็ตอบได้, hard: ระดับนักศึกษาเทววิทยา
 - เขียน "question", "options", "hint", "explanation" เป็นภาษาไทย${avoidBlock}`;
   } else if (lang === "lo") {
@@ -295,7 +296,7 @@ async function fillBook(book: string, have: number, target: number, existingStem
 
 async function main() {
   const { plan, book: onlyBook, limit, lang } = args();
-  const label = lang === "en" ? " (NIV)" : lang === "th" ? " (TSV)" : lang === "lo" ? " (Lao Standard Version 2015)" : LANG_BIBLE[lang] ? ` (${LANG_BIBLE[lang].bible})` : " (개역개정)";
+  const label = lang === "en" ? " (NIV)" : lang === "th" ? " (ฉบับมาตรฐาน 2011)" : lang === "lo" ? " (Lao Standard Version 2015)" : LANG_BIBLE[lang] ? ` (${LANG_BIBLE[lang].bible})` : " (개역개정)";
   console.log(`🌐 언어: ${lang.toUpperCase()}${label}\n`);
 
   if (plan && onlyBook === undefined) {
