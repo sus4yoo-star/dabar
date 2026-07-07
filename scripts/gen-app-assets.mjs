@@ -62,5 +62,6 @@ const featSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="50
   <text x="516" y="392" font-family="${SERIF}" font-size="98" font-weight="700" letter-spacing="8" fill="${GOLD}" text-anchor="middle">DABAR</text>
   <text x="512" y="450" font-family="'NanumMyeongjo','Nanum Myeongjo',serif" font-size="31" font-weight="700" letter-spacing="4" fill="#4a6377" text-anchor="middle">복음 · 선교 · 양육 동행자</text>
 </svg>`;
-await png(featSvg, `${root}/assets/feature-graphic.png`);
-console.log("feature graphic done");
+// Play 그래픽 배너는 정확히 1024x500 이어야 함 (고밀도 렌더 후 정확 크기로 다운스케일 → 선명)
+await sharp(Buffer.from(featSvg), { density: 288 }).resize(1024, 500).png().toFile(`${root}/assets/feature-graphic.png`);
+console.log("feature graphic done (1024x500)");
