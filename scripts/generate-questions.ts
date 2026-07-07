@@ -22,7 +22,7 @@ dotenv.config({ path: ".env.local" });
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const supabase  = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
 
-const MODEL = "claude-sonnet-4-20250514";
+const MODEL = "claude-sonnet-5";
 const BATCH_SIZE = 12;
 const DELAY_MS = 1200;
 const MAX_EMPTY_RETRY = 3;
