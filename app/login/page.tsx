@@ -15,7 +15,7 @@ export default function LoginPage() {
   const { user, loading, signIn, signInWithEmail } = useAuth();
   const { t } = useI18n();
   const { show, view: toastView } = useToast();
-  const [busy, setBusy] = useState<"google" | "kakao" | "email" | null>(null);
+  const [busy, setBusy] = useState<"google" | "kakao" | "apple" | "email" | null>(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
@@ -25,7 +25,7 @@ export default function LoginPage() {
     if (!loading && user) router.replace("/");
   }, [loading, user, router]);
 
-  async function handle(provider: "google" | "kakao") {
+  async function handle(provider: "google" | "kakao" | "apple") {
     try {
       setBusy(provider);
       await signIn(provider); // 카카오/구글 동의 화면으로 이동
@@ -151,6 +151,22 @@ export default function LoginPage() {
           {busy === "google" ? t("login.redirecting") : t("login.google")}
         </button>
 
+        {/* Apple로 로그인 — 애플 심사 규정 4.8 필수(소셜 로그인 제공 시 Apple 로그인도 제공) */}
+        <button
+          onClick={() => handle("apple")}
+          disabled={busy !== null}
+          style={{
+            width: "100%", padding: 15, fontSize: 16, fontWeight: 700,
+            background: "#000000", color: "#ffffff", border: "none", borderRadius: 14,
+            cursor: busy ? "default" : "pointer", marginTop: 11,
+            opacity: busy && busy !== "apple" ? 0.55 : 1,
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+          }}
+        >
+          <AppleMark />
+          {busy === "apple" ? t("login.redirecting") : t("login.apple")}
+        </button>
+
         {/* 이메일 매직링크 — 카카오·구글이 막혔을 때 백업 경로 */}
         {sent ? (
           <p style={{ fontSize: 13.5, lineHeight: 1.6, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, padding: "12px 14px", marginTop: 14, textAlign: "left" }}>
@@ -189,6 +205,14 @@ export default function LoginPage() {
       </div>
       {toastView}
     </main>
+  );
+}
+
+function AppleMark() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 384 512" fill="#ffffff" aria-hidden>
+      <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+    </svg>
   );
 }
 
