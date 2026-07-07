@@ -39,17 +39,18 @@ const splashSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="2732" height="
 </svg>`;
 
 async function png(svg, out, size) {
-  let img = sharp(Buffer.from(svg), { density: 384 });
+  let img = sharp(Buffer.from(svg), { density: 144 }); // 뷰박스 2배로 렌더(슈퍼샘플) 후 정확 크기로 축소
   if (size) img = img.resize(size, size);
   await img.png().toFile(out);
   console.log("✓", out.replace(root + "/", ""));
 }
 
-await png(iconSvg, `${root}/assets/icon.png`);
-await png(fgSvg, `${root}/assets/icon-foreground.png`);
-await png(bgSvg, `${root}/assets/icon-background.png`);
-await png(splashSvg, `${root}/assets/splash.png`);
-await png(splashSvg, `${root}/assets/splash-dark.png`);
+// @capacitor/assets 표준 소스 크기: 아이콘 1024, 스플래시 2732
+await png(iconSvg, `${root}/assets/icon.png`, 1024);
+await png(fgSvg, `${root}/assets/icon-foreground.png`, 1024);
+await png(bgSvg, `${root}/assets/icon-background.png`, 1024);
+await png(splashSvg, `${root}/assets/splash.png`, 2732);
+await png(splashSvg, `${root}/assets/splash-dark.png`, 2732);
 // 웹 PWA 아이콘도 같은 마스터로 재생성(중앙정렬 일치)
 await png(iconSvg, `${root}/public/icons/icon-512.png`, 512);
 await png(iconSvg, `${root}/public/icons/icon-192.png`, 192);
