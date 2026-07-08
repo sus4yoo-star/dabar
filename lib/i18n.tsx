@@ -183,8 +183,11 @@ const DICT: Dict = {
   // 이메일 매직링크 (카카오·구글이 막혔을 때 백업)
   "login.orEmail":    { ko: "또는 이메일로 로그인", en: "Or sign in with email", th: "หรือเข้าสู่ระบบด้วยอีเมล", lo: "ຫຼື ເຂົ້າສູ່ລະບົບດ້ວຍອີເມວ" },
   "login.emailPh":    { ko: "이메일 주소", en: "Email address", th: "ที่อยู่อีเมล", lo: "ທີ່ຢູ່ອີເມວ" },
-  "login.emailSend":  { ko: "로그인 링크 받기", en: "Send login link", th: "ส่งลิงก์เข้าสู่ระบบ", lo: "ສົ່ງລິ້ງເຂົ້າສູ່ລະບົບ" },
-  "login.emailSent":  { ko: "✉️ 메일함을 확인하세요. 보내드린 링크를 누르면 로그인됩니다. (스팸함도 확인)", en: "✉️ Check your inbox — tap the link we sent to sign in. (Check spam too)", th: "✉️ ตรวจกล่องอีเมล แตะลิงก์ที่ส่งไปเพื่อเข้าสู่ระบบ (ตรวจสแปมด้วย)", lo: "✉️ ກວດກ່ອງອີເມວ ແຕະລິ້ງທີ່ສົ່ງໄປເພື່ອເຂົ້າສູ່ລະບົບ" },
+  "login.emailSend":  { ko: "인증 코드 받기", en: "Send verification code", th: "ส่งรหัสยืนยัน", lo: "ສົ່ງລະຫັດຢືนຢັน" },
+  "login.emailSent":  { ko: "✉️ 메일로 보낸 6자리 코드를 입력하세요. (스팸함도 확인)", en: "✉️ Enter the 6-digit code we emailed you. (Check spam too)", th: "✉️ กรอกรหัส 6 หลักที่เราส่งไปทางอีเมล (ตรวจสแปมด้วย)", lo: "✉️ ໃສ່ລະຫັດ 6 ໂຕທີ່ສົ່ງໄປທາງອີເມວ (ກວດສະແปมด้วย)" },
+  "login.codePh":     { ko: "6자리 코드", en: "6-digit code", th: "รหัส 6 หลัก", lo: "ລະຫັດ 6 ໂຕ" },
+  "login.codeVerify": { ko: "확인하고 로그인", en: "Verify & sign in", th: "ยืนยันและเข้าสู่ระบบ", lo: "ຢືนຢັนແລ້ວເຂົ້າສູ່ລະບົบ" },
+  "login.codeInvalid":{ ko: "코드가 올바르지 않아요. 다시 확인해 주세요.", en: "That code isn't right. Please check and try again.", th: "รหัสไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง", lo: "ລະຫັດບໍ່ຖືກຕ້ອງ ກະລຸນາກວດອີກຄັ້ງ" },
   "login.emailInvalid": { ko: "올바른 이메일 주소를 입력해 주세요.", en: "Please enter a valid email address.", th: "กรุณากรอกอีเมลที่ถูกต้อง", lo: "ກະລຸນາໃສ່ອີເມວທີ່ຖືກຕ້ອງ" },
   // 로그인 화면 말씀 (시편 119:105 · NIV / Thai / Lao)
   "login.verse":      { ko: "주의 말씀은 내 발에 등이요 내 길에 빛이니이다", en: "Your word is a lamp for my feet, a light on my path.", th: "พระวจนะของพระองค์เป็นโคมสำหรับเท้าของข้าพระองค์ และเป็นความสว่างแก่ทางของข้าพระองค์", lo: "ພຣະທຳຂອງພຣະອົງເປັນໂຄມສຳລັບຕີນຂອງຂ້ານ້ອຍ ແລະ ເປັນແສງສະຫວ່າງແກ່ທາງຂອງຂ້ານ້ອຍ" },

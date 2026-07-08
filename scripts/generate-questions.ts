@@ -22,8 +22,8 @@ dotenv.config({ path: ".env.local" });
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const supabase  = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
 
-const MODEL = "claude-sonnet-4-20250514";
-const BATCH_SIZE = 12;
+const MODEL = "claude-sonnet-5";
+const BATCH_SIZE = 10;
 const DELAY_MS = 1200;
 const MAX_EMPTY_RETRY = 3;
 
@@ -106,9 +106,39 @@ function isCreditError(e: any): boolean {
 function extractJsonArray(text: string): any[] {
   const t = text.replace(/```json/gi, "").replace(/```/g, "").trim();
   const start = t.indexOf("[");
-  const end = t.lastIndexOf("]");
-  if (start === -1 || end === -1) throw new Error("JSON 배열을 찾을 수 없음");
-  return JSON.parse(t.slice(start, end + 1));
+  if (start === -1) throw new Error("JSON 배열을 찾을 수 없음");
+  const body = t.slice(start);
+
+  // 1) 정상 파싱 우선 시도
+  const end = body.lastIndexOf("]");
+  if (end !== -1) {
+    try { return JSON.parse(body.slice(0, end + 1)); } catch { /* 아래 복구 로직으로 */ }
+  }
+
+  // 2) 응답이 잘렸거나 한 객체가 깨졌어도, 온전한 { ... } 객체만 골라서 건져낸다.
+  //    (배치 하나가 살짝 깨져도 12개 통째로 버리지 않고 성한 문제는 살린다)
+  const objs: any[] = [];
+  let depth = 0, objStart = -1, inStr = false, esc = false;
+  for (let i = 0; i < body.length; i++) {
+    const c = body[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === "\\") esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === "{") { if (depth === 0) objStart = i; depth++; }
+    else if (c === "}") {
+      depth--;
+      if (depth === 0 && objStart !== -1) {
+        try { objs.push(JSON.parse(body.slice(objStart, i + 1))); } catch { /* 이 객체만 버림 */ }
+        objStart = -1;
+      }
+    }
+  }
+  if (!objs.length) throw new Error("JSON 배열을 찾을 수 없음");
+  return objs;
 }
 
 function isValidQ(q: any): boolean {
@@ -174,7 +204,8 @@ ${schema}
 เงื่อนไข:
 - คง "book" ไว้เป็น "${book}" (ภาษาเกาหลี) ทุกข้อ และ "category" เป็นรหัสใดรหัสหนึ่งต่อไปนี้: "인물" (บุคคล) | "사건" (เหตุการณ์) | "말씀" (พระวจนะ) | "지명" (สถานที่)
 - "answer" คือดัชนีของตัวเลือกที่ถูกต้อง (0~3 เริ่มจาก 0)
-- ถูกต้องตามหลักเทววิทยา อ้างอิงฉบับ Thai Standard Version (TSV)
+- ถูกต้องตามหลักเทววิทยาและตรวจสอบแล้ว โดยอ้างอิง "พระคริสตธรรมคัมภีร์ ฉบับมาตรฐาน 2011" (Thai Standard Version, THSV 2011) ของสมาคมพระคริสตธรรมไทย ซึ่งเป็นฉบับที่คริสตจักรไทยใช้แพร่หลายที่สุด
+- ใช้ชื่อบุคคล ชื่อสถานที่ และคำศัพท์ทางศาสนาให้ตรงตามที่ปรากฏในฉบับมาตรฐาน 2011
 - easy: เด็ก 7 ขวบก็ตอบได้, hard: ระดับนักศึกษาเทววิทยา
 - เขียน "question", "options", "hint", "explanation" เป็นภาษาไทย${avoidBlock}`;
   } else if (lang === "lo") {
@@ -234,7 +265,7 @@ ${schema}
 
   const res = await anthropic.messages.create({
     model: MODEL,
-    max_tokens: 8000,
+    max_tokens: 16000,
     messages: [{ role: "user", content: prompt }],
   });
   const block = res.content.find(b => b.type === "text");
@@ -270,7 +301,14 @@ async function fillBook(book: string, have: number, target: number, existingStem
     }
 
     const fresh = raw
-      .map(q => ({ ...q, book, testament, lang }))
+      // DB에 있는 컬럼만 남긴다. (모델이 가끔 'hml' 같은 엉뚱한 필드를 덧붙이면
+      //  Supabase insert 가 "unknown column" 으로 배치 전체를 거부하기 때문)
+      .map((q: any) => ({
+        book, testament, lang,
+        category: q.category, level: q.level,
+        question: q.question, options: q.options, answer: q.answer,
+        hint: q.hint, explanation: q.explanation,
+      }))
       .filter(isValidQ)
       .filter(q => { const s = q.question.trim(); if (seen.has(s)) return false; seen.add(s); return true; })
       .slice(0, need - added);
@@ -295,7 +333,7 @@ async function fillBook(book: string, have: number, target: number, existingStem
 
 async function main() {
   const { plan, book: onlyBook, limit, lang } = args();
-  const label = lang === "en" ? " (NIV)" : lang === "th" ? " (TSV)" : lang === "lo" ? " (Lao Standard Version 2015)" : LANG_BIBLE[lang] ? ` (${LANG_BIBLE[lang].bible})` : " (개역개정)";
+  const label = lang === "en" ? " (NIV)" : lang === "th" ? " (ฉบับมาตรฐาน 2011)" : lang === "lo" ? " (Lao Standard Version 2015)" : LANG_BIBLE[lang] ? ` (${LANG_BIBLE[lang].bible})` : " (개역개정)";
   console.log(`🌐 언어: ${lang.toUpperCase()}${label}\n`);
 
   if (plan && onlyBook === undefined) {
