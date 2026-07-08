@@ -7,19 +7,12 @@ import { useToast } from "@/components/Toast";
 import { theme } from "@/lib/theme";
 import BrandMark from "@/components/BrandMark";
 
-// 브랜드 컬러 (파랑·초록·흰색)
-const GOLD = theme.gold;
-
 export default function LoginPage() {
   const router = useRouter();
-  const { user, loading, signIn, signInWithEmail, verifyEmailCode } = useAuth();
+  const { user, loading, signIn } = useAuth();
   const { t } = useI18n();
   const { show, view: toastView } = useToast();
-  const [busy, setBusy] = useState<"google" | "kakao" | "apple" | "email" | null>(null);
-  const [emailOpen, setEmailOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState<"google" | "kakao" | "apple" | null>(null);
 
   // 이미 로그인돼 있으면 홈으로
   useEffect(() => {
@@ -34,34 +27,6 @@ export default function LoginPage() {
       show(t("login.fail"));
     } finally {
       // 네이티브에서 사용자가 브라우저를 닫아도 버튼이 다시 눌리도록 해제.
-      setBusy(null);
-    }
-  }
-
-  async function handleEmail(e: React.FormEvent) {
-    e.preventDefault();
-    const addr = email.trim();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(addr)) { show(t("login.emailInvalid")); return; }
-    try {
-      setBusy("email");
-      await signInWithEmail(addr); // 6자리 코드 발송
-      setSent(true);
-    } catch {
-      show(t("login.fail"));
-    } finally {
-      setBusy(null);
-    }
-  }
-
-  async function handleVerify(e: React.FormEvent) {
-    e.preventDefault();
-    const c = code.trim();
-    if (c.length < 4) { show(t("login.codeInvalid")); return; }
-    try {
-      setBusy("email");
-      await verifyEmailCode(email, c); // 성공 시 onAuthStateChange → 홈으로 자동 이동
-    } catch {
-      show(t("login.codeInvalid"));
       setBusy(null);
     }
   }
@@ -182,43 +147,6 @@ export default function LoginPage() {
           <AppleMark />
           {busy === "apple" ? t("login.redirecting") : t("login.apple")}
         </button>
-
-        {/* 이메일 로그인 — 6자리 코드 방식 (링크 방식은 다른 브라우저에서 열리면 실패하므로 코드로 전환) */}
-        {sent ? (
-          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-            <p style={{ fontSize: 13, lineHeight: 1.6, color: theme.gold, background: theme.goldLight, border: `1px solid ${theme.goldBorder}`, borderRadius: 12, padding: "12px 14px", textAlign: "left" }}>
-              {t("login.emailSent")}
-            </p>
-            <form onSubmit={handleVerify} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <input
-                inputMode="numeric" autoComplete="one-time-code" maxLength={8} value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 8))} placeholder={t("login.codePh")}
-                style={{ width: "100%", boxSizing: "border-box", padding: 14, fontSize: 22, fontWeight: 700, letterSpacing: 6, textAlign: "center", border: `1px solid ${theme.border}`, borderRadius: 12, outline: "none", background: theme.card, color: theme.text }}
-              />
-              <button type="submit" disabled={busy !== null}
-                style={{ width: "100%", padding: 14, fontSize: 15.5, fontWeight: 700, background: GOLD, color: "#fff", border: "none", borderRadius: 12, cursor: busy ? "default" : "pointer", opacity: busy && busy !== "email" ? 0.55 : 1 }}>
-                {busy === "email" ? t("login.redirecting") : t("login.codeVerify")}
-              </button>
-            </form>
-          </div>
-        ) : emailOpen ? (
-          <form onSubmit={handleEmail} style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-            <input
-              type="email" inputMode="email" autoComplete="email" value={email}
-              onChange={(e) => setEmail(e.target.value)} placeholder={t("login.emailPh")}
-              style={{ width: "100%", boxSizing: "border-box", padding: 14, fontSize: 15.5, border: `1px solid ${theme.border}`, borderRadius: 12, outline: "none", background: theme.card, color: theme.text }}
-            />
-            <button type="submit" disabled={busy !== null}
-              style={{ width: "100%", padding: 14, fontSize: 15.5, fontWeight: 700, background: GOLD, color: "#fff", border: "none", borderRadius: 12, cursor: busy ? "default" : "pointer", opacity: busy && busy !== "email" ? 0.55 : 1 }}>
-              {busy === "email" ? t("login.redirecting") : t("login.emailSend")}
-            </button>
-          </form>
-        ) : (
-          <button onClick={() => setEmailOpen(true)}
-            style={{ marginTop: 14, background: "none", border: "none", color: theme.textMuted, fontSize: 13.5, fontWeight: 600, textDecoration: "underline", cursor: "pointer" }}>
-            {t("login.orEmail")}
-          </button>
-        )}
 
         <p style={{ fontSize: 12.5, color: theme.textFaint, marginTop: 20, lineHeight: 1.6 }}>
           {t("login.free")}
