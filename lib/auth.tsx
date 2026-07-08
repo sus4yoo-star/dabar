@@ -2,8 +2,14 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { Capacitor } from "@capacitor/core";
 
 export type Provider = "google" | "kakao" | "apple";
+
+// 네이티브 앱(iOS/Android)에서 OAuth 후 앱으로 되돌아올 커스텀 딥링크.
+// 웹뷰가 사파리로 새어나가지 않고, 앱 내 브라우저에서 로그인 → 이 주소로 앱 복귀.
+const NATIVE_REDIRECT = "com.theamov.dabar://auth-callback";
+const isNative = () => Capacitor.isNativePlatform();
 
 interface AuthState {
   user: User | null;
@@ -14,7 +20,8 @@ interface AuthState {
   isAdmin: boolean;
   isLeader: boolean;
   signIn: (provider: Provider) => Promise<void>;
-  signInWithEmail: (email: string) => Promise<void>; // 매직링크(백업 로그인)
+  signInWithEmail: (email: string) => Promise<void>; // 이메일로 6자리 코드 발송
+  verifyEmailCode: (email: string, code: string) => Promise<void>; // 받은 코드로 로그인
   signOut: () => Promise<void>;
   updateNickname: (name: string) => Promise<boolean>;
 }
@@ -89,20 +96,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => sub.subscription.unsubscribe();
   }, [ensureProfile]);
 
+  // 네이티브 딥링크 수신 — 앱 내 브라우저에서 OAuth 를 마치면
+  // com.theamov.dabar://auth-callback?code=... 로 앱이 다시 열린다.
+  // 그 code 를 (웹뷰와 같은 저장소의 PKCE verifier 로) 세션으로 교환한다.
+  useEffect(() => {
+    if (!isNative() || !Capacitor.isPluginAvailable("Browser")) return;
+    let remove: (() => void) | undefined;
+    (async () => {
+      const { App } = await import("@capacitor/app");
+      const { Browser } = await import("@capacitor/browser");
+      const handle = await App.addListener("appUrlOpen", async ({ url }) => {
+        if (!url || !url.startsWith(NATIVE_REDIRECT)) return;
+        const query = url.includes("?") ? url.split("?")[1] : "";
+        const params = new URLSearchParams(query);
+        const code = params.get("code");
+        try { await Browser.close(); } catch { /* 이미 닫혔을 수 있음 */ }
+        if (code) {
+          try { await supabase.auth.exchangeCodeForSession(code); } catch { /* 세션 확인은 onAuthStateChange 가 처리 */ }
+        }
+      });
+      remove = () => handle.remove();
+    })();
+    return () => { if (remove) remove(); };
+  }, []);
+
   const signIn = useCallback(async (provider: Provider) => {
+    // 네이티브 + Browser 플러그인이 탑재된 빌드: 앱 내 브라우저에서 로그인 → 딥링크로 앱 복귀.
+    // (플러그인이 없는 옛 빌드에서는 아래 웹 리다이렉트 방식으로 폴백 → 로그인이 깨지지 않음)
+    if (isNative() && Capacitor.isPluginAvailable("Browser")) {
+      const { Browser } = await import("@capacitor/browser");
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
+      });
+      if (error || !data?.url) throw error ?? new Error("OAuth URL 생성 실패");
+      await Browser.open({ url: data.url, presentationStyle: "popover" });
+      return; // 이후는 appUrlOpen 리스너가 처리
+    }
+    // 웹: 기존 리다이렉트 방식
     const redirectTo =
       (process.env.NEXT_PUBLIC_SITE_URL || window.location.origin) + "/auth/callback";
     await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
   }, []);
 
-  // 백업 로그인 — 카카오/구글이 막혔을 때를 위한 이메일 매직링크.
-  // 입력한 메일로 1회용 로그인 링크가 가고, 그 링크가 /auth/callback 으로 돌아온다.
+  // 이메일 로그인 — 링크 대신 6자리 코드를 보낸다. (링크는 다른 브라우저에서 열리면
+  // PKCE 검증이 깨져 실패하지만, 코드는 앱 안에서 바로 입력해 인증하므로 안전하다.)
   const signInWithEmail = useCallback(async (email: string) => {
-    const emailRedirectTo =
-      (process.env.NEXT_PUBLIC_SITE_URL || window.location.origin) + "/auth/callback";
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
-      options: { emailRedirectTo },
+      options: { shouldCreateUser: true },
+    });
+    if (error) throw error;
+  }, []);
+
+  // 받은 6자리 코드로 로그인 완료
+  const verifyEmailCode = useCallback(async (email: string, code: string) => {
+    const { error } = await supabase.auth.verifyOtp({
+      email: email.trim(),
+      token: code.trim(),
+      type: "email",
     });
     if (error) throw error;
   }, []);
@@ -139,6 +191,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLeader,
         signIn,
         signInWithEmail,
+        verifyEmailCode,
         signOut,
         updateNickname,
       }}
