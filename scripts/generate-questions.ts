@@ -301,7 +301,14 @@ async function fillBook(book: string, have: number, target: number, existingStem
     }
 
     const fresh = raw
-      .map(q => ({ ...q, book, testament, lang }))
+      // DB에 있는 컬럼만 남긴다. (모델이 가끔 'hml' 같은 엉뚱한 필드를 덧붙이면
+      //  Supabase insert 가 "unknown column" 으로 배치 전체를 거부하기 때문)
+      .map((q: any) => ({
+        book, testament, lang,
+        category: q.category, level: q.level,
+        question: q.question, options: q.options, answer: q.answer,
+        hint: q.hint, explanation: q.explanation,
+      }))
       .filter(isValidQ)
       .filter(q => { const s = q.question.trim(); if (seen.has(s)) return false; seen.add(s); return true; })
       .slice(0, need - added);
