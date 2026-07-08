@@ -191,9 +191,9 @@ export default function LoginPage() {
             </p>
             <form onSubmit={handleVerify} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <input
-                inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} placeholder={t("login.codePh")}
-                style={{ width: "100%", boxSizing: "border-box", padding: 14, fontSize: 22, fontWeight: 700, letterSpacing: 8, textAlign: "center", border: `1px solid ${theme.border}`, borderRadius: 12, outline: "none", background: theme.card, color: theme.text }}
+                inputMode="numeric" autoComplete="one-time-code" maxLength={8} value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 8))} placeholder={t("login.codePh")}
+                style={{ width: "100%", boxSizing: "border-box", padding: 14, fontSize: 22, fontWeight: 700, letterSpacing: 6, textAlign: "center", border: `1px solid ${theme.border}`, borderRadius: 12, outline: "none", background: theme.card, color: theme.text }}
               />
               <button type="submit" disabled={busy !== null}
                 style={{ width: "100%", padding: 14, fontSize: 15.5, fontWeight: 700, background: GOLD, color: "#fff", border: "none", borderRadius: 12, cursor: busy ? "default" : "pointer", opacity: busy && busy !== "email" ? 0.55 : 1 }}>
