@@ -23,7 +23,7 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const supabase  = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
 
 const MODEL = "claude-sonnet-5";
-const BATCH_SIZE = 12;
+const BATCH_SIZE = 10;
 const DELAY_MS = 1200;
 const MAX_EMPTY_RETRY = 3;
 
@@ -106,9 +106,39 @@ function isCreditError(e: any): boolean {
 function extractJsonArray(text: string): any[] {
   const t = text.replace(/```json/gi, "").replace(/```/g, "").trim();
   const start = t.indexOf("[");
-  const end = t.lastIndexOf("]");
-  if (start === -1 || end === -1) throw new Error("JSON 배열을 찾을 수 없음");
-  return JSON.parse(t.slice(start, end + 1));
+  if (start === -1) throw new Error("JSON 배열을 찾을 수 없음");
+  const body = t.slice(start);
+
+  // 1) 정상 파싱 우선 시도
+  const end = body.lastIndexOf("]");
+  if (end !== -1) {
+    try { return JSON.parse(body.slice(0, end + 1)); } catch { /* 아래 복구 로직으로 */ }
+  }
+
+  // 2) 응답이 잘렸거나 한 객체가 깨졌어도, 온전한 { ... } 객체만 골라서 건져낸다.
+  //    (배치 하나가 살짝 깨져도 12개 통째로 버리지 않고 성한 문제는 살린다)
+  const objs: any[] = [];
+  let depth = 0, objStart = -1, inStr = false, esc = false;
+  for (let i = 0; i < body.length; i++) {
+    const c = body[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === "\\") esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === "{") { if (depth === 0) objStart = i; depth++; }
+    else if (c === "}") {
+      depth--;
+      if (depth === 0 && objStart !== -1) {
+        try { objs.push(JSON.parse(body.slice(objStart, i + 1))); } catch { /* 이 객체만 버림 */ }
+        objStart = -1;
+      }
+    }
+  }
+  if (!objs.length) throw new Error("JSON 배열을 찾을 수 없음");
+  return objs;
 }
 
 function isValidQ(q: any): boolean {
@@ -235,7 +265,7 @@ ${schema}
 
   const res = await anthropic.messages.create({
     model: MODEL,
-    max_tokens: 8000,
+    max_tokens: 16000,
     messages: [{ role: "user", content: prompt }],
   });
   const block = res.content.find(b => b.type === "text");
