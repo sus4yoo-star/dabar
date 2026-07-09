@@ -10,7 +10,6 @@ import HomeReachCard from "@/components/HomeReachCard";
 import SosButton from "@/components/SosButton";
 import { useToast } from "@/components/Toast";
 import DisplayQuickToggle from "@/components/DisplayQuickToggle";
-import InstallHint from "@/components/InstallHint";
 import { serif } from "@/lib/ui";
 import MenuIcon from "@/components/MenuIcon";
 import BrandMark from "@/components/BrandMark";
@@ -70,9 +69,6 @@ export default function Home() {
           <button onClick={() => router.push("/login")} style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: theme.primary, border: "none", borderRadius: 16, padding: "6px 14px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{t("common.login")}</button>
         ))}
       </div>
-
-      {/* iOS 사파리 사용자에게 '홈 화면에 추가' 1회 안내 */}
-      <InstallHint />
 
       {/* 히어로 */}
       <div className="fade-in" style={{ textAlign: "center", marginBottom: 7 }}>
