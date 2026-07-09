@@ -133,6 +133,7 @@ const DICT: Dict = {
   "home.secShare":    { ko: "전하기 · 만남", en: "Share · Reach", th: "ประกาศ · เข้าถึง", lo: "ປະກາດ · ເຂົ້າເຖິງ" },
   "home.secGrow":     { ko: "양육 · 자라기", en: "Grow · Disciple", th: "เติบโต · สาวก", lo: "ເຕີບໂຕ · ສາວົກ" },
   "home.secSettle":   { ko: "정착 · 교회로", en: "Settle · Church", th: "ปักหลัก · คริสตจักร", lo: "ຕັ້ງຫຼັກ · ຄຣິສຕະຈັກ" },
+  "share.langHint":   { ko: "상대의 언어를 고르면 도구가 그 언어로 표시돼요", en: "Pick the other person's language — tools show in it", th: "เลือกภาษาของอีกฝ่าย เครื่องมือจะแสดงเป็นภาษานั้น", lo: "ເລືອກພາສາຂອງອີກຝ່າຍ ເຄື່ອງມືຈະສະແດງເປັນພາສານັ້ນ" },
   "home.greeting":    { ko: "{name}님, 오늘도 말씀과 함께해요 👋", en: "{name}, walk with the Word today 👋", th: "{name} วันนี้มาเดินกับพระวจนะกัน 👋", lo: "{name} ມື້ນີ້ມາຍ່າງກັບພຣະທຳນຳກັນ 👋" },
   "home.streakToday": { ko: "🔥 {n}일 연속 출석!", en: "🔥 {n}-day streak!", th: "🔥 ต่อเนื่อง {n} วัน!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້!" },
   "home.streakGo":    { ko: "🔥 {n}일 연속 — 오늘도 풀면 이어져요!", en: "🔥 {n}-day streak — keep it going today!", th: "🔥 ต่อเนื่อง {n} วัน — ทำต่อวันนี้สิ!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້ — ເຮັດຕໍ່ມື້ນີ້ເລີຍ!" },
@@ -509,7 +510,7 @@ const DICT: Dict = {
   "cf.e6":         { ko: "감사해요", en: "Grateful", th: "ขอบคุณ", lo: "ຂອບໃຈ" },
   // 전도 여정 (내가 전하는 사람들)
   "home.reachTitle": { ko: "선교 도구", en: "Mission tools", th: "เครื่องมือพันธกิจ", lo: "ເຄື່ອງມືພັນທະກິດ" },
-  "home.reachSub":   { ko: "환율 · 이미지 번역 · 통역 · 전도 기록", en: "exchange · image translate · interpreter · outreach log", th: "อัตรา · แปลรูป · ล่าม · บันทึกประกาศ", lo: "ອັດຕາ · ແປຮູບ · ລ່າມ · ບັນທຶກ" },
+  "home.reachSub":   { ko: "실시간 통역 · 이미지 번역 · 전도 기록", en: "Live interpreter · image translate · outreach log", th: "ล่ามสด · แปลรูป · บันทึกประกาศ", lo: "ລ່າມສົດ · ແປຮູບ · ບັນທຶກ" },
   "reach.title":   { ko: "선교 도구", en: "Mission tools", th: "เครื่องมือพันธกิจ", lo: "ເຄື່ອງມືພັນທະກິດ" },
   "reach.sub":     { ko: "선교 현장의 동행 도구", en: "Tools for the mission field", th: "เครื่องมือสำหรับงานพันธกิจ", lo: "ເຄື່ອງມືສຳລັບພັນທະກິດ" },
   "reach.secTools":{ ko: "현장 도구", en: "Field tools", th: "เครื่องมือ", lo: "ເຄື່ອງມື" },

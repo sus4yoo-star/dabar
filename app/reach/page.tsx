@@ -2,13 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import { PageHeader, SectionLabel, SACRED } from "@/lib/ui";
-import HomeFxCard from "@/components/HomeFxCard";
 import MenuScanner from "@/components/MenuScanner";
 import SosButton from "@/components/SosButton";
 import VoiceTranslator from "@/components/besora/VoiceTranslator";
 import { LanguageProvider } from "@/lib/besora/LanguageContext";
 
-// 사역 · 선교 · 전도 여정 — 현장 도구: 환율 계산기 + 이미지 번역 + 실시간 통역. (디자인 모범 페이지)
+// 선교 도구 — 실시간 통역(메인) + 이미지 번역 + 긴급 SOS. (환율 계산기 제거)
 export default function ReachPage() {
   const router = useRouter();
   const { t } = useI18n();
@@ -16,19 +15,15 @@ export default function ReachPage() {
     <main style={{ maxWidth: 520, margin: "0 auto", padding: "0.55rem 1rem 0.9rem", minHeight: "100dvh" }}>
       <PageHeader title={t("reach.title")} subtitle={t("reach.sub")} onHome={() => router.push("/")} homeLabel={t("common.home")} accentColor={SACRED.fg} />
 
-      <SectionLabel icon="calc" accentColor={SACRED.fg}>{t("reach.secTools")}</SectionLabel>
-      {/* 환율 계산기(왼쪽) + 이미지 번역(오른쪽) 반반 · 높이 동일 */}
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 8, alignItems: "stretch" }}>
-        <HomeFxCard />
-        <MenuScanner />
-      </div>
-
+      {/* 실시간 통역 — 이 페이지의 메인. 크게(big) 표시 */}
       <SectionLabel icon="mic" accentColor={SACRED.fg}>{t("reach.secVoice")}</SectionLabel>
-      {/* 음성 통역 — 좌우 2분할(한 화면에 들어오도록 컴팩트) */}
-      <LanguageProvider><VoiceTranslator inline /></LanguageProvider>
+      <LanguageProvider><VoiceTranslator inline big /></LanguageProvider>
+
+      {/* 이미지 번역 (자체 제목 있음) */}
+      <div style={{ marginTop: 14 }}><MenuScanner /></div>
 
       {/* 🆘 긴급 SOS */}
-      <div style={{ marginTop: 10 }}><SosButton /></div>
+      <div style={{ marginTop: 12 }}><SosButton /></div>
     </main>
   );
 }
