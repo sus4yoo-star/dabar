@@ -5,14 +5,17 @@ import { theme } from "@/lib/theme";
 import AppShell from "@/components/besora/AppShell";
 import ShareSection from "@/components/besora/ShareSection";
 import ToolCard from "@/components/besora/ToolCard";
+import LanguageToggle from "@/components/besora/LanguageToggle";
 import { fetchTools } from "@/lib/besora/content";
 import type { Tool } from "@/lib/besora/types";
 import { useLang } from "@/lib/besora/LanguageContext";
 import { ui } from "@/lib/besora/i18n";
+import { useI18n } from "@/lib/i18n";
 
-// 복음 전하기 허브 — 상단 언어선택은 제거(언어는 아래 음성 통역에서 선택).
+// 복음 전하기 허브 — 상단에서 내 언어↔상대 언어를 고르면, 도구가 상대 언어로 표시된다.
 export default function ShareHome() {
   const { myLang, ready } = useLang();
+  const { t: tt } = useI18n();
   const [tools, setTools] = useState<Tool[]>([]);
   const [err, setErr] = useState<string | null>(null);
 
@@ -32,6 +35,12 @@ export default function ShareHome() {
           <button onClick={load} style={{ fontSize: 13.5, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 10, padding: "9px 20px", cursor: "pointer" }}>🔄 {ui(myLang, "retry")}</button>
         </div>
       )}
+
+      {/* 언어 설정 — 내 언어 ↔ 상대(전할 대상) 언어. 상대 언어를 고르면 아래 도구가 그 언어로 표시됨 */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 7, margin: "2px 0 16px" }}>
+        <LanguageToggle />
+        <p style={{ fontSize: 11.5, color: theme.textMuted, margin: 0, textAlign: "center", lineHeight: 1.5 }}>{tt("share.langHint")}</p>
+      </div>
 
       {/* 도구 선택 — 골드 섹션 라벨(아이콘 + 세리프 + 가로선, /reach 와 동일) */}
       <ShareSection icon="megaphone">{ui(myLang, "chooseTool")}</ShareSection>
