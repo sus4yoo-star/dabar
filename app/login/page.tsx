@@ -9,7 +9,7 @@ import BrandMark from "@/components/BrandMark";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, loading, signIn } = useAuth();
+  const { user, loading, signIn, enterGuestMode } = useAuth();
   const { t } = useI18n();
   const { show, view: toastView } = useToast();
   const [busy, setBusy] = useState<"google" | "kakao" | "apple" | null>(null);
@@ -150,7 +150,7 @@ export default function LoginPage() {
 
         {/* 로그인 없이 둘러보기 — 계정과 무관한 기능은 게스트로 자유롭게 (App Store 5.1.1) */}
         <button
-          onClick={() => router.push("/")}
+          onClick={() => { enterGuestMode(); router.push("/"); }}
           style={{ marginTop: 18, background: "none", border: "none", color: theme.primarySoft, fontSize: 14.5, fontWeight: 700, textDecoration: "underline", cursor: "pointer" }}
         >
           {t("login.browse")}

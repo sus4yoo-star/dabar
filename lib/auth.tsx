@@ -24,6 +24,8 @@ interface AuthState {
   verifyEmailCode: (email: string, code: string) => Promise<void>; // 받은 코드로 로그인
   signOut: () => Promise<void>;
   updateNickname: (name: string) => Promise<boolean>;
+  guestMode: boolean;        // 로그인 화면에서 "둘러보기"를 택한 게스트 (이 세션 동안 홈 접근 허용)
+  enterGuestMode: () => void;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -51,6 +53,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [nickname, setNickname] = useState<string>("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLeader, setIsLeader] = useState(false);
+  // "둘러보기"를 누른 게스트. 세션 동안만 유지(앱을 새로 켜면 다시 로그인 화면부터).
+  const [guestMode, setGuestMode] = useState(false);
+  useEffect(() => {
+    try { if (sessionStorage.getItem("dabar_guest") === "1") setGuestMode(true); } catch { /* */ }
+  }, []);
+  const enterGuestMode = useCallback(() => {
+    try { sessionStorage.setItem("dabar_guest", "1"); } catch { /* */ }
+    setGuestMode(true);
+  }, []);
 
   // 프로필 보장: 없으면 생성(소셜 이름으로), 있으면 닉네임은 유지하고
   // 아바타/공급자만 갱신한다. (사용자가 바꾼 닉네임을 덮어쓰지 않도록)
@@ -194,6 +205,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         verifyEmailCode,
         signOut,
         updateNickname,
+        guestMode,
+        enterGuestMode,
       }}
     >
       {children}
