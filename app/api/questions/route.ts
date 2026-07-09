@@ -1,10 +1,15 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { LANGS_BASE } from "@/lib/langs";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+
+// 문제를 제공할 수 있는 언어 = 앱이 정의한 전체 언어(lib/langs). 해당 언어 문제가
+// 아직 없으면 아래에서 한국어로 폴백한다. (언어 추가 시 이 파일은 안 건드려도 됨)
+const VALID_LANGS = new Set(LANGS_BASE.map((l) => l.code));
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -15,7 +20,7 @@ export async function GET(req: NextRequest) {
   const complete  = searchParams.get("complete") === "1"; // 빠짐없이 풀기(완주) — 범위 내 전 문제 고정 순서
   const booksRaw  = searchParams.get("books");
   const langRaw   = searchParams.get("lang") || "ko";
-  const lang      = ["ko", "en", "th", "lo"].includes(langRaw) ? langRaw : "ko";
+  const lang      = VALID_LANGS.has(langRaw) ? langRaw : "ko";
 
   const books = booksRaw ? booksRaw.split(",").map(b => b.trim()).filter(Boolean) : [];
 
