@@ -26,14 +26,6 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [playedToday, setPlayedToday] = useState(false);
   const [unread, setUnread] = useState(0);
-  const [showOnboard, setShowOnboard] = useState(false);
-
-  // 첫 방문(비로그인) 1회 온보딩 안내
-  useEffect(() => {
-    if (loading || user) { setShowOnboard(false); return; }
-    try { if (!localStorage.getItem("dabar_onboarded")) setShowOnboard(true); } catch { /* */ }
-  }, [user, loading]);
-  function dismissOnboard() { setShowOnboard(false); try { localStorage.setItem("dabar_onboarded", "1"); } catch { /* */ } }
 
   useEffect(() => {
     if (!user) { setUnread(0); return; }
@@ -81,26 +73,6 @@ export default function Home() {
 
       {/* iOS 사파리 사용자에게 '홈 화면에 추가' 1회 안내 */}
       <InstallHint />
-
-      {/* 첫 사용자 온보딩 (비로그인 첫 방문 1회) */}
-      {showOnboard && (
-        <div className="fade-in" style={{ marginBottom: 12, padding: "16px 17px", borderRadius: 18, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
-            <span style={{ fontSize: 17, fontWeight: 800, color: theme.gold, lineHeight: 1.3 }}>{t("onboard.title")}</span>
-            <button onClick={dismissOnboard} aria-label="close" style={{ flexShrink: 0, fontSize: 16, color: theme.textMuted, background: "transparent", border: "none", cursor: "pointer", padding: 4, lineHeight: 1 }}>✕</button>
-          </div>
-          <p style={{ fontSize: 13.5, color: theme.textMuted, margin: "4px 0 12px", lineHeight: 1.5 }}>{t("onboard.sub")}</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {["onboard.f1", "onboard.f2", "onboard.f3", "onboard.f4"].map((k) => (
-              <span key={k} style={{ fontSize: 14.5, fontWeight: 600, color: theme.text, lineHeight: 1.4 }}>{t(k)}</span>
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
-            <button onClick={() => router.push("/login")} style={{ flex: 1, padding: "13px", fontSize: 15, fontWeight: 800, color: "#fff", background: theme.primary, border: "none", borderRadius: 13, cursor: "pointer" }}>{t("onboard.start")}</button>
-            <button onClick={dismissOnboard} style={{ flex: 1, padding: "13px", fontSize: 15, fontWeight: 700, color: theme.textMuted, background: theme.card, border: `1px solid ${theme.cardBorder}`, borderRadius: 13, cursor: "pointer" }}>{t("onboard.browse")}</button>
-          </div>
-        </div>
-      )}
 
       {/* 히어로 */}
       <div className="fade-in" style={{ textAlign: "center", marginBottom: 7 }}>

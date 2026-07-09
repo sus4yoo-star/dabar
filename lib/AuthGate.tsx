@@ -27,21 +27,26 @@ function Splash() {
   );
 }
 
-// 게스트도 대부분의 화면을 자유롭게 쓰고, 계정 기반 기능에 들어갈 때만 로그인으로 유도한다.
+// 깔끔한 진입: 앱을 열면 먼저 로그인 화면. 거기서 "로그인 없이 둘러보기"를 누르면
+// 게스트로 홈을 볼 수 있고, 계정 무관 기능은 자유롭게 쓴다(App Store 5.1.1).
+// 계정 기반 기능(소그룹·동행·랭킹·진도·계정 등)만 로그인을 요구한다.
 export function AuthGate({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading, guestMode } = useAuth();
   const pathname = usePathname() || "/";
   const router = useRouter();
   const needsAuth = AUTH_REQUIRED_PREFIXES.some(p => pathname === p || pathname.startsWith(p + "/"));
+  // 홈 첫 진입("/")은 로그인 화면으로 보낸다. "둘러보기"(guestMode)를 택한 뒤엔 통과.
+  const homeGate = pathname === "/" && !guestMode;
+  const blocked = !user && (needsAuth || homeGate);
 
   useEffect(() => {
     if (loading) return;
-    if (!user && needsAuth) router.replace("/login");
-  }, [loading, user, needsAuth, router]);
+    if (blocked) router.replace("/login");
+  }, [loading, blocked, router]);
 
   // 로그인 상태 확인 중 → 스플래시
   if (loading) return <Splash />;
-  // 비로그인 + 계정 기반 페이지 → 리다이렉트 되는 동안 빈 스플래시(내용 노출 방지)
-  if (!user && needsAuth) return <Splash />;
+  // 리다이렉트 되는 동안 빈 스플래시(내용 노출 방지)
+  if (blocked) return <Splash />;
   return <>{children}</>;
 }
