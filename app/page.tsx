@@ -134,6 +134,9 @@ export default function Home() {
       {/* 마음에 닿는 말씀 */}
       <NavCard icon={<MenuIcon name="heart" color="var(--a-amber-fg)" />} title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} accent={ACCENT.amber} />
 
+      {/* ⛪ 교회와 연결 — 지역·연락처를 받으면 관리자가 검증된 교회를 직접 소개 */}
+      <NavCard icon={<span style={{ fontSize: 22, lineHeight: 1 }}>⛪</span>} title={t("home.connectTitle")} sub={t("home.connectSub")} onClick={() => router.push("/connect")} accent={ACCENT.green} />
+
       {/* 빠른 이동 — 동행 / 랭킹 / 오답 */}
       <div style={{ display: "flex", gap: 8, marginTop: 7 }}>
         <QuickChip icon="userPlus" label={t("common.companions")} onClick={() => router.push("/share/me")} badge={unread} />
