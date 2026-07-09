@@ -168,8 +168,10 @@ const DICT: Dict = {
   "menu.quiz.t":      { ko: "성경퀴즈", en: "Bible Quiz", th: "ควิซพระคัมภีร์", lo: "ຄິວສ໌ພຣະຄຳພີ" },
   "menu.quiz.s":      { ko: "말씀 퀴즈로 도전 · 랭킹", en: "Quiz & ranking", th: "ควิซและอันดับ", lo: "ຄິວສ໌ ແລະ ອັນດັບ" },
 
-  "login.tagline1":   { ko: "말씀을 즐겁게, 퀴즈로 만나는 시간.", en: "Meet the Word, joyfully — through quiz.", th: "พบพระวจนะอย่างสนุก ผ่านควิซ", lo: "ພົບພຣະທຳຢ່າງມ່ວນຊື່ນ ຜ່ານຄິວສ໌" },
-  "login.tagline2":   { ko: "남녀노소 누구나 함께해요.", en: "For everyone, all ages.", th: "สำหรับทุกเพศทุกวัย", lo: "ສຳລັບທຸກເພດທຸກໄວ" },
+  "login.subtitle":   { ko: "복음 · 선교 · 양육 동행자", en: "Gospel · Missions · Discipleship", th: "ข่าวประเสริฐ · พันธกิจ · การเลี้ยงดู", lo: "ຂ່າວປະເສີດ · ພັນທະກິດ · ການບຳລຸງລ້ຽງ" },
+  "login.tagline1":   { ko: "복음을 전하고, 말씀으로 함께 자라는", en: "Share the gospel, grow in the Word —", th: "ประกาศข่าวประเสริฐ เติบโตในพระวจนะ", lo: "ປະກາດຂ່າວປະເສີດ ເຕີບໂຕໃນພຣະທຳ" },
+  "login.tagline2":   { ko: "선교 현장의 동행자", en: "your companion in the mission field.", th: "เพื่อนร่วมทางในสนามพันธกิจ", lo: "ເພື່ອນຮ່ວມທາງໃນສະໜາມພັນທະກິດ" },
+  "login.browse":     { ko: "로그인 없이 둘러보기 →", en: "Explore without signing in →", th: "ดูโดยไม่ต้องเข้าสู่ระบบ →", lo: "ເບິ່ງໂດຍບໍ່ຕ້ອງເຂົ້າສູ່ລະບົບ →" },
   "login.kakao":      { ko: "카카오로 시작하기", en: "Start with Kakao", th: "เริ่มด้วย Kakao", lo: "ເລີ່ມດ້ວຍ Kakao" },
   "login.google":     { ko: "구글(Gmail)로 시작하기", en: "Continue with Google", th: "ดำเนินการต่อด้วย Google", lo: "ດຳເນີນຕໍ່ດ້ວຍ Google" },
   "login.apple":      { ko: "Apple로 시작하기", en: "Continue with Apple", th: "ดำเนินการต่อด้วย Apple", lo: "ດຳເນີນຕໍ່ດ້ວຍ Apple" },

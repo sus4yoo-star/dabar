@@ -76,7 +76,7 @@ export default function LoginPage() {
           <span style={{ width: 34, height: 1, background: "linear-gradient(90deg, var(--t-sacred), transparent)" }} />
         </div>
         <p style={{ fontSize: 13, color: theme.textMuted, letterSpacing: 3, margin: "0 0 18px" }}>
-          다바르 · 말씀 퀴즈
+          {t("login.subtitle")}
         </p>
         <p style={{ fontSize: 14.5, lineHeight: 1.7, color: theme.textMuted, margin: "0 0 26px" }}>
           {t("login.tagline1")}<br />
@@ -148,7 +148,15 @@ export default function LoginPage() {
           {busy === "apple" ? t("login.redirecting") : t("login.apple")}
         </button>
 
-        <p style={{ fontSize: 12.5, color: theme.textFaint, marginTop: 20, lineHeight: 1.6 }}>
+        {/* 로그인 없이 둘러보기 — 계정과 무관한 기능은 게스트로 자유롭게 (App Store 5.1.1) */}
+        <button
+          onClick={() => router.push("/")}
+          style={{ marginTop: 18, background: "none", border: "none", color: theme.primarySoft, fontSize: 14.5, fontWeight: 700, textDecoration: "underline", cursor: "pointer" }}
+        >
+          {t("login.browse")}
+        </button>
+
+        <p style={{ fontSize: 12.5, color: theme.textFaint, marginTop: 16, lineHeight: 1.6 }}>
           {t("login.free")}
         </p>
 
