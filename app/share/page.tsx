@@ -5,7 +5,6 @@ import { theme } from "@/lib/theme";
 import AppShell from "@/components/besora/AppShell";
 import ShareSection from "@/components/besora/ShareSection";
 import ToolCard from "@/components/besora/ToolCard";
-import VoiceTranslator from "@/components/besora/VoiceTranslator";
 import { fetchTools } from "@/lib/besora/content";
 import type { Tool } from "@/lib/besora/types";
 import { useLang } from "@/lib/besora/LanguageContext";
@@ -42,9 +41,7 @@ export default function ShareHome() {
         {tools[4] && <div style={{ gridColumn: "span 2" }}><ToolCard tool={tools[4]} wide /></div>}
       </div>
 
-      {/* 🎤 음성 통역 — 언어 선택도 여기서 (내 언어 ↔ 상대 언어) */}
-      <ShareSection icon="mic">{ui(myLang, "voice")}</ShareSection>
-      <VoiceTranslator inline />
+      {/* 실시간 통역은 '선교 도구'(/reach)로 이동 — 여기는 전도 도구(글없는책·다리·사영리)만 */}
 
       {!ready && <p style={{ marginTop: 16, textAlign: "center", fontSize: 12, color: theme.textMuted }}>…</p>}
     </AppShell>
