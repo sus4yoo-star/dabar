@@ -108,7 +108,10 @@ export default function Home() {
         )}
       </div>
 
-      {/* 복음 전하기 — 메인 CTA (유일한 골드 포인트 · 위계 최상단) */}
+      {/* ⛪ 교회와 연결 — 맨 위. 지역·연락처를 받으면 관리자가 검증된 교회를 직접 소개 */}
+      <NavCard icon={<span style={{ fontSize: 22, lineHeight: 1 }}>⛪</span>} title={t("home.connectTitle")} sub={t("home.connectSub")} onClick={() => router.push("/connect")} accent={ACCENT.blue} />
+
+      {/* 복음 전하기 — 메인 CTA (유일한 골드 포인트) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
         style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 15px", borderRadius: 16, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
         <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="megaphone" color="var(--t-sacred)" size={23} /></span>
@@ -127,9 +130,6 @@ export default function Home() {
 
       {/* 성경퀴즈 */}
       <NavCard icon={<MenuIcon name="book" color="var(--a-blue-fg)" />} title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} accent={ACCENT.blue} />
-
-      {/* ⛪ 교회와 연결 — 지역·연락처를 받으면 관리자가 검증된 교회를 직접 소개 (소그룹 카드 자리) */}
-      <NavCard icon={<span style={{ fontSize: 22, lineHeight: 1 }}>⛪</span>} title={t("home.connectTitle")} sub={t("home.connectSub")} onClick={() => router.push("/connect")} accent={ACCENT.blue} />
 
       {/* 마음에 닿는 말씀 */}
       <NavCard icon={<MenuIcon name="heart" color="var(--a-amber-fg)" />} title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} accent={ACCENT.amber} />

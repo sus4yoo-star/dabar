@@ -145,7 +145,7 @@ const DICT: Dict = {
 
   // 교회 연결 — 지역·연락처를 받아 관리자가 검증된 교회에 직접 소개
   "home.connectTitle":{ ko: "교회와 연결되고 싶어요", en: "I'd like to connect with a church", th: "อยากเชื่อมต่อกับคริสตจักร", lo: "ຢາກເຊື່ອມຕໍ່ກັບຄຣິສຕະຈັກ" },
-  "home.connectSub":  { ko: "지역·연락처를 남기면 · 신뢰할 수 있는 교회를 직접 소개해 드려요", en: "Leave your area & contact · we'll personally introduce a trusted church", th: "ฝากพื้นที่และช่องทางติดต่อ · เราจะแนะนำคริสตจักรที่ไว้ใจได้ให้โดยตรง", lo: "ຝາກເຂດແລະຊ່ອງທາງຕິດຕໍ່ · ພວກເຮົາຈະແນະນຳຄຣິສຕະຈັກທີ່ໄວ້ໃຈໄດ້ໃຫ້ໂດຍກົງ" },
+  "home.connectSub":  { ko: "가까운 교회를 직접 소개해 드려요", en: "We'll personally introduce a church near you", th: "เราจะแนะนำคริสตจักรใกล้คุณโดยตรง", lo: "ພວກເຮົາຈະແນະນຳຄຣິສຕະຈັກໃກ້ເຈົ້າໂດຍກົງ" },
   "conn.title":       { ko: "교회와 연결되기", en: "Connect with a church", th: "เชื่อมต่อกับคริสตจักร", lo: "ເຊື່ອມຕໍ່ກັບຄຣິສຕະຈັກ" },
   "conn.intro":       { ko: "아래 정보를 남겨 주시면, 저희가 직접 확인하고 신뢰할 수 있는 가까운 교회를 소개해 드려요. 보통 며칠 안에 연락드립니다.", en: "Leave your details below and we'll personally find and introduce a trusted church near you. We usually reach out within a few days.", th: "ฝากข้อมูลด้านล่าง แล้วเราจะตรวจสอบและแนะนำคริสตจักรที่ไว้ใจได้ใกล้คุณให้โดยตรง โดยปกติจะติดต่อกลับภายในไม่กี่วัน", lo: "ຝາກຂໍ້ມູນລຸ່ມນີ້ ແລ້ວພວກເຮົາຈະກວດສອບແລະແນະນຳຄຣິສຕະຈັກທີ່ໄວ້ໃຈໄດ້ໃກ້ເຈົ້າໃຫ້ໂດຍກົງ ປົກກະຕິຈະຕິດຕໍ່ກັບພາຍໃນສອງສາມມື້" },
   "conn.name":        { ko: "이름 (또는 부르실 이름)", en: "Name (or what to call you)", th: "ชื่อ (หรือชื่อที่ให้เรียก)", lo: "ຊື່ (ຫຼືຊື່ທີ່ໃຫ້ເອີ້ນ)" },
