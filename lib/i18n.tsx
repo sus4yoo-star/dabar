@@ -176,7 +176,7 @@ const DICT: Dict = {
   "login.google":     { ko: "구글(Gmail)로 시작하기", en: "Continue with Google", th: "ดำเนินการต่อด้วย Google", lo: "ດຳເນີນຕໍ່ດ້ວຍ Google" },
   "login.apple":      { ko: "Apple로 시작하기", en: "Continue with Apple", th: "ดำเนินการต่อด้วย Apple", lo: "ດຳເນີນຕໍ່ດ້ວຍ Apple" },
   "login.redirecting":{ ko: "이동 중...", en: "Redirecting...", th: "กำลังนำทาง...", lo: "ກຳລັງນຳທາງ..." },
-  "login.free":       { ko: "가입은 무료예요. 카카오·구글 계정으로 3초 만에 시작할 수 있어요.", en: "Free to join — start in 3 seconds with Kakao or Google.", th: "สมัครฟรี เริ่มได้ใน 3 วินาทีด้วย Kakao หรือ Google", lo: "ສະໝັກຟຣີ ເລີ່ມໄດ້ໃນ 3 ວິນາທີດ້ວຍ Kakao ຫຼື Google" },
+  "login.free":       { ko: "가입은 무료예요. 카카오·구글·Apple 계정으로 3초 만에 시작할 수 있어요.", en: "Free to join — start in 3 seconds with Kakao, Google, or Apple.", th: "สมัครฟรี เริ่มได้ใน 3 วินาทีด้วย Kakao, Google หรือ Apple", lo: "ສະໝັກຟຣີ ເລີ່ມໄດ້ໃນ 3 ວິນາທີດ້ວຍ Kakao, Google ຫຼື Apple" },
   "login.fail":       { ko: "로그인을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.", en: "Couldn't start login. Please try again shortly.", th: "เริ่มเข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", lo: "ເລີ່ມເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່" },
   // 로그인 콜백 (카카오·구글 후 돌아오는 화면)
   "auth.cbLoading":   { ko: "로그인 중...", en: "Signing in...", th: "กำลังเข้าสู่ระบบ...", lo: "ກຳລັງເຂົ້າສູ່ລະບົບ..." },

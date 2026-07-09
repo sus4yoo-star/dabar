@@ -3,7 +3,7 @@
 //    → 배포 후 최신 화면이 바로 뜨면서도, 신호가 약한 선교 현장에서 오프라인에도 앱이 열린다.
 //  · 정적 자원(JS/CSS/이미지/폰트): stale-while-revalidate (즉시 캐시 + 백그라운드 갱신)
 //  · API(/api/*): 절대 캐시하지 않음 (항상 네트워크)
-const SW_VERSION = "2026-06-16-1";
+const SW_VERSION = "2026-07-08-1";
 const CACHE = `dabar-rt-${SW_VERSION}`;
 const APP_SHELL = "/"; // 오프라인 시 최후 폴백으로 보여줄 셸
 
