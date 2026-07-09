@@ -108,15 +108,15 @@ export default function Home() {
         )}
       </div>
 
-      {/* ⛪ 교회와 연결 — 맨 위 대표 카드(진한 골드 채움). 관리자가 검증된 교회를 직접 소개 */}
+      {/* ⛪ 교회와 연결 — 맨 위. 골드 외곽선(복음 전하기와 같은 결). 관리자가 검증된 교회를 직접 소개 */}
       <button onClick={() => router.push("/connect")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "14px 16px", borderRadius: 16, border: "none", background: "var(--t-sacred)", cursor: "pointer", color: "#fff", boxShadow: "0 10px 26px rgba(199,154,43,0.28)" }}>
-        <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "rgba(255,255,255,0.18)", display: "grid", placeItems: "center" }}><MenuIcon name="church" color="#fff" size={23} /></span>
+        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 15px", borderRadius: 16, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
+        <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="church" color="var(--t-sacred)" size={23} /></span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "#fff", letterSpacing: -0.2 }}>{t("home.connectTitle")}</span>
-          <span style={{ display: "block", fontSize: 12.5, color: "rgba(255,255,255,0.88)", marginTop: 2, lineHeight: 1.4 }}>{t("home.connectSub")}</span>
+          <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.connectTitle")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.connectSub")}</span>
         </span>
-        <span style={{ fontSize: 16, color: "rgba(255,255,255,0.9)" }}>›</span>
+        <span style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
       </button>
 
       {/* 복음 전하기 — 메인 CTA (유일한 골드 포인트) */}
