@@ -108,18 +108,10 @@ export default function Home() {
         )}
       </div>
 
-      {/* ⛪ 교회와 연결 — 맨 위. 골드 외곽선(복음 전하기와 같은 결). 관리자가 검증된 교회를 직접 소개 */}
-      <button onClick={() => router.push("/connect")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 15px", borderRadius: 16, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
-        <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="church" color="var(--t-sacred)" size={23} /></span>
-        <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.connectTitle")}</span>
-          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.connectSub")}</span>
-        </span>
-        <span style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
-      </button>
+      {/* ── ① 전하기 · 만남 ─────────────── */}
+      <Section>{t("home.secShare")}</Section>
 
-      {/* 복음 전하기 — 메인 CTA (유일한 골드 포인트) */}
+      {/* 복음 전하기 — 전도 도구(글없는책·다리·사영리) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
         style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 15px", borderRadius: 16, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
         <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="megaphone" color="var(--t-sacred)" size={23} /></span>
@@ -130,17 +122,29 @@ export default function Home() {
         <span style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
       </button>
 
-      {/* 🌱 선교 여정 — 복음 전하기와 같은 결(골드), 2번째 */}
+      {/* 선교 도구 — 현장 도구·통역·전도 기록 (/reach) */}
       <HomeReachCard />
 
-      {/* 양육·교육 과정 — 3번째 */}
+      {/* ── ② 양육 · 자라기 ─────────────── */}
+      <Section>{t("home.secGrow")}</Section>
+
       <NavCard icon={<MenuIcon name="grad" color="var(--a-green-fg)" />} title={t("home.growSection")} sub={t("home.growSub")} onClick={() => router.push("/learn")} accent={ACCENT.green} />
-
-      {/* 성경퀴즈 */}
       <NavCard icon={<MenuIcon name="book" color="var(--a-blue-fg)" />} title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} accent={ACCENT.blue} />
-
-      {/* 마음에 닿는 말씀 */}
       <NavCard icon={<MenuIcon name="heart" color="var(--a-amber-fg)" />} title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} accent={ACCENT.amber} />
+
+      {/* ── ③ 정착 · 교회로 ─────────────── */}
+      <Section>{t("home.secSettle")}</Section>
+
+      {/* 교회와 연결 — 지역교회 소개 (골드 외곽선) */}
+      <button onClick={() => router.push("/connect")} className="fade-in-2"
+        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 15px", borderRadius: 16, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
+        <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="church" color="var(--t-sacred)" size={23} /></span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.connectTitle")}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.connectSub")}</span>
+        </span>
+        <span style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
+      </button>
 
       {/* 빠른 이동 — 동행 / 랭킹 / 오답 */}
       <div style={{ display: "flex", gap: 8, marginTop: 7 }}>
@@ -169,6 +173,16 @@ const ACCENT: Record<"green" | "blue" | "amber", Accent> = {
   blue:  { fg: "var(--a-blue-fg)",  chip: "var(--a-blue-chip)",  bg: "var(--a-blue-bg)",  border: "var(--a-blue-border)" },
   amber: { fg: "var(--a-amber-fg)", chip: "var(--a-amber-chip)", bg: "var(--a-amber-bg)", border: "var(--a-amber-border)" },
 };
+
+// 홈 섹션 구분 라벨 — 얇은 라인 + 작은 대문자풍 라벨(카드 색과 경쟁하지 않게 중립톤)
+function Section({ children }: { children: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 9, margin: "18px 3px 4px" }}>
+      <span style={{ fontSize: 11.5, fontWeight: 800, color: theme.textFaint, letterSpacing: 1.3, whiteSpace: "nowrap" }}>{children}</span>
+      <span style={{ flex: 1, height: 1, background: theme.border }} />
+    </div>
+  );
+}
 
 function NavCard({ icon, title, sub, onClick, accent }: { icon: ReactNode; title: string; sub: string; onClick: () => void; accent: Accent }) {
   return (

@@ -130,6 +130,9 @@ const DICT: Dict = {
   "scan.close":   { ko: "닫기", en: "Close", th: "ปิด", lo: "ປິດ" },
 
   "home.tagline":     { ko: "오늘도 말씀과 함께 🌿 무엇부터 시작할까요?", en: "With the Word today 🌿 where shall we begin?", th: "อยู่กับพระวจนะวันนี้ 🌿 เริ่มจากตรงไหนดี?", lo: "ຢູ່ກັບພຣະທຳມື້ນີ້ 🌿 ເລີ່ມຈາກໃສດີ?" },
+  "home.secShare":    { ko: "전하기 · 만남", en: "Share · Reach", th: "ประกาศ · เข้าถึง", lo: "ປະກາດ · ເຂົ້າເຖິງ" },
+  "home.secGrow":     { ko: "양육 · 자라기", en: "Grow · Disciple", th: "เติบโต · สาวก", lo: "ເຕີບໂຕ · ສາວົກ" },
+  "home.secSettle":   { ko: "정착 · 교회로", en: "Settle · Church", th: "ปักหลัก · คริสตจักร", lo: "ຕັ້ງຫຼັກ · ຄຣິສຕະຈັກ" },
   "home.greeting":    { ko: "{name}님, 오늘도 말씀과 함께해요 👋", en: "{name}, walk with the Word today 👋", th: "{name} วันนี้มาเดินกับพระวจนะกัน 👋", lo: "{name} ມື້ນີ້ມາຍ່າງກັບພຣະທຳນຳກັນ 👋" },
   "home.streakToday": { ko: "🔥 {n}일 연속 출석!", en: "🔥 {n}-day streak!", th: "🔥 ต่อเนื่อง {n} วัน!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້!" },
   "home.streakGo":    { ko: "🔥 {n}일 연속 — 오늘도 풀면 이어져요!", en: "🔥 {n}-day streak — keep it going today!", th: "🔥 ต่อเนื่อง {n} วัน — ทำต่อวันนี้สิ!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້ — ເຮັດຕໍ່ມື້ນີ້ເລີຍ!" },
@@ -166,7 +169,7 @@ const DICT: Dict = {
   "conn.stConnected": { ko: "연결됨", en: "Connected", th: "เชื่อมต่อแล้ว", lo: "ເຊື່ອມຕໍ່ແລ້ວ" },
   "conn.stClosed":    { ko: "종료", en: "Closed", th: "ปิด", lo: "ປິດ" },
   "home.shareTitle":  { ko: "복음 전하기 · 새신자 영접", en: "Share the Gospel · Lead to Christ", th: "ประกาศข่าวประเสริฐ · นำสู่พระคริสต์", lo: "ປະກາດຂ່າວປະເສີດ · ນຳສູ່ພຣະຄຣິດ" },
-  "home.shareSub":    { ko: "다국어·음성으로 복음을 전하고 영접까지", en: "Share in many languages & voice, to decision", th: "ประกาศหลายภาษา·เสียง จนถึงการตัดสินใจ", lo: "ປະກາດຫຼາຍພາສາ·ສຽງ ຈົນຮอດການຕັດສິນໃຈ" },
+  "home.shareSub":    { ko: "글 없는 책·다리 예화·사영리 등 전도 도구", en: "Wordless Book · Bridge · Four Laws — gospel tools", th: "หนังสือไร้คำ · สะพาน · สี่กฎ — เครื่องมือประกาศ", lo: "ໜັງສືບໍ່ມີຄຳ · ຂົວ · ສີ່ກົດ — ເຄື່ອງມືປະກາດ" },
 
   // 첫 사용자 온보딩 (비로그인 첫 방문 시 1회)
   "onboard.title":  { ko: "다바르에 오신 걸 환영해요 🙏", en: "Welcome to DABAR 🙏", th: "ยินดีต้อนรับสู่ DABAR 🙏", lo: "ຍິນດີຕ້ອນຮັບສູ່ DABAR 🙏" },
@@ -505,9 +508,9 @@ const DICT: Dict = {
   "cf.e5":         { ko: "용기가 필요해요", en: "Need courage", th: "ต้องการกำลังใจ", lo: "ຕ້ອງການກຳລັງໃຈ" },
   "cf.e6":         { ko: "감사해요", en: "Grateful", th: "ขอบคุณ", lo: "ຂອບໃຈ" },
   // 전도 여정 (내가 전하는 사람들)
-  "home.reachTitle": { ko: "선교 여정", en: "Mission", th: "พันธกิจ", lo: "ມິຊັນ" },
-  "home.reachSub":   { ko: "환율 계산 · 이미지 번역 · 음성·문자 통역", en: "Exchange · image translate · voice & text", th: "อัตราแลกเปลี่ยน · แปลรูป · เสียง·ข้อความ", lo: "ອັດຕາ · ແປຮູບ · ສຽງ·ຂໍ້ຄວາມ" },
-  "reach.title":   { ko: "선교 여정", en: "Mission", th: "พันธกิจ", lo: "ມິຊັນ" },
+  "home.reachTitle": { ko: "선교 도구", en: "Mission tools", th: "เครื่องมือพันธกิจ", lo: "ເຄື່ອງມືພັນທະກິດ" },
+  "home.reachSub":   { ko: "환율 · 이미지 번역 · 통역 · 전도 기록", en: "exchange · image translate · interpreter · outreach log", th: "อัตรา · แปลรูป · ล่าม · บันทึกประกาศ", lo: "ອັດຕາ · ແປຮູບ · ລ່າມ · ບັນທຶກ" },
+  "reach.title":   { ko: "선교 도구", en: "Mission tools", th: "เครื่องมือพันธกิจ", lo: "ເຄື່ອງມືພັນທະກິດ" },
   "reach.sub":     { ko: "선교 현장의 동행 도구", en: "Tools for the mission field", th: "เครื่องมือสำหรับงานพันธกิจ", lo: "ເຄື່ອງມືສຳລັບພັນທະກິດ" },
   "reach.secTools":{ ko: "현장 도구", en: "Field tools", th: "เครื่องมือ", lo: "ເຄື່ອງມື" },
   "reach.secVoice":{ ko: "실시간 통역", en: "Live interpreter", th: "ล่ามสด", lo: "ການແປສົດ" },
