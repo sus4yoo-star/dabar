@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
 import { useI18n } from "@/lib/i18n";
 
-const EMAIL = "easyonline0323@gmail.com";
+const EMAIL = "hello@theamov.com";
 
 type Sec = { t: string; body: string };
 type Doc = { back: string; heading: string; intro: string; sections: Sec[]; contact: string; note?: string };
