@@ -128,8 +128,8 @@ export default function Home() {
       {/* 성경퀴즈 */}
       <NavCard icon={<MenuIcon name="book" color="var(--a-blue-fg)" />} title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} accent={ACCENT.blue} />
 
-      {/* 소그룹 모임 */}
-      <NavCard icon={<MenuIcon name="users" color="var(--a-blue-fg)" />} title={t("home.groupsTitle")} sub={t("home.groupsSub")} onClick={() => router.push("/groups")} accent={ACCENT.blue} />
+      {/* ⛪ 교회와 연결 — 지역·연락처를 받으면 관리자가 검증된 교회를 직접 소개 (소그룹 카드 자리) */}
+      <NavCard icon={<span style={{ fontSize: 22, lineHeight: 1 }}>⛪</span>} title={t("home.connectTitle")} sub={t("home.connectSub")} onClick={() => router.push("/connect")} accent={ACCENT.blue} />
 
       {/* 마음에 닿는 말씀 */}
       <NavCard icon={<MenuIcon name="heart" color="var(--a-amber-fg)" />} title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} accent={ACCENT.amber} />

@@ -18,16 +18,34 @@ interface Row {
   quiz_correct: number;
 }
 
+// 교회 연결 요청 (사람이 확인 후 직접 소개 — 앱은 접수·상태 관리만)
+interface ConnReq {
+  id: string;
+  name: string;
+  contact: string;
+  region: string;
+  lang: string | null;
+  note: string | null;
+  status: string; // pending | contacted | connected | closed
+  created_at: string;
+}
+const CONN_STATUSES = ["pending", "contacted", "connected", "closed"] as const;
+
 export default function AdminPage() {
   const router = useRouter();
   const { t } = useI18n();
   const { user, isAdmin, loading } = useAuth();
   const [rows, setRows] = useState<Row[] | null>(null);
+  const [connReqs, setConnReqs] = useState<ConnReq[] | null>(null);
 
   useEffect(() => {
     if (loading) return;
     if (!user) { router.replace("/login"); return; }
     if (!isAdmin) return;
+    // 교회 연결 요청 목록 (RLS: 관리자만 조회 가능)
+    supabase.from("church_connect_requests").select("id, name, contact, region, lang, note, status, created_at")
+      .order("created_at", { ascending: false }).limit(200)
+      .then(({ data }) => setConnReqs((data as ConnReq[]) ?? []));
     (async () => {
       // 개인 진도는 비공개 — 관리자만 호출 가능한 보안 RPC 로 집계 데이터를 받는다.
       const { data, error } = await supabase.rpc("admin_dashboard");
@@ -69,6 +87,47 @@ export default function AdminPage() {
         <button onClick={() => router.push("/")} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 14px", cursor: "pointer" }}>{t("r.home")}</button>
       </div>
       <p style={{ fontSize: 12.5, color: theme.textMuted, margin: "0 0 1.25rem" }}>{t("ad.desc")}</p>
+
+      {/* ⛪ 교회 연결 요청 — 사람이 확인하고 직접 소개. 여기서는 접수 확인·상태 관리만 한다. */}
+      <section style={{ marginBottom: "1.75rem" }}>
+        <h2 className="serif" style={{ fontSize: 17, fontWeight: 800, color: theme.gold, margin: "0 0 10px" }}>
+          {t("conn.adTitle")}{connReqs && connReqs.length > 0 ? ` (${connReqs.filter(r => r.status === "pending").length}/${connReqs.length})` : ""}
+        </h2>
+        {connReqs === null && <SkeletonList count={2} />}
+        {connReqs && connReqs.length === 0 && <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{t("conn.adEmpty")}</p>}
+        {connReqs && connReqs.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {connReqs.map(r => {
+              const stColor = r.status === "pending" ? theme.wrong : r.status === "connected" ? theme.correct : theme.textMuted;
+              return (
+                <div key={r.id} style={{ background: theme.card, border: `1px solid ${r.status === "pending" ? theme.goldBorder : theme.cardBorder}`, borderRadius: 14, padding: "13px 15px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                    <span style={{ fontSize: 15, fontWeight: 800, color: theme.text }}>{r.name} <span style={{ fontSize: 12, fontWeight: 600, color: theme.textMuted }}>· {r.region}{r.lang ? ` · ${r.lang.toUpperCase()}` : ""}</span></span>
+                    <span style={{ fontSize: 11, color: theme.textFaint, whiteSpace: "nowrap" }}>{new Date(r.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <p style={{ fontSize: 13.5, color: theme.text, margin: "0 0 4px", wordBreak: "break-all" }}>📞 {r.contact}</p>
+                  {r.note && <p style={{ fontSize: 12.5, color: theme.textMuted, margin: "0 0 8px", lineHeight: 1.5 }}>💬 {r.note}</p>}
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 }}>
+                    {CONN_STATUSES.map(s => (
+                      <button key={s}
+                        onClick={async () => {
+                          const { error } = await supabase.from("church_connect_requests").update({ status: s, updated_at: new Date().toISOString() }).eq("id", r.id);
+                          if (!error) setConnReqs(prev => prev?.map(x => x.id === r.id ? { ...x, status: s } : x) ?? null);
+                        }}
+                        style={{ fontSize: 11.5, fontWeight: 700, padding: "5px 11px", borderRadius: 10, cursor: "pointer",
+                          color: r.status === s ? "#fff" : stColor === theme.wrong && s === "pending" ? theme.wrong : theme.textMuted,
+                          background: r.status === s ? theme.primary : "transparent",
+                          border: `1px solid ${r.status === s ? theme.primary : theme.border}` }}>
+                        {t(s === "pending" ? "conn.stPending" : s === "contacted" ? "conn.stContacted" : s === "connected" ? "conn.stConnected" : "conn.stClosed")}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
 
       {rows === null && <SkeletonList count={6} />}
       {rows && rows.length === 0 && <p style={{ textAlign: "center", color: theme.textMuted, padding: "2rem 0" }}>{t("ad.empty")}</p>}

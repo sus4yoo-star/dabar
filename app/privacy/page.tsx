@@ -17,7 +17,7 @@ const DOC: Record<string, Doc> = {
     heading: "개인정보 처리방침",
     effective: `시행일: ${UPDATED}`,
     sections: [
-      { t: "1. 수집하는 정보", body: "• 계정: 소셜 로그인(구글·카카오·Apple) 식별자, 이메일(제공 시), 닉네임·프로필 사진\n• 이용 기록: 성경 퀴즈 점수·진도·오답, 학습 진행\n• 소그룹·전도: 모임 정보, 그룹 채팅 메시지, 업로드한 사진, 동행 연결·메시지" },
+      { t: "1. 수집하는 정보", body: "• 계정: 소셜 로그인(구글·카카오·Apple) 식별자, 이메일(제공 시), 닉네임·프로필 사진\n• 이용 기록: 성경 퀴즈 점수·진도·오답, 학습 진행\n• 소그룹·전도: 모임 정보, 그룹 채팅 메시지, 업로드한 사진, 동행 연결·메시지\n• 교회 연결 요청 시(선택): 이름·연락처·지역 — 교회 소개 목적에만 사용하고 완료 후 파기" },
       { t: "2. 이용 목적", body: "로그인·서비스 제공, 학습·전도·양육 기능 운영, 랭킹·진도 표시, 알림 발송. 광고 목적의 사용은 하지 않습니다." },
       { t: "3. 보관·처리 위탁", body: "데이터는 Supabase(인증·데이터베이스·저장소)와 Netlify(호스팅) 인프라에 저장·처리됩니다. 소셜 로그인은 각 제공자(구글·카카오·Apple)의 정책을 따릅니다." },
       { t: "4. 제3자 제공", body: "법령에 따른 경우를 제외하고 개인정보를 제3자에게 판매·제공하지 않습니다." },
@@ -32,7 +32,7 @@ const DOC: Record<string, Doc> = {
     heading: "Privacy Policy",
     effective: `Effective: ${UPDATED}`,
     sections: [
-      { t: "1. Information we collect", body: "• Account: social login (Google/Kakao/Apple) identifier, email (if provided), nickname, profile image.\n• Usage: Bible quiz scores/progress/wrong answers, lesson progress.\n• Groups/evangelism: group info, group chat messages, uploaded photos, companion connections & messages." },
+      { t: "1. Information we collect", body: "• Account: social login (Google/Kakao/Apple) identifier, email (if provided), nickname, profile image.\n• Usage: Bible quiz scores/progress/wrong answers, lesson progress.\n• Groups/evangelism: group info, group chat messages, uploaded photos, companion connections & messages.\n• Church-connection requests (optional): name, contact, area — used only to introduce a church, then deleted." },
       { t: "2. How we use it", body: "To provide login and the service, run study/evangelism/discipleship features, show ranking/progress, and send notifications. We do not use your data for advertising." },
       { t: "3. Processing & sub-processors", body: "Data is stored and processed on Supabase (auth/database/storage) and Netlify (hosting). Social login follows each provider’s policy (Google/Kakao/Apple)." },
       { t: "4. Sharing", body: "We do not sell or share personal data with third parties, except as required by law." },
@@ -48,7 +48,7 @@ const DOC: Record<string, Doc> = {
     effective: `มีผลบังคับใช้: ${UPDATED}`,
     note: "ฉบับภาษาอังกฤษ/เกาหลีเป็นฉบับอ้างอิงหลัก",
     sections: [
-      { t: "1. ข้อมูลที่เราเก็บ", body: "• บัญชี: ตัวระบุการเข้าสู่ระบบผ่านโซเชียล (Google/Kakao/Apple), อีเมล (ถ้ามี), ชื่อเล่น, รูปโปรไฟล์\n• การใช้งาน: คะแนน/ความคืบหน้า/ข้อที่ตอบผิดของควิซพระคัมภีร์, ความคืบหน้าบทเรียน\n• กลุ่ม/การประกาศ: ข้อมูลกลุ่ม, ข้อความแชทกลุ่ม, รูปที่อัปโหลด, การเชื่อมต่อและข้อความกับเพื่อนร่วมทาง" },
+      { t: "1. ข้อมูลที่เราเก็บ", body: "• บัญชี: ตัวระบุการเข้าสู่ระบบผ่านโซเชียล (Google/Kakao/Apple), อีเมล (ถ้ามี), ชื่อเล่น, รูปโปรไฟล์\n• การใช้งาน: คะแนน/ความคืบหน้า/ข้อที่ตอบผิดของควิซพระคัมภีร์, ความคืบหน้าบทเรียน\n• กลุ่ม/การประกาศ: ข้อมูลกลุ่ม, ข้อความแชทกลุ่ม, รูปที่อัปโหลด, การเชื่อมต่อและข้อความกับเพื่อนร่วมทาง\n• คำขอเชื่อมต่อคริสตจักร (ไม่บังคับ): ชื่อ ช่องทางติดต่อ พื้นที่ — ใช้เพื่อแนะนำคริสตจักรเท่านั้น แล้วลบทิ้ง" },
       { t: "2. วิธีที่เราใช้ข้อมูล", body: "เพื่อให้บริการเข้าสู่ระบบและบริการต่าง ๆ ใช้งานฟีเจอร์การเรียนรู้/ประกาศ/เสริมสร้าง แสดงอันดับ/ความคืบหน้า และส่งการแจ้งเตือน เราไม่ใช้ข้อมูลของคุณเพื่อการโฆษณา" },
       { t: "3. การจัดเก็บและผู้ประมวลผล", body: "ข้อมูลถูกจัดเก็บและประมวลผลบน Supabase (การยืนยันตัวตน/ฐานข้อมูล/ที่จัดเก็บ) และ Netlify (โฮสติ้ง) การเข้าสู่ระบบผ่านโซเชียลเป็นไปตามนโยบายของผู้ให้บริการแต่ละราย (Google/Kakao/Apple)" },
       { t: "4. การเปิดเผยต่อบุคคลที่สาม", body: "เราไม่ขายหรือแบ่งปันข้อมูลส่วนบุคคลกับบุคคลที่สาม ยกเว้นที่กฎหมายกำหนด" },
