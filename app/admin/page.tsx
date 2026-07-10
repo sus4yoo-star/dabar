@@ -37,15 +37,21 @@ export default function AdminPage() {
   const { user, isAdmin, loading } = useAuth();
   const [rows, setRows] = useState<Row[] | null>(null);
   const [connReqs, setConnReqs] = useState<ConnReq[] | null>(null);
+  const [connErr, setConnErr] = useState(false);
+  const [connReload, setConnReload] = useState(0);
 
   useEffect(() => {
     if (loading) return;
     if (!user) { router.replace("/login"); return; }
     if (!isAdmin) return;
     // 교회 연결 요청 목록 (RLS: 관리자만 조회 가능)
+    // 조회 실패를 빈 목록과 구분 — 실패를 '요청 없음'으로 착각해 실제 요청을 놓치지 않도록.
     supabase.from("church_connect_requests").select("id, name, contact, region, lang, note, status, created_at")
       .order("created_at", { ascending: false }).limit(200)
-      .then(({ data }) => setConnReqs((data as ConnReq[]) ?? []));
+      .then(({ data, error }) => {
+        if (error) { setConnErr(true); setConnReqs([]); return; }
+        setConnErr(false); setConnReqs((data as ConnReq[]) ?? []);
+      });
     (async () => {
       // 개인 진도는 비공개 — 관리자만 호출 가능한 보안 RPC 로 집계 데이터를 받는다.
       const { data, error } = await supabase.rpc("admin_dashboard");
@@ -67,7 +73,7 @@ export default function AdminPage() {
       });
       setRows(list);
     })();
-  }, [user, isAdmin, loading, router]);
+  }, [user, isAdmin, loading, router, connReload]);
 
   if (!loading && user && !isAdmin) {
     return (
@@ -94,7 +100,13 @@ export default function AdminPage() {
           {t("conn.adTitle")}{connReqs && connReqs.length > 0 ? ` (${connReqs.filter(r => r.status === "pending").length}/${connReqs.length})` : ""}
         </h2>
         {connReqs === null && <SkeletonList count={2} />}
-        {connReqs && connReqs.length === 0 && <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{t("conn.adEmpty")}</p>}
+        {connErr && (
+          <p style={{ fontSize: 13, color: theme.wrong, margin: 0 }}>
+            {t("q.loadFail")}{" "}
+            <button onClick={() => setConnReload(k => k + 1)} style={{ color: theme.primarySoft, fontWeight: 700, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", padding: 0 }}>{t("common.retry")}</button>
+          </p>
+        )}
+        {!connErr && connReqs && connReqs.length === 0 && <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{t("conn.adEmpty")}</p>}
         {connReqs && connReqs.length > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {connReqs.map(r => {

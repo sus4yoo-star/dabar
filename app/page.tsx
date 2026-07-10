@@ -7,6 +7,7 @@ import { shareInvite } from "@/lib/share";
 import { supabase } from "@/lib/supabase";
 import { useI18n, LangSelector } from "@/lib/i18n";
 import HomeReachCard from "@/components/HomeReachCard";
+import DailyVerse from "@/components/DailyVerse";
 import SosButton from "@/components/SosButton";
 import { useToast } from "@/components/Toast";
 import DisplayQuickToggle from "@/components/DisplayQuickToggle";
@@ -25,6 +26,25 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [playedToday, setPlayedToday] = useState(false);
   const [unread, setUnread] = useState(0);
+  // 관리자: 대기 중인 교회 연결 요청 수 (놓치지 않게 홈에서 바로 알림)
+  const [pendingConn, setPendingConn] = useState(0);
+  // 성경 완주 이어풀기 (퀴즈가 저장해 둔 진행 정보)
+  const [resume, setResume] = useState<{ qs: string; done: number; total: number } | null>(null);
+
+  useEffect(() => {
+    if (!isAdmin) { setPendingConn(0); return; }
+    supabase.from("church_connect_requests").select("id", { count: "exact", head: true }).eq("status", "pending")
+      .then(({ count, error }) => { if (!error && count) setPendingConn(count); });
+  }, [isAdmin]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("dabar_resume_quiz");
+      if (!raw) return;
+      const r = JSON.parse(raw);
+      if (r && typeof r.qs === "string" && r.total > 0 && r.done < r.total) setResume(r);
+    } catch { /* */ }
+  }, []);
 
   useEffect(() => {
     if (!user) { setUnread(0); return; }
@@ -108,6 +128,19 @@ export default function Home() {
         )}
       </div>
 
+      {/* 📖 오늘의 말씀 — 매일 여는 이유 */}
+      <DailyVerse />
+
+      {/* ⛪ 관리자: 대기 중 교회 연결 요청 알림 */}
+      {isAdmin && pendingConn > 0 && (
+        <button onClick={() => router.push("/admin")} className="fade-in"
+          style={{ display: "flex", alignItems: "center", gap: 9, width: "100%", padding: "11px 14px", borderRadius: 13, border: `1px solid ${theme.goldBorder}`, background: theme.goldLight, cursor: "pointer", textAlign: "left", marginBottom: 10 }}>
+          <MenuIcon name="church" color={theme.gold} size={19} />
+          <span style={{ flex: 1, fontSize: 13.5, fontWeight: 800, color: theme.gold }}>{t("home.adminPending", { n: pendingConn })}</span>
+          <span style={{ fontSize: 14, color: theme.gold }}>›</span>
+        </button>
+      )}
+
       {/* ── ① 전하기 · 만남 ─────────────── */}
       <Section>{t("home.secShare")}</Section>
 
@@ -130,6 +163,18 @@ export default function Home() {
 
       <NavCard icon={<MenuIcon name="grad" color="var(--a-green-fg)" />} title={t("home.growSection")} sub={t("home.growSub")} onClick={() => router.push("/learn")} accent={ACCENT.green} />
       <NavCard icon={<MenuIcon name="book" color="var(--a-blue-fg)" />} title={t("menu.quiz.t")} sub={t("home.quizSub")} onClick={() => router.push("/play")} accent={ACCENT.blue} />
+
+      {/* 📖 성경 완주 이어풀기 — 진행 중일 때만 (홈에서 한 번에 복귀) */}
+      {resume && (
+        <button onClick={() => router.push(`/quiz${resume.qs}`)} className="fade-in-2"
+          style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", marginTop: 6, padding: "10px 14px", borderRadius: 12, border: "1px solid var(--a-blue-border)", background: "var(--a-blue-bg)", cursor: "pointer", textAlign: "left" }}>
+          <span style={{ fontSize: 15 }}>▶</span>
+          <span style={{ flex: 1, fontSize: 13, fontWeight: 800, color: "var(--a-blue-fg)" }}>{t("home.resumeQuiz", { d: resume.done, t: resume.total })}</span>
+          <span style={{ height: 5, width: 90, borderRadius: 3, background: "var(--t-border)", overflow: "hidden", flexShrink: 0 }}>
+            <span style={{ display: "block", height: "100%", width: `${Math.min(100, Math.round((resume.done / resume.total) * 100))}%`, background: "var(--a-blue-fg)" }} />
+          </span>
+        </button>
+      )}
       <NavCard icon={<MenuIcon name="heart" color="var(--a-amber-fg)" />} title={t("home.comfortTitle")} sub={t("home.comfortSub")} onClick={() => router.push("/comfort")} accent={ACCENT.amber} />
 
       {/* ── ③ 정착 · 교회로 ─────────────── */}

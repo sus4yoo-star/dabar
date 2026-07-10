@@ -89,6 +89,8 @@ function QuizInner() {
   const [lastGain, setLastGain] = useState(0);
   const [reported, setReported] = useState(false);
   const [retryMode, setRetryMode] = useState(false);
+  const [loadError, setLoadError] = useState(false); // 문제 불러오기 실패(약전파) — '문제 없음'과 구분해 재시도 제공
+  const [reloadKey, setReloadKey] = useState(0);
   const [autoTranslated, setAutoTranslated] = useState(false); // 런타임 자동번역이 실제로 적용됐을 때만 배너 표시
   const pointsRef = useRef(0);
   const syncedRef = useRef(false);
@@ -100,7 +102,19 @@ function QuizInner() {
   const [showProgress, setShowProgress] = useState(false);
   const saveResult = (r: Record<string, "o" | "x">) => { setResult(r); try { localStorage.setItem(progressKey, JSON.stringify(r)); } catch { /* */ } };
 
+  // 홈 '이어서 풀기' 칩용: 완주 모드 진행 상황을 저장(완주하면 제거)
   useEffect(() => {
+    if (!complete || !allQ.length) return;
+    try {
+      const done = allQ.filter(qq => result[qq.id]).length;
+      if (done >= allQ.length) localStorage.removeItem("dabar_resume_quiz");
+      else localStorage.setItem("dabar_resume_quiz", JSON.stringify({ qs: window.location.search, done, total: allQ.length, t: Date.now() }));
+    } catch { /* */ }
+  }, [complete, allQ, result]);
+
+  useEffect(() => {
+    setLoadError(false);
+    setLoading(true);
     // 오답 다시풀기: /history 에서 넘겨준 문제들이 있으면 그걸로 진행
     const retry = sessionStorage.getItem("retryQuiz");
     if (retry) {
@@ -120,7 +134,9 @@ function QuizInner() {
     fetch(`/api/questions?${qs.toString()}`)
       .then(r => r.json())
       .then(async data => {
-        let arr: Question[] = Array.isArray(data) ? data : [];
+        // API 가 {error} 를 돌려주면(서버/DB 오류) '문제 없음'이 아니라 실패로 처리 → 재시도 버튼
+        if (!Array.isArray(data)) { setLoadError(true); setLoading(false); return; }
+        let arr: Question[] = data;
         // ko/en/th 외(예: 라오스어)는 DB에 없으면 한국어로 폴백 → 런타임 자동번역.
         // 단, DB에 이미 해당 언어(lo) 문제가 있으면(검수본) 재번역하지 않음.
         if (arr.length && lang && !["ko", "en", "th"].includes(lang) && arr[0]?.lang !== lang) {
@@ -147,8 +163,8 @@ function QuizInner() {
         }
         setLoading(false);
       })
-      .catch(() => { setQuestions([]); setLoading(false); });
-  }, [lang]);
+      .catch(() => { setLoadError(true); setLoading(false); });
+  }, [lang, reloadKey]);
 
   // 로그인 진도 동기화: 들어올 때 1회 DB 진도를 합쳐 이어풀기(기기 간)
   useEffect(() => {
@@ -169,7 +185,8 @@ function QuizInner() {
   async function reportQuestion() {
     if (!user || reported) return;
     setReported(true);
-    await supabase.from("question_reports").insert({ question_id: questions[idx]?.id, user_id: user.id, question: questions[idx]?.question, reason: "사용자 신고" });
+    const { error } = await supabase.from("question_reports").insert({ question_id: questions[idx]?.id, user_id: user.id, question: questions[idx]?.question, reason: "사용자 신고" });
+    if (error) { setReported(false); show(t("q.reportFail")); return; } // 실패했는데 성공이라고 알리지 않기
     show(t("q.reportAlert"));
   }
 
@@ -272,9 +289,19 @@ function QuizInner() {
       </main>
     );
   }
-  if (!questions.length) return <Center>{t("q.none")}</Center>;
+  // 로드 실패(약전파 등) 또는 문제 없음 — 막다른 화면 대신 재시도·홈 버튼 제공
+  if (loadError || !questions.length || !questions[idx]) {
+    const actBtn = (bg: string, color: string, border: string) => ({ display: "block", width: "100%", maxWidth: 300, margin: "0 auto 10px", padding: 14, fontSize: 15, fontWeight: 800, background: bg, color, border, borderRadius: 12, cursor: "pointer" } as React.CSSProperties);
+    return (
+      <main style={{ maxWidth: 480, margin: "0 auto", padding: "5rem 1.5rem", textAlign: "center", minHeight: "100dvh" }}>
+        <p style={{ fontSize: 36, margin: "0 0 10px" }}>{loadError ? "📡" : "📭"}</p>
+        <p style={{ fontSize: 15, color: theme.text, fontWeight: 700, margin: "0 0 20px", lineHeight: 1.6 }}>{loadError ? t("q.loadFail") : t("q.none")}</p>
+        {loadError && <button onClick={() => setReloadKey(k => k + 1)} style={actBtn(theme.primary, "#fff", "none")}>{t("common.retry")}</button>}
+        <button onClick={() => router.push("/")} style={actBtn("transparent", theme.text, `1px solid ${theme.border}`)}>{t("r.home")}</button>
+      </main>
+    );
+  }
   const q = questions[idx];
-  if (!q) return <Center>{t("q.none")}</Center>;
 
   return (
     <main style={{ maxWidth: 480, margin: "0 auto", padding: "1.5rem 1.25rem", minHeight: "100dvh" }}>

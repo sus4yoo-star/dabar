@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { theme } from "@/lib/theme";
-import { getCourse } from "@/lib/courses";
+import { getCourse, COURSES } from "@/lib/courses";
 import { getCompleted } from "@/lib/progress";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
@@ -68,12 +68,29 @@ export default function CoursePage() {
         <div style={{ height: "100%", width: `${total ? (completed / total) * 100 : 0}%`, background: ACCENT.green.fg, transition: "width .4s ease", borderRadius: 4 }} />
       </div>
 
-      {allDone && (
-        <div className="fade-in" style={{ ...softCard({ background: theme.correctBg, border: `1px solid ${theme.correct}` }), padding: "14px", textAlign: "center", marginBottom: 12 }}>
-          <p style={{ fontSize: 16, fontWeight: 800, color: theme.correct, margin: "0 0 2px" }}>{t("co.allDone", { t: course.title })}</p>
-          <p style={{ fontSize: 13, color: theme.textMuted, margin: 0 }}>{t("co.allDoneSub")}</p>
-        </div>
-      )}
+      {allDone && (() => {
+        // 수료 → 다음 걸음 안내: 다음 과정이 있으면 그 과정, 끝까지 왔으면 교회 연결(정착)로.
+        const idx = COURSES.findIndex(c => c.slug === course.slug);
+        const next = idx >= 0 ? COURSES[idx + 1] : undefined;
+        const nextTitle = next ? (getCourse(next.slug, isAuto ? "ko" : lang)?.title ?? next.title) : "";
+        return (
+          <div className="fade-in" style={{ ...softCard({ background: theme.correctBg, border: `1px solid ${theme.correct}` }), padding: "16px 14px", textAlign: "center", marginBottom: 12 }}>
+            <p style={{ fontSize: 28, margin: "0 0 6px" }}>🎉</p>
+            <p style={{ fontSize: 16.5, fontWeight: 800, color: theme.correct, margin: "0 0 3px" }}>{t("co.allDone", { t: course.title })}</p>
+            <p style={{ fontSize: 13, color: theme.textMuted, margin: "0 0 12px" }}>{t("co.allDoneSub")}</p>
+            {next && (
+              <button onClick={() => router.push(`/course/${next.slug}`)}
+                style={{ display: "block", width: "100%", padding: 13, fontSize: 14.5, fontWeight: 800, background: ACCENT.green.fg, color: "#fff", border: "none", borderRadius: 12, cursor: "pointer", marginBottom: 8 }}>
+                {t("co.nextCourse", { t: nextTitle })}
+              </button>
+            )}
+            <button onClick={() => router.push("/connect")}
+              style={{ display: "block", width: "100%", padding: 13, fontSize: 14.5, fontWeight: 800, background: theme.card, color: "var(--t-sacred)", border: "1px solid var(--t-sacredBorder)", borderRadius: 12, cursor: "pointer" }}>
+              ⛪ {t("home.connectTitle")}
+            </button>
+          </div>
+        );
+      })()}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
         {course.lessons.map((l, i) => {

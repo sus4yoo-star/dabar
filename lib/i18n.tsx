@@ -133,6 +133,10 @@ const DICT: Dict = {
   "home.secShare":    { ko: "전하기 · 만남", en: "Share · Reach", th: "ประกาศ · เข้าถึง", lo: "ປະກາດ · ເຂົ້າເຖິງ" },
   "home.secGrow":     { ko: "양육 · 자라기", en: "Grow · Disciple", th: "เติบโต · สาวก", lo: "ເຕີບໂຕ · ສາວົກ" },
   "home.secSettle":   { ko: "정착 · 교회로", en: "Settle · Church", th: "ปักหลัก · คริสตจักร", lo: "ຕັ້ງຫຼັກ · ຄຣິສຕະຈັກ" },
+  "home.dailyVerse":  { ko: "오늘의 말씀", en: "Today's Word", th: "พระวจนะวันนี้", lo: "ພຣະທຳມື້ນີ້" },
+  "home.adminPending":{ ko: "새 교회 연결 요청 {n}건 — 확인하기", en: "{n} new church connection request(s) — review", th: "คำขอเชื่อมต่อคริสตจักรใหม่ {n} รายการ — ตรวจสอบ", lo: "ຄຳຂໍເຊື່ອມຕໍ່ຄຣິສຕະຈັກໃໝ່ {n} ລາຍການ — ກວດເບິ່ງ" },
+  "home.resumeQuiz":  { ko: "이어서 풀기 · {d}/{t}", en: "Continue quiz · {d}/{t}", th: "ทำต่อ · {d}/{t}", lo: "ເຮັດຕໍ່ · {d}/{t}" },
+  "co.nextCourse":    { ko: "다음 과정 시작: {t}", en: "Start next course: {t}", th: "เริ่มหลักสูตรถัดไป: {t}", lo: "ເລີ່ມຫຼັກສູດຕໍ່ໄປ: {t}" },
   "share.langHint":   { ko: "상대의 언어를 고르면 도구가 그 언어로 표시돼요", en: "Pick the other person's language — tools show in it", th: "เลือกภาษาของอีกฝ่าย เครื่องมือจะแสดงเป็นภาษานั้น", lo: "ເລືອກພາສາຂອງອີກຝ່າຍ ເຄື່ອງມືຈະສະແດງເປັນພາສານັ້ນ" },
   "home.greeting":    { ko: "{name}님, 오늘도 말씀과 함께해요 👋", en: "{name}, walk with the Word today 👋", th: "{name} วันนี้มาเดินกับพระวจนะกัน 👋", lo: "{name} ມື້ນີ້ມາຍ່າງກັບພຣະທຳນຳກັນ 👋" },
   "home.streakToday": { ko: "🔥 {n}일 연속 출석!", en: "🔥 {n}-day streak!", th: "🔥 ต่อเนื่อง {n} วัน!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້!" },
@@ -247,6 +251,8 @@ const DICT: Dict = {
   "q.report":   { ko: "🚩 이 문제 신고", en: "🚩 Report this", th: "🚩 รายงานข้อนี้", lo: "🚩 ລາຍງານຂໍ້ນີ້" },
   "q.reported": { ko: "신고 접수됨 ✓", en: "Reported ✓", th: "รายงานแล้ว ✓", lo: "ລາຍງານແລ້ວ ✓" },
   "q.reportAlert": { ko: "신고가 접수됐어요. 검토하겠습니다. 감사합니다! 🙏", en: "Report received. We'll review it. Thank you! 🙏", th: "รับรายงานแล้ว เราจะตรวจสอบ ขอบคุณ! 🙏", lo: "ຮັບລາຍງານແລ້ວ ພວກເຮົາຈະກວດສອບ ຂອບໃຈ! 🙏" },
+  "q.reportFail":     { ko: "신고 전송에 실패했어요. 잠시 후 다시 시도해 주세요.", en: "Couldn't send the report. Please try again shortly.", th: "ส่งรายงานไม่สำเร็จ กรุณาลองใหม่", lo: "ສົ່ງລາຍງານບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່" },
+  "q.loadFail":       { ko: "문제를 불러오지 못했어요. 네트워크를 확인하고 다시 시도해 주세요.", en: "Couldn't load questions. Check your connection and try again.", th: "โหลดคำถามไม่สำเร็จ ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่", lo: "ໂຫຼດຄຳຖາມບໍ່ສຳເລັດ ກວດອິນເຕີເນັດແລ້ວລອງໃໝ່" },
   "q.next":     { ko: "다음 문제 →", en: "Next →", th: "ถัดไป →", lo: "ຕໍ່ໄປ →" },
   "q.result":   { ko: "결과 보기 →", en: "See result →", th: "ดูผล →", lo: "ເບິ່ງຜົນ →" },
 
@@ -588,7 +594,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = (typeof localStorage !== "undefined" && localStorage.getItem("dabar_lang")) as Lang | null;
-    if (saved && LANGS.some(l => l.code === saved)) setLangState(saved);
+    if (saved && LANGS.some(l => l.code === saved)) { setLangState(saved); return; }
+    // 첫 실행: 기기 언어로 자동 시작 (태국·라오스 현지인이 처음 열어도 자기 언어로).
+    // 지원 목록에 없으면 한국어 유지. 선택은 저장하지 않아 사용자가 바꾸면 그 값이 우선.
+    try {
+      const dev = (navigator.language || "").toLowerCase().split("-")[0] as Lang;
+      if (dev && dev !== "ko" && LANGS.some(l => l.code === dev)) setLangState(dev);
+    } catch { /* */ }
   }, []);
 
   // 방향(RTL) + UI 자동번역 (ko/en/th/lo 외 언어)
