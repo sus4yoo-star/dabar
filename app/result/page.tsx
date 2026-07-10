@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { downloadResultImage } from "@/lib/resultImage";
 import { shareResult } from "@/lib/share";
 import { useI18n } from "@/lib/i18n";
+import { bookLabel, categoryLabel } from "@/lib/bookNames";
 import { SectionLabel, ACCENT, softShadow, cardShadow, softCard } from "@/lib/ui";
 
 interface ResultMeta { testament?: string; level?: string; bookCount?: number; }
@@ -30,17 +31,20 @@ const MAX_WRONG = 5; // 오답노트에 최대 몇 개까지 보여줄지
 
 export default function ResultPage() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { user, loading: authLoading } = useAuth();
   const [result, setResult] = useState<Result | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const savedOnce = useRef(false);
 
+  // 결과 데이터가 없으면(직접 방문·새 탭·세션 만료) 영원한 로딩 대신 홈으로 보낸다.
   useEffect(() => {
     const raw = sessionStorage.getItem("quizResult");
-    if (!raw) return;
-    try { setResult(JSON.parse(raw)); } catch { sessionStorage.removeItem("quizResult"); }
-  }, []);
+    let parsed: Result | null = null;
+    if (raw) { try { parsed = JSON.parse(raw); } catch { sessionStorage.removeItem("quizResult"); } }
+    if (parsed) setResult(parsed);
+    else router.replace("/");
+  }, [router]);
 
   const saveScore = useCallback(async (r: Result, uid: string) => {
     setSaveState("saving");
@@ -146,7 +150,7 @@ export default function ResultPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: "1.5rem" }}>
           {shownWrongs.map(({ q }) => (
             <div key={q.id} style={{ ...softCard({ borderRadius: 14, padding: "14px 16px", background: ACCENT.red.bg, border: `1px solid ${ACCENT.red.border}`, borderLeft: `3px solid ${theme.wrong}` }) }}>
-              <p style={{ fontSize: 12, color: theme.primarySoft, fontWeight: 800, margin: "0 0 5px" }}>{q.book} · {q.category}</p>
+              <p style={{ fontSize: 12, color: theme.primarySoft, fontWeight: 800, margin: "0 0 5px" }}>{bookLabel(q.book, lang)} · {categoryLabel(q.category, lang)}</p>
               <p style={{ fontSize: 14, color: theme.text, margin: "0 0 8px", lineHeight: 1.55 }}>{q.question}</p>
               <p style={{ fontSize: 13, color: theme.correct, fontWeight: 800, margin: "0 0 4px" }}>{t("r.answerLine", { a: q.options[q.answer] })}</p>
               {q.explanation && <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0, lineHeight: 1.6 }}>{q.explanation}</p>}

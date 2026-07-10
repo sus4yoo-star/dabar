@@ -247,6 +247,8 @@ const DICT: Dict = {
   "q.report":   { ko: "🚩 이 문제 신고", en: "🚩 Report this", th: "🚩 รายงานข้อนี้", lo: "🚩 ລາຍງານຂໍ້ນີ້" },
   "q.reported": { ko: "신고 접수됨 ✓", en: "Reported ✓", th: "รายงานแล้ว ✓", lo: "ລາຍງານແລ້ວ ✓" },
   "q.reportAlert": { ko: "신고가 접수됐어요. 검토하겠습니다. 감사합니다! 🙏", en: "Report received. We'll review it. Thank you! 🙏", th: "รับรายงานแล้ว เราจะตรวจสอบ ขอบคุณ! 🙏", lo: "ຮັບລາຍງານແລ້ວ ພວກເຮົາຈະກວດສອບ ຂອບໃຈ! 🙏" },
+  "q.reportFail":     { ko: "신고 전송에 실패했어요. 잠시 후 다시 시도해 주세요.", en: "Couldn't send the report. Please try again shortly.", th: "ส่งรายงานไม่สำเร็จ กรุณาลองใหม่", lo: "ສົ່ງລາຍງານບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່" },
+  "q.loadFail":       { ko: "문제를 불러오지 못했어요. 네트워크를 확인하고 다시 시도해 주세요.", en: "Couldn't load questions. Check your connection and try again.", th: "โหลดคำถามไม่สำเร็จ ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่", lo: "ໂຫຼດຄຳຖາມບໍ່ສຳເລັດ ກວດອິນເຕີເນັດແລ້ວລອງໃໝ່" },
   "q.next":     { ko: "다음 문제 →", en: "Next →", th: "ถัดไป →", lo: "ຕໍ່ໄປ →" },
   "q.result":   { ko: "결과 보기 →", en: "See result →", th: "ดูผล →", lo: "ເບິ່ງຜົນ →" },
 
