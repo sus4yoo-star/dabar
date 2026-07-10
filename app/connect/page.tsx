@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { useToast } from "@/components/Toast";
-import { serif } from "@/lib/ui";
+import { PageHeader, ACCENT } from "@/lib/ui";
 
 // 교회 연결 요청 — 지역·연락처를 남기면 관리자가 직접 검증된 교회를 찾아 소개한다.
 // 자동 매칭 없음: 앱은 접수만 하고, 소개는 사람이 확인 후 직접 한다.
@@ -64,13 +64,16 @@ export default function ConnectPage() {
   };
 
   return (
-    <main style={{ maxWidth: 460, margin: "0 auto", padding: "1.2rem 1.25rem 3rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-        <button onClick={() => (history.length > 1 ? history.back() : router.push("/"))} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>←</button>
-        <h1 style={{ fontFamily: serif, fontSize: 20, fontWeight: 800, color: theme.sacred, margin: 0 }}>⛪ {t("conn.title")}</h1>
-      </div>
+    <main style={{ maxWidth: 460, margin: "0 auto", padding: "0.7rem 1.25rem 3rem", minHeight: "100dvh" }}>
+      <PageHeader
+        title={t("conn.title")}
+        subtitle={t("home.connectSub")}
+        homeLabel={t("common.home")}
+        onHome={() => (history.length > 1 ? history.back() : router.push("/"))}
+        accentColor={ACCENT.gold.fg}
+      />
 
-      <p style={{ fontSize: 14, lineHeight: 1.7, color: theme.textMuted, margin: "0 0 20px" }}>{t("conn.intro")}</p>
+      <p style={{ fontSize: 14, lineHeight: 1.7, color: theme.textMuted, margin: "6px 0 20px" }}>{t("conn.intro")}</p>
 
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <input value={name} onChange={e => setName(e.target.value)} placeholder={t("conn.name")} maxLength={60} style={inputStyle} />
