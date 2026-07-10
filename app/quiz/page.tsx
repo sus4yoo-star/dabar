@@ -102,6 +102,16 @@ function QuizInner() {
   const [showProgress, setShowProgress] = useState(false);
   const saveResult = (r: Record<string, "o" | "x">) => { setResult(r); try { localStorage.setItem(progressKey, JSON.stringify(r)); } catch { /* */ } };
 
+  // 홈 '이어서 풀기' 칩용: 완주 모드 진행 상황을 저장(완주하면 제거)
+  useEffect(() => {
+    if (!complete || !allQ.length) return;
+    try {
+      const done = allQ.filter(qq => result[qq.id]).length;
+      if (done >= allQ.length) localStorage.removeItem("dabar_resume_quiz");
+      else localStorage.setItem("dabar_resume_quiz", JSON.stringify({ qs: window.location.search, done, total: allQ.length, t: Date.now() }));
+    } catch { /* */ }
+  }, [complete, allQ, result]);
+
   useEffect(() => {
     setLoadError(false);
     setLoading(true);
