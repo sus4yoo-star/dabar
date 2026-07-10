@@ -56,6 +56,21 @@ npx cap open ios
    - Apple Developer: App ID(Sign in with Apple 체크) + **Service ID** + Key(.p8) 생성
    - Supabase → Authentication → Providers → **Apple** 활성화: Service ID, Team ID, Key ID, .p8 입력
    - Redirect URL: `https://<프로젝트>.supabase.co/auth/v1/callback` 등록
+   - ⚠️ **iOS 네이티브 로그인 필수 설정**: Apple provider 의 **Authorized Client IDs**(허용 클라이언트 ID)에
+     Services ID(`com.theamov.dabar.signin`)뿐 아니라 **앱 번들 ID `com.theamov.dabar` 도 함께** 넣는다.
+     네이티브 시트가 발급하는 identity token 의 audience 는 번들 ID 라서, 이게 빠지면
+     `signInWithIdToken` 이 "unauthorized client" 로 거절된다. (2.1 반려의 핵심 원인)
+
+> **Apple 로그인 방식 (2.1 반려 대응, 2026-07 변경)**
+> iOS 앱에서는 웹 팝업(SFSafariViewController)이 아니라 **네이티브 Sign in with Apple 시트**로 로그인한다.
+> (`@capacitor-community/apple-sign-in` → Supabase `signInWithIdToken`). iPad 에서 인앱 브라우저가
+> 빈 화면으로 떠 로그인이 안 되던 반려 문제를 근본 해결. 재빌드 시:
+> ```bash
+> npm i @capacitor-community/apple-sign-in   # package.json 에 이미 추가됨
+> npx cap sync ios                            # 플러그인 pod 반영
+> ```
+> Xcode 에서 **Signing & Capabilities → Sign in with Apple** capability 가 켜져 있어야 한다(D-1).
+> 플러그인이 없는 옛 빌드/안드로이드/웹에서는 자동으로 기존 웹 OAuth 방식으로 폴백한다.
 2. **계정 삭제 RPC** — Supabase SQL Editor에서 `supabase/account-delete.sql` 실행
 3. (소그룹/사진 쓰면) `supabase/besora-groups.sql`, `supabase/besora-group-photos.sql`도 적용
 
@@ -70,6 +85,9 @@ npx cap open ios
 ## G. 심사에서 자주 막히는 포인트 (대비됨/주의)
 - **4.2 최소 기능**: 단순 웹뷰 반려 방지 → 네이티브 푸시/공유/사진 등 "앱다움" 강조. (DABAR는 푸시·사진 있음)
 - **4.8 애플 로그인 필수**: 구글/카카오 쓰므로 **Sign in with Apple 필수** → 준비됨(E-1 설정 필요)
+- **2.1(a) Sign in with Apple 동작 불가(iPad 반려)**: 원인은 인앱 웹 팝업이 iPad 에서 빈 화면으로
+  뜬 것 → **네이티브 Apple 시트로 전환해 해결**(E-1 박스). 재빌드 + Supabase Authorized Client IDs 에
+  번들 ID 추가가 반드시 함께 되어야 실제로 통과된다.
 - **5.1.1(v) 계정 삭제 필수**: `/account`에 있음 → E-2 SQL 적용 필요
 - **개역개정 본문**: 라이선스 전엔 절대 포함 금지(현재 "준비 중"이라 안전)
 - 결제 없음(무료) → IAP 이슈 없음

@@ -9,7 +9,31 @@ export type Provider = "google" | "kakao" | "apple";
 // 네이티브 앱(iOS/Android)에서 OAuth 후 앱으로 되돌아올 커스텀 딥링크.
 // 웹뷰가 사파리로 새어나가지 않고, 앱 내 브라우저에서 로그인 → 이 주소로 앱 복귀.
 const NATIVE_REDIRECT = "com.theamov.dabar://auth-callback";
+// 앱 번들 ID. 네이티브 Sign in with Apple 이 발급하는 identity token 의 audience 값.
+// (웹 OAuth 의 Services ID `com.theamov.dabar.signin` 과 다르니 주의 — Supabase Apple
+//  provider 의 "Authorized Client IDs" 에 이 번들 ID 도 반드시 함께 등록해야 한다.)
+const APPLE_BUNDLE_ID = "com.theamov.dabar";
 const isNative = () => Capacitor.isNativePlatform();
+
+// nonce 유틸 — 네이티브 Apple 로그인 재생공격 방지용.
+// raw nonce 를 만들고 SHA-256 해시를 애플에 전달, raw 는 Supabase 에 전달한다.
+// (애플 토큰엔 해시가 담기고, Supabase 가 raw 를 해싱해 대조한다.)
+function randomNonce(bytes = 32): string {
+  const arr = new Uint8Array(bytes);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function sha256Hex(input: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+// 사용자가 네이티브 Apple 시트를 취소한 경우(에러 1000/1001)는 실패가 아니라 조용히 종료한다.
+function isAppleCancel(e: unknown): boolean {
+  const err = e as { code?: unknown; message?: unknown } | null;
+  const code = String(err?.code ?? "");
+  const msg = String(err?.message ?? "").toLowerCase();
+  return code === "1000" || code === "1001" || msg.includes("cancel") || msg.includes("1001");
+}
 
 interface AuthState {
   user: User | null;
@@ -132,8 +156,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = useCallback(async (provider: Provider) => {
+    // iOS 네이티브: Apple 로그인은 웹 팝업이 아니라 **네이티브 Sign in with Apple 시트**로.
+    // 애플 심사(2.1)가 요구하는 표준 경험이며, iPad 에서 인앱 브라우저가 빈 화면으로 뜨던
+    // 문제(반려 사유)를 근본적으로 해결한다. 토큰은 signInWithIdToken 으로 Supabase 세션으로 교환.
+    if (provider === "apple" && isNative() && Capacitor.getPlatform() === "ios"
+        && Capacitor.isPluginAvailable("SignInWithApple")) {
+      const { SignInWithApple } = await import("@capacitor-community/apple-sign-in");
+      const rawNonce = randomNonce();
+      const hashedNonce = await sha256Hex(rawNonce);
+      let idToken: string | undefined;
+      try {
+        const res = await SignInWithApple.authorize({
+          clientId: APPLE_BUNDLE_ID,
+          // 네이티브 흐름에선 실제 리다이렉트가 없지만 옵션상 필수 필드다.
+          redirectURI: (process.env.NEXT_PUBLIC_SITE_URL || "https://dabar.theamov.com") + "/auth/callback",
+          scopes: "name email",
+          nonce: hashedNonce,
+        });
+        idToken = res.response?.identityToken;
+      } catch (e) {
+        if (isAppleCancel(e)) return; // 사용자가 취소 → 실패 아님, 조용히 종료
+        throw e;
+      }
+      if (!idToken) throw new Error("Apple identity token 없음");
+      const { error } = await supabase.auth.signInWithIdToken({
+        provider: "apple",
+        token: idToken,
+        nonce: rawNonce,
+      });
+      if (error) throw error;
+      return; // onAuthStateChange(SIGNED_IN) 가 이후 흐름 처리
+    }
+
     // 네이티브 + Browser 플러그인이 탑재된 빌드: 앱 내 브라우저에서 로그인 → 딥링크로 앱 복귀.
-    // (플러그인이 없는 옛 빌드에서는 아래 웹 리다이렉트 방식으로 폴백 → 로그인이 깨지지 않음)
+    // (카카오·구글, 그리고 위 네이티브 경로가 없는 옛 iOS 빌드의 Apple 폴백)
     if (isNative() && Capacitor.isPluginAvailable("Browser")) {
       const { Browser } = await import("@capacitor/browser");
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -141,7 +197,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
       });
       if (error || !data?.url) throw error ?? new Error("OAuth URL 생성 실패");
-      await Browser.open({ url: data.url, presentationStyle: "popover" });
+      // presentationStyle 은 fullscreen 으로. "popover" 는 iPad 에서 앵커 없이 작은
+      // 빈 팝오버로 떠 로그인 페이지가 안 보이는 문제가 있었다(반려 스크린샷).
+      await Browser.open({ url: data.url, presentationStyle: "fullscreen" });
       return; // 이후는 appUrlOpen 리스너가 처리
     }
     // 웹: 기존 리다이렉트 방식
