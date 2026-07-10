@@ -22,12 +22,14 @@ export default function DailyVerse() {
   if (!verse) return null;
 
   return (
-    <div className="fade-in" style={{ textAlign: "left", background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", borderLeft: "3px solid var(--t-sacred)", borderRadius: 14, padding: "13px 15px", marginBottom: 10 }}>
-      <p style={{ fontSize: 11, fontWeight: 800, color: "var(--t-sacred)", letterSpacing: 1.2, margin: "0 0 6px" }}>✦ {t("home.dailyVerse")}</p>
-      <p style={{ fontFamily: "'Iowan Old Style',Georgia,'Noto Serif KR',serif", fontSize: 14.5, lineHeight: 1.75, color: theme.text, fontStyle: "italic", margin: "0 0 6px" }}>
+    <div className="fade-in" style={{ textAlign: "left", background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", borderLeft: "3px solid var(--t-sacred)", borderRadius: 13, padding: "9px 13px", marginBottom: 8 }}>
+      <p style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, fontSize: 10.5, fontWeight: 800, color: "var(--t-sacred)", letterSpacing: 1.1, margin: "0 0 4px" }}>
+        <span>✦ {t("home.dailyVerse")}</span>
+        <span style={{ fontSize: 11, letterSpacing: 0.2, whiteSpace: "nowrap" }}>{verse.label}</span>
+      </p>
+      <p style={{ fontFamily: "'Iowan Old Style',Georgia,'Noto Serif KR',serif", fontSize: 13.5, lineHeight: 1.55, color: theme.text, fontStyle: "italic", margin: 0 }}>
         “{verse.text}”
       </p>
-      <p style={{ fontSize: 12, color: "var(--t-sacred)", margin: 0, fontWeight: 700 }}>— {verse.label}</p>
     </div>
   );
 }

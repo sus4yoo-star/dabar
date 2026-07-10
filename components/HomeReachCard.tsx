@@ -13,10 +13,10 @@ export default function HomeReachCard() {
 
   return (
     <button onClick={() => router.push("/reach")} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", marginTop: 8, padding: "12px 15px", borderRadius: 16, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.13)" }}>
-      <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="globe" color="var(--t-sacred)" size={22} /></span>
+      style={{ display: "flex", alignItems: "center", gap: 11, textAlign: "left", width: "100%", marginTop: 6, padding: "10px 13px", borderRadius: 15, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.13)" }}>
+      <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 13, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="globe" color="var(--t-sacred)" size={22} /></span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ fontFamily: serif, display: "block", fontSize: 17, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.reachTitle")}</span>
+        <span style={{ fontFamily: serif, display: "block", fontSize: 16.5, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.reachTitle")}</span>
         <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>
           <span style={{ color: theme.wrong, fontWeight: 800 }}>{t("home.sosTag")}</span> · {t("home.reachSub")}
         </span>

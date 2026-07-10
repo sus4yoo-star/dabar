@@ -110,3 +110,9 @@ html.night .skeleton {
 @keyframes sk-glow { 0%, 100% { opacity: 0.35; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.06); } }
 @keyframes sk-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @keyframes sk-twinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.9; } }
+
+/* 홈 한 화면 맞춤 — 세로가 짧은 폰(갤럭시 780px 등)에서만 장식 요소를 숨겨
+   스크롤 없이 모든 기능 카드가 들어가게 한다. 큰 화면은 그대로. */
+@media (max-height: 830px) {
+  .h-compact-hide { display: none !important; }
+}

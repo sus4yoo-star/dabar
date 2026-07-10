@@ -75,9 +75,9 @@ export default function Home() {
   }, [user]);
 
   return (
-    <main style={{ maxWidth: 460, margin: "0 auto", padding: "0.55rem 1rem 0.8rem", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+    <main style={{ maxWidth: 460, margin: "0 auto", padding: "0.5rem 1rem 0.3rem", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       {/* 상단 바 — 언어 · [화면 토글 + 긴급 SOS] · 로그인/아웃 한 줄 */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6, marginBottom: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6, marginBottom: 6 }}>
         <LangSelector />
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <DisplayQuickToggle />
@@ -91,21 +91,21 @@ export default function Home() {
       </div>
 
       {/* 히어로 */}
-      <div className="fade-in" style={{ textAlign: "center", marginBottom: 7 }}>
-        <div style={{ position: "relative", width: 48, height: 48, margin: "0 auto" }}>
+      <div className="fade-in" style={{ textAlign: "center", marginBottom: 5 }}>
+        <div className="h-compact-hide" style={{ position: "relative", width: 42, height: 42, margin: "0 auto" }}>
           <div aria-hidden style={{ position: "absolute", inset: -11, borderRadius: "50%", background: "radial-gradient(circle, rgba(199,154,43,0.22) 0%, rgba(199,154,43,0) 70%)", filter: "blur(5px)" }} />
-          <div style={{ position: "relative", width: 48, height: 48, borderRadius: 16, background: "transparent", display: "grid", placeItems: "center" }}>
-            <BrandMark size={40} />
+          <div style={{ position: "relative", width: 42, height: 42, borderRadius: 14, background: "transparent", display: "grid", placeItems: "center" }}>
+            <BrandMark size={36} />
           </div>
         </div>
-        <h1 style={{ fontFamily: serif, fontSize: 26, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 5, paddingLeft: 5, margin: "7px 0 3px" }}>DABAR</h1>
+        <h1 style={{ fontFamily: serif, fontSize: 23, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: 4.5, paddingLeft: 4, margin: "5px 0 2px" }}>DABAR</h1>
         {/* 거룩한 금빛 장식선 */}
-        <div aria-hidden style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginBottom: 4 }}>
+        <div aria-hidden className="h-compact-hide" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginBottom: 4 }}>
           <span style={{ width: 28, height: 1, background: "linear-gradient(90deg, transparent, var(--t-sacred))" }} />
           <span style={{ color: "var(--t-sacred)", fontSize: 9, lineHeight: 1 }}>✦</span>
           <span style={{ width: 28, height: 1, background: "linear-gradient(90deg, var(--t-sacred), transparent)" }} />
         </div>
-        <p style={{ fontSize: 12.5, color: theme.textMuted, margin: 0, letterSpacing: 0.3 }}>{t("home.tagline")}</p>
+        <p className="h-compact-hide" style={{ fontSize: 12.5, color: theme.textMuted, margin: 0, letterSpacing: 0.3 }}>{t("home.tagline")}</p>
         {user && (
           <div style={{ marginTop: 5, fontSize: 13, color: theme.primarySoft, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: 6 }}>
             {editingNick ? (
@@ -146,10 +146,10 @@ export default function Home() {
 
       {/* 복음 전하기 — 전도 도구(글없는책·다리·사영리) */}
       <button onClick={() => router.push("/share")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 15px", borderRadius: 16, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
-        <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="megaphone" color="var(--t-sacred)" size={23} /></span>
+        style={{ display: "flex", alignItems: "center", gap: 11, textAlign: "left", width: "100%", padding: "10px 13px", borderRadius: 15, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
+        <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 13, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="megaphone" color="var(--t-sacred)" size={23} /></span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.shareTitle")}</span>
+          <span style={{ fontFamily: serif, display: "block", fontSize: 16.5, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.shareTitle")}</span>
           <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.shareSub")}</span>
         </span>
         <span style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
@@ -182,17 +182,17 @@ export default function Home() {
 
       {/* 교회와 연결 — 지역교회 소개 (골드 외곽선) */}
       <button onClick={() => router.push("/connect")} className="fade-in-2"
-        style={{ display: "flex", alignItems: "center", gap: 13, textAlign: "left", width: "100%", padding: "12px 15px", borderRadius: 16, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
-        <span style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 14, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="church" color="var(--t-sacred)" size={23} /></span>
+        style={{ display: "flex", alignItems: "center", gap: 11, textAlign: "left", width: "100%", padding: "10px 13px", borderRadius: 15, border: `1px solid var(--t-sacredBorder)`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 8px 24px rgba(199,154,43,0.15)" }}>
+        <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 13, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}><MenuIcon name="church" color="var(--t-sacred)" size={23} /></span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ fontFamily: serif, display: "block", fontSize: 18, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.connectTitle")}</span>
+          <span style={{ fontFamily: serif, display: "block", fontSize: 16.5, fontWeight: 700, color: "var(--t-sacred)", letterSpacing: -0.2 }}>{t("home.connectTitle")}</span>
           <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{t("home.connectSub")}</span>
         </span>
         <span style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
       </button>
 
       {/* 빠른 이동 — 동행 / 랭킹 / 오답 */}
-      <div style={{ display: "flex", gap: 8, marginTop: 7 }}>
+      <div style={{ display: "flex", gap: 7, marginTop: 5 }}>
         <QuickChip icon="userPlus" label={t("common.companions")} onClick={() => router.push("/share/me")} badge={unread} />
         <QuickChip icon="trophy" label={t("common.ranking")} onClick={() => router.push("/ranking")} />
         {user && <QuickChip icon="list" label={t("common.wrongnote")} onClick={() => router.push("/history")} />}
@@ -200,13 +200,13 @@ export default function Home() {
       </div>
 
       {/* 하단 보조 링크 (긴급 SOS는 상단 바로 이동) */}
-      <div style={{ marginTop: "auto", paddingTop: 9, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
+      <div style={{ marginTop: "auto", paddingTop: 5, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 7 }}>
         {isAdmin && <SmallLink icon="dashboard" onClick={() => router.push("/admin")}>{t("home.adminShort")}</SmallLink>}
         <SmallLink icon="clipboard" onClick={() => router.push("/guide")}>{t("home.guideShort")}</SmallLink>
         {user && <SmallLink icon="share" onClick={shareInvite}>{t("home.inviteShort")}</SmallLink>}
         <SmallLink icon={user ? "account" : "lock"} onClick={() => router.push(user ? "/account" : "/privacy")}>{user ? t("home.accountShort") : t("privacy.title")}</SmallLink>
       </div>
-      <p style={{ textAlign: "center", fontSize: 10.5, color: theme.textFaint, marginTop: 8, letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
+      <p style={{ textAlign: "center", fontSize: 10, color: theme.textFaint, marginTop: 4, letterSpacing: 1 }}>DABAR by AMOV · Love Creates Value</p>
       {toastView}
     </main>
   );
@@ -222,8 +222,8 @@ const ACCENT: Record<"green" | "blue" | "amber", Accent> = {
 // 홈 섹션 구분 라벨 — 얇은 라인 + 작은 대문자풍 라벨(카드 색과 경쟁하지 않게 중립톤)
 function Section({ children }: { children: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 9, margin: "18px 3px 4px" }}>
-      <span style={{ fontSize: 11.5, fontWeight: 800, color: theme.textFaint, letterSpacing: 1.3, whiteSpace: "nowrap" }}>{children}</span>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "10px 3px 2px" }}>
+      <span style={{ fontSize: 11, fontWeight: 800, color: theme.textFaint, letterSpacing: 1.2, whiteSpace: "nowrap" }}>{children}</span>
       <span style={{ flex: 1, height: 1, background: theme.border }} />
     </div>
   );
@@ -232,10 +232,10 @@ function Section({ children }: { children: string }) {
 function NavCard({ icon, title, sub, onClick, accent }: { icon: ReactNode; title: string; sub: string; onClick: () => void; accent: Accent }) {
   return (
     <button onClick={onClick} className="fade-in-2"
-      style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", width: "100%", marginTop: 8, padding: "11px 14px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 2px 10px rgba(26,37,48,0.06), 0 1px 3px rgba(26,37,48,0.04)" }}>
-      <span style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 13, background: accent.chip, display: "grid", placeItems: "center" }}>{icon}</span>
+      style={{ display: "flex", alignItems: "center", gap: 11, textAlign: "left", width: "100%", marginTop: 6, padding: "9px 13px", borderRadius: 15, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text, boxShadow: "0 2px 10px rgba(26,37,48,0.06), 0 1px 3px rgba(26,37,48,0.04)" }}>
+      <span style={{ flexShrink: 0, width: 38, height: 38, borderRadius: 12, background: accent.chip, display: "grid", placeItems: "center" }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ fontFamily: serif, display: "block", fontSize: 16.5, fontWeight: 700, color: theme.text, letterSpacing: -0.2 }}>{title}</span>
+        <span style={{ fontFamily: serif, display: "block", fontSize: 15.5, fontWeight: 700, color: theme.text, letterSpacing: -0.2 }}>{title}</span>
         <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{sub}</span>
       </span>
       <span style={{ fontSize: 16, color: theme.textFaint }}>›</span>
@@ -247,7 +247,7 @@ function QuickChip({ icon, label, onClick, badge }: { icon: string; label: strin
   const text = label.replace(/^\p{Extended_Pictographic}️?\s*/u, ""); // 라벨 앞 이모지만 제거
   return (
     <button onClick={onClick}
-      style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "11px 6px", borderRadius: 13, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 13.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
+      style={{ position: "relative", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 6px", borderRadius: 12, border: `1px solid ${theme.cardBorder}`, background: theme.card, color: theme.text, fontSize: 13.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
       <MenuIcon name={icon} size={18} color={theme.textMuted} />
       {text}
       {badge ? <span style={{ position: "absolute", top: -5, right: 8, minWidth: 16, height: 16, padding: "0 4px", borderRadius: 999, background: theme.wrong, color: "#fff", fontSize: 9.5, fontWeight: 800, display: "grid", placeItems: "center", boxShadow: "0 0 0 2px #fff" }}>{badge > 99 ? "99+" : badge}</span> : null}
@@ -259,7 +259,7 @@ function SmallLink({ children, onClick, icon }: { children: string; onClick: () 
   const text = children.replace(/^\p{Extended_Pictographic}️?\s*/u, ""); // 앞 '이모지'일 때만 제거
   return (
     <button onClick={onClick}
-      style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13.5, fontWeight: 600, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 999, padding: "8px 13px", cursor: "pointer", whiteSpace: "nowrap" }}>
+      style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13.5, fontWeight: 600, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 999, padding: "7px 11px", cursor: "pointer", whiteSpace: "nowrap" }}>
       {icon && <MenuIcon name={icon} size={16} color={theme.textFaint} />}
       {text}
     </button>
