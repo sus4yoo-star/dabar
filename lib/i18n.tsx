@@ -588,7 +588,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = (typeof localStorage !== "undefined" && localStorage.getItem("dabar_lang")) as Lang | null;
-    if (saved && LANGS.some(l => l.code === saved)) setLangState(saved);
+    if (saved && LANGS.some(l => l.code === saved)) { setLangState(saved); return; }
+    // 첫 실행: 기기 언어로 자동 시작 (태국·라오스 현지인이 처음 열어도 자기 언어로).
+    // 지원 목록에 없으면 한국어 유지. 선택은 저장하지 않아 사용자가 바꾸면 그 값이 우선.
+    try {
+      const dev = (navigator.language || "").toLowerCase().split("-")[0] as Lang;
+      if (dev && dev !== "ko" && LANGS.some(l => l.code === dev)) setLangState(dev);
+    } catch { /* */ }
   }, []);
 
   // 방향(RTL) + UI 자동번역 (ko/en/th/lo 외 언어)
