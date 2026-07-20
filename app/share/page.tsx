@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { theme } from "@/lib/theme";
+import MenuIcon from "@/components/MenuIcon";
 import AppShell from "@/components/besora/AppShell";
 import ShareSection from "@/components/besora/ShareSection";
 import ToolCard from "@/components/besora/ToolCard";
@@ -49,6 +51,20 @@ export default function ShareHome() {
         {tools.slice(0, 4).map((t) => <ToolCard key={t.id} tool={t} />)}
         {tools[4] && <div style={{ gridColumn: "span 2" }}><ToolCard tool={tools[4]} wide /></div>}
       </div>
+
+      {/* 🎓 전도자 교육 — 위 5개 도구를 깊이 이해·훈련하는 입구(골드 외곽선) */}
+      <Link href="/share/train" style={{ textDecoration: "none" }}>
+        <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 11, width: "100%", padding: "12px 14px", borderRadius: 16, border: "1px solid var(--t-sacredBorder)", background: "var(--t-sacredLight)", cursor: "pointer", color: theme.text }}>
+          <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 13, background: theme.card, border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center" }}>
+            <MenuIcon name="grad" color="var(--t-sacred)" size={22} />
+          </span>
+          <span style={{ flex: 1 }}>
+            <span className="serif" style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--t-sacred)" }}>{ui(myLang, "trainCta")}</span>
+            <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{ui(myLang, "trainCtaSub")}</span>
+          </span>
+          <span aria-hidden style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
+        </div>
+      </Link>
 
       {/* 실시간 통역은 '선교 도구'(/reach)로 이동 — 여기는 전도 도구(글없는책·다리·사영리)만 */}
 
