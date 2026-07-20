@@ -80,6 +80,18 @@ export default function ShareHome() {
         </div>
       </Link>
 
+      {/* 🙏 전도 간증 나눔 — 전한 이야기로 서로 격려하는 피드 */}
+      <Link href="/share/testimonies" style={{ textDecoration: "none" }}>
+        <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 11, width: "100%", padding: "12px 14px", borderRadius: 16, border: `1px solid ${theme.cardBorder}`, background: theme.card, cursor: "pointer", color: theme.text }}>
+          <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 13, background: "var(--t-sacredLight)", border: "1px solid var(--t-sacredBorder)", display: "grid", placeItems: "center", fontSize: 20 }}>🙏</span>
+          <span style={{ flex: 1 }}>
+            <span className="serif" style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--t-sacred)" }}>{ui(myLang, "testiCta")}</span>
+            <span style={{ display: "block", fontSize: 12.5, color: theme.textMuted, marginTop: 2, lineHeight: 1.4 }}>{ui(myLang, "testiCtaSub")}</span>
+          </span>
+          <span aria-hidden style={{ fontSize: 16, color: "var(--t-sacred)" }}>›</span>
+        </div>
+      </Link>
+
       {/* 실시간 통역은 '선교 도구'(/reach)로 이동 — 여기는 전도 도구(글없는책·다리·사영리)만 */}
 
       {!ready && <p style={{ marginTop: 16, textAlign: "center", fontSize: 12, color: theme.textMuted }}>…</p>}
