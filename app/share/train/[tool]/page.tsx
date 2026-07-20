@@ -142,6 +142,14 @@ export default function TrainToolPage({ params }: { params: Promise<{ tool: stri
           </ul>
         </Card>
 
+        {/* AI 연습 — 이 도구로 롤플레이 연습 */}
+        <Link href={`/share/train/${data.slug}/practice`} style={{ textDecoration: "none" }}>
+          <div style={{ borderRadius: 16, background: theme.card, border: "1px solid var(--t-sacredBorder)", padding: "14px 18px", textAlign: "center", cursor: "pointer" }}>
+            <span className="serif" style={{ fontSize: 15.5, fontWeight: 800, color: "var(--t-sacred)" }}>💬 {ui(myLang, "practiceCta")}</span>
+            <p style={{ margin: "3px 0 0", fontSize: 12, color: theme.textMuted }}>{ui(myLang, "practiceSub")}</p>
+          </div>
+        </Link>
+
         {/* 실전 연결 — 이 도구로 실제 발표 화면 열기 */}
         <Link href={`/share/present/${data.slug}`} style={{ textDecoration: "none" }}>
           <div style={{ borderRadius: 16, background: g.bg, padding: "15px 18px", textAlign: "center", cursor: "pointer" }}>
