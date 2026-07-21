@@ -91,7 +91,7 @@ export const TRAININGS: ToolTraining[] = [
     slug: "four-laws",
     color: "crimson",
     name: "사영리 (네 가지 영적 원리)",
-    origin: "1952년 빌 브라이트(CCC, 대학생선교회)가 정리한, 세계에서 가장 널리 쓰인 전도 소책자.",
+    origin: "빌 브라이트(CCC, 대학생선교회)가 만든, 세계에서 가장 널리 쓰인 전도 소책자.",
     tagline: "복음을 네 개의 명제로 논리정연하게 정리한, 생각하는 사람을 위한 도구.",
     bestFor: "논리적으로 이해하고 넘어가고 싶어 하는 사람, 청년·지식인에게 강합니다. 짧은 시간에 복음의 전체 구조를 명확히 전할 때 좋습니다.",
     overview:
@@ -170,7 +170,7 @@ export const TRAININGS: ToolTraining[] = [
     slug: "three-circles",
     color: "green",
     name: "세 개의 원",
-    origin: "제리 트라우샴(NAMB, Life on Mission)이 정리해 최근 널리 퍼진, 그려가며 전하는 현대 전도법.",
+    origin: "미국 NAMB의 'Life on Mission' 사역을 통해 널리 퍼진, 그려가며 전하는 현대 전도법.",
     tagline: "하나님의 디자인 → 깨어짐 → 복음으로의 회복을, 원과 화살표로 전하는 도구.",
     bestFor: "삶의 상처·공허를 느끼는 사람에게 강합니다. 상대의 '깨어짐' 이야기에서 자연스럽게 복음으로 이어갈 수 있어, 관계 전도·일상 대화에 좋습니다.",
     overview:
