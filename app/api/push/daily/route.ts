@@ -36,39 +36,43 @@ async function handle(req: NextRequest) {
   const got = req.headers.get("x-cron-secret") || (auth.startsWith("Bearer ") ? auth.slice(7) : "");
   if (got !== secret) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const lang = new URL(req.url).searchParams.get("lang") || "ko";
-  const verse = todaysVerse(lang);
-  if (!verse) return NextResponse.json({ error: "no-verse" }, { status: 500 });
+  // 여기서부터는 예외가 나도 원인이 응답 본문에 보이도록 감싼다(opaque 500 방지).
+  try {
+    const lang = new URL(req.url).searchParams.get("lang") || "ko";
+    const verse = todaysVerse(lang);
+    if (!verse) return NextResponse.json({ error: "no-verse" }, { status: 500 });
 
-  const sb = createClient(sbUrl, svc, { db: { schema: "besora" }, auth: { persistSession: false, autoRefreshToken: false } });
-  const { data: subs, error } = await sb.from("push_subscriptions").select("endpoint, p256dh, auth");
-  if (error) return NextResponse.json({ error: "db-failed", detail: error.message }, { status: 502 });
-  const rows = (subs ?? []) as { endpoint: string; p256dh: string; auth: string }[];
-  if (rows.length === 0) return NextResponse.json({ ok: true, sent: 0 });
+    const sb = createClient(sbUrl, svc, { db: { schema: "besora" }, auth: { persistSession: false, autoRefreshToken: false } });
+    const { data: subs, error } = await sb.from("push_subscriptions").select("endpoint, p256dh, auth");
+    if (error) return NextResponse.json({ error: "db-failed", detail: error.message }, { status: 502 });
+    const rows = (subs ?? []) as { endpoint: string; p256dh: string; auth: string }[];
+    if (rows.length === 0) return NextResponse.json({ ok: true, sent: 0, note: "no-subscribers" });
 
-  webpush.setVapidDetails(subject, VAPID_PUBLIC, priv);
-  const title = lang === "ko" ? "✦ 오늘의 말씀" : "✦ Verse of the day";
-  const payload = JSON.stringify({
-    title,
-    body: `“${verse.text}” — ${verse.label}`.slice(0, 500),
-    url: "/",
-    tag: "daily-verse",
-  });
+    webpush.setVapidDetails(subject, VAPID_PUBLIC, priv);
+    const title = lang === "ko" ? "✦ 오늘의 말씀" : "✦ Verse of the day";
+    const payload = JSON.stringify({
+      title,
+      body: `“${verse.text}” — ${verse.label}`.slice(0, 500),
+      url: "/",
+      tag: "daily-verse",
+    });
 
-  let sent = 0, gone = 0;
-  await Promise.all(
-    rows.map(async (s) => {
-      try {
-        await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload);
-        sent++;
-      } catch (e) {
-        // 410/404 = 만료된 구독 → 정리
-        const code = (e as { statusCode?: number })?.statusCode;
-        if (code === 404 || code === 410) { gone++; try { await sb.from("push_subscriptions").delete().eq("endpoint", s.endpoint); } catch { /* */ } }
-      }
-    })
-  );
-  return NextResponse.json({ ok: true, sent, cleaned: gone, verse: verse.label });
+    let sent = 0, gone = 0;
+    await Promise.all(
+      rows.map(async (s) => {
+        try {
+          await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload);
+          sent++;
+        } catch (e) {
+          const code = (e as { statusCode?: number })?.statusCode;
+          if (code === 404 || code === 410) { gone++; try { await sb.from("push_subscriptions").delete().eq("endpoint", s.endpoint); } catch { /* */ } }
+        }
+      })
+    );
+    return NextResponse.json({ ok: true, sent, cleaned: gone, verse: verse.label });
+  } catch (e) {
+    return NextResponse.json({ error: "exception", detail: String((e as Error)?.message ?? e).slice(0, 300) }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) { return handle(req); }
