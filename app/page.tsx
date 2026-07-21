@@ -26,6 +26,9 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [playedToday, setPlayedToday] = useState(false);
   const [unread, setUnread] = useState(0);
+  // 전도 대상: 오늘 챙길 수(due) / 전체 수 — 홈에서 기도 습관을 붙잡아 준다
+  const [seekerDue, setSeekerDue] = useState(0);
+  const [seekerTotal, setSeekerTotal] = useState(0);
   // 관리자: 대기 중인 교회 연결 요청 수 (놓치지 않게 홈에서 바로 알림)
   const [pendingConn, setPendingConn] = useState(0);
   // 성경 완주 이어풀기 (퀴즈가 저장해 둔 진행 정보)
@@ -54,6 +57,11 @@ export default function Home() {
     import("@/lib/besora/companions")
       .then((m) => m.fetchUnreadTotal())
       .then((n) => { if (alive) setUnread(n); })
+      .catch(() => {});
+    // 전도 대상 카운트(오늘 챙길 수·전체) — 홈 배지용
+    import("@/lib/besora/seekers")
+      .then((m) => m.seekerCounts())
+      .then((c) => { if (alive) { setSeekerDue(c.due); setSeekerTotal(c.total); } })
       .catch(() => {});
     return () => { alive = false; };
   }, [user]);
@@ -130,6 +138,23 @@ export default function Home() {
 
       {/* 📖 오늘의 말씀 — 매일 여는 이유 */}
       <DailyVerse />
+
+      {/* 🙏 전도 대상 — 오늘 챙길 사람이 있으면 강조, 아니면 동행 현황 (기도 습관 유도) */}
+      {user && seekerTotal > 0 && (
+        <button onClick={() => router.push("/share/seekers")} className="fade-in"
+          style={{
+            display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left",
+            padding: "10px 13px", borderRadius: 13, marginBottom: 8, cursor: "pointer", color: theme.text,
+            border: `1px solid ${seekerDue > 0 ? "var(--t-sacredBorder)" : theme.cardBorder}`,
+            background: seekerDue > 0 ? "var(--t-sacredLight)" : theme.card,
+          }}>
+          <span style={{ fontSize: 18, flexShrink: 0 }}>{seekerDue > 0 ? "🙏" : "🌱"}</span>
+          <span style={{ flex: 1, fontSize: 13.5, fontWeight: seekerDue > 0 ? 800 : 600, color: seekerDue > 0 ? "var(--t-sacred)" : theme.textMuted, lineHeight: 1.4 }}>
+            {seekerDue > 0 ? t("home.seekerDue", { n: seekerDue }) : t("home.seekerOngoing", { n: seekerTotal })}
+          </span>
+          <span aria-hidden style={{ fontSize: 15, color: "var(--t-sacred)" }}>›</span>
+        </button>
+      )}
 
       {/* ⛪ 관리자: 대기 중 교회 연결 요청 알림 */}
       {isAdmin && pendingConn > 0 && (

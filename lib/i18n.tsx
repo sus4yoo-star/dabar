@@ -141,6 +141,8 @@ const DICT: Dict = {
   "home.greeting":    { ko: "{name}님, 오늘도 말씀과 함께해요 👋", en: "{name}, walk with the Word today 👋", th: "{name} วันนี้มาเดินกับพระวจนะกัน 👋", lo: "{name} ມື້ນີ້ມາຍ່າງກັບພຣະທຳນຳກັນ 👋" },
   "home.streakToday": { ko: "🔥 {n}일 연속 출석!", en: "🔥 {n}-day streak!", th: "🔥 ต่อเนื่อง {n} วัน!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້!" },
   "home.streakGo":    { ko: "🔥 {n}일 연속 — 오늘도 풀면 이어져요!", en: "🔥 {n}-day streak — keep it going today!", th: "🔥 ต่อเนื่อง {n} วัน — ทำต่อวันนี้สิ!", lo: "🔥 ຕໍ່ເນື່ອງ {n} ມື້ — ເຮັດຕໍ່ມື້ນີ້ເລີຍ!" },
+  "home.seekerDue":   { ko: "오늘 기도하며 챙길 전도 대상 {n}명", en: "{n} to pray for & follow up today", th: "{n} คนที่จะอธิษฐานและติดตามวันนี้", lo: "{n} ຄົນທີ່ຈະອະທິຖານ ແລະ ຕິດຕາມມື້ນີ້" },
+  "home.seekerOngoing":{ ko: "전도 대상 {n}명과 기도로 동행 중", en: "Walking in prayer with {n} you're reaching", th: "กำลังเดินด้วยการอธิษฐานกับ {n} คนที่คุณประกาศ", lo: "ກຳລັງຍ່າງດ້ວຍການອະທິຖານກັບ {n} ຄົນທີ່ທ່ານปະກາດ" },
   "home.invite":      { ko: "👋 친구 초대하고 함께 공부하기", en: "👋 Invite friends & study together", th: "👋 ชวนเพื่อนมาเรียนด้วยกัน", lo: "👋 ເຊີນໝູ່ມາຮຽນນຳກັນ" },
   "home.guide":       { ko: "📋 학습·세례·입교 절차 안내", en: "📋 Membership steps guide", th: "📋 ขั้นตอนการเป็นสมาชิก", lo: "📋 ຂັ້ນຕອນການເປັນສະມາຊິກ" },
   "home.admin":       { ko: "🔧 목사님 현황판", en: "🔧 Pastor dashboard", th: "🔧 แดชบอร์ดศิษยาภิบาล", lo: "🔧 ກະດານສິດຍາພິບານ" },
