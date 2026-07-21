@@ -27,7 +27,13 @@ async function handle(req: NextRequest) {
   const priv = process.env.VAPID_PRIVATE_KEY;
   const svc = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const subject = process.env.VAPID_SUBJECT || "mailto:hello@theamov.com";
+  // VAPID subject 은 반드시 mailto: 또는 https: 로 시작해야 한다.
+  // 환경변수에 오타(예: "ailto:")가 있어도 푸시 전체가 죽지 않도록 방어적으로 보정.
+  let subject = process.env.VAPID_SUBJECT || "mailto:hello@theamov.com";
+  if (!/^(mailto:|https:)/.test(subject)) {
+    const at = subject.replace(/^[^:]*:/, "").trim();
+    subject = at.includes("@") ? `mailto:${at}` : "mailto:hello@theamov.com";
+  }
   if (!secret) return NextResponse.json({ error: "no-cron-secret" }, { status: 500 });
   if (!priv || !svc || !sbUrl) return NextResponse.json({ error: "misconfigured" }, { status: 500 });
 
