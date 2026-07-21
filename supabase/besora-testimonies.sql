@@ -4,15 +4,18 @@
 -- =====================================================================
 
 -- 1) 간증 글
+--  ※ 방어적 생성: 예전에 다른 형태의 testimonies 가 남아 있어도 안전하도록,
+--     테이블은 최소로 만들고 필요한 컬럼을 add column if not exists 로 채운다.
+--     (기존 데이터를 지우지 않음. not null + default 컬럼은 기존 행에도 안전하게 채워짐)
 create table if not exists besora.testimonies (
-  id           uuid primary key default gen_random_uuid(),
-  owner        uuid not null references auth.users(id) on delete cascade,
-  display_name text,                    -- null = 익명
-  body         text not null,
-  tool_slug    text,                    -- 어떤 전도 도구로 전했는지(선택)
-  amen_count   int  not null default 0,
-  created_at   timestamptz not null default now()
+  id uuid primary key default gen_random_uuid()
 );
+alter table besora.testimonies add column if not exists owner        uuid;
+alter table besora.testimonies add column if not exists display_name text;
+alter table besora.testimonies add column if not exists body         text;
+alter table besora.testimonies add column if not exists tool_slug    text;
+alter table besora.testimonies add column if not exists amen_count   int  not null default 0;
+alter table besora.testimonies add column if not exists created_at   timestamptz not null default now();
 create index if not exists idx_testi_created on besora.testimonies(created_at desc);
 
 alter table besora.testimonies enable row level security;
