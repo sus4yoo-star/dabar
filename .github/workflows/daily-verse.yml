@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: 오늘의 말씀 발송
         run: |
-          curl -fsS -X POST "https://dabar.theamov.com/api/push/daily" \
+          # -f 를 빼서 실패 시에도 서버 응답 본문(원인)을 볼 수 있게 한다.
+          body=$(curl -sS -X POST "https://dabar.theamov.com/api/push/daily" \
             -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
-            -w "\nHTTP %{http_code}\n"
+            -w $'\nHTTP %{http_code}')
+          echo "$body"
+          echo "$body" | grep -q "HTTP 200" || { echo "::error::daily push failed"; exit 1; }
