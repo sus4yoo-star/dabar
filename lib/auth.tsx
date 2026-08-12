@@ -126,7 +126,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           try { await supabase.auth.exchangeCodeForSession(code); } catch { /* 세션 확인은 onAuthStateChange 가 처리 */ }
         }
       });
-      remove = () => handle.remove();
+      // 안전장치: 사용자가 브라우저를 직접 닫았을 때 세션을 한 번 더 확인해
+      // 딥링크가 늦거나 누락돼도 로그인이 반영되게 한다.
+      const finished = await Browser.addListener("browserFinished", () => {
+        supabase.auth.getSession().catch(() => {});
+      });
+      remove = () => { handle.remove(); finished.remove(); };
     })();
     return () => { if (remove) remove(); };
   }, []);
@@ -141,7 +146,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
       });
       if (error || !data?.url) throw error ?? new Error("OAuth URL 생성 실패");
-      await Browser.open({ url: data.url, presentationStyle: "popover" });
+      // presentationStyle 은 반드시 fullscreen. iPad 에서 "popover" 로 열면
+      // 작은 빈 창으로 떠서 Apple 로그인이 로드/완료되지 않는다(App Store 2.1 반려 원인).
+      await Browser.open({ url: data.url, presentationStyle: "fullscreen" });
       return; // 이후는 appUrlOpen 리스너가 처리
     }
     // 웹: 기존 리다이렉트 방식
