@@ -8,6 +8,12 @@ export const theme = {
   gold:       "var(--t-gold)",        // (토큰명 유지) 초록 — 제목·뱃지·성장 강조
   goldSoft:   "var(--t-goldSoft)",
 
+  // 거룩한 골드 — 전도·교회 강조(홈 워드마크·전도/교회 카드와 동일 톤)
+  sacred:      "var(--t-sacred)",
+  sacredSoft:  "var(--t-sacredSoft)",
+  sacredLight: "var(--t-sacredLight)",
+  sacredBorder:"var(--t-sacredBorder)",
+
   // 배경 / 표면
   bg:        "var(--t-bg)",
   bgGrad:    "var(--t-bgGrad)",

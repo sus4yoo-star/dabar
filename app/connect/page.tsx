@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { useToast } from "@/components/Toast";
-import { serif } from "@/lib/ui";
+import { PageHeader, ACCENT } from "@/lib/ui";
 
 // 교회 연결 요청 — 지역·연락처를 남기면 관리자가 직접 검증된 교회를 찾아 소개한다.
 // 자동 매칭 없음: 앱은 접수만 하고, 소개는 사람이 확인 후 직접 한다.
@@ -49,9 +49,9 @@ export default function ConnectPage() {
     return (
       <main style={{ maxWidth: 460, margin: "0 auto", padding: "4rem 1.5rem", textAlign: "center", minHeight: "100dvh" }}>
         <p style={{ fontSize: 44, margin: "0 0 14px" }}>⛪</p>
-        <h1 className="serif" style={{ fontSize: 22, fontWeight: 800, color: theme.gold, margin: "0 0 10px" }}>{t("conn.doneTitle")}</h1>
+        <h1 className="serif" style={{ fontSize: 22, fontWeight: 800, color: theme.sacred, margin: "0 0 10px" }}>{t("conn.doneTitle")}</h1>
         <p style={{ fontSize: 14.5, lineHeight: 1.7, color: theme.textMuted, margin: "0 0 28px" }}>{t("conn.doneBody")}</p>
-        <button onClick={() => router.push("/")} style={{ padding: "12px 26px", borderRadius: 12, border: "none", background: theme.primary, color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>{t("r.home")}</button>
+        <button onClick={() => router.push("/")} style={{ padding: "12px 26px", borderRadius: 12, border: "none", background: theme.sacred, color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>{t("r.home")}</button>
         {toastView}
       </main>
     );
@@ -64,13 +64,16 @@ export default function ConnectPage() {
   };
 
   return (
-    <main style={{ maxWidth: 460, margin: "0 auto", padding: "1.2rem 1.25rem 3rem", minHeight: "100dvh" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-        <button onClick={() => (history.length > 1 ? history.back() : router.push("/"))} style={{ fontSize: 13, color: theme.textMuted, background: "transparent", border: `1px solid ${theme.border}`, borderRadius: 16, padding: "6px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>←</button>
-        <h1 style={{ fontFamily: serif, fontSize: 20, fontWeight: 800, color: theme.gold, margin: 0 }}>⛪ {t("conn.title")}</h1>
-      </div>
+    <main style={{ maxWidth: 460, margin: "0 auto", padding: "0.7rem 1.25rem 3rem", minHeight: "100dvh" }}>
+      <PageHeader
+        title={t("conn.title")}
+        subtitle={t("home.connectSub")}
+        homeLabel={t("common.home")}
+        onHome={() => (history.length > 1 ? history.back() : router.push("/"))}
+        accentColor={ACCENT.gold.fg}
+      />
 
-      <p style={{ fontSize: 14, lineHeight: 1.7, color: theme.textMuted, margin: "0 0 20px" }}>{t("conn.intro")}</p>
+      <p style={{ fontSize: 14, lineHeight: 1.7, color: theme.textMuted, margin: "6px 0 20px" }}>{t("conn.intro")}</p>
 
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <input value={name} onChange={e => setName(e.target.value)} placeholder={t("conn.name")} maxLength={60} style={inputStyle} />
@@ -83,7 +86,7 @@ export default function ConnectPage() {
         </p>
 
         <button type="submit" disabled={busy}
-          style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: theme.gold, color: "#fff", border: "none", borderRadius: 13, cursor: busy ? "default" : "pointer", opacity: busy ? 0.6 : 1, marginTop: 4 }}>
+          style={{ width: "100%", padding: 15, fontSize: 16, fontWeight: 800, background: theme.sacred, color: "#fff", border: "none", borderRadius: 13, cursor: busy ? "default" : "pointer", opacity: busy ? 0.6 : 1, marginTop: 4 }}>
           {busy ? t("conn.sending") : t("conn.submit")}
         </button>
       </form>
