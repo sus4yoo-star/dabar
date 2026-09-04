@@ -7,7 +7,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.2'
+        // compileSdk 36(Android 16) 은 AGP 8.9 이상이 필요하다. 8.10.x 는 현재
+        // Gradle 래퍼(8.11.1)와 호환된다. (AGP 8.11 부터는 Gradle 8.13 이 필요)
+        classpath 'com.android.tools.build:gradle:8.10.1'
         classpath 'com.google.gms:google-services:4.4.2'
 
         // NOTE: Do not place your application dependencies here; they belong
