@@ -1,7 +1,8 @@
 ext {
     minSdkVersion = 23
-    compileSdkVersion = 35
-    targetSdkVersion = 35
+    // Google Play 정책: 2026-11-01 부터 Android 16(API 36) 이상 타겟팅 필수.
+    compileSdkVersion = 36
+    targetSdkVersion = 36
     androidxActivityVersion = '1.9.2'
     androidxAppCompatVersion = '1.7.0'
     androidxCoordinatorLayoutVersion = '1.2.0'
